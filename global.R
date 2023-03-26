@@ -1,5 +1,5 @@
 switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
-               doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,doPossible=TRUE,doLikelihoodInfer=FALSE,
+               doWorlds=TRUE,doReplications=TRUE,doMetaAnalysis=TRUE,doPossible=TRUE,doLikelihoodInfer=FALSE,
                startBlank=FALSE,doBootstrap=TRUE,doCheating=TRUE,
                doVariablesExplore=FALSE,
                showAnimation=TRUE,
