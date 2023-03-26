@@ -1,0 +1,211 @@
+##################################################################################    
+# SYSTEM diagrams   
+# hypothesis diagram
+# population diagram
+# prediction diagram
+
+output$HypothesisPlot<-renderPlot({
+  doIt<-editVar$data
+  if (debug) print("HypothesisPlot")
+  
+  IV<-updateIV()
+  IV2<-updateIV2()
+  DV<-updateDV()
+  if (variablesHeld=="Data") {
+    if (IV$deploy=="Within" && !grepl(paste0(",",DV$name,","),IV$targetDeploys)) {
+      hmm(paste0("Warning: ", IV$name," requires matched DV (",substr(IV$targetDeploys,2,nchar(IV$targetDeploys)-1),")"))
+    }
+    if (DV$deploy=="Within") {
+      hmm(paste0("Warning: ", DV$name," is a within-participants IV and cannot be used as a DV"))
+    }
+  }
+  effect<-updateEffect()
+  
+  PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
+    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
+  
+  xmin<-2
+  xmax<-8
+  switch (no_ivs,
+          {
+            g<-PlotNULL+
+              # annotation_custom(grob=ggplotGrob(PlotIV()),xmin=3,xmax=7,ymin=6,ymax=10)+
+              annotation_custom(grob=ggplotGrob(drawVariable(IV)),xmin=xmin,xmax=xmax,ymin=6,ymax=10)+
+              annotation_custom(grob=ggplotGrob(drawVariable(DV)),xmin=xmin,xmax=xmax,ymin=0,ymax=4)
+            
+            g<-g+annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV,1)),xmin=xmin,xmax=xmax,ymin=3.5,ymax=6)
+          },
+          {
+            g<-PlotNULL+
+              annotation_custom(grob=ggplotGrob(drawVariable(IV)), xmin=0,  xmax=4,  ymin=6, ymax=9)+
+              annotation_custom(grob=ggplotGrob(drawVariable(IV2)),xmin=6,  xmax=10, ymin=6, ymax=9)+
+              annotation_custom(grob=ggplotGrob(drawVariable(DV)), xmin=3,  xmax=7,  ymin=0.5, ymax=3.5)
+            
+            g<-g+annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV,2)),xmin=1.5,xmax=5.5,ymin=3, ymax=7)+
+              annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV2,3)),xmin=4.5,xmax=8.5,ymin=3, ymax=7)+
+              annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIVIV2,4)),xmin=3,  xmax=7,  ymin=6, ymax=9)+
+              annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIVIV2DV,5)),xmin=3,  xmax=7,  ymin=3, ymax=7)
+          }
+  )
+  if (debug) print("HypothesisPlot - exit")
+  
+  g
+}
+)
+
+# world diagram
+output$WorldPlot<-renderPlot({
+  doIt<-editVar$data
+  effect<-updateEffect()
+  design<-updateDesign()
+  
+  PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
+    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
+  
+  if (debug) print("WorldPlot")
+  x<-seq(-0.99,0.99,length.out=101)
+  if (effect$world$populationRZ=="z") {r<-atanh(x)} else {r<-x}
+  switch (effect$world$populationPDF,
+          "Single"={
+            y<-r*0
+            use=which.min(abs(x-effect$world$populationPDFk))
+            y[use]=1
+          },
+          "Uniform"={
+            y<-r*0+0.5
+          },
+          "Exp"={
+            y<-exp(-abs(r/effect$world$populationPDFk))
+          },
+          "Gauss"={
+            y<-exp(-0.5*abs(r/effect$world$populationPDFk)^2)
+          },
+  )
+  if (effect$world$populationRZ=="z") {
+    y<-y/(1-x^2)
+    y<-y/max(y)
+  }
+  y<-y*(1-effect$world$populationNullp)
+  
+  if (effect$world$populationPDF=="Single" && effect$world$populationNullp>0) {
+    use<-which.min(abs(x-0))
+    y[use]<-effect$world$populationNullp
+  }
+  
+  x<-c(-1,x,1)
+  y[y==0]<-0.01
+  y<-c(0,y,0)
+  pts=data.frame(x=x,y=y)
+  g1<-ggplot(pts,aes(x=x,y=y))
+  g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g1<-g1+plotTheme+theme(plot.margin=popplotMargins)+labs(x=bquote(r[population]),y="Density")
+  
+  if (design$sNRand) {
+    nbin<-5+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK),length.out=101)
+    ndens<-dgamma(nbin-5,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+    ndens<-ndens/max(ndens)
+  } else {
+    nbin<-seq(1,250,length.out=251)
+    ndens<-nbin*0+0.01
+    use=which.min(abs(nbin-input$sN))
+    ndens[use]<-1
+  }
+  x<-c(min(nbin),nbin,max(nbin))
+  y<-c(0,ndens,0)
+  pts=data.frame(x=x,y=y)
+  g2<-ggplot(pts,aes(x=x,y=y))
+  g2<-g2+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g2<-g2+plotTheme+theme(plot.margin=popplotMargins)+labs(x="n",y="Density")
+  if (debug) print("WorldPlot - exit")
+  
+  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g1), xmin=0,  xmax=10,  ymin=5.5, ymax=10)+
+    annotation_custom(grob=ggplotGrob(g2), xmin=0,  xmax=10,  ymin=0.5, ymax=5)
+  
+  g
+}
+)
+
+# population diagram
+output$PopulationPlot <- renderPlot({
+  doIt<-editVar$data
+  if (debug) print("PopulationPlot")
+  
+  IV<-updateIV()
+  IV2<-updateIV2()
+  DV<-updateDV()
+  if (is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
+  
+  effect<-updateEffect()
+  
+  switch (no_ivs,
+          {
+            g<-drawPopulation(IV,DV,effect,alpha=1)
+          },
+          { 
+            effect1<-effect
+            effect2<-effect1
+            effect2$rIV<-effect2$rIV2
+            effect3<-effect1
+            effect3$rIV<-effect3$rIVIV2
+            
+            g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
+              scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
+              
+              annotation_custom(grob=ggplotGrob(drawPopulation(IV,DV,effect1,alpha=1)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
+              annotation_custom(grob=ggplotGrob(drawPopulation(IV2,DV,effect2,alpha=1)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)+
+              annotation_custom(grob=ggplotGrob(drawPopulation(IV,IV2,effect3,alpha=1)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
+          }
+  )
+  if (debug) print("PopulationPlot - exit")
+  g
+})  
+
+# prediction diagram
+output$PredictionPlot <- renderPlot({
+  doIt<-editVar$data
+  if (debug) print("PredictionPlot")
+  
+  IV<-updateIV()
+  IV2<-updateIV2()
+  DV<-updateDV()
+  if (is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
+  
+  design<-updateDesign()
+  effect<-updateEffect()
+  evidence<-updateEvidence()
+  
+  switch (no_ivs,
+          {g<-drawPrediction(IV,IV2,DV,effect,design)},
+          {
+            if (evidence$rInteractionOn==FALSE){
+              effect1<-effect
+              effect2<-effect
+              effect2$rIV<-effect2$rIV2
+              
+              g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
+                scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
+                
+                annotation_custom(grob=ggplotGrob(drawPrediction(IV,NULL,DV,effect1,design)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
+                annotation_custom(grob=ggplotGrob(drawPrediction(IV2,NULL,DV,effect2,design)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)
+            } else{
+              if (showInteractionOnly){
+                g<-drawPrediction(IV,IV2,DV,effect,design)
+              } else{
+                effect1<-effect
+                effect2<-effect
+                effect2$rIV<-effect2$rIV2
+                
+                g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
+                  scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
+                  
+                  annotation_custom(grob=ggplotGrob(drawPrediction(IV,NULL,DV,effect1,design)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
+                  annotation_custom(grob=ggplotGrob(drawPrediction(IV2,NULL,DV,effect2,design)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)+
+                  annotation_custom(grob=ggplotGrob(drawPrediction(IV,IV2,DV,effect,design)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
+              }
+            }
+          }
+  )
+  if (debug) print("PredictionPlot - exit")
+  g
+})  
+##################################################################################    
