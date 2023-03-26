@@ -1,5 +1,6 @@
 
   metaGraphPanel<-function() {
+    if (switches$doMetaAnalysis) {
       tabPanel("MetaAnalysis",class="Graphs",
                tags$table(width = "100%",class="myTable",
                           tags$tr(
@@ -9,9 +10,13 @@
                ),
                style =paste("background:", maincolours$graphC, ";")
       )
+    } else {
+      c()
+    }
   }
   
   metaReportPanel<-function() {
+    if (switches$doMetaAnalysis) {
       tabPanel("MetaAnalysis",class="Graphs",
                tags$table(width = "100%",class="myTable",
                           tags$tr(
@@ -20,4 +25,7 @@
                ),
                style =paste("background:", maincolours$graphC, ";")
       )
+  } else {
+    c()
+  }
   }

@@ -7,7 +7,8 @@
                   tabPanel("Hypothesis",
                            style = paste("background: ",maincolours$graphC), 
                            plotOutput("HypothesisPlot")
-                  )
+                  ),
+                  worldDiagram()
       ),
       width="8cm"
     )

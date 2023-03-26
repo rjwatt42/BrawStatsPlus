@@ -45,6 +45,7 @@ MainGraphs <-
                          ),
                          style =paste("background:", maincolours$graphC, ";")
                 )
+                ,metaGraphPanel()
                 ,tabPanel("Explore",value="Explore",
                           tags$table(width = "100%",class="myTable",
                                      tags$tr(
