@@ -43,9 +43,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             }
           },
           "p(sig)"={
-            # ylim<-c(0,1)
             ylabel<-"p(sig)"
-            # g<-g+scale_y_continuous(limits=ylim)
+            ylim<-c(0,1)
+            g<-g+scale_y_continuous(limits=ylim)
           },
           "NHSTErrors"={
             ylim<-c(0,1)
@@ -268,9 +268,15 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               y50<-c()
               y25<-c()
               y75<-c()
+              y25a<-c()
+              y50a<-c()
+              y75a<-c()
               y50e<-c()
               y25e<-c()
               y75e<-c()
+              y25ea<-c()
+              y50ea<-c()
+              y75ea<-c()
               if (effect$world$worldOn) {
                 for (i in 1:length(exploreResult$result$vals)){
                   if (explore$Explore_type=="Alpha") {
@@ -279,15 +285,39 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
                   nulls<-exploreResult$result$rpIVs[,i]==0
-                  p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
                   # NB because we plot this upside down 
+                  if (STMethod=="NHST") {
+                  # type II errors
+                  p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
                   y50[i]<-p
                   y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                   y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                  # type I errors
                   p<-sum(sigs[nulls],na.rm=TRUE)/length(sigs)
                   y50e[i]<-p
                   y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                   y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                  } else {
+                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    # type II errors
+                    p<-sum(sigs & d<0 & !nulls,na.rm=TRUE)/length(sigs) 
+                    y50[i]<-p
+                    y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
+                    y50a[i]<-p
+                    y75a[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25a[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    # type I errors
+                    p<-sum(sigs & d>0 & nulls,na.rm=TRUE)/length(sigs)
+                    y50e[i]<-p
+                    y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    p<-sum(!sigs & nulls,na.rm=TRUE)/length(sigs)
+                    y50ea[i]<-p
+                    y75ea[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25ea[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                  }
                 }
               } else {
                 for (i in 1:length(exploreResult$result$vals)){
@@ -315,8 +345,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
                 }
               }
-              col<-"red"
-              cole<-"green"
+              col<-"#FF0000"
+              cole<-"#00FF00"
               colFill<-col
               lines<-c(0.05)
             },
@@ -335,18 +365,24 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
                   nulls<-exploreResult$result$rpIVs[,i]==0
+                  if (STMethod=="NHST") {
                   if (!all(nulls)) {
-                    p<-sum(!sigs & !nulls,na.rm=TRUE)/sum(!sigs)
+                    p1<-sum(!sigs & !nulls,na.rm=TRUE)/sum(!sigs)
                   } else {
-                    p<-0
+                    p1<-0
                   }
-                  y50[i]<-p
-                  y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                  y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                  p<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
-                  y50e[i]<-p
-                  y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                  y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    p2<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
+                  } else {
+                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    p1<-mean(!sigs,na.rm=TRUE)
+                    p2<-(sum(sigs & nulls & d>0)+sum(sigs & !nulls & d<0))/sum(sigs)
+                  }
+                  y50[i]<-p1
+                  y75[i]<-p1+sqrt(p1*(1-p1)/length(pVals[,i]))
+                  y25[i]<-p1-sqrt(p1*(1-p1)/length(pVals[,i]))
+                  y50e[i]<-p2
+                  y75e[i]<-p2+sqrt(p2*(1-p2)/length(pVals[,i]))
+                  y25e[i]<-p2-sqrt(p2*(1-p2)/length(pVals[,i]))
                 }
               } else {
                 for (i in 1:length(exploreResult$result$vals)){
@@ -571,18 +607,31 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     
     if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
       pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
-      
+      if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
+        pts1<-data.frame(vals=vals+vals_offset,y50=y50+y50a,y25=y25,y75=y75)
+        pts2<-data.frame(vals=vals+vals_offset,y50e=y50e+y50ea,y25e=y25e,y75e=y75e)
+        
+        areaVals<-c(vals[1],vals,vals[length(vals)])
+        # type 2 errors
+        areaData<-1-c(0,y50+y50a,0)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=darken(col,0.5),alpha=0.9)
+        # type 1 errors
+        areaData<-c(0,y50e+y50ea,0)
+        ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=darken(cole,0.5),alpha=0.9)
+      }
       if (doLine) {
         # shaded fills
         areaVals<-c(vals[1],vals,vals[length(vals)])
         # type 2 errors
         areaData<-1-c(0,y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col,alpha=0.5)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col,alpha=0.75)
         # type 1 errors
         areaData<-c(0,y50e,0)
-        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=cole,alpha=0.5)
+        ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole,alpha=0.75)
         # lines & points        
         g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
         g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
@@ -726,7 +775,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (is.character(exploreResult$result$vals[1]))
     g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
   }
-  if ((exploreResult$Explore_type=="SampleSize") && explore$Explore_xlog) {
+  if ((exploreResult$Explore_type=="SampleSize" && explore$Explore_xlog) || 
+       (exploreResult$Explore_type=="Repeats" && explore$Explore_xlog) ||
+       (exploreResult$Explore_type=="CheatingAmount" && explore$Explore_xlog)) {
     g<-g+scale_x_log10(limits=c(min(vals)/2,max(vals)*2))
   }
   if ((exploreResult$Explore_type=="Alpha") && explore$Explore_xlog) {
@@ -761,12 +812,12 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             g<-g+xlab(exploreResult$Explore_type)
     )
     
-    if (explore$Explore_show=="p(sig)") {
-      top<-max(y75,na.rm=TRUE)
-      top<-ceil(top*10)/10
-      ylim<-c(0,top)
-      g<-g+scale_y_continuous(limits=ylim)
-    }
+    # if (explore$Explore_show=="p(sig)") {
+    #   top<-max(y75,na.rm=TRUE)
+    #   top<-ceil(top*10)/10
+    #   ylim<-c(0,top)
+    #   g<-g+scale_y_continuous(limits=ylim)
+    # }
     
   g+plotTheme
 }

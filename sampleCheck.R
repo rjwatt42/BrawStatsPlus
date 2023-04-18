@@ -6,7 +6,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Retry") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingK) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
       sample<-makeSample(IV,IV2,DV,effect,design)
       result<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
       ntrials<-ntrials+1
@@ -17,7 +17,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Prune") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingK) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
       ps<-c()
       for (i in 1:length(sample$iv)) {
         sample1<-sample
@@ -55,7 +55,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Grow") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingK) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
       sample$participant<-c(sample$participant,length(sample$participant)+1)
       sample$iv<-c(sample$iv,sample2$iv[ntrials+1])
       sample$dv<-c(sample$dv,sample2$dv[ntrials+1])
@@ -72,7 +72,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Replace") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingK) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
       ps<-c()
       for (i in 1:length(sample$iv)) {
         sample1<-sample

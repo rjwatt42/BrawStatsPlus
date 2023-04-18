@@ -29,14 +29,11 @@ loadExtras<-function(which=0){
   }
   # meta-analysis
   if (which==1 && !switches$doMetaAnalysis) {
-    # source("uiMetaAnalysis.R")
-    # source("uiMetaGraph.R")
-    # source("uiExploreMeta.R")
+    switches$doMetaAnalysis<<-TRUE
     insertTab("Evidence",metaPanel(),"Multiple","after",select=FALSE,session)
     insertTab("Graphs",metaGraphPanel(),"Expect","after",select=FALSE,session)
     insertTab("Reports",metaReportPanel(),"Expect","after",select=FALSE,session)
     insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
-    switches$doMetaAnalysis<<-TRUE
   }
   # explore
   updateSelectInput(session,"Explore_typeH",choices=hypothesisChoices2)
@@ -137,7 +134,7 @@ if (switches$doKeys) {
       updateNumericInput(session,"world_distr_k",value=0.325)
       updateNumericInput(session,"world_distr_Nullp",value=0.74)
       updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.76)
+      updateNumericInput(session,"sNRandK",value=1.2)
       updateNumericInput(session,"sN",value=72)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
     }
@@ -190,7 +187,7 @@ if (switches$doKeys) {
       updateNumericInput(session,"world_distr_k",value=0.325)
       updateNumericInput(session,"world_distr_Nullp",value=1)
       updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.76)
+      updateNumericInput(session,"sNRandK",value=1.2)
       updateNumericInput(session,"sN",value=21)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
     }
@@ -204,7 +201,7 @@ if (switches$doKeys) {
       updateNumericInput(session,"world_distr_k",value=0.325)
       updateNumericInput(session,"world_distr_Nullp",value=0)
       updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.76)
+      updateNumericInput(session,"sNRandK",value=1.2)
       updateNumericInput(session,"sN",value=21)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
     }

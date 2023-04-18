@@ -88,7 +88,8 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#MetaAnalysisPlot{height:",graphH," !important;}"))),
     
     tags$head(tags$style(paste0("#HypothesisPlot{height:",graphH," !important;}"))),
-    tags$head(tags$style(paste0("#WorldPlot{height:",graphH," !important;}"))),
+    tags$head(tags$style(paste0("#WorldPlot{height:","25vh"," !important;}"))),
+    tags$head(tags$style(paste0("#WorldPlot2{height:","25vh"," !important;}"))),
     
     tags$head(tags$style(paste0("#SampleReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#DescriptiveReport{height:",reportH," !important;}"))),

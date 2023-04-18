@@ -170,7 +170,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
   
   n<-design$sN
   if (design$sNRand) {
-    n<-5+rgamma(1,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+    n<-minN+rgamma(1,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     while (n>100000) {n<-rgamma(1,shape=design$sNRandK,scale=design$sN/design$sNRandK)}
   }
   n<-round(n)

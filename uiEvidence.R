@@ -152,7 +152,7 @@ EvidenceTab <-
                                                  tags$td(width = "30%",
                                                          selectInput("STPrior",label=NULL,
                                                                      choices=c("none","world","prior"),
-                                                                     selected="none",
+                                                                     selected="world",
                                                                      selectize=FALSE
                                                          )
                                                  ),

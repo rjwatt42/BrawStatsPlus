@@ -2,7 +2,7 @@
 ## large display output functions
 
 designFields<-list(select=c("sMethod","sCheating"),
-                   number=c("sN","sNRandK","sCheatingK"),
+                   number=c("sN","sNRandK","sCheatingAmount"),
                    check=c("sNRand"))
 hypothesisFields<-list(select=c("world_distr","world_distr_rz"),
                        number=c("rIV","rIV2","rIVIV2","rIVIV2DV","world_distr_k","world_distr_Nullp"),

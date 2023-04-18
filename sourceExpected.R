@@ -30,7 +30,7 @@ observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
     if (input$evidenceLongHand) {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)
     } else {
-      expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*10
+      expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
     }
     if (input$EvidenceExpectedRun>0 || input$LGEvidenceExpectedRun>0) {
       updateActionButton(session,"EvidenceExpectedRun",label=stopLabel)
@@ -254,7 +254,7 @@ makeExpectedGraph <- function() {
       g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=1,xmax=9,ymin=0,ymax=10)
     }
   } else {
-    if (is.element(expected$type,c("NHSTErrors","FDR","CILimits"))) {
+    if (is.element(expected$type,c("NHSTErrors","FDR","CILimits","LLRDErrors"))) {
       switch (expected$type,
               "NHSTErrors"={
                 g1<-e1_plot(expectedResult$nullresult,effect=effect,result=expectedResult$result)
@@ -341,7 +341,15 @@ output$ExpectedReport <- renderPlot({
     g<-ggplot()+plotBlankTheme
   }
   
-  if (expectedResult$count<expectedResult$nsims) {
+  ns<-expectedResult$nsims-expectedResult$count
+  if (effect$world$worldOn  && expected$type=="NHSTErrors") {
+    ns<-expectedResult$nsims-expectedResult$count-expectedResult$nullcount
+  } else {
+    if (expected$type=="NHSTErrors") {
+      ns<-expectedResult$nsims*2-expectedResult$count-expectedResult$nullcount
+    }
+  }
+  if (ns>0) {
     # if (debug) {print("ExpectedPlot2 - timer set ")}
     if (doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)

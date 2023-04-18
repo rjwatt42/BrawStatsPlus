@@ -58,7 +58,7 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
     }
     # make some sample sizes
     if (design$sNRand) {
-      ns<-5+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+      ns<-minN+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
       ns<-round(ns)
     } else {
       ns<-rep(design$sN,sample_increase)

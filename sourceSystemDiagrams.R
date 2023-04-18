@@ -57,13 +57,16 @@ output$HypothesisPlot<-renderPlot({
 output$WorldPlot<-renderPlot({
   doIt<-editVar$data
   effect<-updateEffect()
-  design<-updateDesign()
-  
+
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   
   if (debug) print("WorldPlot")
-  x<-seq(-0.99,0.99,length.out=101)
+  if (effect$world$worldAbs) {
+    x<-seq(0,1,length.out=101)*r_range
+  } else {
+    x<-seq(-1,1,length.out=101)*r_range
+  }
   if (effect$world$populationRZ=="z") {r<-atanh(x)} else {r<-x}
   switch (effect$world$populationPDF,
           "Single"={
@@ -92,7 +95,7 @@ output$WorldPlot<-renderPlot({
     y[use]<-effect$world$populationNullp
   }
   
-  x<-c(-1,x,1)
+  x<-c(x[1],x,1)
   y[y==0]<-0.01
   y<-c(0,y,0)
   pts=data.frame(x=x,y=y)
@@ -100,9 +103,23 @@ output$WorldPlot<-renderPlot({
   g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   g1<-g1+plotTheme+theme(plot.margin=popplotMargins)+labs(x=bquote(r[population]),y="Density")
   
+  if (debug) print("WorldPlot - exit")
+  
+  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g1), xmin=0,  xmax=10,  ymin=0, ymax=10)
+
+  g
+}
+)
+
+
+output$WorldPlot2<-renderPlot({
+  doIt<-editVar$data
+  design<-updateDesign()
+  
   if (design$sNRand) {
-    nbin<-5+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK),length.out=101)
-    ndens<-dgamma(nbin-5,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+    nbin<-seq(minN,maxRandN*design$sN,length.out=seqN)
+    # nbin<-5+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK),length.out=101)
+    ndens<-dgamma(nbin-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     ndens<-ndens/max(ndens)
   } else {
     nbin<-seq(1,250,length.out=251)
@@ -112,17 +129,18 @@ output$WorldPlot<-renderPlot({
   }
   x<-c(min(nbin),nbin,max(nbin))
   y<-c(0,ndens,0)
+  
   pts=data.frame(x=x,y=y)
   g2<-ggplot(pts,aes(x=x,y=y))
   g2<-g2+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   g2<-g2+plotTheme+theme(plot.margin=popplotMargins)+labs(x="n",y="Density")
-  if (debug) print("WorldPlot - exit")
   
-  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g1), xmin=0,  xmax=10,  ymin=5.5, ymax=10)+
-    annotation_custom(grob=ggplotGrob(g2), xmin=0,  xmax=10,  ymin=0.5, ymax=5)
+  PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
+    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
+  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g2), xmin=0,  xmax=10,  ymin=0, ymax=10)
   
   g
-}
+  }
 )
 
 # population diagram
@@ -175,7 +193,15 @@ output$PredictionPlot <- renderPlot({
   evidence<-updateEvidence()
   
   switch (no_ivs,
-          {g<-drawPrediction(IV,IV2,DV,effect,design)},
+          { if(effect$world$worldOn) {
+            g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
+              scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
+              annotation_custom(grob=ggplotGrob(drawWorldSampling(effect,design,sigOnly=evidence$sigOnly)+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9)
+            
+          } else {
+            g<-drawPrediction(IV,IV2,DV,effect,design)
+            }
+          },
           {
             if (evidence$rInteractionOn==FALSE){
               effect1<-effect

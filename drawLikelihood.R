@@ -13,7 +13,7 @@ darken <- function(col,gain=1,off=0) {
 colS="#FFCC88"
 colSdark=darken(colS,off=-0.67)
 colSsim=darken(colS,off=0.0)
-
+  
 colP="#8899DD"
 colPdark=darken(colP,off=-0.67)
 colPsim=darken(colP,off=-0.33)
@@ -354,6 +354,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           gainSim<-sum(dens)*(bins[2]-bins[1])
                           gainTheory<-sum(likelihoodResult$Theory$spDens_r)*(likelihoodResult$Theory$rp[2]-likelihoodResult$Theory$rp[1])
                           dens<-dens/(gainSim/gainTheory)
+                          dens<-dens/max(dens,na.rm=TRUE)
                           if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
                           y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
                           polygon(trans3d(x=x,y=x*0+sRho[si],z=y1,pmat=mapping),col=colPsim,border=NA)
@@ -434,6 +435,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               rw_dens<-rsw_dens
             }
     )
+    yh<-approx(rw,rw_dens,sRho[1])$y
+    
     rw<-c(rw[1],rw,rw[length(rw)])
     rw_dens<-c(0,rw_dens,0)
     plot(x=rw,y=rw_dens,xlab=likelihood$type,ylab=ylab,type="n",yaxt="n",font.lab=2,xlim=view_lims,ylim=c(0,1.25))
@@ -483,7 +486,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               }
             }
     )
-    lines(x=c(0,0)+sRho[1],y=c(0,1),col=colP, lwd=1)
+    lines(x=c(0,0)+sRho[1],y=c(0,yh),col="red", lwd=3)
     
     if (likelihood$likelihoodTheory){
       switch (likelihood$type,
@@ -493,14 +496,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   # total
                   polygon (x = rs, y = sDens_r_total, col = addTransparency(colS,theoryAlpha), lwd=1)
                   # null
-                  if (likelihood$world$populationPDF!="Single" && likelihood$world$populationNullp>0) {
+                  if (likelihood$world$worldOn) {
                   lines (x = rs, y = sDens_r_null, col = colNullS, lwd=1)
                   # plus
                   lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=1)
                   }
                   
                   if ((!is.na(sRho[1]))) {
-                    s<-abs(sRho[1])
+                    s<-sRho[1]
                     p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
                     pn_at_sample<-(sum(sDens_r_null[rs>=s])+sum(sDens_r_null[rs< -s]))/sum(sDens_r_total)
                     pd_at_sample<-(sum(sDens_r_plus[rs>=s])+sum(sDens_r_plus[rs< -s]))/sum(sDens_r_total)
@@ -508,7 +511,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     ln_at_sample<-approx(rs,sDens_r_null,s)$y
                     ld_at_sample<-approx(rs,sDens_r_plus,s)$y
                     
-                    if (likelihood$world$populationPDF!="Single" && likelihood$world$populationNullp>0) {
+                    if (likelihood$world$worldOn) {
                     if (ln_at_sample>ld_at_sample) {
                       lines(x=c(sRho[1],sRho[1]),y=c(ld_at_sample,ln_at_sample-0.01),col=colNullS,lwd=2)
                       lines(x=c(sRho[1],sRho[1]),y=c(0,ld_at_sample-0.01),col=colDistS,lwd=2)

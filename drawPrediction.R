@@ -516,3 +516,29 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL){
   g<-g+labs(x=IV$name,y=DV$name)+plotTheme+theme(plot.margin=popplotMargins)
   
 }
+
+drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
+  g<-ggplot()
+  
+  if (effect$world$worldAbs) {
+    vals<-seq(-1,1,length=npoints*2+1)*r_range
+    dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
+    if (effect$world$populationNullp>0) {
+      dens<-dens*(1-effect$world$populationNullp) +
+        fullRSamplingDist(vals,NULL,design,sigOnly=sigOnly)
+    }
+    vals<-vals[npoints+(1:npoints)]
+    dens<-dens[npoints+(1:npoints)]
+  } else {
+    vals<-seq(-1,1,length=npoints)*r_range
+    dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
+  }
+  dens<-dens/max(dens)
+  
+  x<-c(vals[1],vals,1)
+  y<-c(0,dens,0)
+  pts=data.frame(x=x,y=y)
+  g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  
+  g<-g+labs(x=bquote(r[sample]),y="Frequency")+plotTheme+theme(plot.margin=popplotMargins)
+}

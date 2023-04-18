@@ -11,9 +11,10 @@ updateEffect<-function(type=0){
   if (switches$doWorlds) {
     world<-list(worldOn=input$world_on,populationPDF=input$world_distr,
                 populationPDFk=input$world_distr_k,populationRZ=input$world_distr_rz,
-                populationNullp=input$world_distr_Nullp)
+                populationNullp=input$world_distr_Nullp,
+                worldAbs=input$world_abs)
   } else {
-    world<-list(worldOn=FALSE,populationPDF="Single",populationPDFk=NA,populationRZ=NA,populationNullp=NA)
+    world<-list(worldOn=FALSE,populationPDF="Single",populationPDFk=NA,populationRZ=NA,populationNullp=NA,worldAbs=FALSE)
   }
   if (is.null(world$worldOn)) {world$worldOn<-FALSE}
   
@@ -33,6 +34,7 @@ updateEffect<-function(type=0){
     effect$world$populationRZ<-"r"
     effect$world$populationPDFk<-effect$rIV
     effect$world$populationNullp<-0
+    effect$world$worldAbs<-FALSE
   }
   if (is.null(oldEffect)) {
     effect$Heteroscedasticity<-checkNumber(effect$Heteroscedasticity)
@@ -55,7 +57,7 @@ updateDesign<-function(){
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
-               sCheating=input$sCheating,sCheatingK=input$sCheatingK,
+               sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,
                sReplicationOn=input$sReplicationOn,sReplPower=input$sReplPower,
                sReplSigOnly=input$sReplSigOnly,sReplRepeats=input$sReplRepeats,sReplCorrection=input$sReplCorrection,
                sReplKeep=input$sReplKeep,sReplTails=input$sReplTails,

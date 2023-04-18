@@ -252,14 +252,21 @@ fullRPopulationDist<-function(rvals,world) {
   rpopDistr(rvals,world$populationPDF,world$populationRZ,world$populationPDFk)
 }
 
-fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE) {
+fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=FALSE) {
   # sampling distribution from specified populations (pRho)
+  if (is.null(vals)) {
+    vals<-seq(-1,1,length=npoints)*r_range
+  }
+  if (is.null(world)) {
+   pR<-list(pRho=0,pRhogain=1) 
+  } else {
   pR<-get_pRho(world)
+  }
   # distribution of sample sizes
   n<-design$sN
   ng<-1
   if (design$sNRand) {
-    n<-5+seq(0,5,1/n)*n
+    n<-5+seq(0,5*n,length.out=seqN)
     ng<-dgamma(n-5,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
   }
   
@@ -270,6 +277,10 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE) {
         switch (doStat,
                 "r"={
                   addition<-rSamplingDistr(vals,pR$pRho[ei],n[ni])
+                  if (sigOnly) {
+                    critR<-tanh(qnorm(1-alpha/2,0,1/sqrt(n[ni]-3)))
+                    addition[abs(vals)<critR]<-0
+                  }
                   if (logScale) addition<-addition*vals
                 },
                 "p"={
@@ -417,8 +428,8 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   for (ei in 1:length(pRho)){
     if (design$sNRand) {
      d<-0
-     for (ni in 5:(maxRandN*design$sN)) {
-       g<-dgamma(ni-5,shape=design$sNRandK,scale=(n-5)/design$sNRandK)
+     for (ni in seq(minN,maxRandN*design$sN,length.out=seqN)) {
+       g<-dgamma(ni-minN,shape=design$sNRandK,scale=(n-minN)/design$sNRandK)
        d1<-zSamplingDistr(rs,pRho[ei],ni)*g
        if (likelihood$sigOnly) {
          crit_z<-qnorm(0.975,0,1/sqrt(ni-3))
@@ -442,8 +453,8 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   }
   if (design$sNRand) {
     d<-0
-    for (ni in 5:(maxRandN*design$sN)) {
-      g<-dgamma(ni-5,shape=design$sNRandK,scale=(n-5)/design$sNRandK)
+    for (ni in seq(minN,maxRandN*design$sN,length.out=seqN)) {
+      g<-dgamma(ni-minN,shape=design$sNRandK,scale=(n-minN)/design$sNRandK)
       d1<-zSamplingDistr(rs,0,ni)*g
       if (likelihood$sigOnly) {
         crit_z<-qnorm(0.975,0,1/sqrt(ni-3))
@@ -482,9 +493,9 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     for (ci in 1:length(correction)) {
       if (design$sNRand) {
         d<-0
-        for (ni in 5:(maxRandN*design$sN)) {
+        for (ni in seq(minN,maxRandN*design$sN,length.out=seqN)) {
           # for (ni in 5+seq(0,maxRandN,1/n[ei])*n[ei]) {
-          g<-dgamma(ni-5,shape=design$sNRandK,scale=(n[ei]-5)/design$sNRandK)
+          g<-dgamma(ni-minN,shape=design$sNRandK,scale=(n[ei]-minN)/design$sNRandK)
           d<-d+zSamplingDistr(rp,sRho[ei]+correction[ci],ni)*g
         }
         d<-d/sum(d)
@@ -555,7 +566,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
                   r_effects<-rbind(r_effects,t(res$rIV))
                 } else {
                   if (design$sNRand) {
-                      ns<-5+rgamma(nsims,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+                      ns<-minN+rgamma(nsims,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
                       ns<-floor(ns)
                       s1<-1/sqrt(ns-3)
                     r_effects<-rbind(r_effects,tanh(rnorm(nsims,mean=pRho[i],sd=s1)))
@@ -654,7 +665,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
                 # }
                 # make some sample sizes
                 if (design$sNRand) {
-                  ns<-5+rgamma(nsims*sample_increase,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+                  ns<-minN+rgamma(nsims*sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
                   ns<-round(ns)
                   s1<-1/sqrt(ns-3)
                   r_effects<-tanh(rnorm(nsims*sample_increase,mean=atanh(pops),sd=s1))

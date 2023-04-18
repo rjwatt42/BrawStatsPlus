@@ -49,7 +49,7 @@ designChoices=list("Sampling"=list("Sample Size" = "SampleSize",
                                     "IV Range" = "IVRange",
                                     "DV Range" = "DVRange"),
                    "Cheating"=list("Method" = "Cheating",
-                                   "Cheating amount" = "CheatingK"),
+                                   "Cheating amount" = "CheatingAmount"),
                    "Replications"=list("SigOnly"="SigOnly",
                                        "Repl Power"="Power",
                                        "Repl Repeats" = "Repeats")
@@ -185,19 +185,19 @@ ExploreTab <-
                                                                     designChoices,selectize=FALSE)
                                                 ),
                                                 tags$td(width = "15%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats'",
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
                                                                          tags$div(style = localStyle, "max:")
                                                         )),
                                                 tags$td(width = "25%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats'",
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
                                                                          numericInput("Explore_nRange", label=NULL,value=250,min=10,step=50)
                                                 )),
                                                 tags$td(width = "5%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize'",
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
                                                                          tags$div(style = localStyle, "log")
                                                         )),
                                                 tags$td(width = "5%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize'",
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
                                                                          checkboxInput("Explore_xlog",label="",value=FALSE)
                                                         )),
                                               ),

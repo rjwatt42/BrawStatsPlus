@@ -80,6 +80,7 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
   }
   z<-atanh(r)
   if (method=="dLLR") {
+    z<-abs(z)
     if (!is.matrix(z)) {
       z<-matrix(z,ncol=1)
     }
@@ -93,8 +94,8 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
     llk<-matrix(nrow=nrow(z),ncol=ncol(z))
     for (i1 in 1:nrow(z)) {
       for (i2 in 1:ncol(z)) {
-        lk1<-getLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,0)
-        lk2<-getLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,1)
+        lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,0)
+        lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,1)
         llk[i1,i2]<-lk1-lk2+log(world$populationNullp/(1-world$populationNullp))
       }
     }
@@ -572,6 +573,7 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
   } else { # Interval DV
     # lmRaw to report model
     if (doingWithin) {
+      # print(cor(resultRawData[1:42,4],resultRawData[43:84,4]))
       lmRaw<-lmer(formula=as.formula(formula),data=resultRawData)
       lmRawC<-lmer(formula=as.formula(formula),data=resultRawData,contrasts=contrasts)
       # lmNorm to calculate effect sizes

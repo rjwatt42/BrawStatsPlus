@@ -83,7 +83,13 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "IVRange"={vals<-seq(3,0.5,length.out=npoints)},
           "DVRange"={vals<-seq(3,0.5,length.out=npoints)},
           "Cheating"={vals<-c("Grow","Prune","Replace","Retry")},
-          "CheatingK"={vals<-round(seq(0.1,0.5,length.out=npoints)*design$sN)},
+          "CheatingAmount"={
+            if (explore$Explore_xlog){
+              vals<-round(10^seq(log10(1),log10(max_n),length.out=npoints))
+            }else{
+              vals<-round(seq(0,max_n,length.out=npoints))
+            }
+          },
           
           "SigOnly"={vals<-c("Yes","No")},
           "Power"={vals<-seq(0.1,0.9,length.out=npoints)},
@@ -402,8 +408,8 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             "Cheating"={
               design$sCheating<-vals[i]
             },
-            "CheatingK"={
-              design$sCheatingK<-vals[i]
+            "CheatingAmount"={
+              design$sCheatingAmount<-vals[i]
             },
             
             "SigOnly"={

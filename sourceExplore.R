@@ -153,7 +153,7 @@ updateExplore<-function(){
     }
   }
   if (!input$evidenceLongHand) {
-    explore$Explore_length<-explore$Explore_length*10
+    explore$Explore_length<-explore$Explore_length*shortHandGain
   }
   lastExplore<<-explore
   explore

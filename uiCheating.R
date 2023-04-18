@@ -16,7 +16,7 @@ uiCheating<-function(prefix="") {
                  ),
                  tags$td(width = "20%", tags$div(style = localStyle, "Amount:")),
                  tags$td(width = "20%",
-                         numericInput(paste0(prefix,"sCheatingK"),label=NULL,value=design$sCheatingK))
+                         numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount))
                ),
     )
 }

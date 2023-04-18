@@ -18,7 +18,8 @@ worldDiagram<-function() {
   if (switches$doWorlds) {
     tabPanel("World",
          style = paste("background: ",maincolours$graphC), 
-         plotOutput("WorldPlot")
+         plotOutput("WorldPlot"),
+         plotOutput("WorldPlot2")
     )
   } else {
     c()

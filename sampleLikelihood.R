@@ -54,7 +54,7 @@ ExpSamplingCDF<-function(zcrit,lambda,sigma) {
   1-(p1-p2)
 }
 
-getLikelihood<-function(z,n,worldDistr,worldDistK,p_sig,nullP=0) {
+getLogLikelihood<-function(z,n,worldDistr,worldDistK,p_sig,nullP=0) {
   sigma<-1/sqrt(n-3)
   
   # get nulls ready first

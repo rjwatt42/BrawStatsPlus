@@ -56,36 +56,67 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
   outputText<-c(outputText,rep(outputText1,nc/3))
 
   if (expected$type=="NHSTErrors"){
-    nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
-    resSig<-isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)
-      e1=paste0(format(mean(nullSig)*100,digits=report_precision),"%")
-      e2=paste0(format(mean(!resSig)*100,digits=report_precision),"%")
-      if (result$effect$world$worldOn) {
+    if (STMethod=="NHST") {
+      nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
+      resSig<-isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)
+    } else {
+      d<-res2llr(result,"dLLR")
+      nulld<-res2llr(nullresult,"dLLR")
+      nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
+      resSig<-(isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
+      nullSigW<-nulld>0 & isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
+      nullSigC<-nulld<0 & isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
+      resSigW<-(d<0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
+      resSigC<-(d>0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
+    }
+    if (result$effect$world$worldOn) {
         nr<-(length(nullresult$pIV)+length(result$pIV))
+        if (STMethod=="NHST") {
+          e1a<-paste0(format(sum(nullSig)/nr*100,digits=report_precision),"%")
+          e2a<-paste0(format(sum(!resSig)/nr*100,digits=report_precision),"%")
+          outputText<-c(outputText,"!jAll",e1a,e2a," ")
+          
+          e1=paste0(format(mean(nullSig)*100,digits=report_precision),"%")
+          e2=paste0(format(mean(!resSig)*100,digits=report_precision),"%")
+          outputText<-c(outputText,"!jr=0",e1," "," ")
+          outputText<-c(outputText,"!jr>0"," ",e2," ")
+          
+          e1b=paste0("\b",format((sum(nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%")
+          e2b=paste0(format((sum(!nullSig)+sum(resSig))/nr*100,digits=report_precision),"%")
+          e1c=paste0("(",format((sum(nullSig)+sum(resSig))/nr*100,digits=report_precision),"%)")
+          e2c=paste0("(",format((sum(!nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%)")
+          
+          e1n=paste0("\b",format(sum(nullSig)/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
+          e1p=paste0(format(sum(resSig)/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
+          e2n=paste0(format(sum(!nullSig)/(sum(!nullSig)+sum(!resSig))*100,digits=report_precision),"%")
+          e2p=paste0("\b",format(sum(!resSig)/(sum(!nullSig)+sum(!resSig))*100,digits=report_precision),"%")
+        } else {
+          e1a<-paste0(format((sum(nullSigW))/nr*100,digits=report_precision),"%")
+          e2a<-paste0(format((sum(resSigW))/nr*100,digits=report_precision),"%")
+          outputText<-c(outputText,"!jAll",e1a,e2a," ")
+          
+          e1=paste0(format(sum(nullSigW)/length(nullSig)*100,digits=report_precision),"%")
+          e2=paste0(format(sum(resSigW)/length(resSig)*100,digits=report_precision),"%")
+          outputText<-c(outputText,"!jr=0",e1," "," ")
+          outputText<-c(outputText,"!jr>0"," ",e2," ")
+
+          e1b=paste0("\b",format((sum(nullSigW)+sum(resSigW))/nr*100,digits=report_precision),"%")
+          e2b=paste0(format((sum(nullSigC)+sum(resSigC))/nr*100,digits=report_precision),"%")
+          e1c=paste0("(",format((sum(nullSig)+sum(resSig))/nr*100,digits=report_precision),"%)")
+
+          e1n=paste0("\b",format((sum(nullSigW)+sum(resSigW))/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
+          e1p=paste0(format((sum(nullSigC)+sum(resSigC))/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
+        }
         # ea=paste0("Combined: ",format((sum(nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%")
-        e1a<-paste0(format(sum(nullSig)/nr*100,digits=report_precision),"%")
-        e2a<-paste0(format(sum(!resSig)/nr*100,digits=report_precision),"%")
-        outputText<-c(outputText,"!jAll",e1a,e2a," ")
-        outputText<-c(outputText,"!jr=0",e1," "," ")
-        outputText<-c(outputText,"!jr>0"," ",e2," ")
         outputText<-c(outputText," ","","","")
         outputText<-c(outputText,"!j\bOutcomes:","\bFalse","\bValid","")
         
-        e1a=paste0("\b",format((sum(nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%")
-        e2a=paste0(format((sum(!nullSig)+sum(resSig))/nr*100,digits=report_precision),"%")
-        outputText<-c(outputText,"!jAll:",e1a,e2a,"")
+        outputText<-c(outputText,"!jAll:",e1b,e2b,"")
+        outputText<-c(outputText,paste0("!jSig ",e1c,":"),e1n,e1p," ")
         
-        e1a=paste0("(",format((sum(nullSig)+sum(resSig))/nr*100,digits=report_precision),"%)")
-        e2a=paste0("(",format((sum(!nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%)")
-        
-        
-        e1n=paste0("\b",format(sum(nullSig)/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
-        e1=paste0(format(sum(resSig)/(sum(nullSig)+sum(resSig))*100,digits=report_precision),"%")
-        outputText<-c(outputText,paste0("!jSig ",e1a,":"),e1n,e1," ")
-        
-        e2n=paste0(format(sum(!nullSig)/(sum(!nullSig)+sum(!resSig))*100,digits=report_precision),"%")
-        e2=paste0("\b",format(sum(!resSig)/(sum(!nullSig)+sum(!resSig))*100,digits=report_precision),"%")
-        outputText<-c(outputText,paste0("!jNot Sig ",e2a,":"),e2,e2n," ")
+        if (STMethod=="NHST") {
+        outputText<-c(outputText,paste0("!jNot Sig ",e2c,":"),e2p,e2n," ")
+        }
       } else {
         outputText<-c(outputText," ",e1,e2," ")
     }

@@ -1,5 +1,6 @@
 switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
-               doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,doPossible=TRUE,doLikelihoodInfer=FALSE,
+               doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,
+               doPossible=TRUE,doLikelihoodInfer=FALSE,
                startBlank=FALSE,doBootstrap=TRUE,doCheating=TRUE,
                doVariablesExplore=FALSE,
                showAnimation=TRUE,
@@ -93,7 +94,7 @@ IV2<-list(name="none",type="Interval",mu=0,sd=1,ncats=2,cases="D1,D2",proportion
 DV<-list(name="DV",type="Interval",mu=0,sd=1,ncats=2,cases="E1,E2",proportions="1,1")
 
 effect<-list(rIV=0,rIV2=0,rIVIV2=0,rIVIV2DV=0,Heteroscedasticity=0,Welch=FALSE,
-             world=list(worldOn=FALSE,populationPDF="Single",populationPDFk=0.2,populationRZ="r",populationNullp=0)
+             world=list(worldOn=FALSE,populationPDF="Single",populationPDFk=0.2,populationRZ="r",populationNullp=0,worldAbs=FALSE)
 )
 
 nulleffect<-list(rIV=0,rIV2=0,rIVIV2=0,rIVIV2DV=0,Heteroscedasticity=0,Welch=FALSE,
@@ -104,7 +105,7 @@ design<-list(sN=42, sNRand=FALSE,sNRandK=2,
              sMethod="Random" ,sIV1Use="Between",sIV2Use="Between", 
              sRangeOn=FALSE, sIVRange=c(-3,3), sDVRange=c(-3,3), 
              sDependence=0, sOutliers=0, sClustering=0,
-             sCheating=FALSE,sCheatingK=5,
+             sCheating=FALSE,sCheatingAmount=5,
              sReplicationOn=FALSE,sReplPower=0.8,sReplTails=2,
              sReplSigOnly=FALSE,sReplRepeats=1,sReplKeep="last",sReplCorrection=FALSE,
              sN_Strata=5, sR_Strata=2,
@@ -127,7 +128,7 @@ evidence<-list(rInteractionOn=TRUE,
                dataType="Raw",
                analysisType="Anova",
                pScale="log10",wScale="linear",nScale="log10",
-               usePrior="none",
+               usePrior="world",
                prior=list(worldOn=FALSE,populationPDF="",
                           populationPDFk=0,populationRZ="r",
                           populationNullp=0)
@@ -184,10 +185,15 @@ alpha<-0.05
 alphaLLR<-0.5*qnorm(1-alpha/2)^2
 STMethod<-"NHST"
 
+shortHandGain=10
+
 z_range<-1.75
 r_range<-0.975
 fullRange<-3
+seqN<-51
+
 allScatter<-"all"
+minN<-10
 maxRandN<-5 # times mean sample size
 
 warn3Cat2<-FALSE
@@ -214,15 +220,24 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 
+doPlus<-TRUE
+if (doPlus) {
+  switches$doReplications<-TRUE
+  switches$doMetaAnalysis<-TRUE
+  switches$doWorlds<-TRUE
+  switches$doLikelihoodInfer<-TRUE
+  
+}
+
 is_local <- Sys.getenv('SHINY_PORT') == ""
 if (is_local) {
   switches$doClipboard<-TRUE
   
   if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
     # switches$doBatchFiles<-TRUE
-    switches$doReplications<-TRUE
+    # switches$doReplications<-TRUE
     # switches$doMetaAnalysis<-TRUE
-    switches$doWorlds<-TRUE
+    # switches$doWorlds<-TRUE
     
     # evidence$showTheory<-TRUE
     # switches$doVariablesExplore<-TRUE
