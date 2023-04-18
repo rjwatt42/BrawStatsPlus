@@ -220,12 +220,12 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 
-doPlus<-TRUE
+doPlus<-FALSE
 if (doPlus) {
   switches$doReplications<-TRUE
   switches$doMetaAnalysis<-TRUE
   switches$doWorlds<-TRUE
-  switches$doLikelihoodInfer<-TRUE
+  # switches$doLikelihoodInfer<-TRUE
   
 }
 
@@ -238,6 +238,7 @@ if (is_local) {
     # switches$doReplications<-TRUE
     # switches$doMetaAnalysis<-TRUE
     # switches$doWorlds<-TRUE
+    # switches$doLikelihoodInfer<-TRUE
     
     # evidence$showTheory<-TRUE
     # switches$doVariablesExplore<-TRUE
