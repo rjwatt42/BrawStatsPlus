@@ -38,7 +38,7 @@ drawRibbon<-function(x,y,yoff) {
 }
 
 drawParParPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
-  theta=seq(0,2*pi,2*pi/101)
+  theta=seq(0,2*pi,length.out=varNPoints)
   d<-acos(rho)
   x=cos(theta+d/2)
   y=cos(theta-d/2)
@@ -63,7 +63,7 @@ drawOrdParPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
   pbreaks<-seq(0,1,1/(ng))
   ebreaks<-(pbreaks-0.5)*2
   
-  y<-seq(-1,1,0.01)*fullRange
+  y<-seq(-1,1,length.out=varNPoints)*fullRange
   np<-length(y)
   pts<-data.frame(x=c(),y=c(),yoff=c(),value=c(),ids=c())
   for (id in 1:ng) {
@@ -93,7 +93,7 @@ drawCatParPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
   pbreaks<-seq(0,1,1/(ncats))
   ebreaks<-qnorm(pbreaks)
   
-  y<-seq(-1,1,0.01)*fullRange
+  y<-seq(-1,1,length.out=varNPoints)*fullRange
   yshape<-c(y,rev(y))
   if (length(IV$vals)>0){
     # dealing with a sample
@@ -152,7 +152,7 @@ drawParOrdPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
   pbreaks<-seq(0,1,1/(ng))
   ebreaks<-(pbreaks-0.5)*2
 
-  x<-seq(-1,1,0.01)*fullRange
+  x<-seq(-1,1,length.out=varNPoints)*fullRange
   np<-length(x)
   pts<-data.frame(x=c(),y=c(),yoff=c(),value=c(),ids=c())
   for (id in 1:ng) {
@@ -263,7 +263,7 @@ drawParCatPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
   pbreaks<-seq(0,1,1/(ncats))
   ebreaks<-qnorm(pbreaks)
   
-  x<-seq(-1,1,0.01)*fullRange
+  x<-seq(-1,1,length.out=varNPoints)*fullRange
   np<-length(x)
   pts<-data.frame(x=c(),y=c(),yoff=c(),value=c(),ids=c())
   for (id in 1:ncats) {

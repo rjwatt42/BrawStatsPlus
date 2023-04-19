@@ -6,7 +6,7 @@
 
 output$HypothesisPlot<-renderPlot({
   doIt<-editVar$data
-  if (debug) print("HypothesisPlot")
+  if (debug) debugPrint("HypothesisPlot")
   
   IV<-updateIV()
   IV2<-updateIV2()
@@ -47,8 +47,8 @@ output$HypothesisPlot<-renderPlot({
               annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIVIV2DV,5)),xmin=3,  xmax=7,  ymin=3, ymax=7)
           }
   )
-  if (debug) print("HypothesisPlot - exit")
-  
+  if (debug) debugPrint("HypothesisPlot - exit")
+
   g
 }
 )
@@ -61,11 +61,11 @@ output$WorldPlot<-renderPlot({
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   
-  if (debug) print("WorldPlot")
+  if (debug) debugPrint("WorldPlot")
   if (effect$world$worldAbs) {
-    x<-seq(0,1,length.out=101)*r_range
+    x<-seq(0,1,length.out=worldNPoints)*r_range
   } else {
-    x<-seq(-1,1,length.out=101)*r_range
+    x<-seq(-1,1,length.out=worldNPoints)*r_range
   }
   if (effect$world$populationRZ=="z") {r<-atanh(x)} else {r<-x}
   switch (effect$world$populationPDF,
@@ -103,8 +103,8 @@ output$WorldPlot<-renderPlot({
   g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   g1<-g1+plotTheme+theme(plot.margin=popplotMargins)+labs(x=bquote(r[population]),y="Density")
   
-  if (debug) print("WorldPlot - exit")
-  
+  if (debug) debugPrint("WorldPlot - exit")
+
   g<-PlotNULL+annotation_custom(grob=ggplotGrob(g1), xmin=0,  xmax=10,  ymin=0, ymax=10)
 
   g
@@ -115,14 +115,15 @@ output$WorldPlot<-renderPlot({
 output$WorldPlot2<-renderPlot({
   doIt<-editVar$data
   design<-updateDesign()
+  if (debug) debugPrint("WorldPlot2")
   
   if (design$sNRand) {
-    nbin<-seq(minN,maxRandN*design$sN,length.out=seqN)
+    nbin<-seq(minN,maxRandN*design$sN,length.out=worldNPoints)
     # nbin<-5+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK),length.out=101)
     ndens<-dgamma(nbin-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     ndens<-ndens/max(ndens)
   } else {
-    nbin<-seq(1,250,length.out=251)
+    nbin<-seq(1,250,length.out=worldNPoints)
     ndens<-nbin*0+0.01
     use=which.min(abs(nbin-input$sN))
     ndens[use]<-1
@@ -138,6 +139,8 @@ output$WorldPlot2<-renderPlot({
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   g<-PlotNULL+annotation_custom(grob=ggplotGrob(g2), xmin=0,  xmax=10,  ymin=0, ymax=10)
+
+    if (debug) debugPrint("WorldPlot2 - exit")
   
   g
   }
@@ -146,8 +149,8 @@ output$WorldPlot2<-renderPlot({
 # population diagram
 output$PopulationPlot <- renderPlot({
   doIt<-editVar$data
-  if (debug) print("PopulationPlot")
-  
+  if (debug) debugPrint("PopulationPlot")
+
   IV<-updateIV()
   IV2<-updateIV2()
   DV<-updateDV()
@@ -174,15 +177,15 @@ output$PopulationPlot <- renderPlot({
               annotation_custom(grob=ggplotGrob(drawPopulation(IV,IV2,effect3,alpha=1)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
           }
   )
-  if (debug) print("PopulationPlot - exit")
+  if (debug) debugPrint("PopulationPlot - exit")
   g
 })  
 
 # prediction diagram
 output$PredictionPlot <- renderPlot({
   doIt<-editVar$data
-  if (debug) print("PredictionPlot")
-  
+  if (debug) debugPrint("PredictionPlot")
+
   IV<-updateIV()
   IV2<-updateIV2()
   DV<-updateDV()
@@ -231,7 +234,7 @@ output$PredictionPlot <- renderPlot({
             }
           }
   )
-  if (debug) print("PredictionPlot - exit")
+  if (debug) debugPrint("PredictionPlot - exit")
   g
 })  
 ##################################################################################    

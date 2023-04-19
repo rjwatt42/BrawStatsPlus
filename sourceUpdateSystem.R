@@ -6,7 +6,7 @@
 
 # PREDICTION & DESIGN & EVIDENCE
 updateEffect<-function(type=0){
-  if (debug) print("     updateEffect")
+  if (debug) debugPrint("     updateEffect")
   
   if (switches$doWorlds) {
     world<-list(worldOn=input$world_on,populationPDF=input$world_distr,
@@ -47,12 +47,12 @@ updateEffect<-function(type=0){
   }
   oldEffect<<-effect
   
-  if (debug) print("     updateEffect - exit")
+  if (debug) debugPrint("     updateEffect - exit")
   effect
 }
 
 updateDesign<-function(){
-  if (debug) print("     updateDesign")
+  if (debug) debugPrint("     updateDesign")
   design<-list(sN=input$sN, sNRand=input$sNRand,sNRandK=input$sNRandK,
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
@@ -76,12 +76,12 @@ updateDesign<-function(){
   }
   oldDesign<<-design
   if (variablesHeld=="Data" && !applyingAnalysis && switches$doBootstrap) {design$sMethod<-"Resample"}
-  if (debug) print("     updateDesign - exit")
+  if (debug) debugPrint("     updateDesign - exit")
   design
 }
 
 updateEvidence<-function(){
-  if (debug) print("     updateEvidence")
+  if (debug) debugPrint("     updateEvidence")
   evidence<-list(rInteractionOn=input$rInteractionOn,
                  rInteractionOnly=input$rInteractionOnly,
                  showType=input$EvidenceEffect_type,
@@ -120,7 +120,7 @@ updateEvidence<-function(){
     evidence$prior$worldOn<-FALSE
   }
   
-  if (debug) print("     updateEvidence - exit")
+  if (debug) debugPrint("     updateEvidence - exit")
   evidence
 }
 

@@ -1,5 +1,5 @@
 observeEvent(input$IVchoice,{
-  if (debug) print("11")
+  if (debug) debugPrint("IVChoice")
   use<-match(input$IVchoice,variables$name)
   if (!is.na(use)){
     newMV<-variables[use,]
@@ -48,7 +48,7 @@ editVar<-reactiveValues(data=0)
 oldName<-""
 
 updateMVType<-function(MV) {
-  if (debug) print("updateMVType")
+  if (debug) debugPrint("updateMVType")
   
   switch (MV$type,
           "Interval"={
@@ -78,7 +78,7 @@ updateMVType<-function(MV) {
     shinyjs::hideElement(id= "MVCatVala")
     shinyjs::hideElement(id= "MVCatValb")
   }
-  if (debug) print("updateMVType - exit")
+  if (debug) debugPrint("updateMVType - exit")
   
 }
 observeEvent(input$MVtype, {
@@ -90,7 +90,7 @@ observeEvent(input$MVnlevs, {
 })
 #Press "OK": make the new variable
 observeEvent(input$MVok, {
-  if (debug) print("13")
+  if (debug) debugPrint("MVOK")
   MV<<-makeVar(name=input$MVname, type=input$MVtype,
                mu=checkNumber(input$MVmu), sd=checkNumber(input$MVsd),
                skew=checkNumber(input$MVskew), kurtosis=checkNumber(input$MVkurt),
@@ -243,7 +243,7 @@ observeEvent(input$editDV,{
 
 
 setIVanyway<-function(newMV=NULL){
-  if (debug) {print("setIVanyway")}
+  if (debug) {debugPrint("setIVanyway")}
   newName<-FALSE    
   if (is.null(newMV)) {
     use<-match(input$IVchoice,variables$name)
@@ -289,7 +289,7 @@ setIVanyway<-function(newMV=NULL){
 }
 
 setIV2anyway<-function(newMV=NULL){
-  if (debug) {print("setIV2anyway")}
+  if (debug) {debugPrint("setIV2anyway")}
   newName<-FALSE
   if (is.null(newMV)) {
     if (input$IV2choice=="none") {
@@ -344,7 +344,7 @@ setIV2anyway<-function(newMV=NULL){
 }
 
 setDVanyway<-function(newMV=NULL){
-  if (debug) {print("setDVanyway")}
+  if (debug) {debugPrint("setDVanyway")}
   newName<-FALSE
   if (is.null(newMV)) {
     use<-match(input$DVchoice,variables$name)

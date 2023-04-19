@@ -7,6 +7,33 @@
 #    http://shiny.rstudio.com/
 #
 
+debug<-FALSE
+debugExitOnly<-TRUE
+debugMainOnly<-FALSE
+debugNow<-Sys.time()
+debugNowLocation<<-"Start"
+debugStart<-Sys.time()
+
+debugPrint<-function(s) {
+  if (debugMainOnly && substr(s,1,1)==" ") return()
+  
+    if (grepl("exit",s)==1) {
+      z<-regexpr("[ ]*[a-zA-Z0-9]*",s)
+      startStr<-regmatches(s,z)
+      use<-which(debugNowLocation==startStr)
+      use<-use[length(use)]
+    elapsed<-as.numeric(difftime(Sys.time(),debugNow[use],units="secs"))
+    print(paste0(format(Sys.time()-debugStart)," (",format(elapsed,digits=3),") ",startStr))
+  } else {
+    if (!debugExitOnly || s=="Opens")
+    print(paste(format(Sys.time()-debugStart),s))
+    debugNow<<-c(debugNow,Sys.time())
+    debugNowLocation<<-c(debugNowLocation,s)
+  }
+  }
+
+if (debug) debugPrint("Opens")
+
 source("plotStatistic.R")
 source("plotES.R")
 source("plotReport.R")
@@ -55,6 +82,7 @@ graphicSource="Main"
 ####################################
 
 shinyServer(function(input, output, session) {
+  if (debug) debugPrint("Start")
   
   source("myGlobal.R")
   source("runDebug.R")
@@ -93,6 +121,7 @@ shinyServer(function(input, output, session) {
   updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoices2[exploreHypothesisChoices])
   
 ####################################
+  if (debug) debugPrint("ServerKeys")
   
   source("serverKeys.R",local=TRUE)
 
@@ -103,6 +132,7 @@ shinyServer(function(input, output, session) {
                })
 ####################################
 # other housekeeping
+  if (debug) debugPrint("Housekeeping")
   observeEvent(input$allScatter,{
     allScatter<<-input$allScatter
   }
@@ -225,6 +255,7 @@ shinyServer(function(input, output, session) {
 ####################################
 # QUICK HYPOTHESES
   
+  if (debug) debugPrint("QuickHypotheses")
   
   observeEvent(input$Hypchoice,{
     result<-getTypecombination(input$Hypchoice)
@@ -272,7 +303,9 @@ source("sourceUpdateData.R",local=TRUE)
   
 ####################################
 # VARIABLES  
-  # make basic variables    
+  if (debug) debugPrint("Variables")
+
+    # make basic variables    
   IV<-variables[1,]
   IV2<-variables[2,]
   DV<-variables[3,]
@@ -297,5 +330,7 @@ source("sourceUpdateData.R",local=TRUE)
   source("sourceLikelihood.R",local=TRUE)
   source("sourceFiles.R",local=TRUE)
   # end of everything        
+  
+  if (debug) debugPrint("Opens - exit")
 })
 

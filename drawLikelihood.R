@@ -58,6 +58,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   )
 
   pRho<-likelihoodResult$pRho
+  pRho<-sort(pRho)
   sRho<-likelihoodResult$sRho
 
   rs<-likelihoodResult$Theory$rs
@@ -284,13 +285,20 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         
                         # now draw theory
                         gain<-(1-likelihood$world$populationNullp)
+                        if (length(pRho)==2) {
+                          gain<-max(c(1-likelihood$world$populationNullp,likelihood$world$populationNullp))
+                        } 
                         if (likelihood$likelihoodTheory){
                           if (is.null(likelihoodResult$Sims$sSims)) {
-                            col<-addTransparency(colS,1)
+                            if (length(pRho)==2) {
+                              col<-addTransparency(colS,theoryAlpha)
+                            } else {
+                              col<-addTransparency(colS,1)
+                            }
                           } else {
                             col<-addTransparency(colS,theoryAlpha)
                           }
-                          
+
                           z_use<-sDens_r[i,]
                           if (likelihood$cutaway) {
                             z_use[rs<sRho[si]]<-0
@@ -311,11 +319,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
                         }
                         # vertical lines
-                        if (length(pRho)==1) {
-                          z<-1
-                        } else {
-                          z<-approx(rs,sDens_r[i,],sRho[si])$y
-                        }
+                        z<-approx(rs,sDens_r[i,],sRho[si])$y
+                        # if (length(pRho)==1) {z<-1}
                         lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(0,z)*gain,pmat=mapping),col=colVline, lwd=3)
                         # connecting lines
                         if (doConnecting && length(pRho)>5 && i<length(pRho)) {

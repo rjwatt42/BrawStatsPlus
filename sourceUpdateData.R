@@ -140,7 +140,7 @@ changeUI2Simulations<-function() {
 }
 
 observeEvent(input$AllowResampling,{
-  if (debug) print("9")
+  if (debug) debugPrint("AllowResampling")
   switches$doBootstrap<<-input$AllowResampling
   
   switch(input$Using,
@@ -153,7 +153,7 @@ observeEvent(input$AllowResampling,{
 })
 
 observeEvent(input$Using,{
-  if (debug) print("10")
+  if (debug) debugPrint("Using")
   
   if (variablesHeld==input$Using) {return()}
   if (input$Using=="OK") {return()}

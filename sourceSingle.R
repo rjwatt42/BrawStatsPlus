@@ -48,7 +48,7 @@ whichAnalysisApply<-observeEvent(input$EvidenceHypothesisApply,{
 
 # single sample calculations
 doSampleAnalysis<-function(IV,IV2,DV,effect,design,evidence){
-  if (debug) print("doSampleAnalysis")
+  if (debug) debugPrint(". doSampleAnalysis")
   if (IV$type=="Ordinal") {
     if (warnOrd==FALSE) {
       hmm("Ordinal IV will be treated as Interval.")
@@ -64,7 +64,7 @@ doSampleAnalysis<-function(IV,IV2,DV,effect,design,evidence){
     }
   }
   result<-runSimulation(IV,IV2,DV,effect,design,evidence,FALSE,onlyAnalysis,oldResult)
-  if (debug) print("doSampleAnalysis - exit")
+  if (debug) debugPrint(". doSampleAnalysis - exit")
   
   result
 }
@@ -102,7 +102,6 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
 # SINGLE graphs
 # single sample graph
 makeSampleGraph <- function () {
-  if (debug) print("SamplePlot")
   doIt<-editVar$data
   
   IV<-updateIV()
@@ -148,7 +147,6 @@ makeSampleGraph <- function () {
 
 # single descriptive graph
 makeDescriptiveGraph <- function(){
-  if (debug) print("DescriptivePlot")
   doIt<-editVar$data
   # doIt<-input$MVok
   IV<-updateIV()
@@ -265,7 +263,6 @@ makeDescriptiveGraph <- function(){
 makeInferentialGraph <- function() {
   doit<-c(input$EvidenceInfer_type,input$LGEvidenceInfer_type,input$evidenceTheory,
           input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
-  if (debug) print("InferentialPlot")
   doIt<-editVar$data
   llrConsts<-c(input$llr1,input$llr2)
   
@@ -319,18 +316,27 @@ makeInferentialGraph <- function() {
 }
 
 output$SamplePlot <- renderPlot({
+  if (debug) debugPrint("SamplePlot")
   doIt<-editVar$data
-  makeSampleGraph()
+  g<-makeSampleGraph()
+  if (debug) debugPrint("SamplePlot - exit")
+  g
 })
 
 output$DescriptivePlot <- renderPlot({
+  if (debug) debugPrint("DescriptivePlot")
   doIt<-editVar$data
-  makeDescriptiveGraph()
+  g<-makeDescriptiveGraph()
+  if (debug) debugPrint("DescriptivePlot - exit")
+  g
 })
 
 output$InferentialPlot <- renderPlot({
+  if (debug) debugPrint("InferentialPlot")
   doIt<-editVar$data
-  makeInferentialGraph()
+  g<-makeInferentialGraph()
+  if (debug) debugPrint("InferentialPlot - exit")
+  g
 })
 
 # SINGLE reports    
@@ -405,21 +411,27 @@ makeInferentialReport <- function()  {
 }
 
 output$SampleReport <- renderPlot({
-  if (debug) print("SampleReport")
+  if (debug) debugPrint("SampleReport")
   doIt<-editVar$data
-  makeSampleReport()
+  g<-makeSampleReport()
+  if (debug) debugPrint("SampleReport - exit")
+  g
 })
 
 output$DescriptiveReport <- renderPlot({
-  if (debug) print("DescriptiveReport")
+  if (debug) debugPrint("DescriptiveReport")
   doIt<-editVar$data
-  makeDescriptiveReport()
+  g<-makeDescriptiveReport()
+  if (debug) debugPrint("DescriptiveReport - exit")
+  g
 })
 
 output$InferentialReport <- renderPlot({
-  if (debug) print("InferentialReport")
+  if (debug) debugPrint("InferentialReport")
   doIt<-editVar$data
-  makeInferentialReport()
+  g<-makeInferentialReport()
+  if (debug) debugPrint("InferentialReport - exit")
+  g
 })
 
 ##################################################################################    

@@ -191,6 +191,8 @@ z_range<-1.75
 r_range<-0.975
 fullRange<-3
 seqN<-51
+worldNPoints<-51
+varNPoints<-21
 
 allScatter<-"all"
 minN<-10
@@ -220,10 +222,11 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 
-doPlus<-FALSE
+doPlus<-TRUE
+
 if (doPlus) {
   switches$doReplications<-TRUE
-  switches$doMetaAnalysis<-TRUE
+  # switches$doMetaAnalysis<-TRUE
   switches$doWorlds<-TRUE
   # switches$doLikelihoodInfer<-TRUE
   
@@ -245,4 +248,3 @@ if (is_local) {
   } 
 }
 
-debug<-FALSE

@@ -81,7 +81,7 @@ drawPoints<-function(g,IV,DV,result,colindex=1,off=0){
           },
           
           "Interval Categorical"={
-            bin_breaks<-c(-Inf,seq(-1,1,length.out=10)*fullRange*sd(result$iv)+mean(result$iv),Inf)
+            bin_breaks<-c(-Inf,seq(-1,1,length.out=varNPoints-1)*fullRange*sd(result$iv)+mean(result$iv),Inf)
             dens2<-hist(result$iv,breaks=bin_breaks,freq=TRUE,plot=FALSE,warn.unused = FALSE)
             bins=dens2$mids
             full_x<-c()
@@ -125,7 +125,7 @@ drawPoints<-function(g,IV,DV,result,colindex=1,off=0){
           
           
           "Ordinal Categorical"={
-            bin_breaks<-c(-Inf,seq(-1,1,length.out=10)*fullRange*sd(result$iv)+mean(result$iv),Inf)
+            bin_breaks<-c(-Inf,seq(-1,1,length.out=varNPoints-1)*fullRange*sd(result$iv)+mean(result$iv),Inf)
             dens2<-hist(result$iv,breaks=bin_breaks,freq=TRUE,plot=FALSE,warn.unused = FALSE)
             bins=dens2$mids
             full_x<-c()

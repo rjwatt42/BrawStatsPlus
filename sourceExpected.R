@@ -101,7 +101,7 @@ updateExpected<-function(){
 
 # make this a stand-alone function to be called from observEvent
 doExpectedAnalysis<-function(IV,IV2,DV,effect,design,evidence,expected,result,nsim=1) {
-  if (debug) {print("     doExpectedAnalysis - start")}
+  if (debug) {debugPrint("     doExpectedAnalysis")}
   
   append<-TRUE
   # if (evidence$longHand || design$sReplicationOn) {
@@ -112,7 +112,7 @@ doExpectedAnalysis<-function(IV,IV2,DV,effect,design,evidence,expected,result,ns
   # } else {
   #   result<-sampleShortCut(IV,IV2,DV,effect,design,evidence,nsim,append,result,sigOnly=FALSE)
   # }
-  if (debug) {print("     doExpectedAnalysis - end")}
+  if (debug) {debugPrint("     doExpectedAnalysis - exit")}
   result
 }
 
@@ -289,19 +289,22 @@ makeExpectedGraph <- function() {
     updateActionButton(session,"LGEvidenceExpectedRun",label="Run")
     notRunningExpected<<-TRUE
   }
-  if (debug) {print("ExpectedPlot1 - plots done ")}
   return(g)
 }
 
 output$ExpectedPlot <- renderPlot({
+  if (debug) {debugPrint("ExpectedPlot")}
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
           input$LGEvidenceExpected_type,input$LGEvidenceExpected_par1,input$LGEvidenceExpected_par2,input$LGEvidenceEffect_type,
           input$EvidenceExpectedRun,input$LGEvidenceExpectedRun)
-  makeExpectedGraph()
+  g<-makeExpectedGraph()
+  if (debug) {debugPrint("ExpectedPlot - exit")}
+  g
 })
 
 # expected report
 output$ExpectedReport <- renderPlot({
+  if (debug) debugPrint("ExpectedReport")
   doIt<-input$EvidenceExpectedRun
   llrConsts<-c(input$llr1,input$llr2)
   
@@ -359,7 +362,7 @@ output$ExpectedReport <- renderPlot({
     # invalidateLater(pauseWait)
   } 
   
-  if (debug) {print("ExpectedReport - end")}
+  if (debug) {debugPrint("ExpectedReport - exit")}
   return(g)
 })
 ##################################################################################    

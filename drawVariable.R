@@ -99,7 +99,7 @@ drawOrdinal<-function(var){
 }
 
 drawInterval<-function(var){
-  r<-seq(-fullRange,fullRange,0.1)*var$sd+var$mu
+  r<-seq(-fullRange,fullRange,length.out=varNPoints)*var$sd+var$mu
   if (var$skew!=0 || var$kurtosis!=0) {
     a<-f_johnson_M(var$mu,var$sd,var$skew,var$kurtosis)
     dens<-dJohnson(r,parms=a)
