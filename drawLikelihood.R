@@ -19,7 +19,8 @@ colPdark=darken(colP,off=-0.67)
 colPsim=darken(colP,off=-0.33)
 
 colVline="#FF2200"
-colVline=darken(colP,off=-0.2)
+colVline="#FFFFFF"
+# colVline=darken(colP,off=-0.2)
 
 colS1="#FFAA77"
 colS2="#FFDD88"
