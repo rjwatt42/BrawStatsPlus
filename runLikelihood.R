@@ -518,6 +518,10 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
          "prior"={ prior<-likelihood$prior }
   )
   apDens_z<-zpriorDistr(rp,prior$populationPDF,prior$populationRZ,prior$populationPDFk)
+  if (prior$populationNullp>0 && prior$populationPDF=="Single") {
+    apDens_z<-apDens_z*(1-prior$populationNullp)
+    apDens_z[rp==0]<-apDens_z[rp==0]+prior$populationNullp
+  }
     pDens_z<-pDens_z*apDens_z
     for (ei in 1:length(sRho)){
       spDens_z[ei,]<-spDens_z[ei,]*apDens_z

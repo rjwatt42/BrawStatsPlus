@@ -18,8 +18,8 @@ colP="#8899DD"
 colPdark=darken(colP,off=-0.67)
 colPsim=darken(colP,off=-0.33)
 
-colVline="#FF2200"
-colVline="#FFFFFF"
+colVline="#FF5500"
+# colVline="#FFFFFF"
 # colVline=darken(colP,off=-0.2)
 
 colS1="#FFAA77"
@@ -86,7 +86,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     view_lims<-c(-1,1)*z_range
   }
   
-  rp_stats<-densityFunctionStats(pDens_r,rp)
+  rp_stats<-densityFunctionStats(spDens_r,rp)
   rp_peak<-rp_stats$peak
   rp_ci<-rp_stats$ci
   dens_at_peak<-rp_stats$dens_at_peak
@@ -207,10 +207,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                             # show peak and CIs on floor
                             if (doFloorCILines) {
                               y_ci<-view_lims
-                              lines(trans3d(x=c(rp_peak,rp_peak),y=y_ci,z=c(0,0),pmat=mapping),col=colPdark,lwd=2)
+                              lines(trans3d(x=c(rp_peak,rp_peak),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
                               if (doCILines) {
-                              lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=y_ci,z=c(0,0),pmat=mapping),col=colPdark,lty=3,lwd=2)
-                              lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=y_ci,z=c(0,0),pmat=mapping),col=colPdark,lty=3,lwd=2)
+                              lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lty=3,lwd=2)
+                              lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lty=3,lwd=2)
                               }
                               
                               # show likelihood on sample back wall
@@ -230,7 +230,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                               }
                               # show prob-dens on population back wall
                               dens_rp_peak<-approx(populationBackwall$rpw,populationBackwall$rpw_dens,rp_peak)$y
-                              lines(trans3d(x=c(0,0)+rp_peak,y=c(0,0)+view_lims[2],z=c(0,dens_rp_peak)*wallHeight,pmat=mapping),col=colPdark,lwd=2)
+                              lines(trans3d(x=c(0,0)+rp_peak,y=c(0,0)+view_lims[2],z=c(0,dens_rp_peak)*wallHeight,pmat=mapping),col=colVline,lwd=2)
 
                               # show rp==rs on floor
                               if (likelihood$world$populationPDF!="Single"){
@@ -376,22 +376,22 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                             # main distribution
                             for (si in use_si) {
                               if (is.null(likelihoodResult$Sims$pSims)) {
-                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0), pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
+                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
                               } else {
-                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0), pmat = mapping), col = addTransparency(colP,highTransparency), lwd=1)
+                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,highTransparency), lwd=1)
                               }
                             }
                           }
                           # vertical lines on main distribution
                           if (doPeakLine && length(sRho)==1) {
                             si<-1
-                            lines(trans3d(x=c(rp_peak,rp_peak),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_peak)$y-0.01),pmat=mapping),col=colPdark, lwd=2)
+                            lines(trans3d(x=c(rp_peak,rp_peak),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_peak)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
                             if (doCILines) {
-                            lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[1])$y-0.01),pmat=mapping),col=colPdark, lwd=2,lty=3)
-                            lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[2])$y-0.01),pmat=mapping),col=colPdark, lwd=2,lty=3)
+                            lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[1])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
+                            lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[2])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
                             }
                             if (doSampleLine && likelihood$world$populationPDF!="Single"){
-                              lines(trans3d(x=c(sRho[si],sRho[si]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],sRho[si])$y-0.01),pmat=mapping),col=colPdark,lty=3,lwd=2)
+                              lines(trans3d(x=c(sRho[si],sRho[si]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],sRho[si])$y-0.01)*wallHeight,pmat=mapping),col=colVline,lty=3,lwd=2)
                             }
                           }
                           # text annotations
