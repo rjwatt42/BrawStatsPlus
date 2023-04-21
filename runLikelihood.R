@@ -527,7 +527,14 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
       spDens_z[ei,]<-spDens_z[ei,]*apDens_z
     }
     
-  # simulations
+    asDens_z<-zpriorDistr(rp,source$populationPDF,source$populationRZ,source$populationPDFk)
+    if (source$populationNullp>0 && source$populationPDF=="Single") {
+      asDens_z<-asDens_z*(1-source$populationNullp)
+      asDens_z[rp==0]<-asDens_z[rp==0]+source$populationNullp
+    }
+    
+    
+    # simulations
   sr_effects<-NULL
   sSimBins<-NULL
   sSimDens<-NULL
@@ -734,6 +741,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   pDens_r<-pDens_z
   spDens_r<-spDens_z
   apDens_r<-apDens_z
+  asDens_r<-asDens_z
   if (likelihood$viewRZ=="r") {
     pRho<-tanh(pRho)
     sRho<-tanh(sRho)
@@ -749,6 +757,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     sDens_r_null<-zdens2rdens(sDens_z_null,rs)
     pDens_r<-zdens2rdens(pDens_z,rp)
     apDens_r<-zdens2rdens(apDens_z,rp)
+    asDens_r<-zdens2rdens(asDens_z,rp)
   }
   
   if (any(!is.na(spDens_r))) {
@@ -773,7 +782,10 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     pDens_r<-pDens_r/dr_gain
   }
   # pDens_r<-pDens_r*(1-prior$populationNullp)
+  if (length(pRho)!=2) {
   apDens_r<-apDens_r*(1-prior$populationNullp)
+  asDens_r<-asDens_r*(1-source$populationNullp)
+  }
   rp_stats<-densityFunctionStats(pDens_r,rp) 
   
   dens_at_peak=1
@@ -795,7 +807,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
                                    n=n,
                                    Theory=list(
                                      rs=rs,sDens_r=sDens_r,sDens_r_plus=sDens_r_plus,sDens_r_null=sDens_r_null,sDens_r_total=sDens_r_total,
-                                     rp=rp,pDens_r=sDens_r,spDens_r=sDens_r,apDens_r=apDens_r,
+                                     rp=rp,pDens_r=sDens_r,spDens_r=sDens_r,apDens_r=apDens_r,asDens_r=asDens_r,
                                      rs_peak=rs_stats$peak,
                                      rs_sd=rs_stats$sd,
                                      rs_ci=rs_stats$ci
@@ -815,7 +827,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
                                    n=n,
                                    Theory=list(
                                      rs=rs,sDens_r=sDens_r,sDens_r_plus=sDens_r_plus,sDens_r_null=sDens_r_null,sDens_r_total=sDens_r_total,
-                                     rp=rp,pDens_r=pDens_r,spDens_r=spDens_r,apDens_r=apDens_r,
+                                     rp=rp,pDens_r=pDens_r,spDens_r=spDens_r,apDens_r=apDens_r,asDens_r=asDens_r,
                                      rp_peak=rp_stats$peak,
                                      rp_sd=rp_stats$sd,
                                      rp_ci=rp_stats$ci,

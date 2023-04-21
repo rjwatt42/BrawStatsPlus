@@ -73,8 +73,12 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   
   # make the back wall population distributions
   rpw<-rp
-  rpw_dens<-likelihoodResult$Theory$apDens_r
-  
+  if (likelihood$type=="Samples") {
+    rpw_dens<-likelihoodResult$Theory$asDens_r
+  } else {
+    rpw_dens<-likelihoodResult$Theory$apDens_r
+  }
+
   # make the back wall sample distributions
   rsw<-likelihoodResult$Theory$rs
   rsw_dens_plus<-likelihoodResult$Theory$sDens_r_plus

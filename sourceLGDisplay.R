@@ -6,7 +6,7 @@ designFields<-list(select=c("sMethod","sCheating"),
                    check=c("sNRand"))
 hypothesisFields<-list(select=c("world_distr","world_distr_rz"),
                        number=c("rIV","rIV2","rIVIV2","rIVIV2DV","world_distr_k","world_distr_Nullp"),
-                       check=c())
+                       check=c("world_on"))
 worldFields<-list(select=c("world_distr","world_distr_rz"),
                   number=c("world_distr_k","world_distr_Nullp"),
                   check=c("world_on"))
@@ -288,6 +288,7 @@ output$LGExploreShowOutput<-renderPlot( {
 
 
 saveLGPossible <- function () {
+  saveFields(hypothesisFields,"likelihood")
   saveFields(designFields,"likelihood")
   saveFields(worldFields,"likelihood")
   saveFields(possibleFields)
@@ -297,11 +298,17 @@ observeEvent(input$LGPossibleStart,{
   req(input$changed)
   graphicSource<<-"None"
   toggleModal(session, "LGmodalPossible", toggle = "open")
+  loadFields(hypothesisFields,"likelihood")
   loadFields(designFields,"likelihood")
   loadFields(worldFields,"likelihood")
   loadFields(possibleFields)
   if (is.element(input$Likelihood,c("Samples","Populations"))) {
     updateSelectInput(session,"LGshowPossible",selected = input$Likelihood)
+  }
+  if (input$IV2choice=="none") {
+    shinyjs::hideElement(id="LGlikelihoodrIV2")
+    shinyjs::hideElement(id="LGlikelihoodrIVIV2DV")
+    shinyjs::hideElement(id="LGlikelihoodrIVIV2")
   }
   graphicSource<<-"Modal"
 }

@@ -26,7 +26,7 @@ LGmodalPossible <-
                                                          tags$td(width = "15%",tags$div(style = localStyle, "source:")),
                                                          tags$td(width = "20%",
                                                                  selectInput("LGlikelihoodUseSource",label=NULL,
-                                                                             choices=c("world","prior"),selected=likelihood$UseSource,
+                                                                             choices=c("null","world","prior"),selected=likelihood$UseSource,
                                                                              selectize=FALSE)
                                                          )
                                                        )

@@ -14,7 +14,7 @@ hypothesisPanel <- function(prefix="") {
                 # ),
                 # single tab
                 tabPanel("Effect",value="Effect",id="uiLGEffect",
-                         effectPanel(prefix,asTable = TRUE),
+                         effectPanel(prefix,asTable = TRUE,full=FALSE),
                 ),
                 tabPanel("World",value="World",id="uiLGWorld",
                          worldPanel(prefix,asTable = TRUE),
