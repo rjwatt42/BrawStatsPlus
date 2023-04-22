@@ -172,8 +172,8 @@ likelihood<-
        cutaway=FALSE,
        sigOnly=FALSE,
        ResultHistory=c(),
-       likelihoodTheory=FALSE,
-       likelihoodLongHand=TRUE,
+       likelihoodTheory=TRUE,
+       likelihoodLongHand=FALSE,
        likelihoodSimSlice=0.1,likelihoodCorrection=TRUE,
        appendSim=FALSE,Likelihood_length="10",
        viewRZ="r",
@@ -190,9 +190,9 @@ shortHandGain=10
 z_range<-1.75
 r_range<-0.975
 fullRange<-3
-seqN<-51
+nNpoints<-51
 worldNPoints<-51
-varNPoints<-21
+varNPoints<-101
 
 allScatter<-"all"
 minN<-10

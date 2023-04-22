@@ -4,7 +4,7 @@ drawSample<-function(IV,DV,effect,result){
   x<-result$ivplot
   y<-result$dvplot
   result$Heteroscedasticity<-effect$Heteroscedasticity
-  g<-drawPopulation(IV,DV,effect,alpha=0.75)
+  g<-drawPopulation(IV,DV,result,alpha=0.75)
 
   dotSize<-dotSize<-(plotTheme$axis.title$size)/3
 

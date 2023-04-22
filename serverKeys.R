@@ -126,7 +126,17 @@ if (switches$doKeys) {
     }
     
     # control-alt-p set world to model psych
-    if (input$keypress==ascii("p") && controlKeyOn){
+    if (input$keypress==ascii("p") && controlKeyOn && !shiftKeyOn){
+      loadExtras()
+      updateCheckboxInput(session,"world_on",value=TRUE)
+      updateSelectInput(session,"world_distr",selected="Exp")
+      updateSelectInput(session,"world_distr_rz",selected="z")
+      updateNumericInput(session,"world_distr_k",value=0.325)
+      updateNumericInput(session,"world_distr_Nullp",value=0.74)
+      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
+    }
+    
+    if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){
       loadExtras()
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")

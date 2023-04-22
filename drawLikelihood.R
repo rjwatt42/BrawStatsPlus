@@ -70,7 +70,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   rp<-likelihoodResult$Theory$rp
   pDens_r<-likelihoodResult$Theory$pDens_r
   spDens_r<-likelihoodResult$Theory$spDens_r
-  
+  pDens_r_null<-likelihoodResult$Theory$pDens_r_null
+  pDens_r_plus<-likelihoodResult$Theory$pDens_r_plus
+
   # make the back wall population distributions
   rpw<-rp
   if (likelihood$type=="Samples") {
@@ -218,9 +220,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                               }
                               
                               # show likelihood on sample back wall
-                              zb<-approx(y,zplus,sRho[si])$y
-                              if (length(znull)==length(zplus)) {
-                                za<-approx(y,znull,sRho[si])$y
+                              zb<-approx(y,pDens_r_plus,sRho[si])$y
+                              if (length(pDens_r_null)==length(pDens_r_plus)) {
+                                za<-approx(y,pDens_r_null,sRho[si])$y
                                 llrNull<-log(za/zb)
                                 if (za>=zb) {
                                   lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
@@ -367,7 +369,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           dens<-dens/max(dens,na.rm=TRUE)
                           if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
                           y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
-                          polygon(trans3d(x=x,y=x*0+sRho[si],z=y1,pmat=mapping),col=colPsim,border=NA)
+                          polygon(trans3d(x=x,y=x*0+sRho[si],z=y1*wallHeight,pmat=mapping),col=colPsim,border=NA)
                         }
                       }
                       # draw theory main distribution & lines
@@ -595,8 +597,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   
                   if (effect$world$worldOn && likelihood$prior$populationNullp>0) {
-                    ln_at_sample<-approx(rs,sDens_r_null,sRho[1])$y
-                    ld_at_sample<-approx(rs,sDens_r_plus,sRho[1])$y
+                    ln_at_sample<-approx(rs,pDens_r_null,sRho[1])$y
+                    ld_at_sample<-approx(rs,pDens_r_plus,sRho[1])$y
                     llrNull<-log(ln_at_sample/ld_at_sample)
                     text(view_lims[1],1.15,labels=bquote(
                       bold(llr)(bolditalic(.(likelihood$viewRZ))["+"]/bolditalic(.(likelihood$viewRZ))[0])==bold(.(format(-llrNull,digits=3)))),
