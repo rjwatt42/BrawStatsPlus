@@ -254,7 +254,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     "Samples"={
                       simAlpha<-1
                       if (length(pRho)>1) {
-                        theoryAlpha<-0.5
+                        theoryAlpha<-0.85
                         simAlpha<-0.95
                       }
                       if (length(pRho)>11) {
@@ -374,7 +374,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                       }
                       # draw theory main distribution & lines
                       if (likelihood$likelihoodTheory){
-                        theoryAlpha=1
+                        theoryAlpha=0.85
                         if (!is.na(likelihood$targetSample)) {
                           rd<-spDens_r
                           if (!is.null(spDens_r)){

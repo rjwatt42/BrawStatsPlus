@@ -1,3 +1,4 @@
+
 npops=2*3*4*5+1 # 2*3*4*n+1
 npoints=501
 
@@ -20,7 +21,7 @@ zpriorDistr<-function(zvals,Population_distr,PopulationRZ,k){
             rvals<-tanh(zvals)
             zdens<-rvals*0
             zdens[which.min(abs(k-rvals))]<-1
-            zdens
+            zdens*(1-rvals^2)
           },
           "Single_z"={
             zdens<-zvals*0
@@ -448,7 +449,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
 likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE){
   n<-likelihood$design$sampleN
   design$sN<-n
-
+  
   # note that we do everything in z and then, if required transform to r at the end
   switch (likelihood$viewRZ,
           "r" ={
@@ -482,20 +483,34 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
          "world"={source<-likelihood$world},
          "prior"={source<-likelihood$prior}
   )
+  asDens_z<-zpriorDistr(rs,source$populationPDF,source$populationRZ,source$populationPDFk)
+  if (source$populationNullp>0 && source$populationPDF=="Single") {
+    asDens_z<-asDens_z*(1-source$populationNullp)
+    asDens_z[rp==0]<-asDens_z[rp==0]+source$populationNullp
+  }
   # get the prior population distribution
   switch(likelihood$UsePrior,
          "none"={ prior<-list(worldOn=TRUE,
                               populationPDF="Uniform",
                               populationPDFk=rp,
                               populationRZ=likelihood$viewRZ,
-                              populationNullp=0.5) },
+                              populationNullp=0.0) },
          "world"={ prior<-likelihood$world },
          "prior"={ prior<-likelihood$prior }
   )
+  doNullsSingle<-(prior$populationNullp>0 && prior$populationPDF=="Single")
+  doNulls<-TRUE
+  
   apDens_z<-zpriorDistr(rp,prior$populationPDF,prior$populationRZ,prior$populationPDFk)
-  if (prior$populationNullp>0 && prior$populationPDF=="Single") {
-    apDens_z<-apDens_z*(1-prior$populationNullp)
-    apDens_z[rp==0]<-apDens_z[rp==0]+prior$populationNullp
+  if (doNulls) {
+    apDens_z_null<-apDens_z*(1-prior$populationNullp)
+    apDens_z_null[rp==0]<-apDens_z_null[rp==0]+prior$populationNullp
+    apDens_z_null<-apDens_z_null/max(apDens_z_null)
+  } else {
+    apDens_z_null<-apDens_z
+  }
+  if (doNullsSingle) {
+    apDens_z<-apDens_z_null
   }
   
   # enumerate the source populations
@@ -553,12 +568,12 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     pDens_z <- pDens_z * zDens/length(correction)
   }
   # times the a-priori distribution
-    pDens_z<-pDens_z*apDens_z
+    pDens_z<-pDens_z*apDens_z_null
     for (ei in 1:length(sRho)){
-      spDens_z[ei,]<-spDens_z[ei,]*apDens_z
+      spDens_z[ei,]<-spDens_z[ei,]*apDens_z_null
     }
-
-    # simulations
+  
+  # simulations
   sr_effects<-NULL
   sSimBins<-NULL
   sSimDens<-NULL
@@ -767,7 +782,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   apDens_r<-apDens_z
   pDens_r_plus<-pDens_z_plus
   pDens_r_null<-pDens_z_null
-  asDens_r<-apDens_z
+  asDens_r<-asDens_z
   if (likelihood$viewRZ=="r") {
     pRho<-tanh(pRho)
     sRho<-tanh(sRho)
@@ -785,7 +800,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     apDens_r<-zdens2rdens(apDens_z,rp)
     pDens_r_plus<-zdens2rdens(pDens_z_plus,rs)
     pDens_r_null<-zdens2rdens(pDens_z_null,rs)
-    asDens_r<-zdens2rdens(apDens_z,rp)
+    asDens_r<-zdens2rdens(asDens_z,rs)
   }
   
   if (any(!is.na(spDens_r))) {
@@ -810,7 +825,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     pDens_r<-pDens_r/dr_gain
   }
   # pDens_r<-pDens_r*(1-prior$populationNullp)
-  if (length(pRho)!=2) {
+  if (!doNullsSingle) {
     spDens_r<-spDens_r*(1-prior$populationNullp*dnorm(atanh(sRho),0,1/sqrt(n-3)))
     apDens_r<-apDens_r*(1-prior$populationNullp)
     asDens_r<-asDens_r*(1-source$populationNullp)
