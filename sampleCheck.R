@@ -121,12 +121,14 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     rSign<-sign(res$rIV)
     
     design1<-design
+    design1$sNRand<-FALSE
+    design1$sN<-res$nval
     for (i in 1:design$sReplRepeats) {
       if (design$sReplKeep=="cautious" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,evidence)) {
         break
       }
       # get the relevant sample effect size for the power calc
-      if (design$sReplPower>0) {
+      if (!(isempty(design$sReplPower)) && (design$sReplPower>0)) {
         if (design$sReplCorrection) {r<-rSamp2Pop(res$rIV,design1$sN,effect$world)} else {r<-res$rIV}
       # get the new sample size
       design1$sN<-rw2n(r,design$sReplPower,design$sReplTails)
