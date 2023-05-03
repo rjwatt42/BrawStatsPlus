@@ -72,6 +72,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             ylabel<-bquote(log[e](lr[d]))
             g<-g+scale_y_continuous(limits=ylim)
           },
+          "likelihood"={
+            ylim<-c(-10,10)
+            ylabel<-bquote(log[e](lr[d]))
+            g<-g+scale_y_continuous(limits=ylim)
+          },
           "k"={
             ylim<-c(-0.01,1.01)
             ylabel<-"k"
@@ -522,6 +527,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 colFill<-names(all_cols[explore$Explore_typeShow])
               }
             },
+            "likelihood"={
+              showVals<-exploreResult$result$likes
+              y50<-showVals
+              y75<-showVals
+              y25<-showVals
+              y62<-showVals
+              y38<-showVals
+            },
             "k"={
               showVals<-exploreResult$result$ks
               lines<-c()
@@ -569,12 +582,12 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     )
   
     if (is.element(explore$Explore_show,c("EffectSize","p","w","log(lrs)","log(lrd)","k","S","pNull","mean(IV)"))) {
-      quants<-explore$Explore_quants/2
       y75<-c()
       y62<-c()
       y50<-c()
       y38<-c()
       y25<-c()
+      quants<-explore$Explore_quants/2
       for (i in 1:length(exploreResult$result$vals)) {
         y75[i]<-quantile(showVals[,i],0.50+quants,na.rm=TRUE)
         y62[i]<-quantile(showVals[,i],0.50+quants/2,na.rm=TRUE)
@@ -604,7 +617,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       vals_offset<-(ni2-1)*(valsRange*valsGap)
     }
     pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
-    
+
     if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
       pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
       if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {

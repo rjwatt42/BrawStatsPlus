@@ -72,12 +72,14 @@ showInfer<-list("p-value" = "p",
                 "p(sig)" = "p(sig)",
                 "Power" = "w",
                 "NHST errors" = "NHSTErrors")
+
 if (switches$doWorlds) {
   showInfer<-c(showInfer,list("False Discovery" = "FDR"))
 }
 if (switches$doLikelihoodInfer) {
   showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",
-                              "log(lrd)" = "log(lrd)"))
+                              "log(lrd)" = "log(lrd)",
+                              "likelihood" = "likelihood"))
 }
 if (switches$doVariablesExplore) {
   showChoices=list("Describe" = list("Effect Size" = "EffectSize"),

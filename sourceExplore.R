@@ -279,7 +279,6 @@ makeExploreGraph <- function() {
   g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))
   g<-g+scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   g1<-drawExplore(IV,IV2,DV,effect,design,explore,exploreResult)
-  
   g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
   
   time2<<-Sys.time()

@@ -47,7 +47,8 @@ loadExtras<-function(which=0){
                   "NHST errors" = "NHSTErrors")
   showInfer<-c(showInfer,list("False Discovery" = "FDR"))
   showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",
-                              "log(lrd)" = "log(lrd)"))
+                              "log(lrd)" = "log(lrd)",
+                              "likelihood"="likelihood"))
   showChoices=list("Describe" = list("Effect Size" = "EffectSize"),
                    "Infer" = showInfer
   )

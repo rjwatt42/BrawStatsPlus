@@ -437,6 +437,19 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
     #   effect$rIVIV2DV<-0
     # }
 
+      if (explore$Explore_show=="likelihood") 
+      {
+        exploreResult$rIVs<-matrix(0,nrow=nsim,ncol=1)
+        exploreResult$likes<-rnorm(length(vals))
+        exploreResult$vals<-vals
+        exploreResult$Explore_type<-explore$Explore_type
+        exploreResult$Explore_show<-explore$Explore_show
+        exploreResult$Explore_typeShow<-explore$Explore_typeShow
+        exploreResult$Explore_family<-explore$Explore_family
+        return(exploreResult)
+        
+      } 
+      
       if (explore$Explore_family=="MetaAnalysis") {
           result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only,
                                    showProgress=FALSE,progressPrefix=paste0("MetaAnalysis: ",metaResult$count+1,":"))
