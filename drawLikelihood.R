@@ -509,7 +509,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   polygon (x = rs, y = sDens_r_total, col = addTransparency(colS,theoryAlpha), lwd=1)
                   # null
                   if (likelihood$world$worldOn) {
-                  lines (x = rs, y = sDens_r_null, col = colNullS, lwd=1)
+                    if (likelihood$world$populationNullp>0)
+                      lines (x = rs, y = sDens_r_null, col = colNullS, lwd=1)
                   # plus
                   lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=1)
                   }
@@ -519,38 +520,50 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
                     pn_at_sample<-(sum(sDens_r_null[rs>=s])+sum(sDens_r_null[rs< -s]))/sum(sDens_r_total)
                     pd_at_sample<-(sum(sDens_r_plus[rs>=s])+sum(sDens_r_plus[rs< -s]))/sum(sDens_r_total)
-                    l_at_sample<-approx(rs,sDens_r_total,s)$y
-                    ln_at_sample<-approx(rs,sDens_r_null,s)$y
-                    ld_at_sample<-approx(rs,sDens_r_plus,s)$y
+                    l_at_sample<-approx(rs,sDens_r_total,s)$y/mean(sDens_r_total)
+                    ln_at_sample<-approx(rs,sDens_r_null,s)$y/mean(sDens_r_total)
+                    ld_at_sample<-approx(rs,sDens_r_plus,s)$y/mean(sDens_r_total)
                     
                     if (likelihood$world$worldOn) {
                     if (ln_at_sample>ld_at_sample) {
                       lines(x=c(sRho[1],sRho[1]),y=c(ld_at_sample,ln_at_sample-0.01),col=colNullS,lwd=2)
                       lines(x=c(sRho[1],sRho[1]),y=c(0,ld_at_sample-0.01),col=colDistS,lwd=2)
                     } else {
-                      lines(x=c(sRho[1],sRho[1]),y=c(ln_at_sample,ld_at_sample-0.01),col=colDistS,lwd=2)
+                      if (likelihood$world$populationNullp>0)
+                        lines(x=c(sRho[1],sRho[1]),y=c(ln_at_sample,ld_at_sample-0.01),col=colDistS,lwd=2)
                       lines(x=c(sRho[1],sRho[1]),y=c(0,ln_at_sample-0.01),col=colNullS,lwd=2)
                     }
                     
-                    text(0,1.05,labels=bquote(
-                      bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
-                    ),col=colPdark,adj=-0.1,cex=0.9)
-                    text(0,1.05,labels=bquote(
-                      phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(bold(.(format(pd_at_sample,digits=3))),phantom(bold(.(format(pn_at_sample,digits=3)))))
-                    ),col=colDistS,adj=-0.1,cex=0.9)
-                    text(0,1.05,labels=bquote(
-                      phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),bold(.(format(pn_at_sample,digits=3))))
-                    ),col=colNullS,adj=-0.1,cex=0.9)
-                    
-                    text(0,1.05,labels=bquote(
-                      bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),phantom(bold(.(format(ln_at_sample,digits=3)))))
-                    ),col=colPdark,adj=1.1,cex=0.9)
-                    text(0,1.05,labels=bquote(
-                      phantom(bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(bold(.(format(ld_at_sample,digits=3))),phantom(bold(.(format(ln_at_sample,digits=3)))))
-                    ),col=colDistS,adj=1.1,cex=0.9)
-                    text(0,1.05,labels=bquote(
+                      ptext<-bquote(
+                        bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
+                      )
+                      ltext<-bquote(
+                        bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),phantom(bold(.(format(ln_at_sample,digits=3)))))
+                      )
+                    if (s>0)   {
+                      text(s,1.05,labels=ptext,col=colPdark,adj=0,cex=0.9)
+                      text(s,0.95,labels=ltext,col=colPdark,adj=0,cex=0.9)
+                    } else  {
+                      text(s,1.05,labels=ptext,col=colPdark,adj=1,cex=0.9)
+                      text(s,0.95,labels=ltext,col=colPdark,adj=1,cex=0.9)
+                    } 
+                    if (likelihood$world$populationNullp>0) {
+                      text(0,1.05,labels=bquote(
+                        phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(bold(.(format(pd_at_sample,digits=3))),phantom(bold(.(format(pn_at_sample,digits=3)))))
+                      ),col=colDistS,adj=-0.1,cex=0.9)
+                      text(0,1.05,labels=bquote(
+                        phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),bold(.(format(pn_at_sample,digits=3))))
+                      ),col=colNullS,adj=-0.1,cex=0.9)
+                    }
+
+                    # text(0,1.05,labels=bquote(
+                    #   phantom(bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(bold(.(format(ld_at_sample,digits=3))),phantom(bold(.(format(ln_at_sample,digits=3)))))
+                    # ),col=colDistS,adj=1.1,cex=0.9)
+                    if (likelihood$world$populationNullp>0) {
+                      text(0,1.05,labels=bquote(
                       phantom(bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),bold(.(format(ln_at_sample,digits=3))))
                     ),col=colNullS,adj=1.1,cex=0.9)
+                    }
                   } else {
                     s<-abs(sRho[1])
                     p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
