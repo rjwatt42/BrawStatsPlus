@@ -11,16 +11,16 @@ metaPanel<-function(prefix="") {
                           )
                         ),
                         tags$tr(
-                          tags$td(width = "30%", tags$div(style = localStyle, "No studies:")
+                          tags$td(width = "30%", tags$div(style = localPlainStyle, "No studies:")
                           ),
-                          tags$td(width = "30%", tags$div(style = localStyle, ""),
+                          tags$td(width = "30%", tags$div(style = localPlainStyle, ""),
                                   numericInput(paste0(prefix,"meta_nStudies"), label=NULL,value=metaAnalysis$nstudies,step=100)
                           ),
                           tags$td(width = "15%"),
                           tags$td(width = "5%"),
-                          tags$td(width = "15%", tags$div(style = localStyle, "sigOnly ")
+                          tags$td(width = "15%", tags$div(style = localPlainStyle, "sigOnly ")
                           ),
-                          tags$td(width = "5%", tags$div(style = localStyle, ""),
+                          tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
                                   checkboxInput(paste0(prefix,"meta_psigStudies"), label=NULL,value=metaAnalysis$sig_only)
                           ),
                         ),
@@ -43,12 +43,12 @@ metaPanel<-function(prefix="") {
                                               selectize=FALSE
                                   )
                           ),
-                          tags$td(width = "15%", tags$div(style = localStyle, "+nulls")),
-                          tags$td(width = "5%", tags$div(style = localStyle, ""),
+                          tags$td(width = "15%", tags$div(style = localPlainStyle, "+nulls")),
+                          tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
                                   checkboxInput(paste0(prefix,"meta_nullAnal"), label=NULL,value=metaAnalysis$meta_nullAnal)
                           ),
-                          tags$td(width = "15%", tags$div(style = localStyle, "sigOnly")),
-                          tags$td(width = "5%", tags$div(style = localStyle, ""),
+                          tags$td(width = "15%", tags$div(style = localPlainStyle, "sigOnly")),
+                          tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
                                   checkboxInput(paste0(prefix,"meta_psigAnal"), label=NULL,value=metaAnalysis$meta_psigAnal)
                           ),
                         )

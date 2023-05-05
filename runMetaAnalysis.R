@@ -8,7 +8,10 @@ getMaxS<-function(S,kvals) {
   if (S[np]==max(S)) {
     return(kvals[np])
   }
-  return(approx(diff(S),(kvals[1:(np-1)]+kvals[2:np])/2,0)$y)
+  closeMax<-which.max(S)
+  use<-closeMax+seq(-1,1)
+  closerMax<-approx(diff(S[use]),(kvals[use[1:2]]+kvals[use[2:3]])/2,0)$y
+  return(closerMax)
 }
 
 findPmax<-function(zs,ns,distr,kvals,psigAnal,S) {

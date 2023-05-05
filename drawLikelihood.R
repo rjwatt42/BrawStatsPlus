@@ -185,16 +185,17 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               y<-sampleBackwall$rsw
               x<-y*0+view_lims[1]
               ztotal<-sampleBackwall$rsw_dens_plus+sampleBackwall$rsw_dens_null
-              if (!any(is.na(sampleBackwall$rsw_dens_null))) {
-                znull <- sampleBackwall$rsw_dens_null
-              } else {
-                znull<-0
-              }
-              zplus<-sampleBackwall$rsw_dens_plus
               polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,ztotal,0)*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
+              
               if (likelihood$world$worldOn) {
+                if (!any(is.na(sampleBackwall$rsw_dens_null))) {
+                  znull <- sampleBackwall$rsw_dens_null
+                } else {
+                  znull<-0
+                }
+                zplus<-sampleBackwall$rsw_dens_plus
                 if (likelihood$world$populationNullp>0 ) {
-                lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
+                  lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                 }
                 lines(trans3d(x=x,y=y,z=zplus*wallHeight,pmat=mapping),col=colDistS,lwd=2)
               }
@@ -203,6 +204,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                 # horizontal lines
                 switch (likelihood$type,
                         "Samples"={
+                          z<-approx(sampleBackwall$rsw,ztotal,sRho[si])$y
+                          lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,z)*wallHeight,pmat=mapping),col=colSdark,lwd=2)
                           if (doFloorCILines) {
                             lines(trans3d(x=c(sRho[si],sRho[si]),y=view_lims,z=c(0,0),pmat=mapping),col=colSdark)
                             lines(trans3d(x=view_lims,y=c(sRho[si],sRho[si]),z=c(0,0),pmat=mapping),col=colSdark)
@@ -295,6 +298,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         if (length(pRho)==2) {
                           gain<-max(c(1-likelihood$world$populationNullp,likelihood$world$populationNullp))
                         } 
+                        gain<-gain*0.75
                         if (likelihood$likelihoodTheory){
                           if (is.null(likelihoodResult$Sims$sSims)) {
                             if (length(pRho)==2) {

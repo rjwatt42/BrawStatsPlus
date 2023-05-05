@@ -1,4 +1,6 @@
 source("runMetaAnalysis.R")
+
+showMeta<-"S"
 nscaleLog=FALSE
 maxnPlot=3
 absPlot<-TRUE
@@ -20,9 +22,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
   n3<-sum(metaResult$bestDist=="Exp")
   use<-which.max(c(n1,n2,n3))
   bestD<-c("Single","Gauss","Exp")[use]
-  fullText<-paste0("\u2014",bestD,"(",format(mean(metaResult$bestK),digits=3),")"," ",format(sum(metaResult$bestDist==bestD)),"/",length(metaResult$bestDist))
+  fullText<-paste0(bestD,"(",format(mean(metaResult$bestK),digits=3),")","\n",format(sum(metaResult$bestDist==bestD)),"/",length(metaResult$bestDist))
   if (metaAnalysis$meta_nullAnal) {
-    fullText<-paste0(fullText," null=",format(mean(metaResult$bestNull),digits=3))
+    fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$bestNull),digits=3))
   }
   
   if (metaWhich=="Plain") {
@@ -74,7 +76,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
 
     return(g)
   } else {
-    
+    sAll<-c(metaResult$single$Smax,metaResult$gauss$Smax,metaResult$exp$Smax)
     switch (metaWhich,
             "Single"={
               x<-metaResult$single$kmax
@@ -107,9 +109,17 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
       useBest<-y==best
       # ylim<-c(-0.5,0.5)
       # ylabel<-"S"
-      y<-y1
-      ylim<-c(-0.02,1.1)
-      ylabel<-"p(0)"
+      switch (showMeta,
+              "S"={
+                y<-y
+                ylim<-c(min(sAll),max(sAll))+c(-1,1)*(max(sAll)-min(sAll))/10
+                ylabel<-"S"
+              },
+              "n"={
+                y<-y1
+                ylim<-c(-0.02,1.1)
+                ylabel<-"p(0)"
+              })
       
       pts<-data.frame(x=x,y=y)
       g<-ggplot(pts,aes(x=x, y=y))
@@ -124,6 +134,8 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
       g<-g+theme(legend.position = "none")+plotTheme
       g<-g+scale_x_continuous(limits = c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2)
       
+      if (!is.null(ylim)) {
+      }
       if (metaWhich=="Single") {
         g<-g+scale_y_continuous(limits = ylim)+ylab(ylabel)
       } else {
@@ -204,8 +216,8 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
     }
     g<-g+xlab("k")
     if (metaWhich==bestD) {
-      pts_lb<-data.frame(x=mean(x), y=ylim[2], lb=fullText)
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,size=3,fill="yellow")
+      pts_lb<-data.frame(x=mean(x), y=ylim[1], lb=fullText)
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=0,size=3,fill="yellow")
     }
     g+ggtitle(metaWhich)
     return(g)
