@@ -113,7 +113,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
               "S"={
                 y<-y
                 ylim<-c(min(sAll),max(sAll))+c(-1,1)*(max(sAll)-min(sAll))/10
-                ylabel<-"S"
+                ylabel<-"log(lk)"
               },
               "n"={
                 y<-y1

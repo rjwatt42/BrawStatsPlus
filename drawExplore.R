@@ -89,7 +89,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           },
           "PDF"={
             ylim<-c(0,1)
-            ylabel<-"PDF"
+            ylabel<-"p(PDF)"
             g<-g+scale_y_continuous(limits=ylim)
           },
           "S"={
@@ -554,14 +554,21 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               y75<-c()
               y62<-c()
               y38<-c()
+              ySingle<-c()
+              yGauss<-c()
+              yExp<-c()
               for (i in 1:length(exploreResult$result$vals)){
-                p<-mean(showVals[,i],na.rm=TRUE)
+                p<-mean(showVals[,i]==effect$world$populationPDF,na.rm=TRUE)
                 p_se<-sqrt(p*(1-p)/length(showVals[,i]))
                 y50[i]<-p
                 y75[i]<-p+p_se*qnorm(0.75)
                 y25[i]<-p+p_se*qnorm(0.25)
                 y62[i]<-p+p_se*qnorm(0.625)
                 y38[i]<-p+p_se*qnorm(0.375)
+                
+                ySingle<-c(ySingle,mean(showVals[,i]=="Single"))
+                yGauss<-c(yGauss,mean(showVals[,i]=="Gauss"))
+                yExp<-c(yExp,mean(showVals[,i]=="Exp"))
               }
               lines<-c()
               col<-"white"
@@ -669,7 +676,30 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="white")
       }
     } else {
-      if (doLine) {
+      if (explore$Explore_show=="PDF") {
+        y=rep(0,length(ySingle))
+        switch(effect$world$populationPDF,
+               "Single"={
+                 pts<-data.frame(x=vals+vals_offset,y=ySingle)
+                 pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y,rev(y+ySingle)))
+                 pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y+ySingle,rev(y+ySingle+yExp)))
+               },
+               "Gauss"={
+                 pts<-data.frame(x=vals+vals_offset,y=yGauss)
+                 pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y,rev(y+yGauss)))
+                 pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y+yGauss,rev(y+yGauss+yExp)))
+               },
+               "Exp"={
+                 pts<-data.frame(x=vals+vals_offset,y=yExp)
+                 pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y,rev(y+yExp)))
+                 pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y+yExp,rev(y+yExp+yGauss)))
+               })
+        g<-g+geom_line(data=pts,aes(x=x,y=y),color="black")
+        g<-g+geom_point(data=pts,aes(x=x,y=y),shape=shapes$parameter,fill=plotcolours$sampleC,size = markersize)
+        # g<-g+geom_polygon(data=pts1,aes(x=x,y=y),fill=plotcolours$sampleC)
+        # g<-g+geom_polygon(data=pts2,aes(x=x,y=y),fill=plotcolours$sampleC,alpha=0.7)
+      } else {
+        if (doLine) {
         pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)))
         pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)))
         if (ni_max2==1 || !no_se_multiple) {
@@ -687,6 +717,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
       } else {
         g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black",fill=col, size = markersize)
+      }
       }
     }
     

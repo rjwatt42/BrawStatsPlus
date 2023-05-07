@@ -458,7 +458,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         main_res$ks<-cbind(main_res$ks,metaResult$bestK)
         main_res$pnulls<-cbind(main_res$pnulls,metaResult$bestNull)
         main_res$Ss<-cbind(main_res$Ss,metaResult$bestS)
-        main_res$dists<-cbind(main_res$dists,metaResult$bestDist==effect$world$populationPDF)
+        main_res$dists<-cbind(main_res$dists,metaResult$bestDist)
         main_res$rval<-cbind(main_res$rval,metaResult$bestS)
       } else {
         res<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,1,appendData=FALSE,sigOnly=FALSE,showProgress=FALSE)

@@ -169,7 +169,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             showVals<-exploreResult$result$pnulls
           },
           "PDF"={
-            showVals<-exploreResult$result$dists
+            showVals<-exploreResult$result$dists==effect$world$populationPDF
             y50<-c()
             y25<-c()
             y75<-c()

@@ -311,7 +311,7 @@ output$ExplorePlot <- renderPlot( {
 output$ExploreReport <- renderPlot({
   doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
           input$STMethod,input$alpha)
-  
+
   if (!is.null(exploreResult$Explore_family) && exploreResult$Explore_family!=input$ExploreTab) {
     if (is.null(exploreResultHold[[input$ExploreTab]])) {
       return(ggplot()+plotBlankTheme)
@@ -336,7 +336,7 @@ output$ExploreReport <- renderPlot({
   evidence<-updateEvidence()
   
   explore<-updateExplore()
-  validExplore<-FALSE
+  # validExplore<-FALSE
   if (!validExplore || is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
   
   reportExplore(IV,IV2,DV,effect,design,explore,exploreResult)
