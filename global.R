@@ -143,6 +143,7 @@ metaAnalysis<-list(nstudies=100,
                    meta_psigAnal=FALSE,
                    meta_nullAnal=TRUE,
                    nsims=1,
+                   meta_showAnal="All",
                    showTheory=TRUE,
                    append=FALSE
 )

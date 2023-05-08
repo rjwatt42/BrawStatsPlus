@@ -51,8 +51,20 @@ metaPanel<-function(prefix="") {
                           tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
                                   checkboxInput(paste0(prefix,"meta_psigAnal"), label=NULL,value=metaAnalysis$meta_psigAnal)
                           ),
-                        )
-             ),
+                        ),
+                        tags$tr(
+                          tags$td(width = "30%",tags$div(style = localStyle, "Show:")
+                          )
+                        ),
+                        tags$tr(
+                          tags$td(width = "30%",
+                                  selectInput(paste0(prefix,"meta_showAnal"),label=NULL,
+                                              choices=c("All","Single","Gauss","Exp"),
+                                              selected=metaAnalysis$meta_showAnal,
+                                              selectize=FALSE
+                                  )
+                          ),
+                        ),
              tags$table(width = "100%",class="myTable",
                         tags$tr(
                           tags$td(width = "15%", tags$div(style = localStyle, "Runs:")),

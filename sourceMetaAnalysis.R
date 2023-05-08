@@ -69,6 +69,7 @@ updateMetaAnalysis<-function(){
     meta_psigAnal=input$meta_psigAnal,
     meta_nullAnal=input$meta_nullAnal,
     nsims=as.numeric(input$meta_runlength),
+    meta_showAnal=input$meta_showAnal,
     longHand=input$evidenceLongHand,
     showTheory=input$evidenceTheory,
     append=input$meta_append
@@ -177,12 +178,28 @@ makeMetaGraph <- function() {
     g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
     
   } else {
-    g1<-drawMeta(metaAnalysis,metaResult,"Single")
+    switch (metaAnalysis$meta_showAnal,
+            "All"={
+    g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
     g2<-drawMeta(metaAnalysis,metaResult,"Gauss")
     g3<-drawMeta(metaAnalysis,metaResult,"Exp")
     g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=4,ymin=0,ymax=10)+
       annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=4,xmax=7,ymin=0,ymax=10)+
       annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=7,xmax=10,ymin=0,ymax=10)
+            },
+    "Single"={
+      g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
+      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+    },
+    "Gauss"={
+      g1<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=TRUE)
+      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+    },
+    "Exp"={
+      g1<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=TRUE)
+      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+    }
+    )
   }
   
   time2<<-Sys.time()

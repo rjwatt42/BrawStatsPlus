@@ -12,7 +12,7 @@ makeMetaHist<-function(vals,use,xlim) {
   h<-list(bins=bins,dens=dens)
 }
 
-drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
+drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
   
   yall<-c(metaResult$single$Smax,metaResult$gauss$Smax,metaResult$exp$Smax)
   displayType<-"histograms"
@@ -130,7 +130,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
       
       if (!is.null(ylim)) {
       }
-      if (metaWhich=="Single") {
+      if (yaxis) {
         g<-g+scale_y_continuous(limits = ylim)+ylab(ylabel)
       } else {
         g<-g+scale_y_continuous(limits = ylim,breaks=c())+ylab("")
