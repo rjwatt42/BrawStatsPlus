@@ -1,6 +1,6 @@
 source("runMetaAnalysis.R")
 
-showMeta<-"S"
+showMeta<-"n"
 nscaleLog=FALSE
 maxnPlot=3
 absPlot<-TRUE
@@ -20,12 +20,6 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
   n1<-sum(metaResult$bestDist=="Single")
   n2<-sum(metaResult$bestDist=="Gauss")
   n3<-sum(metaResult$bestDist=="Exp")
-  use<-which.max(c(n1,n2,n3))
-  bestD<-c("Single","Gauss","Exp")[use]
-  fullText<-paste0(bestD,"(",format(mean(metaResult$bestK),digits=3),")","\n",format(sum(metaResult$bestDist==bestD)),"/",length(metaResult$bestDist))
-  if (metaAnalysis$meta_nullAnal) {
-    fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$bestNull),digits=3))
-  }
   
   if (metaWhich=="Plain") {
     d1<-metaResult$result$rIV
@@ -215,9 +209,19 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
       )
     }
     g<-g+xlab("k")
+    
+    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),")","\n",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist))
+    if (metaAnalysis$meta_nullAnal) {
+      fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3))
+    }
+    pts_lb<-data.frame(x=mean(x), y=ylim[1], lb=fullText)
+    
+    use<-which.max(c(n1,n2,n3))
+    bestD<-c("Single","Gauss","Exp")[use]
     if (metaWhich==bestD) {
-      pts_lb<-data.frame(x=mean(x), y=ylim[1], lb=fullText)
       g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=0,size=3,fill="yellow")
+    } else {
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=0,size=3,fill="grey")
     }
     g+ggtitle(metaWhich)
     return(g)
