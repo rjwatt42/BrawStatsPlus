@@ -74,38 +74,38 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
     switch (metaWhich,
             "Single"={
               x<-metaResult$single$kmax
-              y<-metaResult$single$Smax
+              yS<-metaResult$single$Smax
               y1<-metaResult$single$nullMax
               xlim<-c(-1,1)
             },
             "Gauss"={
               x<-metaResult$gauss$kmax
-              y<-metaResult$gauss$Smax
+              yS<-metaResult$gauss$Smax
               y1<-metaResult$gauss$nullMax
               xlim<-c(0,1)
             },
             "Exp"={
               x<-metaResult$exp$kmax
-              y<-metaResult$exp$Smax
+              yS<-metaResult$exp$Smax
               y1<-metaResult$exp$nullMax
               xlim<-c(0,1)
             }
     )
-    keep<- !is.na(x) & !is.na(y)
+    keep<- !is.na(x) & !is.na(yS)
     best<-metaResult$bestS[keep]
-    y<-y[keep]
+    yS<-yS[keep]
     y1<-y1[keep]
     x<-x[keep]
     
     if (isempty(x)) {return(ggplot()+plotBlankTheme)}
     
     if (metaAnalysis$meta_nullAnal) {
-      useBest<-y==best
+      useBest<-yS==best
       # ylim<-c(-0.5,0.5)
       # ylabel<-"S"
       switch (showMeta,
               "S"={
-                y<-y
+                y<-yS
                 ylim<-c(min(sAll),max(sAll))+c(-1,1)*(max(sAll)-min(sAll))/10
                 ylabel<-"log(lk)"
               },
@@ -209,19 +209,26 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich) {
       )
     }
     g<-g+xlab("k")
-    
-    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),")","\n",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist))
+    if (mean(y1)>0.5) {
+      yp<-ylim[1]
+      vj<-0
+    } else {
+        yp<-ylim[2]
+        vj<-1
+        }
+    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),")")
     if (metaAnalysis$meta_nullAnal) {
       fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3))
     }
-    pts_lb<-data.frame(x=mean(x), y=ylim[1], lb=fullText)
+    fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+    pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
     
     use<-which.max(c(n1,n2,n3))
     bestD<-c("Single","Gauss","Exp")[use]
     if (metaWhich==bestD) {
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=0,size=3,fill="yellow")
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
     } else {
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=0,size=3,fill="grey")
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey",alpha=0.5)
     }
     g+ggtitle(metaWhich)
     return(g)
