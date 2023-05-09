@@ -94,8 +94,8 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
     llk<-matrix(nrow=nrow(z),ncol=ncol(z))
     for (i1 in 1:nrow(z)) {
       for (i2 in 1:ncol(z)) {
-        lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,0)
-        lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,FALSE,1)
+        lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,0,FALSE)
+        lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,1,FALSE)
         llk[i1,i2]<-lk1-lk2+log(world$populationNullp/(1-world$populationNullp))
       }
     }

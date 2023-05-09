@@ -54,9 +54,7 @@ metaPanel<-function(prefix="") {
                         ),
                         tags$tr(
                           tags$td(width = "30%",tags$div(style = localStyle, "Show:")
-                          )
-                        ),
-                        tags$tr(
+                          ),
                           tags$td(width = "30%",
                                   selectInput(paste0(prefix,"meta_showAnal"),label=NULL,
                                               choices=c("All","Single","Gauss","Exp"),
@@ -64,7 +62,8 @@ metaPanel<-function(prefix="") {
                                               selectize=FALSE
                                   )
                           ),
-                        ),
+                        )
+             ),
              tags$table(width = "100%",class="myTable",
                         tags$tr(
                           tags$td(width = "15%", tags$div(style = localStyle, "Runs:")),

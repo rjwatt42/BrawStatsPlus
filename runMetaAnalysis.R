@@ -19,7 +19,7 @@ findPmax<-function(zs,ns,distr,kvals,psigAnal,S) {
   pzvals<-seq(0,1,length.out=nzp)
   Nullmax<-0
   for (i in 1:nzp) {
-    newS<-getLogLikelihood(zs,ns,distr,kvals,psigAnal,pzvals[i])
+    newS<-getLogLikelihood(zs,ns,distr,kvals,pzvals[i],psigAnal)
     if (max(newS,na.rm=TRUE)>max(S)) {
       S<-newS
       Nullmax<-pzvals[i]
@@ -29,7 +29,7 @@ findPmax<-function(zs,ns,distr,kvals,psigAnal,S) {
   pzvals<-pzvals[pzvals>=0]
   pzvals<-pzvals[pzvals<=1]
   for (i in 1:length(pzvals)) {
-    newS<-getLogLikelihood(zs,ns,distr,kvals,psigAnal,pzvals[i])
+    newS<-getLogLikelihood(zs,ns,distr,kvals,pzvals[i],psigAnal)
     if (max(newS)>max(S)) {
       S<-newS
       Nullmax<-pzvals[i]
@@ -43,13 +43,15 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
   rs<-metaResult$result$rIV
   zs<-atanh(rs)
   ns<-metaResult$result$nval
-  np<-51
-  
+  nkpoints<-13
+  nnullpoints<-13
+  niterations<-2
+  reInc<-(nkpoints-1)/2/2
   
   if (metaAnalysis$meta_fixedAnal=="fixed") {
-    kvals<-seq(-1,1,length.out=np)*0.95
-    singleS<-getLogLikelihood(zs,ns,"Single",kvals,metaAnalysis$meta_psigAnal,0)
-    singleKmax<-approx(diff(singleS),(kvals[1:(np-1)]+kvals[2:np])/2,0)$y
+    kvals<-seq(-1,1,length.out=nkpoints)*0.95
+    singleS<-getLogLikelihood(zs,ns,"Single",kvals,0,metaAnalysis$meta_psigAnal)
+    singleKmax<-approx(diff(singleS),(kvals[1:(nkpoints-1)]+kvals[2:nkpoints])/2,0)$y
     singleSmax<-max(singleS,na.rm=TRUE)
     singleNullmax<-0
     
@@ -78,46 +80,55 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
     gaussNullmax<-NA
     expNullmax<-NA
     
+    if (metaAnalysis$meta_nullAnal) {
+      startNullvals<-seq(0,1,length.out=nnullpoints)
+    } else {
+      startNullvals<-0
+    }
+    
     # find best Single
     if (metaAnalysis$meta_pdf=="Single" || metaAnalysis$meta_pdf=="All") {
-    kvals<-seq(-1,1,length.out=np)*0.95
-    singleS<-getLogLikelihood(zs,ns,"Single",kvals,metaAnalysis$meta_psigAnal,0)
-    singleNullmax<-0
-    if (metaAnalysis$meta_nullAnal) {
-      S<-findPmax(zs,ns,"Single",kvals,metaAnalysis$meta_psigAnal,singleS)
-      singleS<-S$S
-      singleNullmax<-S$Nullmax
-    } 
-    singleKmax<-getMaxS(singleS,kvals)
-    singleSmax<-max(singleS,na.rm=TRUE)
+      nullvals<-startNullvals
+      kvals<-seq(-1,1,length.out=nkpoints)*0.95
+      for (re in 1:niterations) {
+        singleS<-getLogLikelihood(zs,ns,"Single",kvals,nullvals,metaAnalysis$meta_psigAnal)
+        singleSmax<-max(singleS,na.rm=TRUE)
+        use<-which(singleS==singleSmax, arr.ind = TRUE)
+        singleNullmax<-nullvals[use[1,2]]
+        singleKmax<-kvals[use[1,1]]
+        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
+        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+      }
     }
     
     # find best Gauss
     if (metaAnalysis$meta_pdf=="Gauss" || metaAnalysis$meta_pdf=="All") {
-      kvals<-seq(0.01,1,length.out=np)
-    gaussS<-getLogLikelihood(zs,ns,"Gauss",kvals,metaAnalysis$meta_psigAnal,0)
-    gaussNullmax<-0
-    if (metaAnalysis$meta_nullAnal) {
-      S<-findPmax(zs,ns,"Gauss",kvals,metaAnalysis$meta_psigAnal,gaussS)
-      gaussS<-S$S
-      gaussNullmax<-S$Nullmax
-    } 
-    gaussKmax<-getMaxS(gaussS,kvals)
-    gaussSmax<-max(gaussS,na.rm=TRUE)
+      nullvals<-startNullvals
+      kvals<-seq(0.01,1,length.out=nkpoints)
+      for (re in 1:niterations) {
+        gaussS<-getLogLikelihood(zs,ns,"Gauss",kvals,nullvals,metaAnalysis$meta_psigAnal)
+        gaussSmax<-max(gaussS,na.rm=TRUE)
+        use<-which(gaussS==gaussSmax, arr.ind = TRUE)
+        gaussNullmax<-nullvals[use[1,2]]
+        gaussKmax<-kvals[use[1,1]]
+        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
+        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+      }
     }
     
     # find best Exp
     if (metaAnalysis$meta_pdf=="Exp" || metaAnalysis$meta_pdf=="All") {
-      kvals<-seq(0.01,1,length.out=np)
-    expS<-getLogLikelihood(zs,ns,"Exp",kvals,metaAnalysis$meta_psigAnal,0)
-    expNullmax<-0
-    if (metaAnalysis$meta_nullAnal) {
-      S<-findPmax(zs,ns,"Exp",kvals,metaAnalysis$meta_psigAnal,expS)
-      expS<-S$S
-      expNullmax<-S$Nullmax
-    } 
-    expKmax<-getMaxS(expS,kvals)
-    expSmax<-max(expS,na.rm=TRUE)
+      nullvals<-startNullvals
+      kvals<-seq(0.01,1,length.out=nkpoints)
+      for (re in 1:niterations) {
+        expS<-getLogLikelihood(zs,ns,"Exp",kvals,nullvals,metaAnalysis$meta_psigAnal)
+        expSmax<-max(expS,na.rm=TRUE)
+        use<-which(expS==expSmax, arr.ind = TRUE)
+        expNullmax<-nullvals[use[1,2]]
+        expKmax<-kvals[use[1,1]]
+        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
+        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+      }
     }
     
     use<-which.max(c(singleSmax,gaussSmax,expSmax))
