@@ -62,7 +62,7 @@ getLogLikelihood<-function(z,n,worldDistr,worldDistK,worldDistNullP=0,p_sig=FALS
     nullLikelihoods<-SingleSamplingPDF(z,0,sigma)
     if (p_sig) {
       zcrit<-qnorm(1-alpha/2,0,sigma)
-      gainNull<-SingleSamplingCDF(zcrit,0,sigma)
+      gainNull<-0.05
     } else {
       gainNull<-1
     }
