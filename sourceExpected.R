@@ -288,6 +288,9 @@ makeExpectedGraph <- function() {
     updateActionButton(session,"EvidenceExpectedRun",label="Run")
     updateActionButton(session,"LGEvidenceExpectedRun",label="Run")
     notRunningExpected<<-TRUE
+    # n<-expectedResult$result$nval
+    # fd<-fitdist(n[,1]-min(n)+1,"gamma",method="mge")
+    # print(c(fd$estimate["shape"],1/fd$estimate["rate"]))
   }
   return(g)
 }

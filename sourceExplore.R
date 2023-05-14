@@ -67,8 +67,8 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
                if (switches$doMetaAnalysis) runPressed<-c(runPressed,input$exploreRunM,input$LGexploreRunM)
                
                if (notRunningExplore) {
-                 if (input$evidenceLongHand) {
-                   gain<-1
+                 if (!input$evidenceLongHand) {
+                   gain<-shortHandGain
                  } else {
                    gain<-1
                  }
