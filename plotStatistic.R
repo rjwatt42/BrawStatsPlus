@@ -243,7 +243,17 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
   }
   if (expType=="e2") {
     c1=plotcolours$infer_sigC
-    c2=plotcolours$infer_err
+    c2=plotcolours$infer_misserr
+  }
+  if (expType=="e1d") {
+    c1=plotcolours$infer_sigC
+    c2=plotcolours$infer_misserr
+    c3<-plotcolours$infer_err
+  }
+  if (expType=="e2d") {
+    c1=plotcolours$infer_sigC
+    c2=plotcolours$infer_misserr
+    c3<-plotcolours$infer_err
   }
   dotSize<-(plotTheme$axis.title$size)/3
   
@@ -277,6 +287,13 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
     g<-g+
       geom_polygon(data=pts1,aes(y=x,x=y1+xoff),colour=NA, fill = c2)+
       geom_polygon(data=pts1,aes(y=x,x=y2+xoff),colour=NA, fill = c1)
+    if (is.element(expType,c("e1d","e2d"))) {
+      if (is.logical(pts$y3)) {
+        pts1<-expected_hist(pts$y1,pts$y1[pts$y3],expType)
+      }
+        g<-g+
+      geom_polygon(data=pts1,aes(y=x,x=y2+xoff),colour=NA, fill = c3)
+    }
   }
   g
 }
@@ -506,7 +523,14 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         ysc<-1/3
         rvals<-(rvals+1)*ysc*0.9+rem(i-1,3)*ysc*2-1
       }
-      pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,n<-data$ns)
+      if (is.element(expType,c("e1d","e2d"))) {
+        d<-r2llr(data$rs[,i],data$ns[,i],STMethod,world=effect$world)
+        err<-(d<0 & data$rp[,i]!=0) | (d>0 & data$rp[,i]==0)
+        resWSig<-resSig & err
+        pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,y3=resWSig,n<-data$ns)
+      } else {
+        pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,n<-data$ns)
+      }
       g<-expected_plot(g,pts,result,IV,DV,expType,single)
     
     if (is.element(expType,c("p","e1","e2","e1d","e2d"))) {

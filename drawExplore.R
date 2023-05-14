@@ -292,33 +292,35 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   nulls<-exploreResult$result$rpIVs[,i]==0
                   # NB because we plot this upside down 
                   if (STMethod=="NHST") {
-                  # type II errors
-                  p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
-                  y50[i]<-p
-                  y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                  y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                  # type I errors
-                  p<-sum(sigs[nulls],na.rm=TRUE)/length(sigs)
-                  y50e[i]<-p
-                  y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                  y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                  } else {
-                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
                     # type II errors
-                    p<-sum(sigs & d<0 & !nulls,na.rm=TRUE)/length(sigs) 
+                    p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
                     y50[i]<-p
                     y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                    p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
-                    y50a[i]<-p
-                    y75a[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                    y25a[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
                     # type I errors
-                    p<-sum(sigs & d>0 & nulls,na.rm=TRUE)/length(sigs)
+                    p<-sum(sigs[nulls],na.rm=TRUE)/length(sigs)
                     y50e[i]<-p
                     y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                    p<-sum(!sigs & nulls,na.rm=TRUE)/length(sigs)
+                  } else {
+                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    # type II errors: not-nulls & sig in wrong direction
+                    p<-sum(sigs & d<0 & !nulls,na.rm=TRUE)/length(d) 
+                    y50[i]<-p
+                    y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    # type II errors: not-nulls & not sig
+                    p<-sum(!sigs & !nulls,na.rm=TRUE)/length(d) 
+                    y50a[i]<-p
+                    y75a[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25a[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    # type I errors: nulls & sig in wrong direction
+                    p<-sum(sigs & d>0 & nulls,na.rm=TRUE)/length(d)
+                    y50e[i]<-p
+                    y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                    y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    # type I errors: nulls & not sig
+                    p<-sum(!sigs & nulls,na.rm=TRUE)/length(d)
                     y50ea[i]<-p
                     y75ea[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25ea[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
@@ -350,8 +352,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
                 }
               }
-              col<-"#FF0000"
-              cole<-"#00FF00"
+              col<-plotcolours$infer_misserr
+              cole<-plotcolours$infer_err
               colFill<-col
               lines<-c(0.05)
             },
@@ -632,14 +634,31 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         pts2<-data.frame(vals=vals+vals_offset,y50e=y50e+y50ea,y25e=y25e,y75e=y75e)
         
         areaVals<-c(vals[1],vals,vals[length(vals)])
-        # type 2 errors
+        areaData<-1-c(0,y50*0+1,0)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC,alpha=0.9)
+
+        # non-null effects
         areaData<-1-c(0,y50+y50a,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=darken(col,0.5),alpha=0.9)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_misserr)
         # type 1 errors
         areaData<-c(0,y50e+y50ea,0)
         ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=darken(cole,0.5),alpha=0.9)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_misserr)
+        col<-plotcolours$infer_err
+        cole<-plotcolours$infer_err
+        pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
+        pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
+      } 
+      if (STMethod!="dLLR" && explore$Explore_show=="NHSTErrors") {
+        areaVals<-c(vals[1],vals,vals[length(vals)])
+        areaData<-c(0,y50*0+effect$world$populationNullp,0)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_nsigC)
+        areaData<-c(1,y50*0+effect$world$populationNullp,1)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
       }
       if (doLine) {
         # shaded fills
@@ -647,16 +666,16 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # type 2 errors
         areaData<-1-c(0,y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col,alpha=0.75)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
         # type 1 errors
         areaData<-c(0,y50e,0)
         ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole,alpha=0.75)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
         # lines & points        
         g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
         g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
-        g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = col, size = 7)
-        g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = cole, size = 7)
+        g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = col, size = 4)
+        g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = cole, size = 4)
       } else {
         # shaded fills
         outline<-c(-1,-1,1,1)*0.1
@@ -673,7 +692,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = cole, size = 7)
       }
       if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
-        g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="white")
+        g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="black")
       }
     } else {
       if (explore$Explore_show=="PDF") {

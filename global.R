@@ -72,8 +72,8 @@ darkpanelcolours<-list(hypothesisC=hsv(hypHue,darkSat,darkBright),
 
 plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF8833",
                   descriptionC1="#FF5533",descriptionC2="#CCBB33",
-                  infer_sigC="#22FF00",infer_nsigC="#FF2222",
-                  infer_err="#333333",infer_nerr="#00CCFF")
+                  infer_sigC="#22FF00",infer_nsigC="#FF2200",
+                  infer_err="#228800",infer_misserr="#882200",infer_nerr="#00CCFF")
 
 shapes<-list(data=21,study=22,parameter=21,meta=24)
 
@@ -186,7 +186,7 @@ alpha<-0.05
 alphaLLR<-0.5*qnorm(1-alpha/2)^2
 STMethod<-"NHST"
 
-shortHandGain=10
+shortHandGain=100
 
 z_range<-1.75
 r_range<-0.975

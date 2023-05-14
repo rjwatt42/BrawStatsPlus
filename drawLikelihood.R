@@ -39,6 +39,7 @@ doFloorCILines<-TRUE
 doCILines<-FALSE
 doTextResult<-TRUE
 showJointLk<-FALSE
+showNull<-TRUE
 
 drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   # make the distribution        
@@ -212,6 +213,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
                           },
                         "Populations"={
+                          if (showNull) {
+                            lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
+                          }
                           if (!is.na(likelihood$targetSample)) {
                             # show peak and CIs on floor
                             if (doFloorCILines) {
@@ -394,6 +398,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
                           # vertical lines on main distribution
                           if (doPeakLine && length(sRho)==1) {
+                            if (showNull) {
+                              lines(trans3d(x=c(0,0),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],0)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
+                            }
                             si<-1
                             lines(trans3d(x=c(rp_peak,rp_peak),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_peak)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
                             if (doCILines) {
