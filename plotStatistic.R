@@ -1,6 +1,5 @@
 min_p=0.0001
 truncate_p=FALSE
-max_s=6
 min_nw=10
 max_nw=10000
 horiz_scatter=0.5
@@ -164,22 +163,22 @@ expected_hist<-function(vals,svals,valType){
             
           "log(lrs)"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,0,5)
+            bins<-getBins(vals,svals,target,0,lrRange)
           },
           
           "e1d"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,-5,5)
+            bins<-getBins(vals,svals,target,-lrRange,lrRange)
           },
           
           "log(lrd)"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,-5,5)
+            bins<-getBins(vals,svals,target,-lrRange,lrRange)
           },
           
           "e2d"={
             target<-3
-            bins<-getBins(vals,svals,target,-5,5)
+            bins<-getBins(vals,svals,target,-lrRange,lrRange)
           },
           
           "w"=  { # ns is small
@@ -335,19 +334,19 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             ylabel<-bquote(p[1])
           },
           "log(lrs)"={
-            ylim<-c(0, max_s)
+            ylim<-c(0, lrRange)
             ylabel<-bquote(log[e](lr[s]))
           },
           "log(lrd)"={
-            ylim<-c(-max_s, max_s)
+            ylim<-c(-lrRange, lrRange)
             ylabel<-bquote(log[e](lr[d]))
           },
           "e1d"={
-            ylim<-c(-max_s, max_s)
+            ylim<-c(-lrRange, lrRange)
             ylabel<-bquote(log[e](lr[d]))
           },
           "e2d"={
-            ylim<-c(-max_s, max_s)
+            ylim<-c(-lrRange, lrRange)
             ylabel<-bquote(log[e](lr[d]))
           },
           "w"={
@@ -459,19 +458,19 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                xd<-fullRSamplingDist(yv,result$effect$world,result$design,"w",logScale=logScale)
              },
              "log(lrs)"={
-               yv<-seq(0,max_s,length.out=npt)
+               yv<-seq(0,lrRange,length.out=npt)
                xd<-fullRSamplingDist(yv,result$effect$world,result$design,"log(lrs)",logScale=logScale)
              },
              "log(lrd)"={
-               yv<-seq(-max_s,max_s,length.out=npt)
+               yv<-seq(-lrRange,lrRange,length.out=npt)
                xd<-fullRSamplingDist(yv,result$effect$world,result$design,"log(lrd)",logScale=logScale)
              },
              "e1d"={
-               yv<-seq(-max_s,max_s,length.out=npt)
+               yv<-seq(-lrRange,lrRange,length.out=npt)
                xd<-fullRSamplingDist(yv,result$effect$world,result$design,"log(lrd)",logScale=logScale)
              },
              "e2d"={
-               yv<-seq(-max_s,max_s,length.out=npt)
+               yv<-seq(-lrRange,lrRange,length.out=npt)
                xd<-fullRSamplingDist(yv,result$effect$world,result$design,"log(lrd)",logScale=logScale)
              },
              "nw"={

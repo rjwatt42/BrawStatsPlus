@@ -102,9 +102,16 @@ if (switches$doKeys) {
       loadExtras()
     }
     
-    # control-alt-m - switch to offline version
+    # control-m - switch to offline version
     if (input$keypress==ascii("m") && controlKeyOn){
       loadExtras(1)
+    }
+    
+    if (input$keypress==ascii("d") && controlKeyOn){
+      updateSelectInput(session,"STMethod",selected="dLLR")
+      updateSelectInput(session,"Explore_showD",selected="NHSTErrors")
+      updateCheckboxInput(session,"Explore_xlog",value=TRUE)
+      updateNumericInput(session,"Explore_nRange",value=10000)
     }
     
     # control-V

@@ -802,7 +802,6 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     pDens_r_null<-zdens2rdens(pDens_z_null,rs)
     asDens_r<-zdens2rdens(asDens_z,rs)
   }
-  
   if (any(!is.na(spDens_r))) {
     dr_gain<-max(spDens_r,na.rm=TRUE)
     spDens_r<-spDens_r/dr_gain
@@ -824,9 +823,10 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     dr_gain<-max(pDens_r,na.rm=TRUE)
     pDens_r<-pDens_r/dr_gain
   }
+  
   # pDens_r<-pDens_r*(1-prior$populationNullp)
   if (!doNullsSingle) {
-    spDens_r<-spDens_r*(1-prior$populationNullp*dnorm(atanh(sRho),0,1/sqrt(n-3)))
+    spDens_r<-spDens_r*(1-prior$populationNullp)*dnorm(atanh(sRho),0,1/sqrt(n-3))
     apDens_r<-apDens_r*(1-prior$populationNullp)
     asDens_r<-asDens_r*(1-source$populationNullp)
     pDens_r_plus<-pDens_r_plus/sum(pDens_r_plus)*(1-prior$populationNullp)

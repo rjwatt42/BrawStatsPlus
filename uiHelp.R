@@ -136,6 +136,10 @@ wellPanel(id="HelpTabset",
                                       tags$tr(
                                         tags$td(width="20%",tags$div(style = localPlainStyle, "Load extras:")),
                                         tags$td(width="10%",checkboxInput("LoadExtras", label=NULL))
+                                      ),
+                                      tags$tr(
+                                        tags$td(width="20%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
+                                        tags$td(width="10%",numericInput("shorthandGain",value=10, label=NULL))
                                       )
                            )
                          )

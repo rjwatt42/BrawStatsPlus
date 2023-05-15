@@ -125,11 +125,16 @@ shinyServer(function(input, output, session) {
   
   source("serverKeys.R",local=TRUE)
 
-  observeEvent(input$LoadExtras,
-               {
+  observeEvent(input$LoadExtras, {
                  if (input$LoadExtras)
                  loadExtras()
                })
+  
+  observeEvent(input$shorthandGain, {
+    shortHandGain<<-input$shorthandGain
+  }
+  )
+  
 ####################################
 # other housekeeping
   if (debug) debugPrint("Housekeeping")

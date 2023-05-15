@@ -47,12 +47,16 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "log(lrs)"={
             d1<-res2llr(result,"sLLR")
-            xlim<-c(-0.1, 10)
+            xlim<-c(-0.1, lrRange)
             disp1<-bquote(log[e](lr[s]))
           },
           "log(lrd)"={
             d1<-res2llr(result,"dLLR")
-            xlim<-c(-0.1, 10)
+            if (any(d1<0)) {
+              ylim<-c(-lrRange, lrRange)
+            } else {
+              ylim<-c(-0.1, lrRange)
+            }
             disp1<-bquote(log[e](lr[d]))
           },
           "w"={
@@ -141,20 +145,15 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             ylim<-c(0,1)
           },
           "log(lrs)"={
-            d2<-res2llr(result,"sLLR")
-            if (any(d2<0)) {
-              ylim<-c(-10, 10)
-            } else {
-              ylim<-c(-0.1, 10)
-            }
+            ylim<-c(-0.1, lrRange)
             disp2<-bquote(log[e](lr[s]))
           },
           "log(lrd)"={
             d2<-res2llr(result,"dLLR")
             if (any(d2<0)) {
-              ylim<-c(-10, 10)
+              ylim<-c(-lrRange, lrRange)
             } else {
-              ylim<-c(-0.1, 10)
+              ylim<-c(-0.1, lrRange)
             }
             disp2<-bquote(log[e](lr[d]))
           },

@@ -87,7 +87,7 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
     if (!is.matrix(n)) {
       n<-matrix(n,ncol=1)
     }
-    if (is.null(world) || is.null(world$worldOnworld$worldOn) || !world$worldOn) {
+    if (is.null(world) || is.null(world$worldOn) || !world$worldOn) {
       world$populationPDF<-"Single"
       world$populationNullp<-0.5
     }
@@ -95,8 +95,10 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
     for (i1 in 1:nrow(z)) {
       for (i2 in 1:ncol(z)) {
         lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,0,FALSE)
+        lk1<-lk1+log(1-world$populationNullp)
         lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,1,FALSE)
-        llk[i1,i2]<-lk1-lk2+log(world$populationNullp/(1-world$populationNullp))
+        lk2<-lk2+log(world$populationNullp)
+        llk[i1,i2]<-lk1-lk2
       }
     }
   } else {
