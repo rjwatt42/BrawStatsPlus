@@ -666,18 +666,16 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
 
-        newAlpha=1
-        newAlpha1=1
         if (ErrorsWorld=="1scale") {
           # non-null effects
           nAreaVals<-c(areaVals[2:(length(areaVals)-1)],rev(areaVals[2:(length(areaVals)-1)]))
           areaData<-c(y50b+y50+yalle,rev(y50b+yalle))
           ptsNHST<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_err,alpha=newAlpha)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_err)
           # null effects
           areaData<-c(yalle-y50eb+y50e,rev(yalle-y50eb))
           ptsNHSTe<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_err,alpha=newAlpha)
+          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_err)
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_misserr
@@ -730,11 +728,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # type 2 errors
         areaData<-1-c(0,pts1$y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col,alpha=newAlpha1)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
         # type 1 errors
         areaData<-c(0,pts2$y50e,0)
         ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole,alpha=newAlpha1)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
         # lines & points        
         g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
         g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
