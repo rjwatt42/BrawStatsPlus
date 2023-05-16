@@ -699,19 +699,19 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       if (STMethod!="dLLR" && explore$Explore_show=="NHSTErrors") {
         if (ErrorsWorld=="1scale") {
           areaVals<-c(vals[1],vals,vals[length(vals)])
-          areaData<-c(y50,y50*0+effect$world$populationNullp)
+          areaData<-c(yalle,rev(1-y50))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
           
           areaVals<-c(vals[1],vals,vals[length(vals)])
-          areaData<-effect$world$populationNullp-(c(y50e,y50e*0))
+          areaData<-c(yalle-y50e,rev(yalle))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_err)
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_nsigC
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
-          pts2<-data.frame(vals=vals+vals_offset,y50e=effect$world$populationNullp-y50e,y25e=y25e,y75e=y75e)
+          pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
         } else {
           areaVals<-c(vals[1],vals,vals[length(vals)])
           areaData<-c(0,y50*0+effect$world$populationNullp,0)
