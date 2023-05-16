@@ -6,6 +6,7 @@ ErrorsWorld<-"1scale"
 all_cols<-c()
 
 drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
+  oldAlpha<-alpha
   rho<-effect$rIV
   
   vals<-exploreResult$result$vals
@@ -614,7 +615,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 lines<-c()
             }
     )
-  
+    alpha<<-oldAlpha
+    
     if (is.element(explore$Explore_show,c("EffectSize","p","w","log(lrs)","log(lrd)","k","S","pNull","mean(IV)"))) {
       y75<-c()
       y62<-c()
