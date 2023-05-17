@@ -379,7 +379,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 }
               }
               col<-plotcolours$infer_misserr
-              cole<-plotcolours$infer_err
+              cole<-plotcolours$infer_hiterr
               colFill<-col
               lines<-c(0.05)
             },
@@ -662,20 +662,23 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         pts2<-data.frame(vals=vals+vals_offset,y50e=y50e+y50ea,y25e=y25e,y75e=y75e)
         
         areaVals<-c(vals[1],vals,vals[length(vals)])
-        areaData<-c(y50b+yalle,rev(yalle-y50eb))
+        areaData<-c(y50b+yalle,rev(yalle))
         ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-
+        areaData<-c(yalle,rev(yalle-y50eb))
+        ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_nsigC)
+        
         if (ErrorsWorld=="1scale") {
           # non-null effects
           nAreaVals<-c(areaVals[2:(length(areaVals)-1)],rev(areaVals[2:(length(areaVals)-1)]))
           areaData<-c(y50b+y50+yalle,rev(y50b+yalle))
           ptsNHST<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_err)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
           # null effects
           areaData<-c(yalle-y50eb+y50e,rev(yalle-y50eb))
           ptsNHSTe<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_err)
+          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_misserr
@@ -690,8 +693,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(0,y50e+y50ea,0)
           ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_misserr)
-          col<-plotcolours$infer_err
-          cole<-plotcolours$infer_err
+          col<-plotcolours$infer_hiterr
+          cole<-plotcolours$infer_hiterr
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
         }
@@ -706,10 +709,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaVals<-c(vals[1],vals,vals[length(vals)])
           areaData<-c(yalle-y50e,rev(yalle))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_err)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
           
           col<-plotcolours$infer_misserr
-          cole<-plotcolours$infer_nsigC
+          cole<-plotcolours$infer_misserr
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
         } else {

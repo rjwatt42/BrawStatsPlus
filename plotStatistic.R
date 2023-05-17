@@ -237,7 +237,7 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
     c2=plotcolours$descriptionC
   }
   if (expType=="e1") {
-    c1=plotcolours$infer_err
+    c1=plotcolours$infer_hiterr
     c2=plotcolours$infer_nsigC
   }
   if (expType=="e2") {
@@ -247,12 +247,12 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
   if (expType=="e1d") {
     c1=plotcolours$infer_sigC
     c2=plotcolours$infer_misserr
-    c3<-plotcolours$infer_err
+    c3<-plotcolours$infer_hiterr
   }
   if (expType=="e2d") {
     c1=plotcolours$infer_sigC
     c2=plotcolours$infer_misserr
-    c3<-plotcolours$infer_err
+    c3<-plotcolours$infer_hiterr
   }
   dotSize<-(plotTheme$axis.title$size)/3
   
