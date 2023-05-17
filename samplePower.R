@@ -23,7 +23,7 @@ rn2w<-function(r,n,t=2){
   w  
 }
 
-rw2n<-function(r,w,t=1){
+rw2n<-function(r,w,t=2){
   if (any(abs(r)>1)) {
     print("rw2n exception")
     r[r>1]<-1
@@ -36,7 +36,7 @@ rw2n<-function(r,w,t=1){
     nnear<-((qnorm(w)-qnorm(alpha))/z)^2+3
   } else {
     # two tailed
-    nnear<-(qnorm(w)-(qnorm(alpha/2))/z)^2+3
+    nnear<-((qnorm(w)-qnorm(alpha/2))/z)^2+3
   }
   nnear<-round(nnear)  
   nnear[nnear>1000000]<-1000000
