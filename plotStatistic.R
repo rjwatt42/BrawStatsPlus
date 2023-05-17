@@ -740,22 +740,30 @@ nw_plot<-function(result,IV,IV2=NULL,DV,effect){
 
 e2_plot<-function(result,IV,IV2=NULL,DV,effect,nullresult=NULL){
   switch (STMethod,
-    "NHST"={
-      p_plot(result,IV,IV2,DV,effect,ptype="e2",otherresult=nullresult)+
-        ggtitle(expression(paste("Correct:  ", bold(r["p"] != 0))))
-    },
-    "dLLR"={
-      p_plot(result,IV,IV2,DV,effect,ptype="e2d",otherresult=nullresult,pPlotScale="linear")+
-        geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", size=0.5)+
-        geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", size=0.5)+
-        ggtitle(expression(paste("Correct:  ", bold(r["p"] != 0))))
-    }
+          "NHST"={
+            p_plot(result,IV,IV2,DV,effect,ptype="e2",otherresult=nullresult)+
+              ggtitle(expression(paste("Correct:  ", bold(r["p"] != 0))))
+          },
+          "sLLR"={
+            p_plot(result,IV,IV2,DV,effect,ptype="e2",otherresult=nullresult)+
+              ggtitle(expression(paste("Correct:  ", bold(r["p"] != 0))))
+          },
+          "dLLR"={
+            p_plot(result,IV,IV2,DV,effect,ptype="e2d",otherresult=nullresult,pPlotScale="linear")+
+              geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", size=0.5)+
+              geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", size=0.5)+
+              ggtitle(expression(paste("Correct:  ", bold(r["p"] != 0))))
+          }
   )
 }
 
 e1_plot<-function(nullresult,IV,IV2=NULL,DV,effect,result=NULL){
   switch (STMethod,
           "NHST"={
+            p_plot(nullresult,IV,IV2,DV,effect,ptype="e1",otherresult=result)+
+              ggtitle(expression(paste("Incorrect:  ", bold(r["p"] == 0))))
+          },
+          "sLLR"={
             p_plot(nullresult,IV,IV2,DV,effect,ptype="e1",otherresult=result)+
               ggtitle(expression(paste("Incorrect:  ", bold(r["p"] == 0))))
           },
