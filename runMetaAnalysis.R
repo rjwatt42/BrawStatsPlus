@@ -110,7 +110,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
         result<-fmincon(c(singleKmax,singleNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
         singleKmax<-result$par[1]
         singleNullmax<-result$par[2]
-        singleSmax<-result$value
+        singleSmax<- -result$value
       }
     }
     
@@ -138,7 +138,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
         result<-fmincon(c(gaussKmax,gaussNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
         gaussKmax<-result$par[1]
         gaussNullmax<-result$par[2]
-        gaussSmax<-result$value
+        gaussSmax<- -result$value
       }
     }
     
@@ -166,7 +166,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
         result<-fmincon(c(expKmax,expNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
         expKmax<-result$par[1]
         expNullmax<-result$par[2]
-        expSmax<-result$value
+        expSmax<- -result$value
       }
     }
     
