@@ -191,8 +191,9 @@ makeExpectedGraph <- function() {
     if (expectedResult$count<expectedResult$nsims) {
       stopRunning<-FALSE
     }
-    if (!effect$world$worldOn  && expected$type=="NHSTErrors" && expectedResult$nullcount<expectedResult$nsims) {
-      if (switches$showAnimation) {
+    if (expected$type=="NHSTErrors" && (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
+         expectedResult$nullcount<expectedResult$nsims) {
+      if (switches$showAnimation  && evidence$longHand) {
         # ns<-10^(min(2,floor(log10(max(1,expectedResult$nullcount)))))
         ns<-10^(min(2,floor(log10(max(expectedResult$nsims/10,expectedResult$nullcount)))))
         if (expectedResult$nullcount+ns>expectedResult$nsims) {

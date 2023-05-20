@@ -452,17 +452,28 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             "Populations"={
               rw<-rpw
               rw_dens<-rpw_dens
+              if (likelihood$viewRZ=="z") {
+                xlabel<-bquote(bold(z[p]))
+              } else {
+                xlabel<-bquote(bold(r[p]))
+              }
               },
             "Samples"={
               rw<-rsw
               rw_dens<-rsw_dens
+              if (likelihood$viewRZ=="z") {
+                xlabel<-bquote(bold(z[s]))
+              } else {
+                xlabel<-bquote(bold(r[s]))
+              }
             }
     )
     yh<-approx(rw,rw_dens,sRho[1])$y
     
     rw<-c(rw[1],rw,rw[length(rw)])
     rw_dens<-c(0,rw_dens,0)
-    plot(x=rw,y=rw_dens,xlab=likelihood$type,ylab=ylab,type="n",yaxt="n",font.lab=2,xlim=view_lims,ylim=c(0,1.25))
+    switch 
+    plot(x=rw,y=rw_dens,xlab=xlabel,ylab=ylab,type="n",yaxt="n",font.lab=2,xlim=view_lims,ylim=c(0,1.25))
     axis(side = 2,  at=0, labels = FALSE, tck=-0.05)
     
         u <- par("usr") # The coordinates of the plot area

@@ -56,10 +56,11 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
   outputText<-c(outputText,rep(outputText1,nc/3))
 
   if (expected$type=="NHSTErrors"){
-    if (STMethod=="NHST") {
+    if (STMethod!="dLLR") {
       nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
       resSig<-isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)
     } else {
+      browser()
       d<-res2llr(result,"dLLR")
       nulld<-res2llr(nullresult,"dLLR")
       nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
@@ -68,6 +69,13 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
       nullSigC<-nulld<0 & isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
       resSigW<-(d<0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
       resSigC<-(d>0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
+    }
+    if (STMethod=="NHST") {
+      e1=paste0(format(mean(nullSig)*100,digits=report_precision),"%")
+      e2=paste0(format(mean(!resSig)*100,digits=report_precision),"%")
+    } else {
+      e1=paste0(format(sum(nullSigW)/length(nullSig)*100,digits=report_precision),"%")
+      e2=paste0(format(sum(resSigW)/length(resSig)*100,digits=report_precision),"%")
     }
     if (result$effect$world$worldOn) {
         nr<-(length(nullresult$pIV)+length(result$pIV))

@@ -65,10 +65,12 @@ getLogLikelihood<-function(z,n,worldDistr,worldDistK,worldDistNullP=0,p_sig=FALS
       gainNull<-0.05
     } else {
       gainNull<-1
+      zcrit<-0
     }
   } else {
     nullLikelihoods<-0
     gainNull<-0
+    zcrit<-0
   } 
   gainMain<-1
   res<-matrix(0,nrow=length(worldDistK),ncol=length(worldDistNullP))

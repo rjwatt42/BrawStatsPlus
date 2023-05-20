@@ -142,6 +142,11 @@ if (switches$doKeys) {
       updateNumericInput(session,"world_distr_k",value=0.325)
       updateNumericInput(session,"world_distr_Nullp",value=0.74)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
+      
+      updateSelectInput(session,"likelihoodPrior_distr",selected="Exp")
+      updateSelectInput(session,"likelihoodPrior_distr_rz",selected="z")
+      updateNumericInput(session,"likelihoodPrior_distr_k",value=0.325)
+      updateNumericInput(session,"likelihoodPrior_Nullp",value=0.74)
     }
     
     if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){

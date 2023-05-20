@@ -45,8 +45,8 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
   ns<-metaResult$result$nval
   nkpoints<-13
   nnullpoints<-13
-  niterations<-2
-  reInc<-(nkpoints-1)/2/2
+  niterations<-1
+  reInc<-(nkpoints-1)/2/3
   
   if (metaAnalysis$meta_fixedAnal=="fixed") {
     kvals<-seq(-1,1,length.out=nkpoints)*0.95
@@ -93,11 +93,24 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
       for (re in 1:niterations) {
         singleS<-getLogLikelihood(zs,ns,"Single",kvals,nullvals,metaAnalysis$meta_psigAnal)
         singleSmax<-max(singleS,na.rm=TRUE)
+        
         use<-which(singleS==singleSmax, arr.ind = TRUE)
         singleNullmax<-nullvals[use[1,2]]
+        lb2<-nullvals[max(1,use[1,2]-reInc)]
+        ub2<-nullvals[min(length(nullvals),use[1,2]+reInc)]
         singleKmax<-kvals[use[1,1]]
-        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
-        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+        lb1<-kvals[max(1,use[1,1]-reInc)]
+        ub1<-kvals[min(length(kvals),use[1,1]+reInc)]
+        
+        kvals<-seq(lb1,ub1,length.out=nkpoints)
+        nullvals<-seq(lb2,ub2,length.out=nnullpoints)
+      }
+      if (niterations==1) {      
+        fun<-function(x) { -getLogLikelihood(zs,ns,"Exp",x[1],x[2],metaAnalysis$meta_psigAnal)}
+        result<-fmincon(c(singleKmax,singleNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
+        singleKmax<-result$par[1]
+        singleNullmax<-result$par[2]
+        singleSmax<-result$value
       }
     }
     
@@ -108,11 +121,24 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
       for (re in 1:niterations) {
         gaussS<-getLogLikelihood(zs,ns,"Gauss",kvals,nullvals,metaAnalysis$meta_psigAnal)
         gaussSmax<-max(gaussS,na.rm=TRUE)
+        
         use<-which(gaussS==gaussSmax, arr.ind = TRUE)
         gaussNullmax<-nullvals[use[1,2]]
+        lb2<-nullvals[max(1,use[1,2]-reInc)]
+        ub2<-nullvals[min(length(nullvals),use[1,2]+reInc)]
         gaussKmax<-kvals[use[1,1]]
-        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
-        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+        lb1<-kvals[max(1,use[1,1]-reInc)]
+        ub1<-kvals[min(length(kvals),use[1,1]+reInc)]
+        
+        kvals<-seq(lb1,ub1,length.out=nkpoints)
+        nullvals<-seq(lb2,ub2,length.out=nnullpoints)
+      }
+      if (niterations==1) {      
+        fun<-function(x) { -getLogLikelihood(zs,ns,"Exp",x[1],x[2],metaAnalysis$meta_psigAnal)}
+        result<-fmincon(c(gaussKmax,gaussNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
+        gaussKmax<-result$par[1]
+        gaussNullmax<-result$par[2]
+        gaussSmax<-result$value
       }
     }
     
@@ -123,11 +149,24 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
       for (re in 1:niterations) {
         expS<-getLogLikelihood(zs,ns,"Exp",kvals,nullvals,metaAnalysis$meta_psigAnal)
         expSmax<-max(expS,na.rm=TRUE)
+        
         use<-which(expS==expSmax, arr.ind = TRUE)
         expNullmax<-nullvals[use[1,2]]
+        lb2<-nullvals[max(1,use[1,2]-reInc)]
+        ub2<-nullvals[min(length(nullvals),use[1,2]+reInc)]
         expKmax<-kvals[use[1,1]]
-        kvals<-seq(kvals[max(1,use[1,1]-reInc)],kvals[min(use[1,1]+reInc,nkpoints)],length.out=nkpoints)
-        nullvals<-seq(nullvals[max(1,use[1,2]-reInc)],nullvals[min(use[1,2]+reInc,nnullpoints)],length.out=nnullpoints)
+        lb1<-kvals[max(1,use[1,1]-reInc)]
+        ub1<-kvals[min(length(kvals),use[1,1]+reInc)]
+
+        kvals<-seq(lb1,ub1,length.out=nkpoints)
+        nullvals<-seq(lb2,ub2,length.out=nnullpoints)
+      }
+      if (niterations==1) {      
+        fun<-function(x) { -getLogLikelihood(zs,ns,"Exp",x[1],x[2],metaAnalysis$meta_psigAnal)}
+        result<-fmincon(c(expKmax,expNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
+        expKmax<-result$par[1]
+        expNullmax<-result$par[2]
+        expSmax<-result$value
       }
     }
     

@@ -13,7 +13,7 @@ makeMetaHist<-function(vals,use,xlim) {
 }
 
 drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
-  
+  # browser()
   yall<-c(metaResult$single$Smax,metaResult$gauss$Smax,metaResult$exp$Smax)
   displayType<-"histograms"
 
@@ -89,6 +89,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
               yS<-metaResult$exp$Smax
               y1<-metaResult$exp$nullMax
               xlim<-c(0,1)
+              # xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
             }
     )
     keep<- !is.na(x) & !is.na(yS)
@@ -112,21 +113,21 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
               "n"={
                 y<-y1
                 ylim<-c(-0.02,1.1)
-                ylabel<-"p(0)"
+                ylabel<-bquote(bold(p[null]))
               })
       
       pts<-data.frame(x=x,y=y)
       g<-ggplot(pts,aes(x=x, y=y))
       
-      dotSize=min(8,max(3.5,sqrt(400/length(x))))
+      dotSize=min(4,max(4,sqrt(50/length(x))))
       # dotSize<-(plotTheme$axis.title$size)/3
-      
-      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "grey", size = dotSize)
+
+      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "grey", alpha=0.5, size = dotSize)
       pts<-data.frame(x=x[useBest],y=y[useBest])
-      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "yellow", size = dotSize)
+      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "yellow", alpha=0.5, size = dotSize)
       
       g<-g+theme(legend.position = "none")+plotTheme
-      g<-g+scale_x_continuous(limits = c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2)
+      g<-g+scale_x_continuous(limits = xlim)
       
       if (!is.null(ylim)) {
       }
@@ -188,7 +189,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
                 pts<-data.frame(x=x,y=y)
                 g<-ggplot(pts,aes(x=x, y=y))
                 
-                dotSize=min(8,max(3.5,sqrt(400/length(x))))
+                dotSize=min(4,max(3.5,sqrt(400/length(x))))
                 # dotSize<-(plotTheme$axis.title$size)/3
                 
                 g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "grey", size = dotSize)
