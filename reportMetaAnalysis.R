@@ -6,7 +6,7 @@ reportMetaAnalysis<-function(result){
   outputText<-c("\bMeta Analysis",paste("nstudies=",format(result$metaAnalysis$nstudies)),paste("nsims=",format(length(result$bestDist)),sep=""),rep("",nc-3))
   outputText<-c(outputText,rep("",nc))
   
-  outputText<-c(outputText," ","\bDistr","","\b\u039b","\bp(0)","\bS")
+  outputText<-c(outputText," ","\bDistr","","\b\u03bb","\bp(0)","\bS")
   outputText<-c(outputText,"\bActual",result$effect$world$populationPDF,"",format(result$effect$world$populationPDFk,digits=3),format(result$effect$world$populationNullp,digits=3),"")
   
   n1<-sum(result$bestDist=="Single")
