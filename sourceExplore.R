@@ -194,12 +194,11 @@ makeExploreGraph <- function() {
       silentTime<<-Sys.time()-time2
     }
     if (exploreResult$result$count>2 && exploreResult$result$count<=cycles2observe) {
-      silentTime<<-rbind(silentTime,Sys.time()-time2)
+      silentTime<<-max(silentTime,Sys.time()-time2)
     }
     if (exploreResult$result$count>cycles2observe) {
       pauseWait<<-100
     }
-    silentTime<<-Sys.time()-time2
   }
   
   IV<-updateIV()

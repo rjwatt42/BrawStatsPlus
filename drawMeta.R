@@ -217,11 +217,12 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
         yp<-ylim[2]
         vj<-1
         }
-    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),")")
+    lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
     if (metaAnalysis$meta_nullAnal) {
-      fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3))
+      fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
     }
-    fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+    fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
     pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
     
     use<-which.max(c(n1,n2,n3))
@@ -368,9 +369,9 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   # g<-g+geom_contour(data=ptsd,aes(x=x,y=y,z=z),colour="black",breaks=c(0.1,0.3,0.5,0.7,0.9),lwd=1) 
   g<-g+geom_contour(data=ptsb,aes(x=x,y=y,z=z),colour="black",breaks=c(0.1,0.3,0.5,0.7,0.9),lwd=0.1)
   
-  lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),")")
+  lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
   if (metaResult$metaAnalysis$meta_nullAnal) {
-    lb<-paste0(lb," null=",format(metaResult$bestNull,digits=3))
+    lb<-paste0(lb," p[null]=",format(metaResult$bestNull,digits=3),"\u00B1",format(std(result$exp$nullMax),digits=2),"")
   }
   pts_lb<-data.frame(x=0,y=max(y)*1.1,lb=lb)
   if (absPlot) pts_lb$x[1]<-0.5

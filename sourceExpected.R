@@ -130,15 +130,16 @@ makeExpectedGraph <- function() {
   if (expectedResult$count<2) {
     silentTime<<-0
     pauseWait<<-10
-  }
+  } else {
   if (expectedResult$count==2) {
     silentTime<<-Sys.time()-time2
   }
   if (expectedResult$count>2 && expectedResult$count<=cycles2observe) {
-    silentTime<<-rbind(silentTime,Sys.time()-time2)
+    silentTime<<-max(silentTime,Sys.time()-time2)
   }
   if (expectedResult$count>cycles2observe) {
-    pauseWait<<-500
+    pauseWait<<-100
+  }
   }
   
   llrConsts<-c(input$llr1,input$llr2)
