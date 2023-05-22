@@ -239,7 +239,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       if (metaAnalysis$meta_nullAnal) {
         fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$exp$nullMax),digits=3),"\u00B1",format(std(metaResult$exp$nullMax),digits=2))
       }
-      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$exp$Smax),digits=2),"\u00B1",format(std(metaResult$exp$Smax),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$exp$Smax),digits=2),"\u00B1",format(std(metaResult$exp$Smax),digits=2)," (",format(sum(y>x)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[1], y=ylim[2], lb=fullText)
       if (mean(y>x)) {
       g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="yellow")
@@ -250,7 +250,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       if (metaAnalysis$meta_nullAnal) {
         fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$gauss$nullMax),digits=3),"\u00B1",format(std(metaResult$gauss$nullMax),digits=2))
       }
-      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$gauss$Smax),digits=2),"\u00B1",format(std(metaResult$gauss$Smax),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$gauss$Smax),digits=2),"\u00B1",format(std(metaResult$gauss$Smax),digits=2)," (",format(sum(x>y)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[2], y=ylim[1], lb=fullText)
       if (mean(y>x)) {
         g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="grey")
