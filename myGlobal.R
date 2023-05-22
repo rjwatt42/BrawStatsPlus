@@ -42,6 +42,7 @@ validExplore<-FALSE
 validLikelihood<-0
 
 show<-0
+includeSingle<-FALSE
 
 points_threshold=50
 wPlotScale="log10"

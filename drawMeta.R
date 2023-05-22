@@ -1,6 +1,5 @@
 source("runMetaAnalysis.R")
 
-showMeta<-"n"
 nscaleLog=FALSE
 maxnPlot=3
 absPlot<-TRUE
@@ -90,7 +89,13 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
               y1<-metaResult$exp$nullMax
               xlim<-c(0,1)
               # xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
+            },
+            "S-S"={
+              x<-metaResult$gauss$Smax
+              yS<-metaResult$exp$Smax
+              y1<-yS
             }
+            
     )
     keep<- !is.na(x) & !is.na(yS)
     best<-metaResult$bestS[keep]
@@ -104,28 +109,40 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       useBest<-yS==best
       # ylim<-c(-0.5,0.5)
       # ylabel<-"S"
-      switch (showMeta,
-              "S"={
+      switch (metaAnalysis$meta_showParams,
+              "S-k"={
                 y<-yS
-                ylim<-c(min(sAll),max(sAll))+c(-1,1)*(max(sAll)-min(sAll))/10
+                ylim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))+c(-1,1)*(max(sAll,na.rm=TRUE)-min(sAll,na.rm=TRUE))/4
                 ylabel<-"log(lk)"
+                xlabel<-"k"
               },
-              "n"={
+              "n-k"={
                 y<-y1
                 ylim<-c(-0.02,1.1)
                 ylabel<-bquote(bold(p[null]))
+                xlabel<-"k"
+              },
+              "S-S"={
+                y<-yS
+                xlim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))+c(-1,1)*(max(sAll,na.rm=TRUE)-min(sAll,na.rm=TRUE))/4
+                xlabel<-"log(lk Gauss)"
+                ylim<-xlim
+                ylabel<-"log(lk Exp)"
+                useBest<- (y>x & metaResult$effect$world$populationPDF=="Exp") | (y<x & metaResult$effect$world$populationPDF=="Gauss")
               })
-      
       pts<-data.frame(x=x,y=y)
       g<-ggplot(pts,aes(x=x, y=y))
       
       dotSize=min(4,max(4,sqrt(50/length(x))))
       # dotSize<-(plotTheme$axis.title$size)/3
 
-      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "grey", alpha=0.5, size = dotSize)
+      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "grey", size = dotSize)
       pts<-data.frame(x=x[useBest],y=y[useBest])
-      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "yellow", alpha=0.5, size = dotSize)
+      g<-g+geom_point(data=pts,aes(x=x, y=y),shape=shapes$meta, colour = "black", fill = "yellow", size = dotSize)
       
+      if (metaAnalysis$meta_showParams=="S-S") {
+        g<-g+geom_line(data=data.frame(x=xlim,y=ylim),aes(x=x,y=y),color="red")
+      }
       g<-g+theme(legend.position = "none")+plotTheme
       g<-g+scale_x_continuous(limits = xlim)
       
@@ -209,7 +226,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
               }
       )
     }
-    g<-g+xlab("k")
+    g<-g+xlab(xlabel)
     if (mean(y1)>0.5) {
       yp<-ylim[1]
       vj<-0
@@ -217,22 +234,50 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
         yp<-ylim[2]
         vj<-1
         }
-    lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
-    fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
-    if (metaAnalysis$meta_nullAnal) {
-      fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
-    }
-    fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
-    pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
     
-    use<-which.max(c(n1,n2,n3))
-    bestD<-c("Single","Gauss","Exp")[use]
-    if (metaWhich==bestD) {
+    if (metaAnalysis$meta_showParams=="S-S") {
+      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+      fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
+      if (metaAnalysis$meta_nullAnal) {
+        fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
+      }
+      fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
+      if (mean(x>y)) {
       g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+      } else {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+      }
+      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+      fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
+      if (metaAnalysis$meta_nullAnal) {
+        fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
+      }
+      fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
+      if (mean(x>y)) {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+      } else {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+      }
     } else {
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey",alpha=0.5)
-    }
+      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+      fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
+      if (metaAnalysis$meta_nullAnal) {
+        fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
+      }
+      fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
+      
+      use<-which.max(c(n1,n2,n3))
+      bestD<-c("Single","Gauss","Exp")[use]
+      if (metaWhich==bestD) {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+      } else {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+      }
     g+ggtitle(metaWhich)
+    }
     return(g)
   }
   

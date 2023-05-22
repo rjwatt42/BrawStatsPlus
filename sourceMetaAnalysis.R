@@ -70,13 +70,12 @@ updateMetaAnalysis<-function(){
     meta_nullAnal=input$meta_nullAnal,
     nsims=as.numeric(input$meta_runlength),
     meta_showAnal=input$meta_showAnal,
+    meta_showParams=input$meta_showParams,
     longHand=input$evidenceLongHand,
     showTheory=input$evidenceTheory,
     append=input$meta_append
   )
-  if (metaAnalysis$meta_pdf=="World") {
-    metaAnalysis$meta_pdf<-input$world_distr
-  }
+  if (metaAnalysis$meta_pdf!="All") metaAnalysis$meta_showAnal<-metaAnalysis$meta_pdf
   metaAnalysis
 }    
 
@@ -181,12 +180,24 @@ makeMetaGraph <- function() {
   } else {
     switch (metaAnalysis$meta_showAnal,
             "All"={
-    g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
-    g2<-drawMeta(metaAnalysis,metaResult,"Gauss")
-    g3<-drawMeta(metaAnalysis,metaResult,"Exp")
-    g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=4,ymin=0,ymax=10)+
-      annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=4,xmax=7,ymin=0,ymax=10)+
-      annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=7,xmax=10,ymin=0,ymax=10)
+              if (includeSingle)  {
+                g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
+                g2<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=FALSE)
+                g3<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=FALSE)
+                g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=4,ymin=0,ymax=10)+
+                  annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=4,xmax=7,ymin=0,ymax=10)+
+                  annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=7,xmax=10,ymin=0,ymax=10)
+              } else {
+                if (metaAnalysis$meta_showParams=="S-S") {
+                  g2<-drawMeta(metaAnalysis,metaResult,"S-S",yaxis=TRUE)
+                  g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=0.5,xmax=9.5,ymin=0,ymax=10)
+                } else {
+                  g2<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=TRUE)
+                  g3<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=FALSE)
+                  g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=0.5,xmax=5.5,ymin=0,ymax=10)+
+                    annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=10)
+                }
+              }  
             },
     "Single"={
       g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)

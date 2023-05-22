@@ -38,7 +38,7 @@ metaPanel<-function(prefix="") {
                           ),
                           tags$td(width = "30%",
                                   selectInput(paste0(prefix,"meta_pdf"),label=NULL,
-                                              choices=c("All","World"),
+                                              choices=c("All","Single","Gauss","Exp"),
                                               selected=metaAnalysis$meta_pdf,
                                               selectize=FALSE
                                   )
@@ -53,12 +53,23 @@ metaPanel<-function(prefix="") {
                           ),
                         ),
                         tags$tr(
-                          tags$td(width = "30%",tags$div(style = localStyle, "Show:")
+                          conditionalPanel(condition="input.meta_pdf == 'All'",
+                                           tags$td(width = "30%",tags$div(style = localStyle, "Show:")
+                                           )
                           ),
                           tags$td(width = "30%",
-                                  selectInput(paste0(prefix,"meta_showAnal"),label=NULL,
+                                  conditionalPanel(condition="input.meta_pdf == 'All'",
+                                                   selectInput(paste0(prefix,"meta_showAnal"),label=NULL,
                                               choices=c("All","Single","Gauss","Exp"),
                                               selected=metaAnalysis$meta_showAnal,
+                                              selectize=FALSE
+                                  )
+                                  )
+                          ),
+                          tags$td(width = "30%",
+                                  selectInput(paste0(prefix,"meta_showParams"),label=NULL,
+                                              choices=c("n-k","S-k","S-S"),
+                                              selected=metaAnalysis$meta_showParams,
                                               selectize=FALSE
                                   )
                           ),

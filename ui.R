@@ -11,7 +11,7 @@ list.of.packages<-c("shiny","shinyWidgets","shinyjs","shinyBS",
                     "ggplot2","tidyr","tools",
                     "mnormt","lme4","MuMIn",
                     "readxl","writexl","car","stringi","stringr","clipr","SuppDists","e1071","pracma",
-                    "htmlwidgets"
+                    "htmlwidgets","NlcOptim"
                     )
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -37,7 +37,8 @@ library(stringr)     # for str_* functions
 library(clipr)       # for clipboard functions
 library(SuppDists)   # for Johnson distributions
 library(e1071)       # for skewness and kurtosis
-library(pracma)      # for meshgrid
+library(pracma)      # for meshgrid & fmincon
+library(NlcOptim)    # for fmincon
 
 source("uiHeaderText.R") # headers to each tab
 

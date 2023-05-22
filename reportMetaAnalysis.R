@@ -18,7 +18,7 @@ reportMetaAnalysis<-function(result){
   outputText<-c(outputText,rep(" ",nc))
   
   if (result$count==1) {
-    if (result$metaAnalysis$meta_pdf=="Single" || result$metaAnalysis$meta_pdf=="All") {
+    if (result$metaAnalysis$meta_pdf=="Single" || (result$metaAnalysis$meta_pdf=="All" && includeSingle)) {
       outputText<-c(outputText,"\bEstimated","Single",format(n1),
                   paste0(format(mean(result$single$kmax),digits=3)),
                   paste0(format(mean(result$single$nullMax),digits=3)),
@@ -40,7 +40,7 @@ reportMetaAnalysis<-function(result){
                   )
         }
   } else {
-    if (result$metaAnalysis$meta_pdf=="Single" || result$metaAnalysis$meta_pdf=="All") {
+    if (result$metaAnalysis$meta_pdf=="Single" || (result$metaAnalysis$meta_pdf=="All" && includeSingle)) {
       outputText<-c(outputText,"\bEstimated","Single",format(n1),
                   paste0(format(mean(result$single$kmax),digits=3),"\u00B1",format(std(result$single$kmax),digits=2)),
                   paste0(format(mean(result$single$nullMax),digits=3),"\u00B1",format(std(result$single$nullMax),digits=2)),

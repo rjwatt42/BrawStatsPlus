@@ -144,6 +144,7 @@ metaAnalysis<-list(nstudies=100,
                    meta_nullAnal=TRUE,
                    nsims=1,
                    meta_showAnal="All",
+                   meta_showParams="n-k",
                    showTheory=TRUE,
                    append=FALSE
 )

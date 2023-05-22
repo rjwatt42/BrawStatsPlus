@@ -87,7 +87,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
     }
     
     # find best Single
-    if (metaAnalysis$meta_pdf=="Single" || metaAnalysis$meta_pdf=="All") {
+    if (metaAnalysis$meta_pdf=="Single" || (metaAnalysis$meta_pdf=="All" && includeSingle)) {
       nullvals<-startNullvals
       kvals<-seq(-1,1,length.out=nkpoints)*0.95
       for (re in 1:niterations) {
@@ -106,7 +106,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
         nullvals<-seq(lb2,ub2,length.out=nnullpoints)
       }
       if (niterations==1) {      
-        fun<-function(x) { -getLogLikelihood(zs,ns,"Exp",x[1],x[2],metaAnalysis$meta_psigAnal)}
+        fun<-function(x) { -getLogLikelihood(zs,ns,"Single",x[1],x[2],metaAnalysis$meta_psigAnal)}
         result<-fmincon(c(singleKmax,singleNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
         singleKmax<-result$par[1]
         singleNullmax<-result$par[2]
@@ -134,7 +134,7 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
         nullvals<-seq(lb2,ub2,length.out=nnullpoints)
       }
       if (niterations==1) {      
-        fun<-function(x) { -getLogLikelihood(zs,ns,"Exp",x[1],x[2],metaAnalysis$meta_psigAnal)}
+        fun<-function(x) { -getLogLikelihood(zs,ns,"Gauss",x[1],x[2],metaAnalysis$meta_psigAnal)}
         result<-fmincon(c(gaussKmax,gaussNullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
         gaussKmax<-result$par[1]
         gaussNullmax<-result$par[2]
