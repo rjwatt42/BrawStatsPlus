@@ -234,31 +234,28 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
         yp<-ylim[2]
         vj<-1
         }
-    
     if (metaAnalysis$meta_showParams=="S-S") {
-      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
-      fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
+      fullText<-paste0("Exp","(",format(mean(metaResult$exp$kmax),digits=3),"\u00B1",format(std(metaResult$exp$kmax),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$exp$nullMax),digits=3),"\u00B1",format(std(metaResult$exp$nullMax),digits=2))
       }
-      fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
-      pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
-      if (mean(x>y)) {
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$exp$Smax),digits=2),"\u00B1",format(std(metaResult$exp$Smax),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      pts_lb<-data.frame(x=xlim[1], y=ylim[2], lb=fullText)
+      if (mean(y>x)) {
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="yellow")
       } else {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="grey")
       }
-      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
-      fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
+      fullText<-paste0("Gauss","(",format(metaResult$gauss$kmax,digits=3),"\u00B1",format(std(metaResult$gauss$kmax),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$gauss$nullMax),digits=3),"\u00B1",format(std(metaResult$gauss$nullMax),digits=2))
       }
-      fullText<-paste0(fullText,"\nS= ",format(mean(yS),digits=2),"\u00B1",format(std(yS),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
-      pts_lb<-data.frame(x=mean(x), y=yp, lb=fullText)
-      if (mean(x>y)) {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+      fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$gauss$Smax),digits=2),"\u00B1",format(std(metaResult$gauss$Smax),digits=2)," (",format(sum(metaResult$bestDist==metaWhich)),"/",length(metaResult$bestDist),")")
+      pts_lb<-data.frame(x=xlim[2], y=ylim[1], lb=fullText)
+      if (mean(y>x)) {
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="grey")
       } else {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="yellow")
       }
     } else {
       lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
