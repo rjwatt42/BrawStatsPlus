@@ -20,44 +20,44 @@ reportMetaAnalysis<-function(result){
   if (result$count==1) {
     if (result$metaAnalysis$meta_pdf=="Single" || (result$metaAnalysis$meta_pdf=="All" && includeSingle)) {
       outputText<-c(outputText,"\bEstimated","Single",format(n1),
-                  paste0(format(mean(result$single$kmax),digits=3)),
-                  paste0(format(mean(result$single$nullMax),digits=3)),
+                  paste0(format(mean(result$single$Kmax),digits=3)),
+                  paste0(format(mean(result$single$Nullmax),digits=3)),
                   paste0(format(mean(result$single$Smax),digits=3))
                   )
     }
     if (result$metaAnalysis$meta_pdf=="Gauss" || result$metaAnalysis$meta_pdf=="All") {
         outputText<-c(outputText," ","Gauss",format(n2),
-                  paste0(format(mean(result$gauss$kmax),digits=3)),
-                  paste0(format(mean(result$gauss$nullMax),digits=3)),
+                  paste0(format(mean(result$gauss$Kmax),digits=3)),
+                  paste0(format(mean(result$gauss$Nullmax),digits=3)),
                   paste0(format(mean(result$gauss$Smax),digits=3))
                   )
       }
     if (result$metaAnalysis$meta_pdf=="Exp" || result$metaAnalysis$meta_pdf=="All") {
           outputText<-c(outputText," ","Exp",format(n3),
-                  paste0(format(mean(result$exp$kmax),digits=3)),
-                  paste0(format(mean(result$exp$nullMax),digits=3)),
+                  paste0(format(mean(result$exp$Kmax),digits=3)),
+                  paste0(format(mean(result$exp$Nullmax),digits=3)),
                   paste0(format(mean(result$exp$Smax),digits=3))
                   )
         }
   } else {
     if (result$metaAnalysis$meta_pdf=="Single" || (result$metaAnalysis$meta_pdf=="All" && includeSingle)) {
       outputText<-c(outputText,"\bEstimated","Single",format(n1),
-                  paste0(format(mean(result$single$kmax),digits=3),"\u00B1",format(std(result$single$kmax),digits=2)),
-                  paste0(format(mean(result$single$nullMax),digits=3),"\u00B1",format(std(result$single$nullMax),digits=2)),
+                  paste0(format(mean(result$single$Kmax),digits=3),"\u00B1",format(std(result$single$Kmax),digits=2)),
+                  paste0(format(mean(result$single$Nullmax),digits=3),"\u00B1",format(std(result$single$Nullmax),digits=2)),
                   paste0(format(mean(result$single$Smax),digits=3),"\u00B1",format(std(result$single$Smax),digits=2))
                   )
     }
     if (result$metaAnalysis$meta_pdf=="Gauss" || result$metaAnalysis$meta_pdf=="All") {
         outputText<-c(outputText," ","Gauss",format(n2),
-                  paste0(format(mean(result$gauss$kmax),digits=3),"\u00B1",format(std(result$gauss$kmax),digits=2)),
-                  paste0(format(mean(result$gauss$nullMax),digits=3),"\u00B1",format(std(result$gauss$nullMax),digits=2)),
+                  paste0(format(mean(result$gauss$Kmax),digits=3),"\u00B1",format(std(result$gauss$Kmax),digits=2)),
+                  paste0(format(mean(result$gauss$Nullmax),digits=3),"\u00B1",format(std(result$gauss$Nullmax),digits=2)),
                   paste0(format(mean(result$gauss$Smax),digits=3),"\u00B1",format(std(result$gauss$Smax),digits=2))
                   )
       }
     if (result$metaAnalysis$meta_pdf=="Exp" || result$metaAnalysis$meta_pdf=="All") {
       outputText<-c(outputText," ","Exp",format(n3),
-                  paste0(format(mean(result$exp$kmax),digits=3),"\u00B1",format(std(result$exp$kmax),digits=2)),
-                  paste0(format(mean(result$exp$nullMax),digits=3),"\u00B1",format(std(result$exp$nullMax),digits=2)),
+                  paste0(format(mean(result$exp$Kmax),digits=3),"\u00B1",format(std(result$exp$Kmax),digits=2)),
+                  paste0(format(mean(result$exp$Nullmax),digits=3),"\u00B1",format(std(result$exp$Nullmax),digits=2)),
                   paste0(format(mean(result$exp$Smax),digits=3),"\u00B1",format(std(result$exp$Smax),digits=2))
                   )
     }

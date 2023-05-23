@@ -72,21 +72,21 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
     sAll<-c(metaResult$single$Smax,metaResult$gauss$Smax,metaResult$exp$Smax)
     switch (metaWhich,
             "Single"={
-              x<-metaResult$single$kmax
+              x<-metaResult$single$Kmax
               yS<-metaResult$single$Smax
-              y1<-metaResult$single$nullMax
+              y1<-metaResult$single$Nullmax
               xlim<-c(-1,1)
             },
             "Gauss"={
-              x<-metaResult$gauss$kmax
+              x<-metaResult$gauss$Kmax
               yS<-metaResult$gauss$Smax
-              y1<-metaResult$gauss$nullMax
+              y1<-metaResult$gauss$Nullmax
               xlim<-c(0,1)
             },
             "Exp"={
-              x<-metaResult$exp$kmax
+              x<-metaResult$exp$Kmax
               yS<-metaResult$exp$Smax
-              y1<-metaResult$exp$nullMax
+              y1<-metaResult$exp$Nullmax
               xlim<-c(0,1)
               # xlim<-c(min(x),max(x))+c(-1,1)*(max(x)-min(x))*0.2
             },
@@ -194,9 +194,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
                     g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="white",colour="black")
                   }
                   g<-g+theme(legend.position = "none")+plotTheme
-                  h2a<-makeMetaHist(metaResult$single$kmax,metaResult$single$Smax==metaResult$bestS,c(-1,1))
-                  h2b<-makeMetaHist(metaResult$gauss$kmax,metaResult$gauss$Smax==metaResult$bestS,c(0,1))
-                  h2c<-makeMetaHist(metaResult$exp$kmax,metaResult$exp$Smax==metaResult$bestS,c(0,1))
+                  h2a<-makeMetaHist(metaResult$single$Kmax,metaResult$single$Smax==metaResult$bestS,c(-1,1))
+                  h2b<-makeMetaHist(metaResult$gauss$Kmax,metaResult$gauss$Smax==metaResult$bestS,c(0,1))
+                  h2c<-makeMetaHist(metaResult$exp$Kmax,metaResult$exp$Smax==metaResult$bestS,c(0,1))
                   ylim<-c(0,max(c(h2a$dens,h2b$dens,h2c$dens)*1.2))
                   g<-g+scale_y_continuous(limits=ylim,breaks=c())+ylab("")
                 }
@@ -235,9 +235,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
         vj<-1
         }
     if (metaAnalysis$meta_showParams=="S-S") {
-      fullText<-paste0("Exp","(",format(mean(metaResult$exp$kmax),digits=3),"\u00B1",format(std(metaResult$exp$kmax),digits=2),")")
+      fullText<-paste0("Exp","(",format(mean(metaResult$exp$Kmax),digits=3),"\u00B1",format(std(metaResult$exp$Kmax),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$exp$nullMax),digits=3),"\u00B1",format(std(metaResult$exp$nullMax),digits=2))
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$exp$Nullmax),digits=3),"\u00B1",format(std(metaResult$exp$Nullmax),digits=2))
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$exp$Smax),digits=2),"\u00B1",format(std(metaResult$exp$Smax),digits=2)," (",format(sum(y>x)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[1], y=ylim[2], lb=fullText)
@@ -246,9 +246,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       } else {
         g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="grey")
       }
-      fullText<-paste0("Gauss","(",format(metaResult$gauss$kmax,digits=3),"\u00B1",format(std(metaResult$gauss$kmax),digits=2),")")
+      fullText<-paste0("Gauss","(",format(metaResult$gauss$Kmax,digits=3),"\u00B1",format(std(metaResult$gauss$Kmax),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
-        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$gauss$nullMax),digits=3),"\u00B1",format(std(metaResult$gauss$nullMax),digits=2))
+        fullText<-paste0(fullText,"\nnull=",format(mean(metaResult$gauss$Nullmax),digits=3),"\u00B1",format(std(metaResult$gauss$Nullmax),digits=2))
       }
       fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$gauss$Smax),digits=2),"\u00B1",format(std(metaResult$gauss$Smax),digits=2)," (",format(sum(x>y)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[2], y=ylim[1], lb=fullText)
@@ -258,7 +258,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
         g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="yellow")
       }
     } else {
-      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+      lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$Kmax),digits=2),")")
       fullText<-paste0(metaWhich,"(",format(mean(x),digits=3),"\u00B1",format(std(x),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
         fullText<-paste0(fullText,"\nnull=",format(mean(y1),digits=3),"\u00B1",format(std(y1),digits=2))
@@ -411,9 +411,9 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   # g<-g+geom_contour(data=ptsd,aes(x=x,y=y,z=z),colour="black",breaks=c(0.1,0.3,0.5,0.7,0.9),lwd=1) 
   g<-g+geom_contour(data=ptsb,aes(x=x,y=y,z=z),colour="black",breaks=c(0.1,0.3,0.5,0.7,0.9),lwd=0.1)
   
-  lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$kmax),digits=2),")")
+  lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$Kmax),digits=2),")")
   if (metaResult$metaAnalysis$meta_nullAnal) {
-    lb<-paste0(lb," p[null]=",format(metaResult$bestNull,digits=3),"\u00B1",format(std(result$exp$nullMax),digits=2),"")
+    lb<-paste0(lb," p[null]=",format(metaResult$bestNull,digits=3),"\u00B1",format(std(result$exp$Nullmax),digits=2),"")
   }
   pts_lb<-data.frame(x=0,y=max(y)*1.1,lb=lb)
   if (absPlot) pts_lb$x[1]<-0.5
