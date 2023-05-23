@@ -7,12 +7,11 @@ getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
   reInc<-(nkpoints-1)/2/3
 
   if (metaAnalysis$meta_nullAnal) {
-    startNullvals<-seq(0,1,length.out=nnullpoints)
+    nullvals<-seq(0,1,length.out=nnullpoints)
   } else {
-    startNullvals<-0
+    nullvals<-0
   }
-  
-  nullvals<-startNullvals
+
   if (dist=="Single") {
     kvals<-seq(-1,1,length.out=nkpoints)*0.95
   } else {
@@ -32,7 +31,9 @@ getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
     ub1<-kvals[min(length(kvals),use[1,1]+reInc)]
     
     kvals<-seq(lb1,ub1,length.out=nkpoints)
-    nullvals<-seq(lb2,ub2,length.out=nnullpoints)
+    if (metaAnalysis$meta_nullAnal) {
+      nullvals<-seq(lb2,ub2,length.out=nnullpoints)
+    }
   }
   
   if (niterations==1) {      
