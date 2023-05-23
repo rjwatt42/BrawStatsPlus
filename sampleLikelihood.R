@@ -1,12 +1,4 @@
 
-ZeroSamplingPDF<-function(z,sigma) {
-  exp(-0.5*(z^2/sigma^2))/sqrt(2*pi*sigma^2)
-}
-ZeroSamplingCDF<-function(zcrit,sigma) {
-  1-(pnorm(zcrit,0,sigma)-pnorm(-zcrit,0,sigma))
-}
-
-
 SingleSamplingPDF<-function(z,lambda,sigma) {
   exp(-0.5*((z-lambda)^2/sigma^2))/sqrt(2*pi*sigma^2)
 }
@@ -54,6 +46,7 @@ ExpSamplingCDF<-function(zcrit,lambda,sigma) {
   1-(p1-p2)
 }
 
+
 getLogLikelihood<-function(z,n,worldDistr,worldDistK,worldDistNullP=0,p_sig=FALSE) {
   sigma<-1/sqrt(n-3)
   
@@ -76,46 +69,29 @@ getLogLikelihood<-function(z,n,worldDistr,worldDistK,worldDistNullP=0,p_sig=FALS
   res<-matrix(0,nrow=length(worldDistK),ncol=length(worldDistNullP))
   switch(worldDistr,
          "Single"={
-           for (i in 1:length(worldDistK)) {
-             lambda<-worldDistK[i]
-             if (p_sig) {
-               gainMain<-SingleSamplingCDF(zcrit,lambda,sigma)
-             }
-             mainLikelihoods<-SingleSamplingPDF(z,lambda,sigma)
-             for (j in 1:length(worldDistNullP)) {
-               likelihoods<-(mainLikelihoods*(1-worldDistNullP[j])+nullLikelihoods*worldDistNullP[j])/(gainMain*(1-worldDistNullP[j])+gainNull*worldDistNullP[j])
-               res[i,j]<-sum(log(likelihoods[likelihoods>1e-300]),na.rm=TRUE)
-             }
-           }
+           CDF<-SingleSamplingCDF
+           PDF<-SingleSamplingPDF
          },
          "Gauss"={
-           for (i in 1:length(worldDistK)) {
-             lambda<-worldDistK[i]
-             if (p_sig) {
-               gainMain<-GaussSamplingCDF(zcrit,lambda,sigma)
-             }
-             mainLikelihoods<-GaussSamplingPDF(z,lambda,sigma)
-             for (j in 1:length(worldDistNullP)) {
-               likelihoods<-(mainLikelihoods*(1-worldDistNullP[j])+nullLikelihoods*worldDistNullP[j])/(gainMain*(1-worldDistNullP[j])+gainNull*worldDistNullP[j])
-               res[i,j]<-sum(log(likelihoods[likelihoods>1e-300]),na.rm=TRUE)
-             }
-           }
+           CDF<-GaussSamplingCDF
+           PDF<-GaussSamplingPDF
          },
          "Exp"={
-           for (i in 1:length(worldDistK)) {
-             lambda<-worldDistK[i]
-             # z<-abs(z)
-             if (p_sig) {
-               gainMain<-ExpSamplingCDF(zcrit,lambda,sigma)
-             }
-             mainLikelihoods<-ExpSamplingPDF(z,lambda,sigma)
-             for (j in 1:length(worldDistNullP)) {
-               likelihoods<-(mainLikelihoods*(1-worldDistNullP[j])+nullLikelihoods*worldDistNullP[j])/(gainMain*(1-worldDistNullP[j])+gainNull*worldDistNullP[j])
-               res[i,j]<-sum(log(likelihoods[likelihoods>1e-300]),na.rm=TRUE)
-             }
-           }
+           CDF<-ExpSamplingCDF
+           PDF<-ExpSamplingPDF
          }
   )
+  for (i in 1:length(worldDistK)) {
+    lambda<-worldDistK[i]
+    if (p_sig) {
+      gainMain<-CDF(zcrit,lambda,sigma)
+    }
+    mainLikelihoods<-PDF(z,lambda,sigma)
+    for (j in 1:length(worldDistNullP)) {
+      likelihoods<-(mainLikelihoods*(1-worldDistNullP[j])+nullLikelihoods*worldDistNullP[j])/(gainMain*(1-worldDistNullP[j])+gainNull*worldDistNullP[j])
+      res[i,j]<-sum(log(likelihoods[likelihoods>1e-300]),na.rm=TRUE)
+    }
+  }
   res
 }
 

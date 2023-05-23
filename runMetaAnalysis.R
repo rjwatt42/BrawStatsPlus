@@ -1,43 +1,3 @@
-source("runLikelihood.R")
-
-getMaxS<-function(S,kvals) {
-  np<-length(kvals)
-  if (S[1]==max(S)) {
-    return(kvals[1])
-  }
-  if (S[np]==max(S)) {
-    return(kvals[np])
-  }
-  closeMax<-which.max(S)
-  use<-closeMax+seq(-1,1)
-  closerMax<-approx(diff(S[use]),(kvals[use[1:2]]+kvals[use[2:3]])/2,0)$y
-  return(closerMax)
-}
-
-findPmax<-function(zs,ns,distr,kvals,psigAnal,S) {
-  nzp<-11
-  pzvals<-seq(0,1,length.out=nzp)
-  Nullmax<-0
-  for (i in 1:nzp) {
-    newS<-getLogLikelihood(zs,ns,distr,kvals,pzvals[i],psigAnal)
-    if (max(newS,na.rm=TRUE)>max(S)) {
-      S<-newS
-      Nullmax<-pzvals[i]
-    }
-  }
-  pzvals<-seq(-0.1,0.1,length.out=nzp)+Nullmax
-  pzvals<-pzvals[pzvals>=0]
-  pzvals<-pzvals[pzvals<=1]
-  for (i in 1:length(pzvals)) {
-    newS<-getLogLikelihood(zs,ns,distr,kvals,pzvals[i],psigAnal)
-    if (max(newS)>max(S)) {
-      S<-newS
-      Nullmax<-pzvals[i]
-    }
-  }
-  
-  list(S=S,Nullmax=Nullmax)
-}
 
 getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
   nkpoints<-13
@@ -95,11 +55,6 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
     single<-getMaxLikelihood(zs,ns,"Single",metaAnalysis)
     gauss<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     exp<-list(Kmax=NA,Nullmax=NA,Smax=NA)
-    
-    bestDist<-"Single"
-    bestK<-single$Kmax
-    bestNull<-0
-    bestS<-single$Smax
 
   } else {
     
@@ -126,15 +81,15 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
       exp<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     }
     
-    use<-which.max(c(single$Smax,gauss$Smax,exp$Smax))
-    bestDist<-c("Single","Gauss","Exp")[use]
-    bestK<-c(single$Kmax,gauss$Kmax,exp$Kmax)[use]
-    bestNull<-c(single$Nullmax,gauss$Nullmax,exp$Nullmax)[use]
-    bestS<-c(single$Smax,gauss$Smax,exp$Smax)[use]
-    
   }
   
   
+  use<-which.max(c(single$Smax,gauss$Smax,exp$Smax))
+  bestDist<-c("Single","Gauss","Exp")[use]
+  bestK<-c(single$Kmax,gauss$Kmax,exp$Kmax)[use]
+  bestNull<-c(single$Nullmax,gauss$Nullmax,exp$Nullmax)[use]
+  bestS<-c(single$Smax,gauss$Smax,exp$Smax)[use]
+
   if (metaAnalysis$append) {
     bestDist<-c(metaResult$bestDist,bestDist)
     bestK<-c(metaResult$bestK,bestK)
