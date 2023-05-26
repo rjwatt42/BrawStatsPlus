@@ -1,4 +1,5 @@
 source("uiBatchFiles.R")
+source("uiMetaFiles.R")
 
 FilesTab <-
 
@@ -76,7 +77,7 @@ wellPanel(
                                     tags$tr(
                                       tags$td(width = "5%", style="border-bottom: 1px solid black;border-top: 1px solid black;border-left: 1px solid black;",tags$div(style = localStyle, "export:")),
                                       tags$td(width = "50%", style="border-bottom: 1px solid black;border-top: 1px solid black;",
-                                              textInput("DataoutputFile",label=NULL)),
+                                              textInput("dataOutputFile",label=NULL)),
                                       tags$td(width = "5%", style="border-bottom: 1px solid black;border-top: 1px solid black;border-right: 1px solid black;",
                                               actionButton("dataOutputFileSave","Save")),
                                     ),

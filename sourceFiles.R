@@ -153,13 +153,30 @@ exportDataClip<-observeEvent(input$dCopy, {
 exportDataFile<-observeEvent(input$dataOutputFileSave, {
   data<-exportData()      
   if (!is.null(data)) 
-  {filename<-input$DataoutputFile
+  {filename<-input$dataOutputFile
   ext<-file_ext(filename)
   if (ext!="xlsx" && ext!="xls") {filename=paste(filename,".xlsx",sep="")}
   
   write_xlsx(data, path = filename)
   }
 })
+
+
+##########################################
+
+exportMetaFile<-observeEvent(input$metaOutputFileSave, {
+  meta<-data.frame(rs=metaResult$result$rIV,n=metaResult$result$nval)
+  if (!is.null(meta)) 
+  {filename<-input$metaOutputFile
+  ext<-file_ext(filename)
+  if (ext!="xlsx" && ext!="xls") {filename=paste(filename,".xlsx",sep="")}
+  
+  write_xlsx(meta, path = filename)
+  }
+})
+
+
+##########################################
 
 addList<-function(L,name) {
   addFields<-names(L)

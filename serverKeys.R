@@ -34,6 +34,7 @@ loadExtras<-function(which=0){
     insertTab("Graphs",metaGraphPanel(),"Expect","after",select=FALSE,session)
     insertTab("Reports",metaReportPanel(),"Expect","after",select=FALSE,session)
     insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
+    insertTab("FileTab",metaFilePanel(),"Data","after",select=FALSE,session)
   }
   # explore
   updateSelectInput(session,"Explore_typeH",choices=hypothesisChoices2)

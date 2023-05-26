@@ -16,7 +16,8 @@ UniformSamplingCDF<-function(zcrit,lambda,sigma) {
 
 
 GaussSamplingPDF<-function(z,lambda,sigma) {
-  exp(-0.5*z^2/(sigma^2+lambda^2))/sqrt(2*pi*(sigma^2+lambda^2))
+  sigma<-sqrt(lambda^2+sigma^2)
+  exp(-0.5*z^2/sigma^2)/sqrt(2*pi*sigma^2)
 }
 GaussSamplingCDF<-function(zcrit,lambda,sigma) {
   sigma<-sqrt(lambda^2+sigma^2)
