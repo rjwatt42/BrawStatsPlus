@@ -1,6 +1,9 @@
 
-npops=2*3*4*5+1 # 2*3*4*n+1
+npops=2*3*4*50+1 # 2*3*4*n+1
 npoints=501
+
+uniformGain=1
+
 
 zdens2rdens<-function(zdens,rvals){
   zdens/(1-rvals^2)
@@ -34,7 +37,7 @@ zpriorDistr<-function(zvals,Population_distr,PopulationRZ,k){
           },
           "Uniform_z"={
             zdens<-zvals*0+1
-            zdens/5
+            zdens*uniformGain
           },
           "Exp_r"={
             rvals<-tanh(zvals)
@@ -75,12 +78,12 @@ zpopDistr<-function(zvals,Population_distr,PopulationRZ,k){
             zdens
           },
           "Uniform_r"={
-            zdens<-atanh(zvals)*0+1*0.2
+            zdens<-atanh(zvals)*0+1*uniformGain
             rdens2zdens(zdens,zvals)
           },
           "Uniform_z"={
             zdens<-zvals*0+1
-            zdens/5
+            zdens*uniformGain
           },
           "Exp_r"={
             exp(-abs(tanh(zvals)/k))
@@ -111,13 +114,13 @@ rpopDistr<-function(rvals,Population_distr,PopulationRZ,k){
             zdens
           },
           "Uniform_r"={
-            rvals*0+1*0.2
+            rvals*0+1*uniformGain
           },
           "Uniform_z"={
             zvals<-atanh(rvals)
             zdens<-zvals*0+1
             zdens<-zdens2rdens(zdens,rvals)
-            zdens/5
+            zdens*uniformGain
           },
           "Exp_r"={
             exp(-abs(rvals)/k)
@@ -213,7 +216,7 @@ densityFunctionStats<-function(dens_r,rp){
 
 }
 
-get_pRho<-function(world,by="r") {
+get_pRho<-function(world,by="r",viewRZ="r") {
   
   if (by=="z") {
     if (world$populationPDF=="Single") {
@@ -228,18 +231,18 @@ get_pRho<-function(world,by="r") {
         pRhogain<-c(world$populationNullp,1-world$populationNullp)
       }
     } else {
-      switch (likelihood$viewRZ,
+      switch (viewRZ,
               "r" ={
                 pRho<-atanh(seq(-1,1,length=npops)*r_range*0.9)
                 pRhogain<-zpriorDistr(pRho,world$populationPDF,world$populationRZ,world$populationPDFk)
               },
               "z" ={
-                pRho<-seq(-1,1,length=npops)*z_range
+                pRho<-seq(-1,1,length=npops)*z_range*1.5
                 pRhogain<-zpriorDistr(pRho,world$populationPDF,world$populationRZ,world$populationPDFk)
               }
       )
     }
-    
+
   } else {
     if (!world$worldOn) {
       world$populationPDF="Single"
@@ -288,7 +291,7 @@ getZDist<-function(rs,pRho,pRhogain,source,design,likelihood) {
         d[abs(rs)<crit_z]<-0
       }
     }
-    d<-d/sum(d)
+    # d<-d/sum(d)
     sDens_z[ei,]<-d*pRhogain[ei]
   }
   # and sum of sampling distributions
@@ -316,7 +319,7 @@ getZDist<-function(rs,pRho,pRhogain,source,design,likelihood) {
       d[abs(rs)<crit_z]<-0
     }
   }
-  sDens_z_null<-d/sum(d)
+  sDens_z_null<-d #/sum(d)
   
   list(sDens_z=sDens_z,sDens_z_plus=sDens_z_plus,sDens_z_null=sDens_z_null)
 }
@@ -515,7 +518,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   
   # enumerate the source populations
   #  as r and gain 
-  pR<-get_pRho(source,"z")
+  pR<-get_pRho(source,"z",likelihood$viewRZ)
   pRho<-pR$pRho
   pRhogain<-pR$pRhogain
   sD<-getZDist(rs,pRho,pRhogain,source,design,likelihood)
@@ -523,7 +526,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   sDens_z_plus<-sD$sDens_z_plus
   sDens_z_null<-sD$sDens_z_null
   
-  pR<-get_pRho(prior,"z")
+  pR<-get_pRho(prior,"z",likelihood$viewRZ)
   pRhoP<-pR$pRho
   pRhogainP<-pR$pRhogain
   sD<-getZDist(rs,pRhoP,pRhogainP,prior,design,likelihood)
@@ -533,7 +536,11 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
 
   if (length(pRho)>25) {
     l<-length(pRho)
-    use<-seq(1,l,(l-1)/24)
+    use<-seq(1,l,length.out=(l-1)/24)
+    if (likelihood$viewRZ=="z") {
+      keep<-abs(pRho[use])<z_range
+      use<-use[keep]
+    }
     sDens_z<-sDens_z[use,]
     pRho<-pRho[use]
     pRhogain<-pRhogain[use]

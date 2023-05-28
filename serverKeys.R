@@ -115,6 +115,11 @@ if (switches$doKeys) {
       updateNumericInput(session,"Explore_nRange",value=10000)
     }
     
+    if (input$keypress==ascii("z") && controlKeyOn){
+      updateSelectInput(session,"likelihoodViewRZ",selected="z")
+      updateSelectInput(session,"Explore_showD",selected="z")
+    }
+    
     # control-V
     if (is_local && input$keypress==ascii("v") && controlKeyOn){
       mergeVariables<<-FALSE

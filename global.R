@@ -190,7 +190,7 @@ lrRange<-20
 
 shortHandGain=10
 
-z_range<-1.75
+z_range<-2
 r_range<-0.975
 fullRange<-3
 nNpoints<-51

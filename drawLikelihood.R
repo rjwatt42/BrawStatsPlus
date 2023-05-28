@@ -42,6 +42,10 @@ showJointLk<-FALSE
 showNull<-TRUE
 
 drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
+  switch (likelihood$UseSource,
+          "world"={likelihood$source<-likelihood$world},
+          "prior"={likelihood$source<-likelihood$prior},
+          "null"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)})
   # make the distribution        
 
   switch (likelihood$type,
@@ -132,7 +136,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             if (view_lims[2]<=1) {
             plot_ticks=seq(view_lims[1],view_lims[2],0.25)
             } else {
-              plot_ticks=seq(-1.5,1.5,0.5)
+              plot_ticks=seq(view_lims[1],view_lims[2],0.5)
             }
             tick.x.start <- trans3d(plot_ticks, view_lims[1], 0.0, mapping)
             tick.x.end <- trans3d(plot_ticks , view_lims[1]-tick_length, 0.0, mapping)
@@ -188,14 +192,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               ztotal<-sampleBackwall$rsw_dens_plus+sampleBackwall$rsw_dens_null
               polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,ztotal,0)*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
               
-              if (likelihood$world$worldOn) {
+              if (likelihood$source$worldOn && likelihood$source$populationNullp>0){
                 if (!any(is.na(sampleBackwall$rsw_dens_null))) {
                   znull <- sampleBackwall$rsw_dens_null
                 } else {
                   znull<-0
                 }
                 zplus<-sampleBackwall$rsw_dens_plus
-                if (likelihood$world$populationNullp>0 ) {
+                if (likelihood$source$populationNullp>0 ) {
                   lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                 }
                 lines(trans3d(x=x,y=y,z=zplus*wallHeight,pmat=mapping),col=colDistS,lwd=2)
@@ -256,7 +260,6 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               }
               
             theoryAlpha=1
-            # simulations
             switch (likelihood$type,
                     "Samples"={
                       simAlpha<-1
@@ -265,7 +268,11 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         simAlpha<-0.95
                       }
                       if (length(pRho)>11) {
-                        theoryAlpha<-theoryAlpha/2
+                        if (!is.na(likelihood$targetSample) && !likelihood$cutaway) {
+                          theoryAlpha<-theoryAlpha/2
+                        } else {
+                          theoryAlpha<-1
+                        }
                       }
                       if (!is.null(likelihoodResult$Sims$sSimDens)) {
                         bins<-likelihoodResult$Sims$sSimBins
@@ -290,6 +297,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         x1<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
                       } else {dens<-NULL}
 
+                      # simulations
                       for (i in 1:length(pRho)) {
                         # draw simulations
                         if (!is.null(dens)){
@@ -298,9 +306,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         }
                         
                         # now draw theory
-                        gain<-(1-likelihood$world$populationNullp)
+                        gain<-(1-likelihood$source$populationNullp)
                         if (length(pRho)==2) {
-                          gain<-max(c(1-likelihood$world$populationNullp,likelihood$world$populationNullp))
+                          gain<-max(c(1-likelihood$source$populationNullp,likelihood$source$populationNullp))
                         } 
                         gain<-gain*0.75
                         if (likelihood$likelihoodTheory){
@@ -308,7 +316,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                             if (length(pRho)==2) {
                               col<-addTransparency(colS,theoryAlpha)
                             } else {
-                              col<-addTransparency(colS,1)
+                              col<-addTransparency(colS,theoryAlpha)
                             }
                           } else {
                             col<-addTransparency(colS,theoryAlpha)
