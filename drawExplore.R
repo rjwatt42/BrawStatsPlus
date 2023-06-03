@@ -672,9 +672,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (multi=="allEffects" || multi=="mainEffects") {
       vals_offset<-(ni2-1)*(valsRange*valsGap)
     }
-    pts1<-data.frame(vals=vals+vals_offset,y25=y25,y38=y38,y50=y50,y62=y62,y75=y75)
 
     if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
+      pts1<-data.frame(vals=vals+vals_offset,y25=y25,y50=y50,y75=y75)
       pts2<-data.frame(vals=vals+vals_offset,y25e=y25e,y50e=y50e,y75e=y75e)
       
       if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
@@ -803,6 +803,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # g<-g+geom_polygon(data=pts1,aes(x=x,y=y),fill=plotcolours$sampleC)
         # g<-g+geom_polygon(data=pts2,aes(x=x,y=y),fill=plotcolours$sampleC,alpha=0.7)
       } else {
+        pts1<-data.frame(vals=vals+vals_offset,y25=y25,y38=y38,y50=y50,y62=y62,y75=y75)
         if (doLine) {
         pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)))
         pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)))
