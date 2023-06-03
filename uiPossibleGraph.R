@@ -4,7 +4,8 @@ if (switches$doPossible) {
     tabPanel("Possible",class="Graphs",
              tags$table(width = "100%",class="myTable",
                         tags$tr(
-                          tags$td(width = "97%",plotOutput("LikelihoodPlot")),
+                          tags$td(width = "90%",plotOutput("LikelihoodPlot")),
+                          tags$td(width = "7%"),
                           tags$td(width = "3%",valign="top",actionButton("LGPossibleStart",label=expandLabel)),
                         )
              ),
