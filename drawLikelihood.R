@@ -540,9 +540,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   # null
                   if (likelihood$world$worldOn) {
                     if (likelihood$world$populationNullp>0)
-                      lines (x = rs, y = sDens_r_null, col = colNullS, lwd=1)
+                      lines (x = rs, y = sDens_r_null, col = colNullS, lwd=2)
                   # plus
-                  lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=1)
+                    lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=2)
                   }
                   
                   if ((!is.na(sRho[1]))) {

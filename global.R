@@ -177,6 +177,7 @@ likelihood<-
        likelihoodTheory=TRUE,
        likelihoodLongHand=FALSE,
        likelihoodSimSlice=0.1,likelihoodCorrection=TRUE,
+       likelihoodHQ=FALSE,
        appendSim=FALSE,Likelihood_length="10",
        viewRZ="z",
        view="3D",azimuth=50,elevation=5,range=2,

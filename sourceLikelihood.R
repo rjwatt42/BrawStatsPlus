@@ -126,6 +126,7 @@ updateLikelihood<-function(){
                    sigOnly=input$likelihood_sigonly,
                    likelihoodTheory=input$likelihoodTheory,likelihoodLongHand=input$likelihoodLongHand,
                    likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
+                   likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihoodP_append,Likelihood_length=as.numeric(input$likelihoodP_length),
                    view=input$LikelihoodView,viewRZ=input$likelihoodViewRZ,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
@@ -145,6 +146,7 @@ updateLikelihood<-function(){
                    sigOnly=input$likelihood_sigonly,
                    ResultHistory=ResultHistory,
                    likelihoodTheory=input$likelihoodTheory,likelihoodLongHand=input$likelihoodLongHand,likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
+                   likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihood_append,Likelihood_length=as.numeric(input$likelihood_length),
                    view=input$LikelihoodView,viewRZ=input$likelihoodViewRZ,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
@@ -203,6 +205,7 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
                                     input$EvidencenewSample,
                                     input$likelihoodTheory,input$likelihood_sigonly,
                                     input$likelihoodLongHand,input$likelihoodSimSlice,input$likelihoodCorrection,
+                                    input$likelihoodHQ,
                                     input$likelihoodViewRZ,
                                     input$LGshowPossible,
                                     input$LGlikelihood_run,input$LGlikelihoodP_run,

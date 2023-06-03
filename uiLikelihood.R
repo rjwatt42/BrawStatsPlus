@@ -131,10 +131,12 @@ LikelihoodTab <-
                                     #   tags$td(width = "10%",actionButton("LGdoPossible","i"))
                                     # ),
                                     tags$tr(
-                                      tags$td(width = "25%", tags$div(style = localPlainStyle, "sim slice:")),
+                                      tags$td(width = "20%", tags$div(style = localPlainStyle, "sim slice:")),
                                       tags$td(width = "20%",numericInput("likelihoodSimSlice",label=NULL,value=likelihood$likelihoodSimSlice,max=0.2,min=0.0001,step=0.01)),
                                       tags$td(width = "25%", tags$div(style = localPlainStyle, "correction:")),
-                                      tags$td(width = "30%",checkboxInput("likelihoodCorrection", value=likelihood$likelihoodCorrection, label=NULL))
+                                      tags$td(width = "10%",checkboxInput("likelihoodCorrection", value=likelihood$likelihoodCorrection, label=NULL)),
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "HQ:")),
+                                      tags$td(width = "10%",checkboxInput("likelihoodHQ", value=likelihood$likelihoodHQ, label=NULL))
                                     ),
                                     
                          ),
