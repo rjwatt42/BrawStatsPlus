@@ -42,7 +42,7 @@ variableChoices=list("& type"="Type",
 designChoices=list("Sampling"=list("Sample Size" = "SampleSize",
                                    "Sampling Method" = "Method",
                                    "Sample Usage" = "Usage",
-                                   "Gamma" = "Gamma",
+                                   "Sample Gamma" = "SampleGamma",
                                    "Alpha" = "Alpha"),
                    "Anomalies"=list("Dependence" = "Dependence",
                                     "Outliers" = "Outliers",
@@ -74,7 +74,7 @@ showInfer<-list("p-value" = "p",
                 "NHST errors" = "NHSTErrors")
 
 if (switches$doWorlds) {
-  showInfer<-c(showInfer,list("False Discovery" = "FDR"))
+  showInfer<-c(showInfer,list("False Discovery" = "FDR","Sample Size"="SampleSize"))
 }
 if (switches$doLikelihoodInfer) {
   showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",

@@ -75,7 +75,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           },
           "Method"={vals<-c("Random","Stratified","Cluster","Convenience","Snowball")},
           "Usage"={vals<-c("Between","Within")},
-          "Gamma"={vals<-seq(1,10,length.out=npoints)},
+          "SampleGamma"={vals<-seq(1,10,length.out=npoints)},
           "Alpha"={vals<-c(0.001,0.0025,0.005,0.01,0.025,0.05,0.1,0.25,0.5)},
           "Dependence"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Outliers"={vals<-seq(0,anomaliesRange,length.out=npoints)},
@@ -390,7 +390,10 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             "SampleSize"={design$sN<-round(vals[i])},
             "Method"={design$sMethod<-vals[i]},
             "Usage"={design$sIV1Use<-vals[i]},
-            "Gamma"={design$sNRandK<-vals[i]},
+            "SampleGamma"={
+              design$sNRand<-TRUE
+              design$sNRandK<-vals[i]
+              },
             "Alpha"={
               alpha<<-vals[i]
               alphaLLR<<-0.5*qnorm(1-alpha/2)^2

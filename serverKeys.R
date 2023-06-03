@@ -46,7 +46,7 @@ loadExtras<-function(which=0){
                   "p(sig)" = "p(sig)",
                   "Power" = "w",
                   "NHST errors" = "NHSTErrors")
-  showInfer<-c(showInfer,list("False Discovery" = "FDR"))
+  showInfer<-c(showInfer,list("False Discovery" = "FDR","Sample Size"="SampleSize"))
   showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",
                               "log(lrd)" = "log(lrd)",
                               "likelihood"="likelihood"))

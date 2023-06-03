@@ -88,6 +88,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             ylabel<-"k"
             g<-g+scale_y_continuous(limits=ylim)
           },
+          "SampleSize"={
+            ylim<-c(minN,maxRandN*design$sN)
+            ylabel<-"n"
+            g<-g+scale_y_continuous(limits=ylim)
+          },
           "pNull"={
             ylim<-c(-0.01,1.01)
             ylabel<-"pNull"
@@ -239,6 +244,21 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 showVals<-log10(showVals)
                 lines<-log10(lines)
               }
+              if (is.null(IV2)){
+                col<-"blue"
+                colFill<-col
+              } else {
+                col<-all_cols[[explore$Explore_typeShow]]
+                colFill<-names(all_cols[explore$Explore_typeShow])
+              }
+            },
+            "SampleSize"={
+              showVals<-exploreResult$result$nvals
+              lines<-c(design$sN)
+              # if (nPlotScale=="log10"){
+              #   showVals<-log10(showVals)
+              #   lines<-log10(lines)
+              # }
               if (is.null(IV2)){
                 col<-"blue"
                 colFill<-col
@@ -617,7 +637,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     )
     alpha<<-oldAlpha
     
-    if (is.element(explore$Explore_show,c("EffectSize","p","w","log(lrs)","log(lrd)","k","S","pNull","mean(IV)"))) {
+    if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(IV)"))) {
       y75<-c()
       y62<-c()
       y50<-c()
@@ -652,10 +672,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (multi=="allEffects" || multi=="mainEffects") {
       vals_offset<-(ni2-1)*(valsRange*valsGap)
     }
-    pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
+    pts1<-data.frame(vals=vals+vals_offset,y25=y25,y38=y38,y50=y50,y62=y62,y75=y75)
 
     if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
-      pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
+      pts2<-data.frame(vals=vals+vals_offset,y25e=y25e,y50e=y50e,y75e=y75e)
       
       if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
         pts1<-data.frame(vals=vals+vals_offset,y50=y50+y50a,y25=y25,y75=y75)
@@ -787,8 +807,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)))
         pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)))
         if (ni_max2==1 || !no_se_multiple) {
-          g<-g+geom_polygon(data=pts1f,aes(x=x,y=y),fill=col,alpha=0.5)
-          g<-g+geom_polygon(data=pts2f,aes(x=x,y=y),fill=col,alpha=0.45)
+          g<-g+geom_polygon(data=pts1f,aes(x=x,y=y),fill=col,alpha=0.2)
+          g<-g+geom_polygon(data=pts2f,aes(x=x,y=y),fill=col,alpha=0.4)
         }
         g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
       } else{

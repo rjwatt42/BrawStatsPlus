@@ -47,6 +47,9 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
           "w"={
             showVals<-rn2w(rVals,exploreResult$result$nvals)
           },
+          "SampleSize"={
+            showVals<-exploreResult$result$nvals
+          },
           "p(sig)"={
             y75<-c()
             y50<-c()
@@ -186,7 +189,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
           }
   )
 
-  if (is.element(explore$Explore_show,c("EffectSize","p","w","log(lrs)","log(lrd)","k","pNull","S"))) {
+  if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","pNull","S"))) {
     y75<-c()
     y50<-c()
     y25<-c()
@@ -200,7 +203,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   outputText<-rep("",nc+1)
   outputText[1]<-"\bExplore:"
   outputText[2]<-explore$Explore_type
-  outputText[3]<-paste("nsims=",format(nrow(exploreResult$result$rIVs)),sep="")
+  outputText[3]<-paste(" (nsims=",format(nrow(exploreResult$result$rIVs)),")",sep="")
   outputText<-c(outputText,rep("",nc+1))
   
   if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {

@@ -1,6 +1,7 @@
 
 metaChoices=list("meta"=list("NoStudies"="NoStudies",
                              "Sample Size"="SampleSize",
+                             "SampleGamma"="SampleGamma",
                              "sig_only"="sig_only"
 ),
 "Worlds"=list("pdf"="PDF",
