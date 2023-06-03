@@ -536,7 +536,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                 if (!all(is.na(sDens_r_total))){
                   # main distributions
                   # total
-                  polygon (x = rs, y = sDens_r_total, col = addTransparency(colS,theoryAlpha), lwd=1)
+                  polygon (x = rs[c(1,1:length(rs),length(rs))], y = c(0,sDens_r_total,0), col = addTransparency(colS,theoryAlpha), lwd=1)
                   # null
                   if (likelihood$world$worldOn) {
                     if (likelihood$world$populationNullp>0)
