@@ -91,7 +91,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   rsw_dens_plus<-likelihoodResult$Theory$sDens_r_plus
   rsw_dens_null<-likelihoodResult$Theory$sDens_r_null
   rsw_dens<-rsw_dens_plus+rsw_dens_null
-  
+
   view_lims<-c(-1,1)
   if (likelihood$viewRZ=="z") {
     view_lims<-c(-1,1)*z_range

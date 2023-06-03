@@ -285,7 +285,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   x<-seq(-1,1,length.out=101)
   y<-seq(5,maxnPlot*design$sN,length.out=101)
   sigma<-1/sqrt(y-3)
-  gain<-dgamma(y-5,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK)
+  gain<-dgamma(y-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
   
   nbd<-31
   xbins<-seq(-1,1,length.out=nbd+1)
