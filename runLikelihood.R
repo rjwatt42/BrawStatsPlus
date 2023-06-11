@@ -862,7 +862,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
     dens_at_zero<-NA
   } else {
     dens_at_sample<-approx(zp,pDens_r,sRho[1])$y
-    dens_at_population<-approx(zrp,pDens_r,ResultHistory$rp[1])$y
+    dens_at_population<-approx(zp,pDens_r,ResultHistory$rp[1])$y
     dens_at_zero<-approx(zp,pDens_r,0)$y
   }
 
