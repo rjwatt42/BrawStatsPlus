@@ -927,9 +927,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount","Alpha")) &&
                  explore$Explore_xlog) 
       || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.2))
+    if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
+      g<-g+scale_x_log10(limits=c(min(vals),10^(log10(max(vals))*1.11)))
+    }
   } else {
-    g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)/1.05,max(vals)*1.1))
+    if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
+      g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals),max(vals)*1.11))
+    }
   }
   
   if (explore$ExploreFull_ylim){
