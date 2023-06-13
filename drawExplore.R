@@ -725,14 +725,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(yalle,rev(1-y50))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-          
           areaVals<-c(vals[1],vals,vals[length(vals)])
           areaData<-c(yalle-y50e,rev(yalle))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
           
           col<-plotcolours$infer_misserr
-          cole<-plotcolours$infer_misserr
+          cole<-plotcolours$infer_nsigC
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
         } else {
@@ -776,9 +775,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
       }
-      if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
-        g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="black")
-      }
+      # if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
+      #   g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="black")
+      # }
     } else {
       if (explore$Explore_show=="PDF") {
         y=rep(0,length(ySingle))

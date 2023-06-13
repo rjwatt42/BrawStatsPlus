@@ -123,6 +123,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     design1<-design
     design1$sNRand<-FALSE
     design1$sN<-res$nval
+    if (design$sReplRepeats>0) {
     for (i in 1:design$sReplRepeats) {
       if (design$sReplKeep=="cautious" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,evidence)) {
         break
@@ -152,6 +153,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       # } else {
       #   res$pIV<-1
       # }
+    }
     }
     res<-resHold
     

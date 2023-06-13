@@ -30,7 +30,7 @@ replicationTab<-function(prefix="") {
                       tags$tr(
                         tags$td(width = "20%", tags$div(style = localStyle, "No Reps:")),
                         tags$td(width = "15%", 
-                                numericInput("sReplRepeats",label=NULL,value=design$sReplRepeats,min=1, max=10, step=1)
+                                numericInput("sReplRepeats",label=NULL,value=design$sReplRepeats,min=0, max=100, step=1)
                         ),
                         tags$td(width = "30%", tags$div(style = localStyle, "Sig Original:")),
                         tags$td(width = "5%", 
