@@ -203,8 +203,8 @@ if (switches$doKeys) {
       updateCheckboxInput(session,"evidenceLongHand",value=FALSE)
       updateCheckboxInput(session,"likelihoodLongHand",value=FALSE)
       updateSelectInput(session,"EvidenceExpected_length",selected="1000")
-      updateSelectInput(session,"Explore_lengthH",selected="1000")
-      updateSelectInput(session,"Explore_lengthD",selected="1000")
+      updateSelectInput(session,"Explore_lengthH",selected="100")
+      updateSelectInput(session,"Explore_lengthD",selected="100")
     }
     
     # control-1 set up World A
