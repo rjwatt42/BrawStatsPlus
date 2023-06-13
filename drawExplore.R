@@ -675,93 +675,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       vals_offset<-(ni2-1)*(valsRange*valsGap)
     }
 
-    if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
+    if (explore$Explore_show=="FDR") {
       pts1<-data.frame(vals=vals+vals_offset,y25=y25,y50=y50,y75=y75)
       pts2<-data.frame(vals=vals+vals_offset,y25e=y25e,y50e=y50e,y75e=y75e)
-      lb1<-"F-ve"
-      lb2<-"F+ve"
-      
-      if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
-        pts1<-data.frame(vals=vals+vals_offset,y50=y50+y50a,y25=y25,y75=y75)
-        pts2<-data.frame(vals=vals+vals_offset,y50e=y50e+y50ea,y25e=y25e,y75e=y75e)
-        
-        areaVals<-c(vals[1],vals,vals[length(vals)])
-        areaData<-c(y50b+yalle,rev(yalle))
-        ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-        areaData<-c(yalle,rev(yalle-y50eb))
-        ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_nsigC)
-        
-        if (ErrorsWorld=="1scale") {
-          # non-null effects
-          nAreaVals<-c(areaVals[2:(length(areaVals)-1)],rev(areaVals[2:(length(areaVals)-1)]))
-          areaData<-c(y50b+y50+yalle,rev(y50b+yalle))
-          ptsNHST<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
-          # null effects
-          areaData<-c(yalle-y50eb+y50e,rev(yalle-y50eb))
-          ptsNHSTe<-data.frame(x=nAreaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
-          
-          col<-plotcolours$infer_misserr
-          cole<-plotcolours$infer_misserr
-          lb1<-"F+ve"
-          lb2<-"F-ve"
-          pts1<-data.frame(vals=vals+vals_offset,y50=y50a,y25=y25,y75=y75)
-          pts2<-data.frame(vals=vals+vals_offset,y50e=y50ea,y25e=y25e,y75e=y75e)
-        } else {
-          # non-null effects
-          areaData<-1-c(0,y50+y50a,0)
-          ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_misserr)
-          # null effects
-          areaData<-c(0,y50e+y50ea,0)
-          ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_misserr)
-          
-          col<-plotcolours$infer_hiterr
-          cole<-plotcolours$infer_hiterr
-          lb1<-" +ve"
-          lb2<-"F+ve"
-          pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
-          pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
-        }
-      } 
-      if (STMethod!="dLLR" && explore$Explore_show=="NHSTErrors") {
-        if (ErrorsWorld=="1scale") {
-          areaVals<-c(vals[1],vals,vals[length(vals)])
-          areaData<-c(yalle,rev(1-y50))
-          ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb=" +ve")
-          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,fill=plotcolours$infer_sigC)
-          
-          if (!is.null(y50e)) {
-          areaVals<-c(vals[1],vals,vals[length(vals)])
-          areaData<-c(yalle-y50e,rev(yalle))
-          ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
-          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="F+ve")
-          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=plotcolours$infer_hiterr)
-          }
-          
-          col<-plotcolours$infer_misserr
-          cole<-plotcolours$infer_nsigC
-          lb1<-"F-ve"
-          lb2<-" -ve"
-          pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
-          pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
-        } else {
-          areaVals<-c(vals[1],vals,vals[length(vals)])
-          areaData<-c(0,y50*0+effect$world$populationNullp,0)
-          ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_nsigC)
-          areaData<-c(1,y50*0+effect$world$populationNullp,1)
-          ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
-          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-        }
-      }
+      lb1<-"!-ve"
+      lb2<-"!+ve"
       if (doLine) {
         # shaded fills
         areaVals<-c(vals[1],vals,vals[length(vals)])
@@ -769,20 +687,20 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         areaData<-1-c(0,pts1$y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
+        g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
+        # g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         lb=data=data.frame(x=max(vals),y=mean(c(1,1-pts1$y50[length(vals)])),lb=lb1)
         g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col)
-        g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
-        g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         
         # type 1 errors
         if (!is.null(y50e)) {
           areaData<-c(0,pts2$y50e,0)
-        ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
-        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
-        lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb=lb2)
-        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="black",fill=cole)
-        g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
-        g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+          ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
+          g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
+          g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
+          # g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+          lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb=lb2)
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=cole)
         }
       } else {
         # shaded fills
@@ -796,14 +714,127 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         
         if (!is.null(y50e)) {
           areaData<-rep(c(0,1,1,0),length(vals))*rep(y50e,each=4)
-        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
-        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=cole,alpha=0.5)
-        g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+          ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=cole,alpha=0.5)
+          g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         }
       }
-      # if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
-      #   g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="black")
-      # }
+      }
+    if (explore$Explore_show=="NHSTErrors") {
+      pts1<-data.frame(vals=vals+vals_offset,y25=y25,y50=y50,y75=y75)
+      pts2<-data.frame(vals=vals+vals_offset,y25e=y25e,y50e=y50e,y75e=y75e)
+      lb1<-"!-ve"
+      lb2<-"!+ve"
+      
+      # if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
+      #   pts1<-data.frame(vals=vals+vals_offset,y50=y50+y50a,y25=y25,y75=y75)
+      #   pts2<-data.frame(vals=vals+vals_offset,y50e=y50e+y50ea,y25e=y25e,y75e=y75e)
+      #   
+      #   areaVals<-c(vals[1],vals,vals[length(vals)])
+      #   areaData<-c(y50b+yalle,rev(yalle))
+      #   ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
+      #   g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
+      #   areaData<-c(yalle,rev(yalle-y50eb))
+      #   ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
+      #   g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_nsigC)
+      #   
+      #   if (ErrorsWorld=="1scale") {
+      #     # non-null effects
+      #     nAreaVals<-c(areaVals[2:(length(areaVals)-1)],rev(areaVals[2:(length(areaVals)-1)]))
+      #     areaData<-c(y50b+y50+yalle,rev(y50b+yalle))
+      #     ptsNHST<-data.frame(x=nAreaVals+vals_offset,y=areaData)
+      #     g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
+      #     # null effects
+      #     areaData<-c(yalle-y50eb+y50e,rev(yalle-y50eb))
+      #     ptsNHSTe<-data.frame(x=nAreaVals+vals_offset,y=areaData)
+      #     g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
+      #     
+      #     col<-plotcolours$infer_misserr
+      #     cole<-plotcolours$infer_misserr
+      #     lb1<-"!+ve"
+      #     lb2<-"!-ve"
+      #     pts1<-data.frame(vals=vals+vals_offset,y50=y50a,y25=y25,y75=y75)
+      #     pts2<-data.frame(vals=vals+vals_offset,y50e=y50ea,y25e=y25e,y75e=y75e)
+      #   } else {
+      #     # non-null effects
+      #     areaData<-1-c(0,y50+y50a,0)
+      #     ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+      #     g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_misserr)
+      #     # null effects
+      #     areaData<-c(0,y50e+y50ea,0)
+      #     ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
+      #     g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_misserr)
+      #     
+      #     col<-plotcolours$infer_hiterr
+      #     cole<-plotcolours$infer_hiterr
+      #     lb1<-" +ve"
+      #     lb2<-"!+ve"
+      #     pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
+      #     pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
+      #   }
+      # } 
+      
+          areaVals<-c(vals[1],vals,vals[length(vals)])
+          areaData<-c(yalle,rev(1-y50))
+          ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
+          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb=" +ve")
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=plotcolours$infer_sigC)
+          
+          if (!is.null(y50e)) {
+          areaVals<-c(vals[1],vals,vals[length(vals)])
+          areaData<-c(yalle-y50e,rev(yalle))
+          ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
+          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="!+ve")
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="red",fill=plotcolours$infer_hiterr)
+          }
+          
+          col<-plotcolours$infer_misserr
+          cole<-plotcolours$infer_nsigC
+          lb1<-"!-ve"
+          lb2<-" -ve"
+          pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
+          pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
+      if (doLine) {
+        # shaded fills
+        areaVals<-c(vals[1],vals,vals[length(vals)])
+        # type 2 errors
+        areaData<-1-c(0,pts1$y50,0)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
+        g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
+        # g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        lb=data=data.frame(x=max(vals),y=mean(c(1,1-pts1$y50[length(vals)])),lb=lb1)
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col)
+        
+        # type 1 errors
+        if (!is.null(y50e)) {
+          areaData<-c(0,pts2$y50e,0)
+        ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
+        g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
+        g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
+        # g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb=lb2)
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=cole)
+        }
+      } else {
+        # shaded fills
+        outline<-c(-1,-1,1,1)*0.1
+        areaVals<-rep(vals,each=4)+rep(outline,length(vals))
+        ids<-rep(1:length(vals),each=4)
+        areaData<-1-rep(c(0,1,1,0),length(vals))*rep(1-y50,each=4)
+        ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
+        g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=col,alpha=0.5)
+        g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+
+        if (!is.null(y50e)) {
+          areaData<-rep(c(0,1,1,0),length(vals))*rep(y50e,each=4)
+          ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
+          g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=cole,alpha=0.5)
+          g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        }
+      }
     } else {
       if (explore$Explore_show=="PDF") {
         y=rep(0,length(ySingle))
