@@ -111,6 +111,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       } else {
         res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
       }
+      ResultHistory<-list(n=res$nval,r=res$rIV,rp=res$rpIV,p=res$pIV)
     }
     res1<-res
     resHold<-res
