@@ -25,7 +25,7 @@ LGModalWidth="95%"
 expandLabel<-HTML("&#9974")
 emdash="\u2014"
   
-maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF")
+maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
 # maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
 
 hypHue=0.986667

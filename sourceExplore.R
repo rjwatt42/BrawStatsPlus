@@ -303,8 +303,13 @@ makeExploreGraph <- function() {
 output$ExplorePlot <- renderPlot( {
   doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
   startExplore<<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
-  makeExploreGraph()
-})
+  g1<-makeExploreGraph()
+  
+  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
+    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
+  g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0,xmax=10,ymin=0,ymax=10)
+  g  
+  })
 
 
 # report explore analysis        

@@ -457,8 +457,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             # finish off plot box
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
-                          z=c(1,1,1),pmat=mapping), col="#888888", lty=3)        
-            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col="#888888",lty=3)
+                          z=c(1,1,1),pmat=mapping), col=maincolours$graphBack, lty=3)        
+            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col=maincolours$graphBack,lty=3)
           },
   "Samples"={
     par(bg=maincolours$graphC)

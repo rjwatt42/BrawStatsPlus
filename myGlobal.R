@@ -10,7 +10,7 @@ graph_precision<-2
 mainplotMargins<-margin(1,3,1,3,"cm");
 popplotMargins<-margin(0.15,0.8,0,0.25,"cm");
 
-mainTheme=theme(panel.background = element_rect(fill="#666666", colour="black"),
+mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
                 plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
 SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))

@@ -65,7 +65,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "FDR"={
             ylim<-c(0,1)
             ylabel<-"False Discovery"
-            g<-g+scale_y_continuous(limits=ylim,sec.axis=sec_axis(~ 1-.,name="Misses"))
+            g<-g+scale_y_continuous(limits=ylim,sec.axis=sec_axis(~ 1-.,name="False Miss"))
             g<-g+theme(axis.title.y.left = element_text(color="darkgreen"),axis.title.y.right = element_text(color="darkred"))
           },
           "log(lrs)"={
@@ -382,6 +382,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y50[i]<-p
                   y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                   y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                  yall[i]<-0.5
+                  yalle[i]<-0.5
                 }
                 
                 peVals<-exploreResult$nullresult$pIVs
@@ -725,10 +727,17 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(yalle,rev(1-y50))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
+          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="+ve")
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,fill=plotcolours$infer_sigC)
+          
+          if (!is.null(y50e)) {
           areaVals<-c(vals[1],vals,vals[length(vals)])
           areaData<-c(yalle-y50e,rev(yalle))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
+          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="F+ve")
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="white",fill=plotcolours$infer_hiterr)
+          }
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_nsigC
@@ -751,15 +760,21 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         areaData<-1-c(0,pts1$y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
+        lb=data=data.frame(x=max(vals),y=mean(c(1,1-pts1$y50[length(vals)])),lb="F-ve")
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="white",fill=col)
+        g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
+        g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        
         # type 1 errors
-        areaData<-c(0,pts2$y50e,0)
+        if (!is.null(y50e)) {
+          areaData<-c(0,pts2$y50e,0)
         ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
-        # lines & points        
-        g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
+        lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb="-ve")
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="black",fill=cole)
         g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
-        g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        }
       } else {
         # shaded fills
         outline<-c(-1,-1,1,1)*0.1
@@ -768,12 +783,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         areaData<-1-rep(c(0,1,1,0),length(vals))*rep(1-y50,each=4)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=col,alpha=0.5)
-        areaData<-rep(c(0,1,1,0),length(vals))*rep(y50e,each=4)
+        g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        
+        if (!is.null(y50e)) {
+          areaData<-rep(c(0,1,1,0),length(vals))*rep(y50e,each=4)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData,ids=ids)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y,group=ids),colour = "black",fill=cole,alpha=0.5)
-        # points        
-        g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
+        }
       }
       # if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
       #   g<-g+geom_hline(yintercept=effect$world$populationNullp,colour="black")
@@ -921,18 +938,20 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     }
   } else {
     if (is.character(exploreResult$result$vals[1]))
-    g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
+      g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
+    else
+      g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)/1.05,max(vals)*1.1))
   }
   if ((exploreResult$Explore_type=="SampleSize" && explore$Explore_xlog) || 
        (exploreResult$Explore_type=="Repeats" && explore$Explore_xlog) ||
        (exploreResult$Explore_type=="CheatingAmount" && explore$Explore_xlog)) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.05))
+    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
   }
   if ((exploreResult$Explore_type=="Alpha") && explore$Explore_xlog) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.05))
+    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
   }
   if ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.05))
+    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
   }
   
   if (explore$ExploreFull_ylim){
