@@ -42,10 +42,22 @@ showJointLk<-FALSE
 showNull<-TRUE
 
 drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
-  switch (likelihood$UseSource,
-          "world"={likelihood$source<-likelihood$world},
-          "prior"={likelihood$source<-likelihood$prior},
-          "null"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)})
+  switch(likelihood$type,
+         "Samples"={
+           switch (likelihood$UseSource,
+                   "world"={likelihood$source<-likelihood$world},
+                   "prior"={likelihood$source<-likelihood$prior},
+                   "null"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
+           )
+         },
+         "Populations"={
+           switch (likelihood$UsePrior,
+                   "world"={likelihood$source<-likelihood$world},
+                   "prior"={likelihood$source<-likelihood$prior},
+                   "none"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
+           )
+         }
+      )
   # make the distribution        
 
   switch (likelihood$type,
@@ -465,6 +477,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               } else {
                 xlabel<-bquote(bold(r[p]))
               }
+              col<-colP
               },
             "Samples"={
               rw<-rsw
@@ -474,13 +487,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               } else {
                 xlabel<-bquote(bold(r[s]))
               }
+              col<-colS
             }
     )
     yh<-approx(rw,rw_dens,sRho[1])$y
     
     rw<-c(rw[1],rw,rw[length(rw)])
     rw_dens<-c(0,rw_dens,0)
-    switch 
+    
     plot(x=rw,y=rw_dens,xlab=xlabel,ylab=ylab,type="n",yaxt="n",font.lab=2,xlim=view_lims,ylim=c(0,1.25))
     axis(side = 2,  at=0, labels = FALSE, tck=-0.05)
     
@@ -489,7 +503,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     lines(u[c(1,2)],c(0,0),col="black")
     
     # make the back wall
-    polygon(x=rw,y=rw_dens,col="lightgrey")
+    if (likelihood$type=="Populations" && likelihood$source$populationNullp>0) {
+      polygon(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=col)
+    }
+    polygon(x=rw,y=rw_dens,col=col)
+    lines(x=rw,y=rw_dens,col=colDistS,lwd=2)
+    if (likelihood$type=="Populations" && likelihood$source$populationNullp>0) {
+      lines(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=colNullS,lwd=2)
+    }
     
     theoryAlpha=0.75
     # simulations
