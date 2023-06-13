@@ -678,6 +678,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
       pts1<-data.frame(vals=vals+vals_offset,y25=y25,y50=y50,y75=y75)
       pts2<-data.frame(vals=vals+vals_offset,y25e=y25e,y50e=y50e,y75e=y75e)
+      lb1<-"F-ve"
+      lb2<-"F+ve"
       
       if (STMethod=="dLLR" && explore$Explore_show=="NHSTErrors") {
         pts1<-data.frame(vals=vals+vals_offset,y50=y50+y50a,y25=y25,y75=y75)
@@ -704,6 +706,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_misserr
+          lb1<-"F+ve"
+          lb2<-"F-ve"
           pts1<-data.frame(vals=vals+vals_offset,y50=y50a,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=y50ea,y25e=y25e,y75e=y75e)
         } else {
@@ -715,8 +719,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(0,y50e+y50ea,0)
           ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=plotcolours$infer_misserr)
+          
           col<-plotcolours$infer_hiterr
           cole<-plotcolours$infer_hiterr
+          lb1<-" +ve"
+          lb2<-"F+ve"
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=y50e,y25e=y25e,y75e=y75e)
         }
@@ -727,8 +734,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(yalle,rev(1-y50))
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_sigC)
-          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="+ve")
-          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,fill=plotcolours$infer_sigC)
+          lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb=" +ve")
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,fill=plotcolours$infer_sigC)
           
           if (!is.null(y50e)) {
           areaVals<-c(vals[1],vals,vals[length(vals)])
@@ -736,11 +743,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ptsNHST<-data.frame(x=c(vals,rev(vals))+vals_offset,y=areaData)
           g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=plotcolours$infer_hiterr)
           lb=data=data.frame(x=max(vals),y=mean(ptsNHST$y[length(vals)+c(0,1)]),lb="F+ve")
-          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="white",fill=plotcolours$infer_hiterr)
+          g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=plotcolours$infer_hiterr)
           }
           
           col<-plotcolours$infer_misserr
           cole<-plotcolours$infer_nsigC
+          lb1<-"F-ve"
+          lb2<-" -ve"
           pts1<-data.frame(vals=vals+vals_offset,y50=y50,y25=y25,y75=y75)
           pts2<-data.frame(vals=vals+vals_offset,y50e=yalle-y50e,y25e=y25e,y75e=y75e)
         } else {
@@ -760,8 +769,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         areaData<-1-c(0,pts1$y50,0)
         ptsNHST<-data.frame(x=areaVals+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHST,aes(x=x,y=y),fill=col)
-        lb=data=data.frame(x=max(vals),y=mean(c(1,1-pts1$y50[length(vals)])),lb="F-ve")
-        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="white",fill=col)
+        lb=data=data.frame(x=max(vals),y=mean(c(1,1-pts1$y50[length(vals)])),lb=lb1)
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col)
         g<-g+geom_line(data=pts1,aes(x=vals,y=1-y50),color=col)
         g<-g+geom_point(data=pts1,aes(x=vals,y=1-y50),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         
@@ -770,8 +779,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           areaData<-c(0,pts2$y50e,0)
         ptsNHSTe<-data.frame(x=areaVals+vals_offset,y=areaData)
         g<-g+geom_polygon(data=ptsNHSTe,aes(x=x,y=y),fill=cole)
-        lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb="-ve")
-        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=0,vjust=0.5,size=4,colour="black",fill=cole)
+        lb=data=data.frame(x=max(vals),y=mean(c(0,pts2$y50e[length(vals)])),lb=lb2)
+        g<-g+geom_label(data=lb,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="black",fill=cole)
         g<-g+geom_line(data=pts2,aes(x=vals,y=y50e),color=cole)
         g<-g+geom_point(data=pts2,aes(x=vals,y=y50e),shape=shapes$parameter, colour = "black", fill = "white", size = 4)
         }
@@ -939,19 +948,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   } else {
     if (is.character(exploreResult$result$vals[1]))
       g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
-    else
-      g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)/1.05,max(vals)*1.1))
   }
-  if ((exploreResult$Explore_type=="SampleSize" && explore$Explore_xlog) || 
-       (exploreResult$Explore_type=="Repeats" && explore$Explore_xlog) ||
-       (exploreResult$Explore_type=="CheatingAmount" && explore$Explore_xlog)) {
+  if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount","Alpha")) &&
+                 explore$Explore_xlog) 
+      || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
     g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
-  }
-  if ((exploreResult$Explore_type=="Alpha") && explore$Explore_xlog) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
-  }
-  if ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
+  } else {
+    g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)/1.05,max(vals)*1.1))
   }
   
   if (explore$ExploreFull_ylim){

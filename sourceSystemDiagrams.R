@@ -100,7 +100,8 @@ output$WorldPlot<-renderPlot({
   y<-c(0,y,0)
   pts=data.frame(x=x,y=y)
   g1<-ggplot(pts,aes(x=x,y=y))
-  g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
   g1<-g1+plotTheme+theme(plot.margin=popplotMargins)+labs(x=bquote(r[population]),y="Density")
   
   if (debug) debugPrint("WorldPlot - exit")
@@ -133,7 +134,8 @@ output$WorldPlot2<-renderPlot({
   
   pts=data.frame(x=x,y=y)
   g2<-ggplot(pts,aes(x=x,y=y))
-  g2<-g2+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g2<-g2+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g2<-g2+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
   g2<-g2+plotTheme+theme(plot.margin=popplotMargins)+labs(x="n",y="Density")
   
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
