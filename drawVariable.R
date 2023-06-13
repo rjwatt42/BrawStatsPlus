@@ -20,12 +20,12 @@ drawVar<-function(pts,var){
   } else {
   ggplot(pts,aes(x=r,y=dens))+geom_polygon(fill=plotcolours$sampleC)+
     geom_line(lwd=0.25,color="black")+
-    labs(x=var$name,y="")+
-    plotTheme+
-    theme(axis.text.y=element_blank(),
-          axis.ticks.y=element_blank())+
-    theme(plot.margin=varplotMargins)+
-    geom_line(aes(x=r,y=dens*0),color="black",lwd=0.5)
+      # geom_line(aes(x=r,y=dens*0),color="black",lwd=0.5)+
+      labs(x=var$name,y="")+
+      plotTheme+
+      theme(axis.text.y=element_blank(),axis.ticks.y=element_blank())+
+      theme(plot.margin=varplotMargins)
+    
 }
 }
 

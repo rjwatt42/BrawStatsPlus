@@ -297,24 +297,27 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "NHSTErrors"={
               yall<-c()
-              y50<-c()
+              y50<-c() # false -ve
+              y50t<-c() # true +v2
+              y50a<-c() 
+              y50b<-c()
+              y50e<-c() # false +ve
+              y50et<-c() # true -ve
+              y50ea<-c()
+              y50eb<-c()
+              
               y25<-c()
               y75<-c()
               y25a<-c()
-              y50a<-c()
               y75a<-c()
               y25b<-c()
-              y50b<-c()
               y75b<-c()
               yalle<-c()
-              y50e<-c()
               y25e<-c()
               y75e<-c()
               y25ea<-c()
-              y50ea<-c()
               y75ea<-c()
               y25eb<-c()
-              y50eb<-c()
               y75eb<-c()
               if (effect$world$worldOn) {
                 for (i in 1:length(exploreResult$result$vals)){
@@ -328,18 +331,27 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   yalle[i]<-sum(nulls,na.rm=TRUE)/length(sigs)
                   # NB because we plot this upside down 
                   if (STMethod=="NHST") {
+                    p<-sum(sigs & !nulls,na.rm=TRUE)/length(sigs) 
+                    y50t[i]<-p
                     # type II errors
                     p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs) 
                     y50[i]<-p
                     y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
                     # type I errors
+                    p<-sum(!sigs & nulls,na.rm=TRUE)/length(sigs) 
+                    y50et[i]<-p
                     p<-sum(sigs[nulls],na.rm=TRUE)/length(sigs)
                     y50e[i]<-p
                     y75e[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25e[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    
+                    y50a[i]<-0
+                    y50b[i]<-0
                   } else {
                     d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    p<-sum(sigs & d>0 & !nulls,na.rm=TRUE)/length(sigs) 
+                    y50t[i]<-p
                     # type II errors: not-nulls & sig in wrong direction
                     p<-sum(sigs & d<0 & !nulls,na.rm=TRUE)/length(d) 
                     y50[i]<-p
@@ -350,11 +362,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     y50a[i]<-p
                     y75a[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25a[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
-                    # type II errors: not-nulls & not sig
+                    # type II errors: not-nulls & sig
                     p<-sum(sigs & d>0 & !nulls,na.rm=TRUE)/length(d) 
                     y50b[i]<-p
                     y75b[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                     y25b[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+                    
+                    p<-sum(!sigs & nulls,na.rm=TRUE)/length(sigs) 
+                    y50et[i]<-p
                     # type I errors: nulls & sig in wrong direction
                     p<-sum(sigs & d>0 & nulls,na.rm=TRUE)/length(d)
                     y50e[i]<-p
@@ -406,12 +421,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               lines<-c(0.05)
             },
             "FDR"={
-              y50<-c()
-              y25<-c()
-              y75<-c()
-              y50e<-c()
-              y25e<-c()
-              y75e<-c()
+              y50<-c() # false -ve
+              y50t<-c() # true +v2
+              y50a<-c() 
+              y50b<-c()
+              y50e<-c() # false +ve
+              y50et<-c() # true -ve
+              y50ea<-c()
+              y50eb<-c()
               if (effect$world$worldOn) {
                 for (i in 1:length(exploreResult$result$vals)){
                   if (explore$Explore_type=="Alpha") {
@@ -433,11 +450,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     p2<-(sum(sigs & nulls & d>0)+sum(sigs & !nulls & d<0))/sum(sigs)
                   }
                   y50[i]<-p1
-                  y75[i]<-p1+sqrt(p1*(1-p1)/length(pVals[,i]))
-                  y25[i]<-p1-sqrt(p1*(1-p1)/length(pVals[,i]))
                   y50e[i]<-p2
-                  y75e[i]<-p2+sqrt(p2*(1-p2)/length(pVals[,i]))
-                  y25e[i]<-p2-sqrt(p2*(1-p2)/length(pVals[,i]))
+
+                  y50a[i]<-0
+                  y50b[i]<-0
                 }
               } else {
                 for (i in 1:length(exploreResult$result$vals)){
@@ -447,8 +463,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50[i]<-p
-                  y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-                  y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+
+                  y50a[i]<-0
+                  y50b[i]<-0
                 }
                 
                 peVals<-exploreResult$nullresult$pIVs
@@ -679,10 +696,12 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       endI<-length(vals)
       
       # false misses
-      pts1<-data.frame(x=c(vals[1],vals,vals[length(vals)])+vals_offset,y=1-c(0,y50,0))
+      ytop<-1-y50a
+      pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop,rev(ytop-y50)))
       col1<-plotcolours$infer_misserr
       lb1<-"F -ve"
-      lb1<-data.frame(x=max(vals),y=mean(c(1,1-y50[endI])),lb=lb1)
+      lb1<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50[endI])),lb=lb1)
+      ytop<-ytop-y50
       
       if (is.null(y50e)) {
         pts2<-c()
@@ -690,24 +709,29 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         pts4<-c()
       } else {
         if (explore$Explore_show=="NHSTErrors") {
-          # true misses
-          pts2<-data.frame(x=c(vals[1],vals,vals[length(vals)])+vals_offset,y=c(0,yalle-y50e,0))
-          col2<-plotcolours$infer_nsigC
-          lb2<-"T -ve"
-          lb2<-data.frame(x=max(vals),y=mean(c(0,yalle[endI]-y50e[endI])),lb=lb2)
-          
           # true hits
-          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(yalle,rev(1-y50)))
+          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50t,rev(ytop)))
           col3<-plotcolours$infer_sigC
           lb3<-"T +ve"
-          lb3<-data.frame(x=max(vals),y=mean(c(yalle[endI],1-y50[endI])),lb=lb3)
+          lb3<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50t[endI])),lb=lb3)
+          ytop<-ytop-y50t
           
           # false hits  
-          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(yalle-y50e,rev(yalle)))
+          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50e,rev(ytop)))
           col4<-plotcolours$infer_hiterr
           lb4<-"F +ve"
-          lb4<-data.frame(x=max(vals),y=mean(c(yalle[endI],yalle[endI]-y50e[endI])),lb=lb4)
+          lb4<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50e[endI])),lb=lb4)
+          ytop<-ytop-y50e
+          
+          # true misses
+          pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50et,rev(ytop)))
+          col2<-plotcolours$infer_nsigC
+          lb2<-"T -ve"
+          lb2<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50et[endI])),lb=lb2)
 
+          if (STMethod=="dLLR") {
+            browser
+          }
         } else {
           # false hits
           pts2<-data.frame(x=c(vals[1],vals,vals[length(vals)])+vals_offset,y=c(0,y50e,0))
@@ -903,7 +927,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount","Alpha")) &&
                  explore$Explore_xlog) 
       || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
-    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.1))
+    g<-g+scale_x_log10(limits=c(min(vals)/1.05,max(vals)*1.2))
   } else {
     g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)/1.05,max(vals)*1.1))
   }
