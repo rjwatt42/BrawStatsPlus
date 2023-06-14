@@ -399,6 +399,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
                   yall[i]<-0.5
                   yalle[i]<-0.5
+                  y50a[i]<-0
+                  y50b[i]<-0
                 }
                 
                 peVals<-exploreResult$nullresult$pIVs
@@ -961,7 +963,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   } else {
     if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
       if (doLine) {
-        g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals),max(vals)*1.11))
+        g<-g+scale_x_continuous(limits=c(min(vals),max(vals)*1.11))
       } else {
         g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)-0.5,(max(vals)+0.5)*1.11))
       }
