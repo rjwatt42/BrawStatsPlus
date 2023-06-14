@@ -738,7 +738,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
           col4<-plotcolours$infer_hiterr
           lb4<-"F +ve"
-          lb4<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb2)
+          lb4<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb4)
         }
       }
 
