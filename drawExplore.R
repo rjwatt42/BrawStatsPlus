@@ -730,13 +730,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           }
         } else {
           # false hits
-          pts2<-data.frame(x=c(vals[1],vals,vals[length(vals)])+vals_offset,y=c(0,y50e,0))
-          col2<-plotcolours$infer_hiterr
-          lb2<-"F +ve"
-          lb2<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb2)
-        
+          pts2<-c()
           pts3<-c()
-          pts4<-c()
+
+          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
+          col4<-plotcolours$infer_hiterr
+          lb4<-"F +ve"
+          lb4<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb2)
         }
       }
 
@@ -774,6 +774,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts<-data.frame(x=x2,y=y2)
           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill=col2)
         }
+        # g<-g+geom_point(data=data.frame(x=pts1$x[i],y=y1[1]),aes(x=x,y=y),size=2)
         
         if (!is.null(pts3)) {
           y3<-pts3$y[c(i,npts*2-i+1)]
@@ -782,6 +783,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts<-data.frame(x=x3,y=y3)
           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill=col3)
         }
+        # if (!is.null(pts2)) {
+        #   g<-g+geom_point(data=data.frame(x=pts2$x[i],y=y2[1]),aes(x=x,y=y),size=2)
+        # }
         
         if (!is.null(pts4)) {
           y4<-pts4$y[c(i,npts*2-i+1)]
