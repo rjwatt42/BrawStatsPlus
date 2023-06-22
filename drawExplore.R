@@ -8,6 +8,11 @@ all_cols<-c()
 drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   oldAlpha<-alpha
   rho<-effect$rIV
+  rlim<-c(-1,1)
+  if (RZ=="z") {
+    rho<-atanh(rho)  
+    rlim<-c(-1,1*z_range)
+  }
   
   vals<-exploreResult$result$vals
   if (is.character(vals[1]) || is.element(explore$Explore_type,c("IVcats","IVlevels","DVcats","DVlevels","Repeats","sig_only"))){
@@ -20,9 +25,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   ylabels=c()
   switch (explore$Explore_show,
           "EffectSize"={
-            ylim<-c(-1,1)
+            ylim<-rlim
             g<-g+scale_y_continuous(limits=ylim)
             ylabel<-bquote(r[sample])
+            if (RZ=="z") {ylabel<-bquote(z[sample])}
           },
           "p"={
             ylim<-c(-4,0)
@@ -197,25 +203,31 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       )
     }
     nVals<-exploreResult$result$nvals
+    df1Vals<-exploreResult$result$df1
     
     extra_x_label<-""
     switch (explore$Explore_show,
             "EffectSize"={
               showVals<-rVals
+              if (RZ=="z") {showVals<-atanh(rVals)}
               if (is.null(IV2)){
                 col<-"yellow"
                 colFill<-col
                 lines<-c(0,effect$rIV)
+                if (RZ=="z") {lines<-c(0,atanh(effect$rIV))}
               } else {
                 switch (explore$Explore_whichShow,
                         "Main 1"={
                           lines<-c(0,effect$rIV)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIV))}
                         },
                         "Main 2"={
                           lines<-c(0,effect$rIV2)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIV2))}
                         },
                         "Interaction"={
                           lines<-c(0,effect$rIVIV2DV)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIVIV2DV))}
                         }
                 )
                 col<-all_cols[[explore$Explore_typeShow]]
@@ -278,7 +290,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 p_se<-sqrt(p*(1-p)/length(pVals[,i]))
                 y50[i]<-p
                 y75[i]<-p+p_se*qnorm(0.75)
@@ -325,7 +337,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
+                  sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                   nulls<-exploreResult$result$rpIVs[,i]==0
                   yall[i]<-sum(!nulls,na.rm=TRUE)/length(sigs)
                   yalle[i]<-sum(nulls,na.rm=TRUE)/length(sigs)
@@ -349,7 +361,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     y50a[i]<-0
                     y50b[i]<-0
                   } else {
-                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    d<-r2llr(rVals[,i],nVals[,i],df1Vals[,i],STMethod,world=effect$world)
                     p<-sum(sigs & d>0 & !nulls,na.rm=TRUE)/length(sigs) 
                     y50t[i]<-p
                     # type II errors: not-nulls & sig in wrong direction
@@ -393,7 +405,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  p<-mean(!isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+                  p<-mean(!isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50[i]<-p
                   y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                   y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
@@ -406,12 +418,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 peVals<-exploreResult$nullresult$pIVs
                 reVals<-exploreResult$nullresult$rIVs
                 neVals<-exploreResult$nullresult$nvals
+                df1eVals<-exploreResult$nullresult$df1
                 for (i in 1:length(exploreResult$result$vals)){
                   if (explore$Explore_type=="Alpha") {
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],exploreResult$evidence),na.rm=TRUE)
+                  p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50e[i]<-p
                   y75e[i]<-p+sqrt(p*(1-p)/length(peVals[,i]))
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
@@ -437,7 +450,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
+                  sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                   nulls<-exploreResult$result$rpIVs[,i]==0
                   if (STMethod=="NHST") {
                   if (!all(nulls)) {
@@ -447,7 +460,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                     p2<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
                   } else {
-                    d<-r2llr(rVals[,i],nVals[,i],STMethod,world=effect$world)
+                    d<-r2llr(rVals[,i],nVals[,i],df1Vals[,i],STMethod,world=effect$world)
                     p1<-mean(!sigs,na.rm=TRUE)
                     p2<-(sum(sigs & nulls & d>0)+sum(sigs & !nulls & d<0))/sum(sigs)
                   }
@@ -463,7 +476,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+                  p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50[i]<-p
 
                   y50a[i]<-0
@@ -478,7 +491,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],exploreResult$evidence),na.rm=TRUE)
+                  p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50e[i]<-p
                   y75e[i]<-p+sqrt(p*(1-p)/length(peVals[,i]))
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
@@ -490,7 +503,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               lines<-c(0.05)
             },            "log(lrs)"={
               ns<-exploreResult$result$nvals
-              showVals<-r2llr(rVals,ns,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+              df1<-exploreResult$result$df1
+              showVals<-r2llr(rVals,ns,df1,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
               
               if (is.null(IV2)){
                 col<-"yellow"
@@ -514,7 +528,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "log(lrd)"={
               ns<-exploreResult$result$nvals
-              showVals<-r2llr(rVals,ns,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+              df1<-exploreResult$result$df1
+              showVals<-r2llr(rVals,ns,df1,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
               
               if (is.null(IV2)){
                 col<-"yellow"
@@ -543,13 +558,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               y62<-c()
               y38<-c()
               ns<-exploreResult$result$nvals
-              showVals<-r2llr(rVals,ns,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+              df1<-exploreResult$result$df1
+              showVals<-r2llr(rVals,ns,df1,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                p<-mean(isSignificant(STMethod,pvals[,i],rvals[,i],nvals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,pvals[,i],rvals[,i],nvals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 p_se<-sqrt(p*(1-p)/length(pVals[,i]))
                 y50[i]<-p
                 y75[i]<-p+p_se*qnorm(0.75)
@@ -573,13 +589,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               y62<-c()
               y38<-c()
               ns<-exploreResult$result$nvals
-              showVals<-r2llr(rVals,ns,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+              df1<-exploreResult$result$df1
+              showVals<-r2llr(rVals,ns,df1,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                p<-mean(isSignificant(STMethod,pvals[,i],rvals[,i],nvals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,pvals[,i],rvals[,i],nvals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 p_se<-sqrt(p*(1-p)/length(pVals[,i]))
                 y50[i]<-p
                 y75[i]<-p+p_se*qnorm(0.75)
@@ -959,6 +976,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
     if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
       g<-g+scale_x_log10(limits=c(min(vals),10^(log10(max(vals))*1.11)))
+    } else {
+      g<-g+scale_x_log10(limits=c(min(vals),10^(log10(max(vals)))))
     }
   } else {
     if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {

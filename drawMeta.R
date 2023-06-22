@@ -282,7 +282,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
 
 
 drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) {
-  x<-seq(-1,1,length.out=101)
+  x<-seq(-1,1,length.out=101)*r_range
   y<-seq(5,maxnPlot*design$sN,length.out=101)
   sigma<-1/sqrt(y-3)
   gain<-dgamma(y-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
@@ -309,8 +309,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   switch (effect$world$populationPDF,
           "Single"={
             for (i in 1:length(y)) {
-              z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
              if (metaResult$metaAnalysis$sig_only) {
                zcrit<-qnorm(1-alpha/2,0,sigma[i])
                z1[atanh(abs(x))<zcrit]<-0
@@ -320,8 +320,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
           },
           "Gauss"={
             for (i in 1:length(y)) {
-              z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$sig_only) {
                 zcrit<-qnorm(1-alpha/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
@@ -331,8 +331,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
           },
           "Exp"={
             for (i in 1:length(y)) {
-              z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$sig_only) {
                 zcrit<-qnorm(1-alpha/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
@@ -351,8 +351,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   switch (metaResult$bestDist,
           "Single"={
             for (i in 1:length(y)) {
-              z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
                 zcrit<-qnorm(1-alpha/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
@@ -363,8 +363,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
           },
           "Gauss"={
             for (i in 1:length(y)) {
-              z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
                 zcrit<-qnorm(1-alpha/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
@@ -374,8 +374,8 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
           },
           "Exp"={
             for (i in 1:length(y)) {
-              z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])*(1-nullP)+
-                ZeroSamplingPDF(atanh(x),sigma[i])*nullP
+              z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
+                SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
                 zcrit<-qnorm(1-alpha/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0

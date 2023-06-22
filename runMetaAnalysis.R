@@ -1,5 +1,5 @@
 
-getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
+getMaxLikelihood<-function(zs,ns,df1,dist,metaAnalysis) {
   nkpoints<-13
   nnullpoints<-13
   
@@ -19,7 +19,7 @@ getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
   }
   
   for (re in 1:niterations) {
-    S<-getLogLikelihood(zs,ns,dist,kvals,nullvals,metaAnalysis$meta_psigAnal)
+    S<-getLogLikelihood(zs,ns,df1,dist,kvals,nullvals,metaAnalysis$meta_psigAnal)
     Smax<-max(S,na.rm=TRUE)
     
     use<-which(S==Smax, arr.ind = TRUE)
@@ -37,7 +37,7 @@ getMaxLikelihood<-function(zs,ns,dist,metaAnalysis) {
   }
   
   if (niterations==1) {      
-    fun<-function(x) { -getLogLikelihood(zs,ns,dist,x[1],x[2],metaAnalysis$meta_psigAnal)}
+    fun<-function(x) { -getLogLikelihood(zs,ns,df1,dist,x[1],x[2],metaAnalysis$meta_psigAnal)}
     result<-fmincon(c(Kmax,Nullmax),fun,ub=c(ub1,ub2),lb=c(lb1,lb2))
     Kmax<-result$par[1]
     Nullmax<-result$par[2]
@@ -51,9 +51,10 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
   rs<-metaResult$result$rIV
   zs<-atanh(rs)
   ns<-metaResult$result$nval
+  df1<-metaResult$result$df1
   
   if (metaAnalysis$meta_fixedAnal=="fixed") {
-    single<-getMaxLikelihood(zs,ns,"Single",metaAnalysis)
+    single<-getMaxLikelihood(zs,ns,df1,"Single",metaAnalysis)
     gauss<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     exp<-list(Kmax=NA,Nullmax=NA,Smax=NA)
 
@@ -63,21 +64,21 @@ runMetaAnalysis<-function(metaAnalysis,metaResult){
 
     # find best Single 
     if (metaAnalysis$meta_pdf=="Single" || (metaAnalysis$meta_pdf=="All" && includeSingle)) {
-      single<-getMaxLikelihood(zs,ns,"Single",metaAnalysis)
+      single<-getMaxLikelihood(zs,ns,df1,"Single",metaAnalysis)
     } else {
       single<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     }
 
     # find best Gauss
     if (metaAnalysis$meta_pdf=="Gauss" || metaAnalysis$meta_pdf=="All") {
-      gauss<-getMaxLikelihood(zs,ns,"Gauss",metaAnalysis)
+      gauss<-getMaxLikelihood(zs,ns,df1,"Gauss",metaAnalysis)
     } else {
       gauss<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     }
 
     # find best Exp
     if (metaAnalysis$meta_pdf=="Exp" || metaAnalysis$meta_pdf=="All") {
-      exp<-getMaxLikelihood(zs,ns,"Exp",metaAnalysis)
+      exp<-getMaxLikelihood(zs,ns,df1,"Exp",metaAnalysis)
     } else {
       exp<-list(Kmax=NA,Nullmax=NA,Smax=NA)
     }

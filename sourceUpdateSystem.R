@@ -99,6 +99,8 @@ updateEvidence<-function(){
                             populationPDFk=0,populationRZ="r",
                             populationNullp=0)
   )
+
+  
   switch(input$STPrior,
          "none"={
            evidence$prior=list(worldOn=input$world_on,populationPDF="Uniform",

@@ -36,10 +36,12 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
     )
   }
   nVals<-exploreResult$result$nvals
-
+  df1Vals<-exploreResult$result$df1
+  
   switch (explore$Explore_show,
           "EffectSize"={
             showVals<-rVals
+            if (RZ=="z") showVals<-atanh(rVals)
           },
           "p"={
             showVals<-pVals
@@ -55,7 +57,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             y50<-c()
             y25<-c()
             for (i in 1:length(exploreResult$result$vals)){
-              p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+              p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
               y50[i]<-p
               y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
               y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
@@ -75,7 +77,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
+                sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                 nulls<-exploreResult$result$rpIVs[,i]==0
                 p<-sum(!sigs & !nulls,na.rm=TRUE)/length(sigs)
                 y50[i]<-p
@@ -88,7 +90,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
               }
             } else {
               for (i in 1:length(exploreResult$result$vals)){
-                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50[i]<-p
                 y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                 y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
@@ -97,8 +99,9 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
               peVals<-exploreResult$nullresult$pIVs
               reVals<-exploreResult$nullresult$rIVs
               neVals<-exploreResult$nullresult$nvals
+              df1eVals<-exploreResult$nullresult$df1
               for (i in 1:length(exploreResult$result$vals)){
-                p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50e[i]<-p
                 y75e[i]<-p+sqrt(p*(1-p)/length(peVals[,i]))
                 y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
@@ -119,7 +122,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence)
+                sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                 nulls<-exploreResult$result$rpIVs[,i]==0
                 p<-sum(!sigs & !nulls,na.rm=TRUE)/sum(!nulls)
                 y50[i]<-p
@@ -136,7 +139,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50[i]<-p
                 y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
                 y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
@@ -145,12 +148,13 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
               peVals<-exploreResult$nullresult$pIVs
               reVals<-exploreResult$nullresult$rIVs
               neVals<-exploreResult$nullresult$nvals
+              df1eVals<-exploreResult$nullresult$df1
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
                   alpha<<-exploreResult$result$vals[i]
                   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                 }
-                p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],exploreResult$evidence),na.rm=TRUE)
+                p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50e[i]<-p
                 y75e[i]<-p+sqrt(p*(1-p)/length(peVals[,i]))
                 y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
@@ -159,11 +163,13 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
           },
           "log(lrs)"={
             ns<-exploreResult$result$nvals
-            showVals<-r2llr(rVals,ns,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+            df1<-exploreResult$result$df1
+            showVals<-r2llr(rVals,ns,df1,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
           },
           "log(lrd)"={
             ns<-exploreResult$result$nvals
-            showVals<-r2llr(rVals,ns,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
+            df1<-exploreResult$result$df1
+            showVals<-r2llr(rVals,ns,df1,"dLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
           },
           "k"={
             showVals<-exploreResult$result$ks
@@ -193,10 +199,14 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
     y75<-c()
     y50<-c()
     y25<-c()
+    ymn<-c()
+    ysd<-c()
     for (i in 1:length(exploreResult$result$vals)) {
       y75[i]<-quantile(showVals[,i],0.75,na.rm=TRUE)
       y50[i]<-quantile(showVals[,i],0.50,na.rm=TRUE)
       y25[i]<-quantile(showVals[,i],0.25,na.rm=TRUE)
+      ymn[i]<-mean(showVals[,i],na.rm=TRUE)
+      ysd[i]<-sd(showVals[,i],na.rm=TRUE)
     }
   }
   
@@ -233,7 +243,17 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   for (i in 1:nc) {
     outputText<-c(outputText,format(y75[use[i]],digits=report_precision))
   }
-  
+  if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","pNull","S"))) {
+    outputText<-c(outputText,rep(" ",nc+1))
+    outputText<-c(outputText,"!jmean")
+    for (i in 1:nc) {
+      outputText<-c(outputText,format(ymn[use[i]],digits=report_precision))
+    }
+    outputText<-c(outputText,"!jsd")
+    for (i in 1:nc) {
+      outputText<-c(outputText,format(ysd[use[i]],digits=report_precision))
+    }
+  }    
   if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
     switch(explore$Explore_show,
            "NHSTErrors"={extra_y_label<-"Type I errors"},

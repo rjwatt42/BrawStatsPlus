@@ -44,7 +44,7 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
                       ps<-result$p$direct}
     )
   }
-  
+
   # column labels
   if (expected$type=="NHSTErrors") {outputText1<-c("!j\bErrors:","\bI","\bII"," ")}
   else {
@@ -56,19 +56,15 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
   outputText<-c(outputText,rep(outputText1,nc/3))
 
   if (expected$type=="NHSTErrors"){
-    if (STMethod!="dLLR") {
-      nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
-      resSig<-isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)
-    } else {
-      browser()
+    nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$df1,nullresult$evidence)
+    resSig<-isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)
+    if (STMethod=="dLLR") {
       d<-res2llr(result,"dLLR")
       nulld<-res2llr(nullresult,"dLLR")
-      nullSig<-isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
-      resSig<-(isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
-      nullSigW<-nulld>0 & isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
-      nullSigC<-nulld<0 & isSignificant(STMethod,nullresult$pIV,nullresult$rIV,nullresult$nval,nullresult$evidence)
-      resSigW<-(d<0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
-      resSigC<-(d>0 & isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence))
+      nullSigW<-nulld>0 & nullSig
+      nullSigC<-nulld<0 & nullSig
+      resSigW<-(d<0 & resSig)
+      resSigC<-(d>0 & resSig)
     }
     if (STMethod=="NHST") {
       e1=paste0(format(mean(nullSig)*100,digits=report_precision),"%")
@@ -146,28 +142,46 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
         b<-r2ci(r,result$nval[1],+1)
       } else {
         switch (expected$Expected_par1,
-                "r"={a<-r},
+                "r"={
+                  a<-r
+                  if (RZ=="z") a<-atanh(a)
+                },
                 "p"={a<-p},
                 "log(lrs)"={a<-res2llr(result,"sLLR")},
                 "log(lrd)"={a<-res2llr(result,"dLLR")},
                 "n"={a<-result$nval},
                 "w"={a<-rn2w(r,result$nval)},
                 "nw"={a<-rw2n(r,0.8,result$design$sReplTails)},
-                "rp"={a<-result$rpIV},
-                "r1"={a<-result$roIV},
+                "rp"={
+                  a<-result$rpIV
+                  if (RZ=="z") a<-atanh(a)
+                  },
+                "r1"={
+                  a<-result$roIV
+                  if (RZ=="z") a<-atanh(a)
+                },
                 "p1"={a<-result$poIV},
                 "wp"={a<-rn2w(result$rpIV,result$nval)}
         )
         switch (expected$Expected_par2,
-                "r"={b<-r},
+                "r"={
+                  b<-r
+                  if (RZ=="z") b<-atanh(b)
+                },
                 "p"={b<-p},
                 "log(lrs)"={b<-res2llr(result,"sLLR")},
                 "log(lrd)"={b<-res2llr(result,"dLLR")},
                 "n"={b<-result$nval},
                 "w"={b<-rn2w(r,result$nval)},
                 "nw"={b<-rw2n(r,0.8,result$design$sReplTails)},
-                "rp"={b<-result$rpIV},
-                "r1"={b<-result$roIV},
+                "rp"={
+                  b<-result$rpIV
+                  if (RZ=="z") b<-atanh(b)
+                },
+                "r1"={
+                  b<-result$roIV
+                  if (RZ=="z") b<-atanh(b)
+                },
                 "p1"={b<-result$poIV},
                 "wp"={b<-rn2w(result$rpIV,result$nval)}
         )

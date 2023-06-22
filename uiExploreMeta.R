@@ -3,11 +3,11 @@ metaChoices=list("meta"=list("NoStudies"="NoStudies",
                              "Sample Size"="SampleSize",
                              "SampleGamma"="SampleGamma",
                              "sig_only"="sig_only"
-),
-"Worlds"=list("pdf"="PDF",
-              "k"="k",
-              "pNull"="pNull"
-)
+                        ),
+                  "Worlds"=list("pdf"="PDF",
+                                "k"="k",
+                                "pNull"="pNull"
+                  )
 )
 showMetaChoices=c(
   "pdf"="PDF",

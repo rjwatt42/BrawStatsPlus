@@ -2,11 +2,11 @@
 cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="None") return(result)
-  if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence)) return(result)
+  if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence)) return(result)
   
   if (design$sCheating=="Retry") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount) {
       sample<-makeSample(IV,IV2,DV,effect,design)
       result<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
       ntrials<-ntrials+1
@@ -17,7 +17,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Prune") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount) {
       ps<-c()
       for (i in 1:length(sample$iv)) {
         sample1<-sample
@@ -55,7 +55,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Grow") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount) {
       sample$participant<-c(sample$participant,length(sample$participant)+1)
       sample$iv<-c(sample$iv,sample2$iv[ntrials+1])
       sample$dv<-c(sample$dv,sample2$dv[ntrials+1])
@@ -72,7 +72,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="Replace") {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,evidence) && ntrials<design$sCheatingAmount) {
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount) {
       ps<-c()
       for (i in 1:length(sample$iv)) {
         sample1<-sample
@@ -101,17 +101,17 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
 
 replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
   res1<-res
-  ResultHistory<-list(n=res$nval,r=res$rIV,rp=res$rpIV,p=res$pIV)
+  ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
   
   if (!isempty(design$sReplicationOn) && !is.na(design$sReplicationOn) && design$sReplicationOn) {
-    while (design$sReplSigOnly && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,evidence)) {
+    while (design$sReplSigOnly && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
       if (evidence$longHand) {
         sample<-makeSample(IV,IV2,DV,effect,design)
         res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
       } else {
         res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
       }
-      ResultHistory<-list(n=res$nval,r=res$rIV,rp=res$rpIV,p=res$pIV)
+      ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
     }
     res1<-res
     resHold<-res
@@ -126,7 +126,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     design1$sN<-res$nval
     if (design$sReplRepeats>0) {
     for (i in 1:design$sReplRepeats) {
-      if (design$sReplKeep=="cautious" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,evidence)) {
+      if (design$sReplKeep=="cautious" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
         break
       }
       # get the relevant sample effect size for the power calc
@@ -146,6 +146,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       if ((design$sReplKeep=="largest" && res$nval>resHold$nval) || design$sReplKeep=="last")
         { resHold<-res }
       ResultHistory$n<-c(ResultHistory$n,res$nval)
+      ResultHistory$df1<-c(ResultHistory$df1,res$df1)
       ResultHistory$r<-c(ResultHistory$r,res$rIV)
       ResultHistory$rp<-c(ResultHistory$rp,res$rpIV)
       ResultHistory$p<-c(ResultHistory$p,res$pIV)
@@ -159,11 +160,12 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     res<-resHold
     
     if (design$sReplKeep=="cautious") {
-      use<-!isSignificant(STMethod,ResultHistory$p,ResultHistory$r,ResultHistory$n,evidence)
+      use<-!isSignificant(STMethod,ResultHistory$p,ResultHistory$r,ResultHistory$n,ResultHistory$df1,evidence)
       if (any(use)) {
         use<-which(use)[1]
         res$rIV<-ResultHistory$r[use]
         res$nval<-ResultHistory$n[use]
+        res$df1<-ResultHistory$df1[use]
         res$pIV<-ResultHistory$p[use]
       }
     }
@@ -171,6 +173,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
   res$ResultHistory<-ResultHistory
   res$roIV<-res1$rIV
   res$no<-res1$nval
+  res$df1o<-res1$df1
   res$poIV<-res1$pIV
   
   res

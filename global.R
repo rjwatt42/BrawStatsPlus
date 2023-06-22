@@ -207,6 +207,7 @@ warnOrd<-FALSE
 warn3Ord<-FALSE
 
 showPossible<-"Samples"
+RZ<-"r"
 
 # the stop running mechanism is complex
 # at its heart is a call to invalidate(ms) to trigger the next cycle

@@ -30,10 +30,18 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
   if (!is.null(IV2)){
     r<-c(r,effect$rIV2,effect$rIVIV2DV)
   }
+  
   pvals<-result$pIV
   rvals<-result$rIV
   nvals<-result$nval
-  
+  df1vals<-result$df1
+
+  rlim<-c(-1,1)
+  if (RZ=="z")  {
+    r<-atanh(r)
+    rvals<-atanh(rvals)
+    rlim<-c(-1,1)*z_range
+  }
   xsc<-0
   switch (disp1,
           "p"={
@@ -43,7 +51,11 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "r"={
             d1<-result$rIV
-            xlim<-c(-1, 1)
+            if (RZ=="z") {
+              d1<-atanh(d1)
+              disp1<-"z"
+            }
+            xlim<-rlim
           },
           "log(lrs)"={
             d1<-res2llr(result,"sLLR")
@@ -77,12 +89,20 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "rp"={
             d1<-result$rpIV
-            xlim<-c(-1, 1)
+            if (RZ=="z") {
+              d1<-atanh(d1)
+              disp1<-"zp"
+            }
+            xlim<-rlim
           },
           "r1"={
             d1<-result$roIV
-            xlim<-c(-1, 1)
             disp1<-bquote(r[1])
+            if (RZ=="z") {
+              d1<-atanh(d1)
+              disp1<-bquote(z[1])
+            }
+            xlim<-rlim
           },
           "p1"={
             d1<-result$poIV
@@ -107,12 +127,20 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "r"={
             d2<-result$rIV
-            ylim<-c(-1, 1)
+            if (RZ=="z") {
+              d2<-atanh(d2)
+              disp2<-"z"
+            }
+            ylim<-rlim
           },
           "r1"={
             d2<-result$roIV
-            ylim<-c(-1, 1)
             disp2<-bquote(r[1])
+            if (RZ=="z") {
+              d2<-atanh(d2)
+              disp2<-bquote(z[1])
+            }
+            ylim<-rlim
           },
           "p1"={
             d2<-result$poIV
@@ -124,7 +152,11 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "rp"={
             d2<-result$rpIV
-            ylim<-c(-1, 1)
+            if (RZ=="z") {
+              d2<-atanh(d2)
+              disp2<-"zp"
+            }
+            ylim<-rlim
           },
           "n"={
             d2<-result$nval
@@ -163,7 +195,11 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           },
           "R"={
             d2<-result$rpIV
-            ylim<-c(-1, 1)
+            if (RZ=="z") {
+              d2<-atanh(d2)
+              disp2<-"Z"
+            }
+            ylim<-rlim
           }
   )
   
@@ -196,14 +232,14 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
     c2=plotcolours$descriptionC
   }
   if (length(d1)<200) {
-    use<-!isSignificant(STMethod,pvals,rvals,nvals,result$evidence)
+    use<-!isSignificant(STMethod,pvals,rvals,nvals,df1vals,result$evidence)
     pts1=pts[use,]
     g<-g+geom_point(data=pts1,aes(x=x, y=y),shape=shapes$study, colour = "black", fill = c2, size = dotSize)
     pts2=pts[!use,]
     g<-g+geom_point(data=pts2,aes(x=x, y=y),shape=shapes$study, colour = "black", fill = c1, size = dotSize)
   } else {
     if (length(d1)<=10000) {
-      use<-!isSignificant(STMethod,pvals,rvals,nvals,result$evidence)
+      use<-!isSignificant(STMethod,pvals,rvals,nvals,df1vals,result$evidence)
       pts1=pts[use,]
       g<-g+geom_point(data=pts1,aes(x=x, y=y),shape=shapes$study, colour = c2, fill = c2, size = dotSize/4)
       pts2=pts[!use,]

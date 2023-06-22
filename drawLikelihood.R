@@ -465,7 +465,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     
   },
   "2D"={
-    par(bg=maincolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,0))
+    par(bg=maincolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,1))
     
     # show the back wall
     switch (likelihood$type,

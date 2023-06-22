@@ -13,6 +13,7 @@ histGain<-NA
 
 collectData<-function(result) {
   ns<-cbind(result$nval)
+  df1<-cbind(result$df1)
   rp<-cbind(result$rpIV)
   ro<-cbind(result$roIV)
   po<-cbind(result$poIV)
@@ -54,7 +55,7 @@ collectData<-function(result) {
     ps[ps<min_p]<-min_p
     po[po<min_p]<-min_p
   }
-  out<-list(rs=rs,ps=ps,ns=ns,rp=rp,ro=ro,po=po)
+  out<-list(rs=rs,ps=ps,ns=ns,df1=df1,rp=rp,ro=ro,po=po)
 }
 
 makeFiddle<-function(y,yd){
@@ -261,12 +262,12 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
     
     if (expType=="r" && length(pts$y1)==1 && !is.null(result$rCI)){
       pts1se<-data.frame(x=pts$x,y=result$rCI)
-      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)) {c<-c1} else (c<-c2)
+      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
       g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
     }
     if (expType=="p" && length(pts$y1)==1 && !is.null(result$pCI)){
       pts1se<-data.frame(x=pts$x,y=log10(result$pCI))
-      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$evidence)) {c<-c1} else (c<-c2)
+      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
       g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
     }
     
@@ -303,8 +304,15 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   if (!is.null(IV2)){
     r<-c(r,effect$rIV2,effect$rIVIV2DV)
   }
+  rlims<-c(-1,1)
+  rlab<-"r"
   
-  rActual<-r
+  if (RZ=="z") {
+    r<-atanh(r)
+    rlims<-c(-1,1)*z_range
+    rlab<-"z"
+  }
+    rActual<-r
   rActual[is.na(r)]<-0
 
   single<-TRUE
@@ -322,8 +330,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   
   switch (expType,
           "r"={
-            ylim<-c(-1, 1)
-            ylabel<-"r"
+            ylim<-rlims
+            ylabel<-rlab
             },
           "p"={
             ylim<-c(min_p, 1)
@@ -362,11 +370,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             ylabel<-"n"
           },
           "rp"={
-            ylim<-c(-1, 1)
+            ylim<-rlims
             ylabel<-"R"
           },
           "r1"={
-            ylim<-c(-1, 1)
+            ylim<-rlims
             ylabel<-bquote(r[1])
           },
           "wp"={
@@ -374,12 +382,12 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             ylabel<-bquote(w)
           },
           "ci1"={
-            ylim<-c(-1,1)
-            ylabel<-"r"
+            ylim<-rlims
+            ylabel<-rlab
           },
           "ci2"={
-            ylim<-c(-1,1)
-            ylabel<-"r"
+            ylim<-rlims
+            ylabel<-rlab
           },
           "e1"={
             ylim<-c(min_p, 1)
@@ -397,6 +405,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   
   if (!all(is.na(result$rIV))) {
     data<-collectData(result)
+    if (RZ=="z") {
+      data$rs<-atanh(data$rs)
+      data$rp<-atanh(data$rp)
+      data$ro<-atanh(data$ro)
+    }
     switch (expType,
             "r"={data$sh<-data$rs},
             "rp"={data$sh<-data$rp},
@@ -438,12 +451,14 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         npt<-101
       switch(expType,
              "r"={
-               yv<-seq(-1,1,length.out=npt)*0.99
-               xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale)
-             },
-             "r"={
-               yv<-seq(-1,1,length.out=npt)*0.99
-               xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale)
+               if (RZ=="z") {
+                 yv<-seq(-1,1,length.out=npt)*z_range
+                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale)
+                 xd<-rdens2zdens(xd,tanh(yv))
+               } else {
+                 yv<-seq(-1,1,length.out=npt)*0.99
+                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale)
+               }
              },
              "ci1"={
                yv<-seq(-1,1,length.out=npt)*0.99
@@ -517,13 +532,13 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       shvals<-data$sh[,i]
       rvals<-data$rs[,i]
       pvals<-data$ps[,i]
-      resSig<-isSignificant(STMethod,pvals,rvals,data$ns,result$evidence)
+      resSig<-isSignificant(STMethod,pvals,rvals,data$ns,data$df1,result$evidence)
       if (result$showType=="all") {
         ysc<-1/3
         rvals<-(rvals+1)*ysc*0.9+rem(i-1,3)*ysc*2-1
       }
       if (is.element(expType,c("e1d","e2d"))) {
-        d<-r2llr(data$rs[,i],data$ns[,i],STMethod,world=effect$world)
+        d<-res2llr(result,STMethod)
         err<-(d<0 & data$rp[,i]!=0) | (d>0 & data$rp[,i]==0)
         resWSig<-resSig & err
         pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,y3=resWSig,n<-data$ns)

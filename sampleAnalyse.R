@@ -10,6 +10,23 @@ wsd<-function(x,w=1,na.rm=TRUE) {
 }
 
 
+p2r<-function(p,n,df1=1) {
+  if (any(abs(n)<3)) {
+    print("p2r n-exception")
+    n[n<3]<-4
+  }
+  df2<-n-(df1+1)
+  
+  Fvals <- qf(1-p,df1,df2)
+  r <- sqrt(Fvals*df1)/sqrt(Fvals*df1+df2)
+  return(r)
+  
+  t_vals <- qt(p/2,n-2)
+  r_vals <- t_vals/sqrt(t_vals^2+(n-2))
+  r_vals
+}
+
+
 r2p<-function(r,n,df1=1){
   if (!is.numeric(r) || !is.numeric(n)) {return(1)}
   if (any(abs(r)>1)) {
@@ -21,7 +38,12 @@ r2p<-function(r,n,df1=1){
     print("r2p n-exception")
     n[n<3]<-4
   }
-  df2<-n-(sum(df1)+1)
+  df2<-n-(df1+1)
+  
+  Fvals<-r^2/(1-r^2)*df2/df1
+  p<-(1-pf(Fvals,df1,df2))
+  return(p)
+  
   if (any(df1>1)) {
     Fvals<-r^2/(1-r^2)*df2/df1
     (1-pf(Fvals,df1,df2))
@@ -65,10 +87,10 @@ r2ci<-function(r,n,s=0){
 }
 
 res2llr<-function(result,method=STMethod) {
-  r2llr(result$rIV,result$nval,method,result$evidence$llr,result$evidence$prior)
+  r2llr(result$rIV,result$nval,result$df1,method,result$evidence$llr,result$evidence$prior)
 }
 
-r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
+r2llr<-function(r,n,df1,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
   if (any(abs(r)>1)) {
     print(paste("r2llr r-exception",format(max(abs(r)),digits=3)))
     r[r>1]<-1
@@ -94,9 +116,9 @@ r2llr<-function(r,n,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
     llk<-matrix(nrow=nrow(z),ncol=ncol(z))
     for (i1 in 1:nrow(z)) {
       for (i2 in 1:ncol(z)) {
-        lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,0,FALSE)
+        lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],df1,world$populationPDF,world$populationPDFk,0,FALSE)
         lk1<-lk1+log(1-world$populationNullp)
-        lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],world$populationPDF,world$populationPDFk,1,FALSE)
+        lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],df1,world$populationPDF,world$populationPDFk,1,FALSE)
         lk2<-lk2+log(world$populationNullp)
         llk[i1,i2]<-lk1-lk2
       }
@@ -366,7 +388,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     }
     newResult<-list(rpIV=res$rpIV,roIV=res$roIV,rIV=res$rIV,pIV=res$pIV,poIV=res$poIV,
                     rIV2=res$rIV2,pIV2=res$pIV2,rIVIV2DV=res$rIVIV2DV,pIVIV2DV=res$pIVIV2DV,
-                    nval=res$nval,
+                    nval=res$nval,df1=res$df1,
                     r=list(direct=res$r$direct,unique=res$r$unique,total=res$r$total,coefficients=res$r$coefficients),
                     p=list(direct=res$p$direct,unique=res$p$unique,total=res$p$total),
                     showType=design$showType)
@@ -386,6 +408,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     mainResult$pIV<-rbind(mainResult$pIV,newResult$pIV)
     mainResult$poIV<-rbind(mainResult$poIV,newResult$poIV)
     mainResult$nval<-rbind(mainResult$nval,newResult$nval)
+    mainResult$df1<-rbind(mainResult$df1,newResult$df1)
     if (!is.null(IV2)){
       mainResult$rIV2<-rbind(mainResult$rIV2,newResult$rIV2)
       mainResult$pIV2<-rbind(mainResult$pIV2,newResult$pIV2)
@@ -973,6 +996,11 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
   result$rawAnovaC<-anRawC
   result$normAnovaC<-anNormC
   result$nval<-n
+  if (IV$type=="Categorical") {
+    result$df1<-IV$ncats-1
+  } else {
+    result$df1<-1
+  }
   
   result$model<-result$rawModel
   result$anova<-result$rawAnovaC
@@ -1008,7 +1036,7 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
     res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
   }
   # sig only
-  while (sig_only && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,evidence)) {
+  while (sig_only && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
     if (evidence$longHand) {
       sample<-makeSample(IV,IV2,DV,effect,design)
       res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)

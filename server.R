@@ -234,7 +234,9 @@ shinyServer(function(input, output, session) {
     nPlotScale<<-input$nScale
   })
   
-  
+  observeEvent(input$RZ,{
+    RZ<<-input$RZ
+  })
 ####################################
 # generic warning dialogue
   

@@ -205,12 +205,14 @@ EvidenceTab <-
                                                  tags$td(width = "25%", selectInput("pScale", label=NULL, c("linear"="linear","log10"="log10"), selected=evidence$pScale, selectize=FALSE)),
                                                  tags$td(width = "25%", tags$div(style = localPlainStyle, "w-scale:")),
                                                  tags$td(width = "25%", selectInput("wScale", label=NULL, c("linear"="linear","log10"="log10"), selected=evidence$wScale, selectize=FALSE)),
+                                               )
                                                ),
-                                               tags$tr(
+                                               tags$table(width = "100%",class="myTable",
+                                                          tags$tr(
                                                  tags$td(width = "25%", tags$div(style = localPlainStyle, "n-scale:")),
                                                  tags$td(width = "25%", selectInput("nScale", label=NULL, c("linear"="linear","log10"="log10"), selected=evidence$nScale, selectize=FALSE)),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, "Sig Only")),
-                                                 tags$td(width = "25%", checkboxInput("evidenceSigOnly",label=NULL,value=evidence$sigOnly))
+                                                 tags$td(width = "20%", tags$div(style = localPlainStyle, "Sig Only")),
+                                                 tags$td(width = "12%", checkboxInput("evidenceSigOnly",label=NULL,value=evidence$sigOnly))
                                                ),
                                     ),
                                     tags$table(width = "100%",class="myTable",
