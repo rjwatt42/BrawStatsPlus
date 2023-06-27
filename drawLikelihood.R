@@ -40,6 +40,7 @@ doCILines<-FALSE
 doTextResult<-TRUE
 showJointLk<-FALSE
 showNull<-TRUE
+normSampDist<-FALSE
 
 drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   switch(likelihood$type,
@@ -115,8 +116,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   dens_at_peak<-rp_stats$dens_at_peak
 
   rpw_dens[rpw_dens>1 | is.na(rpw_dens)]<-1
-  rsw_dens_plus<-rsw_dens_plus/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
-  rsw_dens_null<-rsw_dens_null/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
+    rsw_dens_plus<-rsw_dens_plus/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
+    rsw_dens_null<-rsw_dens_null/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
   populationBackwall<-list(rpw=rpw,rpw_dens=rpw_dens,pDens_r=pDens_r,rp=rp)
   sampleBackwall<-list(rsw=rsw,rsw_dens_plus=rsw_dens_plus,rsw_dens_null=rsw_dens_null,rs=rs)
   
@@ -202,6 +203,11 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               y<-sampleBackwall$rsw
               x<-y*0+view_lims[1]
               ztotal<-sampleBackwall$rsw_dens_plus+sampleBackwall$rsw_dens_null
+              if (normSampDist) {
+                ztotal<-ztotal/sum(ztotal,na.rm=TRUE)
+                zgain<-1/max(ztotal,na.rm=TRUE)
+                ztotal<-ztotal*zgain
+              }
               polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,ztotal,0)*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
               
               if (likelihood$source$worldOn && likelihood$source$populationNullp>0){
@@ -211,6 +217,13 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   znull<-0
                 }
                 zplus<-sampleBackwall$rsw_dens_plus
+                if (normSampDist) {
+                  znull<-znull/sum(znull,na.rm=TRUE)
+                  zplus<-zplus/sum(zplus,na.rm=TRUE)
+                  znull<-znull*zgain
+                  zplus<-zplus*zgain
+                }
+                
                 if (likelihood$source$populationNullp>0 ) {
                   lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                 }
