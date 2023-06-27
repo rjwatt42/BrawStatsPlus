@@ -102,11 +102,7 @@ LGmodalPossible <-
                                                          tags$td(width = "30%", tags$div(style = localStyle, "show theory:")),
                                                          tags$td(width = "30%", checkboxInput("LGlikelihoodTheory", value=FALSE, label=NULL)),
                                                          tags$td(width = "20%"),
-                                                         tags$td(width = "20%", 
-                                                                 selectInput("LGlikelihoodViewRZ", label=NULL,
-                                                                             c("r" = "r",
-                                                                               "z" = "z"),selected=likelihood$viewRZ,selectize=FALSE)
-                                                         )
+                                                         tags$td(width = "20%")
                                                        )
                                             ),
                                             tags$table(width = "100%",class="myTable",

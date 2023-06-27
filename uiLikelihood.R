@@ -159,11 +159,7 @@ LikelihoodTab <-
                                                             "2D" = "2D"),selected=likelihood$view,selectize=FALSE)
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "show:")),
-                                      tags$td(width = "20%", 
-                                              selectInput("likelihoodViewRZ", label=NULL,
-                                                          c("r" = "r",
-                                                            "z" = "z"),selected=likelihood$viewRZ,selectize=FALSE)
-                                      )
+                                      tags$td(width = "20%")
                                     ),
                                     tags$tr(
                                       tags$td(width = "5%", tags$div(style = localPlainStyle, "az:")),

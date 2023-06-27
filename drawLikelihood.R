@@ -106,7 +106,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   rsw_dens<-rsw_dens_plus+rsw_dens_null
 
   view_lims<-c(-1,1)
-  if (likelihood$viewRZ=="z") {
+  if (RZ=="z") {
     view_lims<-c(-1,1)*z_range
   }
   
@@ -169,7 +169,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             
             text(ticks.x$x,ticks.x$y,plot_ticks,cex=0.6*charExp,adj=c(1,NA))
             text(ticks.y$x,ticks.y$y,plot_ticks,cex=0.6*charExp,adj=c(0,NA))
-            if (likelihood$viewRZ=="r") {
+            if (RZ=="r") {
               text(pos.x$x,pos.x$y,bquote(bold(r[population])),font=2,adj=c(1,1),cex=0.8*charExp)
               text(pos.y$x,pos.y$y,bquote(bold(r[sample])),font=2,adj=c(0,1),cex=0.8*charExp)
             } else {
@@ -446,7 +446,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
                           # text annotations
                           if (likelihood$textResult || doTextResult) {
-                            param<-likelihood$viewRZ
+                            param<-RZ
                             # llr 
                             if (effect$world$worldOn && likelihood$prior$populationNullp>0) {
                               text(trans3d(x=view_lims[1],y=mean(view_lims),z=1.05,pmat=mapping),labels=bquote(
@@ -485,7 +485,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             "Populations"={
               rw<-rpw
               rw_dens<-rpw_dens
-              if (likelihood$viewRZ=="z") {
+              if (RZ=="z") {
                 xlabel<-bquote(bold(z[p]))
               } else {
                 xlabel<-bquote(bold(r[p]))
@@ -495,7 +495,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             "Samples"={
               rw<-rsw
               rw_dens<-rsw_dens
-              if (likelihood$viewRZ=="z") {
+              if (RZ=="z") {
                 xlabel<-bquote(bold(z[s]))
               } else {
                 xlabel<-bquote(bold(r[s]))
@@ -599,10 +599,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     }
                     
                       ptext<-bquote(
-                        bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
+                        bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
                       )
                       ltext<-bquote(
-                        bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),phantom(bold(.(format(ln_at_sample,digits=3)))))
+                        bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),phantom(bold(.(format(ln_at_sample,digits=3)))))
                       )
                     if (s>0)   {
                       text(s,1.05,labels=ptext,col=colPdark,adj=0,cex=0.9)
@@ -613,19 +613,19 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     } 
                     if (likelihood$world$populationNullp>0) {
                       text(0,1.05,labels=bquote(
-                        phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(bold(.(format(pd_at_sample,digits=3))),phantom(bold(.(format(pn_at_sample,digits=3)))))
+                        phantom(bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(bold(.(format(pd_at_sample,digits=3))),phantom(bold(.(format(pn_at_sample,digits=3)))))
                       ),col=colDistS,adj=-0.1,cex=0.9)
                       text(0,1.05,labels=bquote(
-                        phantom(bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),bold(.(format(pn_at_sample,digits=3))))
+                        phantom(bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),bold(.(format(pn_at_sample,digits=3))))
                       ),col=colNullS,adj=-0.1,cex=0.9)
                     }
 
                     # text(0,1.05,labels=bquote(
-                    #   phantom(bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(bold(.(format(ld_at_sample,digits=3))),phantom(bold(.(format(ln_at_sample,digits=3)))))
+                    #   phantom(bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(bold(.(format(ld_at_sample,digits=3))),phantom(bold(.(format(ln_at_sample,digits=3)))))
                     # ),col=colDistS,adj=1.1,cex=0.9)
                     if (likelihood$world$populationNullp>0) {
                       text(0,1.05,labels=bquote(
-                      phantom(bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),bold(.(format(ln_at_sample,digits=3))))
+                      phantom(bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),bold(.(format(ln_at_sample,digits=3))))
                     ),col=colNullS,adj=1.1,cex=0.9)
                     }
                   } else {
@@ -636,10 +636,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     lines(x=c(sRho[1],sRho[1]),y=c(0,l_at_sample-0.01),col=colSdark,lwd=2)
                     
                     text(0,1.05,labels=bquote(
-                      bolditalic(p)[.(likelihood$viewRZ)]== bold(.(format(p_at_sample,digits=3)))
+                      bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3)))
                     ),col=colPdark,adj=-0.1,cex=0.9)
                     text(0,1.05,labels=bquote(
-                      bolditalic(l)[.(likelihood$viewRZ)]==bold(.(format(l_at_sample,digits=3)))
+                      bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3)))
                     ),col=colPdark,adj=1.1,cex=0.9)
                   }
                   }
@@ -667,10 +667,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     lines(x=c(0,0)+rp_ci[2],y=c(0,dens_at_ci[2]-0.01),col="red",lty=3,lwd=2)
                   }
                   text(rp_peak,1.05,labels=bquote(
-                    bolditalic(.(likelihood$viewRZ))[mle]== bold(.(format(rp_peak,digits=3)))
+                    bolditalic(.(RZ))[mle]== bold(.(format(rp_peak,digits=3)))
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   text(x=rp_peak,1.15,labels=bquote(
-                    bold(llr)(bolditalic(.(likelihood$viewRZ))[mle]/bolditalic(.(likelihood$viewRZ))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
+                    bold(llr)(bolditalic(.(RZ))[mle]/bolditalic(.(RZ))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   
                   if (effect$world$worldOn && likelihood$prior$populationNullp>0) {
@@ -678,7 +678,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     ld_at_sample<-approx(rs,pDens_r_plus,sRho[1])$y
                     llrNull<-log(ln_at_sample/ld_at_sample)
                     text(view_lims[1],1.15,labels=bquote(
-                      bold(llr)(bolditalic(.(likelihood$viewRZ))["+"]/bolditalic(.(likelihood$viewRZ))[0])==bold(.(format(-llrNull,digits=3)))),
+                      bold(llr)(bolditalic(.(RZ))["+"]/bolditalic(.(RZ))[0])==bold(.(format(-llrNull,digits=3)))),
                       col=colPdark,adj=c(0),cex=0.9)
                   }
                   

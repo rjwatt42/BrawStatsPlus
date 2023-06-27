@@ -128,7 +128,7 @@ updateLikelihood<-function(){
                    likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihoodP_append,Likelihood_length=as.numeric(input$likelihoodP_length),
-                   view=input$LikelihoodView,viewRZ=input$likelihoodViewRZ,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
+                   view=input$LikelihoodView,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
               )
           },
@@ -148,7 +148,7 @@ updateLikelihood<-function(){
                    likelihoodTheory=input$likelihoodTheory,likelihoodLongHand=input$likelihoodLongHand,likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihood_append,Likelihood_length=as.numeric(input$likelihood_length),
-                   view=input$LikelihoodView,viewRZ=input$likelihoodViewRZ,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
+                   view=input$LikelihoodView,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
               )
           }

@@ -165,7 +165,7 @@ rSamp2Pop<-function(r_s,n,world=NULL) {
 populationDensityFunction<-function(rpw,likelihood){
   if (likelihood$type=="Populations") {
     switch (likelihood$UsePrior,
-            "none" ={Prior<-list(populationPDF="Uniform",populationRZ=likelihood$viewRZ,populationPDFk=0,populationNullp=0)},
+            "none" ={Prior<-list(populationPDF="Uniform",populationRZ=RZ,populationPDFk=0,populationNullp=0)},
             "world"={Prior<-likelihood$world},
             "prior"={Prior<-likelihood$prior}
             )
@@ -464,7 +464,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   design$sN<-n
   
   # note that we do everything in z and then, if required transform to r at the end
-  switch (likelihood$viewRZ,
+  switch (RZ,
           "r" ={
             zs<-atanh(seq(-1,1,length=npoints)*r_range)
             zp<-atanh(seq(-1,1,length=npoints)*r_range)
@@ -508,7 +508,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
          "none"={ prior<-list(worldOn=TRUE,
                               populationPDF="Uniform",
                               populationPDFk=zp,
-                              populationRZ=likelihood$viewRZ,
+                              populationRZ=RZ,
                               populationNullp=0.0) },
          "world"={ prior<-likelihood$world },
          "prior"={ prior<-likelihood$prior }
@@ -530,7 +530,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   
   # enumerate the source populations
   #  as r and gain 
-  pR<-get_pRho(source,"z",likelihood$viewRZ)
+  pR<-get_pRho(source,"z",RZ)
   pRho<-pR$pRho
   pRhogain<-pR$pRhogain
   sD<-getZDist(zs,pRho,pRhogain,source,design,likelihood)
@@ -538,7 +538,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   sDens_z_plus<-sD$sDens_z_plus
   sDens_z_null<-sD$sDens_z_null
 
-  pR<-get_pRho(prior,"z",likelihood$viewRZ)
+  pR<-get_pRho(prior,"z",RZ)
   pRhoP<-pR$pRho
   pRhogainP<-pR$pRhogain
   sD<-getZDist(zs,pRhoP,pRhogainP,prior,design,likelihood)
@@ -549,7 +549,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   if (length(pRho)>25) {
     l<-length(pRho)
     use<-seq(1,l,length.out=(l-1)/24)
-    if (likelihood$viewRZ=="z") {
+    if (RZ=="z") {
       keep<-abs(pRho[use])<z_range
       use<-use[keep]
     }
@@ -656,7 +656,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
             }
 
             if (!isempty(sr_effects)) {
-              if (likelihood$viewRZ=="z") {
+              if (RZ=="z") {
                 use_effects<-atanh(sr_effects)
                 hist_range<-z_range
               } else {
@@ -761,7 +761,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
               keep<-abs(atanh(pr_effectS)-sRho[1])<likelihood$likelihoodSimSlice
               pr_effectP_use<-pr_effectP[keep]
 
-              if (likelihood$viewRZ=="z") {
+              if (RZ=="z") {
                 use_effects<-atanh(pr_effectP_use)
                 use_effectP<-atanh(pr_effectP)
                 use_effectS<-atanh(pr_effectS)
@@ -804,7 +804,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   pDens_r_plus<-pDens_z_plus
   pDens_r_null<-pDens_z_null
   asDens_r<-asDens_z
-  if (likelihood$viewRZ=="r") {
+  if (RZ=="r") {
     pRho<-tanh(pRho)
     sRho<-tanh(sRho)
     rp<-tanh(zp)
