@@ -174,6 +174,16 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
         res$pIV<-ResultHistory$p[use]
       }
     }
+    
+    if (design$sReplKeep=="median" && design$sReplRepeats>0) {
+      use<-which(ResultHistory$p==sort(ResultHistory$p)[floor(length(ResultHistory$p)/2)])
+      use<-use[1]
+        res$rIV<-ResultHistory$r[use]
+        res$nval<-ResultHistory$n[use]
+        res$df1<-ResultHistory$df1[use]
+        res$pIV<-ResultHistory$p[use]
+    }
+    
   }
   alpha<<-oldalpha
   

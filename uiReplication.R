@@ -45,7 +45,7 @@ replicationTab<-function(prefix="") {
                         ),
                         tags$td(width = "30%", 
                                 selectInput("sReplKeep",label=NULL,
-                                            choices=c("last","largest","joint","cautious"),
+                                            choices=c("last","largest","joint","cautious","median"),
                                             selected=design$sReplKeep,selectize=FALSE)
                         ),
                       )
