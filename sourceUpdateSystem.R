@@ -60,7 +60,7 @@ updateDesign<-function(){
                sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,
                sReplicationOn=input$sReplicationOn,sReplPower=input$sReplPower,
                sReplSigOnly=input$sReplSigOnly,sReplRepeats=input$sReplRepeats,sReplCorrection=input$sReplCorrection,
-               sReplKeep=input$sReplKeep,sReplTails=input$sReplTails,
+               sReplKeep=input$sReplKeep,sReplAlpha=input$sReplAlpha,sReplTails=input$sReplTails,
                sN_Strata=input$sN_Strata, sR_Strata=input$sR_Strata,
                sNClu_Cluster=input$sNClu_Cluster, sRClu_Cluster=input$sRClu_Cluster,
                sNClu_Convenience=input$sNClu_Convenience, sRClu_Convenience=input$sRClu_Convenience, sNCont_Convenience=input$sNCont_Convenience, sRCont_Convenience=input$sRCont_Convenience, sRSpread_Convenience=input$sRSpread_Convenience,

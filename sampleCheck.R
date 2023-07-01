@@ -100,10 +100,12 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
 }
 
 replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
+  oldalpha<-alpha
   res1<-res
   ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
   
   if (!isempty(design$sReplicationOn) && !is.na(design$sReplicationOn) && design$sReplicationOn) {
+    if (design$sReplAlpha=="half") alpha<<-oldalpha*2
     while (design$sReplSigOnly && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
       if (evidence$longHand) {
         sample<-makeSample(IV,IV2,DV,effect,design)
@@ -113,6 +115,8 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       }
       ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
     }
+    if (design$sReplAlpha=="half") alpha<<-oldalpha/2
+    
     res1<-res
     resHold<-res
     # now we freeze the population effect size
@@ -142,7 +146,12 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       } else {
         res<-sampleShortCut(IV,IV2,DV,effect,design1,evidence,1,FALSE)
       }
-
+      if (design$sReplTails==1) {
+        if (sign(res$rIV)!=sign(ResultHistory$r[1])) {
+          res$pIV<-1
+        }
+      }
+        
       if ((design$sReplKeep=="largest" && res$nval>resHold$nval) || design$sReplKeep=="last")
         { resHold<-res }
       ResultHistory$n<-c(ResultHistory$n,res$nval)
@@ -150,17 +159,13 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       ResultHistory$r<-c(ResultHistory$r,res$rIV)
       ResultHistory$rp<-c(ResultHistory$rp,res$rpIV)
       ResultHistory$p<-c(ResultHistory$p,res$pIV)
-      # if (sign(res$rIV)==rSign) {
-      #   res$pIV<-res$pIV/2
-      # } else {
-      #   res$pIV<-1
-      # }
     }
     }
     res<-resHold
     
     if (design$sReplKeep=="cautious") {
       use<-!isSignificant(STMethod,ResultHistory$p,ResultHistory$r,ResultHistory$n,ResultHistory$df1,evidence)
+      use[1]<-FALSE
       if (any(use)) {
         use<-which(use)[1]
         res$rIV<-ResultHistory$r[use]
@@ -170,6 +175,8 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       }
     }
   }
+  alpha<<-oldalpha
+  
   res$ResultHistory<-ResultHistory
   res$roIV<-res1$rIV
   res$no<-res1$nval
