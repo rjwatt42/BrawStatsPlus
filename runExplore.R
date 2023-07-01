@@ -76,7 +76,9 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "Method"={vals<-c("Random","Stratified","Cluster","Convenience","Snowball")},
           "Usage"={vals<-c("Between","Within")},
           "SampleGamma"={vals<-seq(1,10,length.out=npoints)},
-          "Alpha"={vals<-c(0.001,0.0025,0.005,0.01,0.025,0.05,0.1,0.25,0.5)},
+          "Alpha"={
+            vals<-vals<-10^seq(log10(0.0005),log10(0.5),length.out=npoints)
+            },
           "Dependence"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Outliers"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Heteroscedasticity"={vals<-seq(0,1,length.out=npoints)},

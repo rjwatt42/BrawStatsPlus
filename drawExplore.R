@@ -470,6 +470,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y50a[i]<-0
                   y50b[i]<-0
                 }
+                y50[is.na(y50)]<-0
+                y50e[is.na(y50e)]<-0
               } else {
                 for (i in 1:length(exploreResult$result$vals)){
                   if (explore$Explore_type=="Alpha") {
@@ -710,7 +712,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
 
     if (explore$Explore_show=="FDR" || explore$Explore_show=="NHSTErrors") {
       endI<-length(vals)
-      
+
       # false misses
       ytop<-1-y50a
       pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50,rev(ytop)))
@@ -971,18 +973,20 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (is.character(exploreResult$result$vals[1]))
       g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
   }
-  if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount","Alpha")) &&
+  if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount")) &&
                  explore$Explore_xlog) 
+      || (exploreResult$Explore_type=="Alpha")
       || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
+    xd<-(log10(max(vals))-log10(min(vals)))/100
     if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
-      g<-g+scale_x_log10(limits=c(min(vals),10^(log10(max(vals))*1.11)))
+      g<-g+scale_x_log10(limits=c(10^(log10(min(vals))-xd),10^(log10(max(vals))+xd*10)))
     } else {
-      g<-g+scale_x_log10(limits=c(min(vals),10^(log10(max(vals)))))
+      g<-g+scale_x_log10(limits=c(10^(log10(min(vals))-xd),10^(log10(max(vals)))))
     }
   } else {
     if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
       if (doLine) {
-        g<-g+scale_x_continuous(limits=c(min(vals),max(vals)*1.11))
+        g<-g+scale_x_continuous(limits=c(min(vals)/1.11,max(vals)*1.11))
       } else {
         g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)-0.5,(max(vals)+0.5)*1.11))
       }
