@@ -471,6 +471,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         main_res$rpval<-cbind(main_res$rpval,res$rpIV)
         main_res$pval<-cbind(main_res$pval,res$pIV)
         main_res$nval<-cbind(main_res$nval,res$nval)
+        main_res$df1<-cbind(main_res$df1,res$df1)
 
         if (!is.null(IV2)){
           main_res$r1$direct<-cbind(main_res$r1$direct,res$r$direct[,1])
@@ -513,8 +514,9 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       # if (!is.null(exploreResult$rpIVs))
       exploreResult$rpIVs<-rbind(exploreResult$rpIVs,main_res$rpval)
       exploreResult$pIVs<-rbind(exploreResult$pIVs,main_res$pval)
-        exploreResult$nvals<-rbind(exploreResult$nvals,main_res$nval)
-        
+      exploreResult$nvals<-rbind(exploreResult$nvals,main_res$nval)
+      exploreResult$df1vals<-rbind(exploreResult$df1vals,main_res$df1)
+      
         exploreResult$r1$direct<-rbind(exploreResult$r1$direct,main_res$r1$direct)
         exploreResult$r1$unique<-rbind(exploreResult$r1$unique,main_res$r1$unique)
         exploreResult$r1$total<-rbind(exploreResult$r1$total,main_res$r1$total)

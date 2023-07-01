@@ -350,6 +350,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
   pvals=c()
   rvals=c()
   nvals=c()
+  df1vals<-c()
   if (length(rho)<n_sims) {rho<-rep(rho,n_sims)}
   if (!is.null(IV2)) {
     if (length(rho2)<n_sims) {rho2<-rep(rho2,n_sims)}
@@ -366,7 +367,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
   } else {
     mainResult<-list(rpIV=c(),roIV=c(),rIV=c(),pIV=c(),
                    rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),
-                   nval=c(),
+                   nval=c(),df1=c(),
                    r=list(direct=c(),unique=c(),total=c(),coefficients=c()),
                    p=list(direct=c(),unique=c(),total=c()),
                    showType=design$showType)

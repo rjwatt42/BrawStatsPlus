@@ -36,7 +36,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
     )
   }
   nVals<-exploreResult$result$nvals
-  df1Vals<-exploreResult$result$df1
+  df1Vals<-exploreResult$result$df1vals
   
   switch (explore$Explore_show,
           "EffectSize"={

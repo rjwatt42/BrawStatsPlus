@@ -203,7 +203,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       )
     }
     nVals<-exploreResult$result$nvals
-    df1Vals<-exploreResult$result$df1
+    df1Vals<-exploreResult$result$df1vals
     
     extra_x_label<-""
     switch (explore$Explore_show,
@@ -488,6 +488,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 peVals<-exploreResult$nullresult$pIVs
                 reVals<-exploreResult$nullresult$rIVs
                 neVals<-exploreResult$nullresult$nvals
+                df1eVals<-exploreResult$nullresult$df1vals
                 for (i in 1:length(exploreResult$result$vals)){
                   if (explore$Explore_type=="Alpha") {
                     alpha<<-exploreResult$result$vals[i]
