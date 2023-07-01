@@ -137,7 +137,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,genexp_shape=1,remove_nonsig=FALSE,df
 }
 
 
-getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove_nonsig=FALSE) {
+getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove_nonsig=FALSE,doSeparate=FALSE) {
   sigma<-1/sqrt(n-3)
   zcrit<-atanh(p2r(alpha,n,df1))
   
@@ -169,6 +169,8 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
            shape<-metaAnal$shape
          }
   )
+  
+  if (!doSeparate) {
   for (i in 1:length(worldDistK)) {
     lambda<-worldDistK[i]
     mainPDF<-PDF(z,lambda,sigma,shape,remove_nonsig,df1)
@@ -184,6 +186,17 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
         a<-1
       }
     }
+  }
+  } else {
+    lambda<-worldDistK
+    mainPDF<-PDF(z,lambda,sigma,shape,remove_nonsig,df1)
+      nullP<-worldDistNullP
+      # make the whole source first
+      sourcePDF<-mainPDF$pdf*(1-nullP)+nullPDF$pdf*nullP
+      # now normalize for the non-sig
+      likelihoods<-sourcePDF/(mainPDF$sig_pdf*(1-nullP)+nullPDF$sig_pdf*nullP)
+      # likelihoods[is.infinite(likelihoods)]<-NA
+      res<-log(likelihoods)
   }
   res
 }

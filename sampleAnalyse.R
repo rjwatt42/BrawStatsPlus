@@ -113,17 +113,11 @@ r2llr<-function(r,n,df1,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
       world$populationPDF<-"Single"
       world$populationNullp<-0.5
     }
-    llk<-matrix(nrow=nrow(z),ncol=ncol(z))
-    for (i1 in 1:nrow(z)) {
-      for (i2 in 1:ncol(z)) {
-        lk<-getLogLikelihood(z[i1,i2],n[i1,i2],df1,world$populationPDF,world$populationPDFk,c(0,1),FALSE)
-        # lk1<-getLogLikelihood(z[i1,i2],n[i1,i2],df1,world$populationPDF,world$populationPDFk,0,FALSE)
-        lk1<-lk[1]+log(1-world$populationNullp)
-        # lk2<-getLogLikelihood(z[i1,i2],n[i1,i2],df1,world$populationPDF,world$populationPDFk,1,FALSE)
-        lk2<-lk[2]+log(world$populationNullp)
-        llk[i1,i2]<-lk1-lk2
-      }
-    }
+    lk1<-getLogLikelihood(z,n,df1,world$populationPDF,world$populationPDFk,worldDistNullP=0,remove_nonsig=FALSE,doSeparate=TRUE)
+    lk1<-lk1+log(1-world$populationNullp)
+    lk2<-getLogLikelihood(z,n,df1,world$populationPDF,world$populationPDFk,worldDistNullP=1,remove_nonsig=FALSE,doSeparate=TRUE)
+    lk2<-lk2+log(world$populationNullp)
+    llk<-lk1-lk2
   } else {
     if (isempty(llr$e1) || is.na(llr$e1)) { llr1=z }
     else {llr1=llr$e1}
