@@ -552,7 +552,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   
   alpha<<-localAlpha
   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
-  
+
   exploreResult$vals<-vals
   exploreResult$Explore_type<-explore$Explore_type
   exploreResult$Explore_show<-explore$Explore_show
