@@ -190,6 +190,7 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
   } else {
     lambda<-worldDistK
     mainPDF<-PDF(z,lambda,sigma,shape,remove_nonsig,df1)
+    if (length(worldDistNullP)==1) {
       nullP<-worldDistNullP
       # make the whole source first
       sourcePDF<-mainPDF$pdf*(1-nullP)+nullPDF$pdf*nullP
@@ -197,6 +198,18 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
       likelihoods<-sourcePDF/(mainPDF$sig_pdf*(1-nullP)+nullPDF$sig_pdf*nullP)
       # likelihoods[is.infinite(likelihoods)]<-NA
       res<-log(likelihoods)
+    } else {
+      res<-array(0,c(size(z),length(worldDistNullP)))
+      for (j in 1:length(worldDistNullP)) {
+        nullP<-worldDistNullP[j]
+        # make the whole source first
+        sourcePDF<-mainPDF$pdf*(1-nullP)+nullPDF$pdf*nullP
+        # now normalize for the non-sig
+        likelihoods<-sourcePDF/(mainPDF$sig_pdf*(1-nullP)+nullPDF$sig_pdf*nullP)
+        # likelihoods[is.infinite(likelihoods)]<-NA
+        res[,,j]<-log(likelihoods)
+      }
+    }
   }
   res
 }
