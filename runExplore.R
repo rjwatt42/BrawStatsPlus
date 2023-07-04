@@ -418,7 +418,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             },
             
             "SigOnly"={
-              design$sReplSigOnly<-(vals[i]=="Yes")
+              design$sReplSigOnly<-vals[i]
             },
             "Power"={
             design$sReplPower<-vals[i]
