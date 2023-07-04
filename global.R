@@ -3,6 +3,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
                doPossible=TRUE,doLikelihoodInfer=FALSE,
                startBlank=FALSE,doBootstrap=TRUE,doCheating=TRUE,
                doVariablesExplore=FALSE,
+               extras=FALSE,
                showAnimation=TRUE,
                importOrdinals=TRUE,
                rigidWithin=TRUE)
@@ -106,8 +107,10 @@ design<-list(sN=42, sNRand=FALSE,sNRandK=2,
              sRangeOn=FALSE, sIVRange=c(-3,3), sDVRange=c(-3,3), 
              sDependence=0, sOutliers=0, sClustering=0,
              sCheating=FALSE,sCheatingAmount=5,
-             sReplicationOn=FALSE,sReplPower=0.8,sReplTails=2,
-             sReplSigOnly=FALSE,sReplRepeats=1,sReplKeep="last",sReplCorrection=FALSE,sReplAlpha="norm",
+             sReplicationOn=FALSE,sReplPowerOn=TRUE,sReplPower=0.8,sReplTails=2,
+             sReplSigOnly="No",sReplUseBudget=FALSE,sReplRepeats=1,sReplKeep="last",sReplBudget=1000,
+             sReplCorrection="None",
+             sReplVarAlpha=FALSE,sReplAlpha=2,
              sN_Strata=5, sR_Strata=2,
              sNClu_Cluster=5,     sRClu_Cluster=0.7,
              sNClu_Convenience=1, sRClu_Convenience=0.7, sNCont_Convenience=5, sRCont_Convenience=0.7, sRSpread_Convenience=0.5,
@@ -241,6 +244,7 @@ if (is_local) {
   switches$doClipboard<-TRUE
   
   if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
+    # switches$extras<-TRUE
     # switches$doBatchFiles<-TRUE
     # switches$doReplications<-TRUE
     # switches$doMetaAnalysis<-TRUE

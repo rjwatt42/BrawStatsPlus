@@ -105,8 +105,8 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
   ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
   
   if (!isempty(design$sReplicationOn) && !is.na(design$sReplicationOn) && design$sReplicationOn) {
-    if (design$sReplAlpha=="half") alpha<<-oldalpha*2
-    while (design$sReplSigOnly && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
+    if (design$sReplVarAlpha) alpha<<-oldalpha*design$sReplAlpha
+    while (design$sReplSigOnly=="Yes" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
       if (evidence$longHand) {
         sample<-makeSample(IV,IV2,DV,effect,design)
         res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
@@ -115,7 +115,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       }
       ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
     }
-    if (design$sReplAlpha=="half") alpha<<-oldalpha/2
+    if (design$sReplVarAlpha) alpha<<-oldalpha/design$sReplAlpha
     
     res1<-res
     resHold<-res
@@ -128,16 +128,24 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     design1<-design
     design1$sNRand<-FALSE
     design1$sN<-res$nval
+    if (design$sReplUseBudget) {
+      design$sReplRepeats<-floor(design$sReplBudget/design$sN)-1
+    }
     if (design$sReplRepeats>0) {
     for (i in 1:design$sReplRepeats) {
       if (design$sReplKeep=="cautious" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
         break
       }
       # get the relevant sample effect size for the power calc
-      if (!(isempty(design$sReplPower)) && (design$sReplPower>0)) {
-        if (design$sReplCorrection) {r<-rSamp2Pop(res$rIV,design1$sN,effect$world)} else {r<-res$rIV}
-      # get the new sample size
-      design1$sN<-rw2n(r,design$sReplPower,design$sReplTails)
+      if (design$sReplPowerOn && (design$sReplPower>0)) {
+        switch(design$sReplCorrection,
+               "None"={r<-res$rIV},
+               "World"={r<-rSamp2Pop(res$rIV,design1$sN,effect$world)},
+               "Prior"={r<-rSamp2Pop(res$rIV,design1$sN,evidence$prior)}
+        ) 
+        # get the new sample size
+        design1$sN<-rw2n(r,design$sReplPower,design$sReplTails)
+        design1$sNRand<-FALSE
       }
       
       if (evidence$longHand) {
@@ -151,9 +159,11 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
           res$pIV<-1
         }
       }
-        
-      if ((design$sReplKeep=="largest" && res$nval>resHold$nval) || design$sReplKeep=="last")
-        { resHold<-res }
+      
+      if ((design$sReplKeep=="largeN" && res$nval>resHold$nval) || 
+          (design$sReplKeep=="smallP" && res$pIV<resHold$pIV) || 
+          design$sReplKeep=="last")
+      { resHold<-res }
       ResultHistory$n<-c(ResultHistory$n,res$nval)
       ResultHistory$df1<-c(ResultHistory$df1,res$df1)
       ResultHistory$r<-c(ResultHistory$r,res$rIV)

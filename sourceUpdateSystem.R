@@ -58,14 +58,22 @@ updateDesign<-function(){
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
                sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,
-               sReplicationOn=input$sReplicationOn,sReplPower=input$sReplPower,
-               sReplSigOnly=input$sReplSigOnly,sReplRepeats=input$sReplRepeats,sReplCorrection=input$sReplCorrection,
-               sReplKeep=input$sReplKeep,sReplAlpha=input$sReplAlpha,sReplTails=input$sReplTails,
+               sReplicationOn=input$sReplicationOn,
+               sReplPowerOn=input$sReplPowerOn,sReplPower=input$sReplPower,
+               sReplSigOnly=input$sReplSigOnly,
+               sReplRepeats=input$sReplRepeats,sReplUseBudget=input$sReplUseBudget,sReplBudget=1000,
+               sReplCorrection=input$sReplCorrection,sReplTails=input$sReplTails,
+               sReplKeep=input$sReplKeep,
+               sReplVarAlpha=input$sReplVarAlpha,sReplAlpha=input$sReplAlpha,
                sN_Strata=input$sN_Strata, sR_Strata=input$sR_Strata,
                sNClu_Cluster=input$sNClu_Cluster, sRClu_Cluster=input$sRClu_Cluster,
                sNClu_Convenience=input$sNClu_Convenience, sRClu_Convenience=input$sRClu_Convenience, sNCont_Convenience=input$sNCont_Convenience, sRCont_Convenience=input$sRCont_Convenience, sRSpread_Convenience=input$sRSpread_Convenience,
                sNClu_Snowball=input$sNClu_Snowball, sRClu_Snowball=input$sRClu_Snowball, sNCont_Snowball=input$sNCont_Snowball, sRCont_Snowball=input$sRCont_Snowball, sRSpread_Snowball=input$sRSpread_Snowball
   )
+  if (!switches$extras) {
+    design$sReplVarAlpha<-FALSE
+    design$sReplUseBudget<-FALSE
+  }
   design$sN<-checkNumber(design$sN,c=10)
   if (is.null(oldDesign)) {
     design$sNRandK<-checkNumber(design$sNRandK)
@@ -103,7 +111,7 @@ updateEvidence<-function(){
   
   switch(input$STPrior,
          "none"={
-           evidence$prior=list(worldOn=input$world_on,populationPDF="Uniform",
+           evidence$prior=list(worldOn=FALSE,populationPDF="Uniform",
                                populationPDFk=0,populationRZ="z",
                                populationNullp=0.5)
          },
@@ -113,7 +121,7 @@ updateEvidence<-function(){
                                populationNullp=input$world_distr_Nullp)
          },
          "prior"={
-           evidence$prior=list(worldOn=input$world_on,populationPDF=input$likelihoodPrior_distr,
+           evidence$prior=list(worldOn=TRUE,populationPDF=input$likelihoodPrior_distr,
                                populationPDFk=input$likelihoodPrior_distr_k,populationRZ=input$likelihoodPrior_distr_rz,
                                populationNullp=input$likelihoodPrior_Nullp)
          }
