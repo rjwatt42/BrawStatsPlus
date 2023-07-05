@@ -412,6 +412,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
+                  p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
+                  y50t[i]<-p
                   p<-mean(!isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50[i]<-p
                   y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
@@ -433,9 +435,15 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50e[i]<-p
+                  p<-mean(!isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
+                  y50et[i]<-p
                   y75e[i]<-p+sqrt(p*(1-p)/length(peVals[,i]))
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
                 }
+                y50t<-y50t/2
+                y50<-y50/2
+                y50et<-y50et/2
+                y50e<-y50e/2
               }
               col<-plotcolours$infer_misserr
               cole<-plotcolours$infer_hiterr

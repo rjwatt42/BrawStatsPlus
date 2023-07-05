@@ -242,15 +242,8 @@ makeExploreGraph <- function() {
     stopRunning<-FALSE
   }
   
-  if (!effect$world$worldOn  && (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR")) {
-    if (switches$showAnimation) {
-      ns<-10^(min(2,floor(log10(max(1,exploreResult$nullresult$count)))))
-      if (exploreResult$nullresult$count+ns>exploreResult$nsims){
-        ns<-exploreResult$nsims-exploreResult$nullresult$count
-      }
-    } else {
-      ns<-exploreResult$nsims-exploreResult$nullresult$count
-    }
+  if (!effect$world$worldOn  && (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR" || explore$Explore_show=="FDR")) {
+    ns<-exploreResult$result$count-exploreResult$nullresult$count
     if (ns>0) {
       showNotification(paste0("Explore(null) ",explore$Explore_family," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
       exploreResult$nullresult<<-doExploreAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,metaAnalysis,explore,exploreResult$nullresult,ns,doingNull=TRUE)
