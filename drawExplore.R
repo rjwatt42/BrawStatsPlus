@@ -62,7 +62,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             } else {
             ylabel<-"Type I"
             g<-g+scale_y_continuous(limits=ylim,sec.axis=sec_axis(~ 1-.,name="Type II"))
-            g<-g+theme(axis.title.y.left = element_text(color="darkgreen"),axis.title.y.right = element_text(color="darkred"))
+            g<-g+theme(axis.title.y.left = element_text(color=plotcolours$infer_hiterr),axis.title.y.right = element_text(color=plotcolours$infer_misserr))
             }
           },
           "p(samp)"={
@@ -71,8 +71,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "FDR"={
             ylim<-c(0,1)
             ylabel<-"False Discovery"
-            g<-g+scale_y_continuous(limits=ylim,sec.axis=sec_axis(~ 1-.,name="False Miss"))
-            g<-g+theme(axis.title.y.left = element_text(color="darkgreen"),axis.title.y.right = element_text(color="darkred"))
+              g<-g+scale_y_continuous(limits=ylim)
+          },
+          "FDR;FMR"={
+            ylim<-c(0,1)
+            ylabel<-"False Discovery"
+              g<-g+scale_y_continuous(limits=ylim,sec.axis=sec_axis(~ 1-.,name="False Miss"))
+              g<-g+theme(axis.title.y.left = element_text(color=plotcolours$fdr),axis.title.y.right = element_text(color=plotcolours$fmr))
           },
           "log(lrs)"={
             ylim<-c(-0.1,10)
@@ -101,7 +106,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           },
           "pNull"={
             ylim<-c(-0.01,1.01)
-            ylabel<-"pNull"
+            ylabel<-bquote(P[0])
             g<-g+scale_y_continuous(limits=ylim)
           },
           "PDF"={
@@ -280,6 +285,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
             },
             "p(sig)"={
+              y50e<-c()
               y50<-c()
               y25<-c()
               y75<-c()
@@ -300,9 +306,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               lines<-c(0.05,0.8)
               if (is.null(IV2)){
-                col<-"white"
+                col<-plotcolours$infer_sigC
+                # col<-"white"
                 colFill<-col
-              } else {
+                } else {
                 col<-all_cols[[explore$Explore_typeShow]]
                 colFill<-names(all_cols[explore$Explore_typeShow])
               }
@@ -437,6 +444,57 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "FDR"={
               y50<-c() # false -ve
+              y25<-c()
+              y38<-c()
+              y62<-c()
+              y75<-c()
+              if (effect$world$worldOn) {
+                for (i in 1:length(exploreResult$result$vals)){
+                  if (explore$Explore_type=="Alpha") {
+                    alpha<<-exploreResult$result$vals[i]
+                    alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  }
+                  sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
+                  nulls<-exploreResult$result$rpIVs[,i]==0
+                  if (STMethod=="NHST") {
+                  if (!all(nulls)) {
+                    p1<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
+                  } else {
+                    p1<-0
+                  }
+                  } else {
+                    d<-r2llr(rVals[,i],nVals[,i],df1Vals[,i],STMethod,world=effect$world)
+                    p1<-(sum(sigs & nulls & d>0)+sum(sigs & !nulls & d<0))/sum(sigs)
+                  }
+                  y50[i]<-p1
+                  p_se<-sqrt(p1*(1-p1)/length(pVals[,i]))
+                  y75[i]<-p1+p_se*qnorm(0.75)
+                  y25[i]<-p1+p_se*qnorm(0.25)
+                  y62[i]<-p1+p_se*qnorm(0.625)
+                  y38[i]<-p1+p_se*qnorm(0.375)
+                }
+                y50[is.na(y50)]<-0
+              } else {
+                for (i in 1:length(exploreResult$result$vals)){
+                  if (explore$Explore_type=="Alpha") {
+                    alpha<<-exploreResult$result$vals[i]
+                    alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  }
+                  p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
+                  y50[i]<-p
+                  p_se<-sqrt(p1*(1-p1)/length(pVals[,i]))
+                  y75[i]<-p1+p_se*qnorm(0.75)
+                  y25[i]<-p1+p_se*qnorm(0.25)
+                  y62[i]<-p1+p_se*qnorm(0.625)
+                  y38[i]<-p1+p_se*qnorm(0.375)
+                }
+              }
+              col<-plotcolours$fdr
+              colFill<-col
+              lines<-c(0.05)
+            },            
+            "FDR;FMR"={
+              y50<-c() # false -ve
               y50t<-c() # true +v2
               y50a<-c() 
               y50b<-c()
@@ -453,11 +511,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                   nulls<-exploreResult$result$rpIVs[,i]==0
                   if (STMethod=="NHST") {
-                  if (!all(nulls)) {
-                    p1<-sum(!sigs & !nulls,na.rm=TRUE)/sum(!sigs)
-                  } else {
-                    p1<-0
-                  }
+                    if (!all(nulls)) {
+                      p1<-sum(!sigs & !nulls,na.rm=TRUE)/sum(!sigs)
+                    } else {
+                      p1<-0
+                    }
                     p2<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
                   } else {
                     d<-r2llr(rVals[,i],nVals[,i],df1Vals[,i],STMethod,world=effect$world)
@@ -466,7 +524,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   y50[i]<-p1
                   y50e[i]<-p2
-
+                  
                   y50a[i]<-0
                   y50b[i]<-0
                 }
@@ -480,7 +538,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   }
                   p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                   y50[i]<-p
-
+                  
                   y50a[i]<-0
                   y50b[i]<-0
                 }
@@ -500,11 +558,12 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                   y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
                 }
               }
-              col<-"#FF8600"
-              cole<-"#33FF99"
+              cole<-plotcolours$fdr
+              col<-plotcolours$fmr
               colFill<-col
               lines<-c(0.05)
-            },            "log(lrs)"={
+            },      
+            "log(lrs)"={
               ns<-exploreResult$result$nvals
               df1<-exploreResult$result$df1
               showVals<-r2llr(rVals,ns,df1,"sLLR",exploreResult$evidence$llr,exploreResult$evidence$prior)
@@ -711,7 +770,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       vals_offset<-(ni2-1)*(valsRange*valsGap)
     }
 
-    if (explore$Explore_show=="FDR" || explore$Explore_show=="NHSTErrors") {
+    if (explore$Explore_show=="FDR;FMR" || explore$Explore_show=="NHSTErrors") {
       endI<-length(vals)
 
       # false misses
@@ -756,7 +815,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts3<-c()
 
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
-          col4<-plotcolours$infer_hiterr
+          col4<-plotcolours$fdr
           lb4<-"F +ve"
           lb4<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb4)
         }
@@ -872,7 +931,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
       } else {
         g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, colour = "black",fill=col, size = markersize)
-      }
+        }
       }
     }
     
@@ -1015,6 +1074,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             "Interaction"={
               g<-g+xlab(bquote(interaction:r[population]))
               # g<-g+annotate("text",x=Inf,y=-Inf, hjust=1, vjust=-1, angle=0, label="Interaction",color="white")
+            },
+            "pNull"={
+              g<-g+xlab(bquote(P[0]))
             },
             g<-g+xlab(exploreResult$Explore_type)
     )

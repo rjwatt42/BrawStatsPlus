@@ -74,7 +74,7 @@ showInfer<-list("p-value" = "p",
                 "NHST errors" = "NHSTErrors")
 
 if (switches$doWorlds) {
-  showInfer<-c(showInfer,list("False Discovery" = "FDR","Sample Size"="SampleSize"))
+  showInfer<-c(showInfer,list("False Discovery" = "FDR","FDR & FMR"="FDR;FMR","Sample Size"="SampleSize"))
 }
 if (switches$doLikelihoodInfer) {
   showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",

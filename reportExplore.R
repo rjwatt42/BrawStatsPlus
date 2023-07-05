@@ -109,7 +109,36 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             }
           },
           "FDR"={
-            extra_y_label<-"Misses"
+            y50<-c()
+            y25<-c()
+            y75<-c()
+            if (effect$world$worldOn) {
+              for (i in 1:length(exploreResult$result$vals)){
+                if (explore$Explore_type=="Alpha") {
+                  alpha<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                }
+                sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
+                nulls<-exploreResult$result$rpIVs[,i]==0
+                p<-sum(sigs & nulls,na.rm=TRUE)/sum(sigs)
+                y50[i]<-p
+                y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+              }
+            } else {
+              for (i in 1:length(exploreResult$result$vals)){
+                if (explore$Explore_type=="Alpha") {
+                  alpha<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                }
+                p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
+                y50[i]<-p
+                y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
+                y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+              }
+            }
+          },
+          "FDR;FMR"={
             y50<-c()
             y25<-c()
             y75<-c()
@@ -160,6 +189,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
                 y25e[i]<-p-sqrt(p*(1-p)/length(peVals[,i]))
               }
             }
+            extra_y_label<-"FMR"
           },
           "log(lrs)"={
             ns<-exploreResult$result$nvals
@@ -216,7 +246,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   outputText[3]<-paste(" (nsims=",format(nrow(exploreResult$result$rIVs)),")",sep="")
   outputText<-c(outputText,rep("",nc+1))
   
-  if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
+  if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR") {
     switch (STMethod,
             "NHST"={outputText<-c(outputText,"NHST")},
             "sLLR"={outputText<-c(outputText,"sLLR")},
@@ -254,10 +284,10 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
       outputText<-c(outputText,format(ysd[use[i]],digits=report_precision))
     }
   }    
-  if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR") {
+  if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR") {
     switch(explore$Explore_show,
            "NHSTErrors"={extra_y_label<-"Type I errors"},
-           "FDR"={extra_y_label<-"False Discovery"}
+           "FDR;FMR"={extra_y_label<-"FDR"}
     )
     if (is.null(IV2)){
       rVals<-exploreResult$nullresult$rIVs
