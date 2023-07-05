@@ -802,19 +802,19 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           lb2<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50t[endI])),lb=lb2)
           ytop<-ytop-y50t
           
-          # false hits  
-          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50e,rev(ytop)))
-          col3<-plotcolours$infer_hiterr
-          lb3<-"F +ve"
-          lb3<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50e[endI])),lb=lb3)
-          ytop<-ytop-y50e
-          
           # true misses
-          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50et,rev(ytop)))
-          col4<-plotcolours$infer_nsigC
-          lb4<-"T -ve"
-          lb4<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50et[endI])),lb=lb4)
-
+          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50et,rev(ytop)))
+          col3<-plotcolours$infer_nsigC
+          lb3<-"T -ve"
+          lb3<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50et[endI])),lb=lb3)
+          ytop<-ytop-y50et
+          
+          # false hits  
+          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50e,rev(ytop)))
+          col4<-plotcolours$infer_hiterr
+          lb4<-"F +ve"
+          lb4<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50e[endI])),lb=lb4)
+          
           if (STMethod=="dLLR") {
           }
         } else {
