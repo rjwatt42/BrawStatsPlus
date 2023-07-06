@@ -22,7 +22,7 @@ exploreFields<-list(select=c("Explore_typeH","Explore_VtypeH","Explore_showH","E
                     number=c("Explore_nRange","Explore_npoints","Explore_esRange","Explore_quants","ExploreFull_ylim","Explore_anomRange","Explore_metaRange"),
                     check=c("ExploreAppendH","ExploreAppendD","ExploreAppendM","Explore_xlog")
 )
-possibleFields<-list(select=c("likelihoodP_length","likelihood_length","likelihoodViewRZ","likelihoodPrior_distr","likelihoodPrior_distr_rz","likelihoodUsePrior","likelihoodUseSource"),
+possibleFields<-list(select=c("likelihoodP_length","likelihood_length","likelihoodPrior_distr","likelihoodPrior_distr_rz","likelihoodUsePrior","likelihoodUseSource"),
                      number=c("likelihoodSampRho","likelihoodSimSlice","likelihoodPSampRho","likelihoodPrior_distr_k","likelihoodPrior_distr_Nullp",
                               "LikelihoodAzimuth","LikelihoodElevation","likelihoodRange"),
                      check=c("likelihood_cutaway","likelihood_sigonly","likelihoodTheory","likelihoodCorrection","likelihoodP_append","likelihood_append")

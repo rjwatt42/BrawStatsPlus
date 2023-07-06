@@ -70,12 +70,12 @@ if (switches$doKeys) {
       removeTab("FileTab","Batch",session)
     }
     
-    # control-alt-m - switch to offline version
+    # control-x - switch to (offline) full version
     if (input$keypress==ascii("x") && controlKeyOn){
       loadExtras()
     }
     
-    # control-m - switch to offline version
+    # control-m - add in meta-analysis
     if (input$keypress==ascii("m") && controlKeyOn){
       loadExtras(1)
     }
@@ -88,11 +88,10 @@ if (switches$doKeys) {
     }
     
     if (input$keypress==ascii("z") && controlKeyOn){
-      updateSelectInput(session,"likelihoodViewRZ",selected="z")
-      updateSelectInput(session,"Explore_showD",selected="z")
+      updateSelectInput(session,"RZ",selected="z")
     }
     
-    # control-V
+    # control-v
     if (is_local && input$keypress==ascii("v") && controlKeyOn){
       mergeVariables<<-FALSE
       # get the raw data
