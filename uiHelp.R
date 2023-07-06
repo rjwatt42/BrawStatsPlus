@@ -143,7 +143,7 @@ wellPanel(id="HelpTabset",
                                         tags$td(width="25%",tags$div(style = localPlainStyle, "Short hand:")),
                                         tags$td(width="10%",checkboxInput("shortHand",value=FALSE, label=NULL)),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
-                                        tags$td(width="25%",numericInput("shorthandGain",value=10, label=NULL))
+                                        tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))
                                       ),
                                       tags$tr(
                                         tags$td(width="25%",tags$div(style = localPlainStyle, "")),

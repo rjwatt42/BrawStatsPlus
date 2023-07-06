@@ -107,8 +107,8 @@ shinyServer(function(input, output, session) {
                  loadExtras()
                })
   
-  observeEvent(input$shorthandGain, {
-    shortHandGain<<-input$shorthandGain
+  observeEvent(input$shortHandGain, {
+    shortHandGain<<-input$shortHandGain
   }
   )
   observeEvent(input$shortHand, {
