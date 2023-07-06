@@ -63,7 +63,7 @@ applyingMetaAnalysis<-FALSE
 updateMetaAnalysis<-function(){
   metaAnalysis<-list(
     nstudies=input$meta_nStudies,
-    meta_fixedAnal=input$meta_fixedAnal,
+    meta_fixedAnal="random",
     meta_pdf=input$meta_pdf,
     sig_only=input$meta_psigStudies,
     meta_psigAnal=input$meta_psigAnal,
