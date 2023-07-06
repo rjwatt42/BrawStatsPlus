@@ -81,8 +81,7 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
     effect<-updateEffect()
     design<-updateDesign()
     evidence<-updateEvidence()
-    evidence$longHand<-TRUE
-    
+
     showNotification("Sample: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")
     result<-doSampleAnalysis(IV,IV2,DV,effect,design,evidence)
     ResultHistory<<-result$ResultHistory

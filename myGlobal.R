@@ -30,6 +30,7 @@ shortCut<-FALSE
 
 mergeVariables<-FALSE
 showInteractionOnly<-TRUE
+shortHand<-FALSE
 hideIV2Tab<-FALSE
 
 shiftKeyOn<-FALSE

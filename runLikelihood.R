@@ -625,7 +625,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
             if (doSample) {
               r_effects<-c()
               for (i in 1:length(pRho)) {
-                if (likelihood$likelihoodLongHand){
+                if (!shortHand){
                   effect1<-effect
                   effect1$rIV<-tanh(pRho[i])
                   effect1$world$worldOn<-FALSE
@@ -682,7 +682,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
           "Populations"={
             if (doSample) {
               effect$world<-prior
-              if (likelihood$likelihoodLongHand){
+              if (!shortHand){
                 sample_increase=10
                 res<-multipleAnalysis(IV,NULL,DV,effect,design,evidence,nsims*sample_increase,appendData=FALSE, earlierResult=c(),sigOnly=FALSE,
                                       showProgress=TRUE,progressPrefix=paste0("Possible Populations :"))

@@ -89,7 +89,6 @@ shinyServer(function(input, output, session) {
   
 ####################################
 # BASIC SET UP that cannot be done inside ui.R  
-  shinyjs::hideElement(id= "EvidenceHypothesisApply1")
   shinyjs::hideElement(id= "EvidenceHypothesisApply")
   shinyjs::hideElement(id= "LGEvidenceHypothesisApply")
   shinyjs::hideElement(id= "Using")
@@ -97,28 +96,6 @@ shinyServer(function(input, output, session) {
   updateSelectInput(session, "IVchoice", choices = variables$name, selected = variables$name[1])
   updateSelectInput(session, "IV2choice", choices = c("none",variables$name), selected = "none")
   updateSelectInput(session, "DVchoice", choices = variables$name, selected = variables$name[3])
-  
-  if (switches$doCheating) {
-    exploreDesignChoices<<-c(exploreDesignChoices,"Cheating")
-  } else {
-    shinyjs::hideElement(id="Cheating")
-    shinyjs::hideElement(id="LGEvidenceCheating")
-    shinyjs::hideElement(id="LGExploreCheating")
-    shinyjs::hideElement(id="LGlikelihoodCheating")
-  }
-  
-  if (switches$doReplications) {
-    exploreDesignChoices<<-c(exploreDesignChoices,"Replications")
-  }
-  
-  if (switches$doWorlds) {
-    exploreHypothesisChoices<<-c(exploreHypothesisChoices,"Worlds")
-  }
-  
-  updateSelectInput(session,"Explore_typeD",choices=designChoices[exploreDesignChoices])
-  updateSelectInput(session,"LGExplore_typeD",choices=designChoices[exploreDesignChoices])
-  updateSelectInput(session,"Explore_typeH",choices=hypothesisChoices2[exploreHypothesisChoices])
-  updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoices2[exploreHypothesisChoices])
   
 ####################################
   if (debug) debugPrint("ServerKeys")
@@ -132,6 +109,10 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$shorthandGain, {
     shortHandGain<<-input$shorthandGain
+  }
+  )
+  observeEvent(input$shortHand, {
+    shortHand<<-input$shortHand
   }
   )
   

@@ -36,7 +36,7 @@ vT<-tags$table(width = "100%",class="myTable",
                                                 selectize=FALSE
              )),
              tags$td(width = "25%", actionButton(paste0(prefix,"editDV"),"Edit DV")),
-             tags$td(width = "25%", actionButton(paste0(prefix,"EvidenceHypothesisApply1"),"Apply")),
+             tags$td(width = "25%", tags$div(style = localStyle, " ")),
              tags$td(width = "5%", tags$div(style = localStyle, " ")),
              tags$td(width = "10%", actionButton(paste0(prefix,"inspectDV"),"i")),
            ),

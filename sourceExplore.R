@@ -41,10 +41,10 @@ observeEvent(c(input$LGexploreRunH,input$LGexploreRunD,input$LGexploreRunM),{
 # and watch for IV2 appearing
 observeEvent(input$IV2choice,{
   if (input$IV2choice=="none") {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices2[exploreHypothesisChoices])
+    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2[exploreHypothesisChoices])
   }
   else {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices3)
+    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3)
   }
 })
 # watch for changes to design
@@ -67,7 +67,7 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
                if (switches$doMetaAnalysis) runPressed<-c(runPressed,input$exploreRunM,input$LGexploreRunM)
                
                if (notRunningExplore) {
-                 if (!input$evidenceLongHand) {
+                 if (!shortHand) {
                    gain<-shortHandGain
                  } else {
                    gain<-1
@@ -144,7 +144,7 @@ updateExplore<-function(){
                       Explore_esRange=input$Explore_esRange,Explore_nRange=input$Explore_nRange,
                       Explore_metaRange=input$Explore_metaRange,Explore_Mxlog = input$Explore_Mxlog,Explore_nrRange=input$Explore_nRange,
                       ExploreFull_ylim=input$ExploreFull_ylim,
-                      ExploreTheory=input$evidenceTheory,ExploreLongHand=input$evidenceLongHand,
+                      ExploreTheory=input$evidenceTheory,
                       Explore_family=input$ExploreTab)
     )
     
@@ -152,7 +152,7 @@ updateExplore<-function(){
       explore$Explore_type<-paste(explore$Explore_type,input$Explore_VtypeH,sep="")
     }
   }
-  if (!input$evidenceLongHand) {
+  if (!shortHand) {
     explore$Explore_length<-explore$Explore_length*shortHandGain
   }
   lastExplore<<-explore
@@ -221,12 +221,7 @@ makeExploreGraph <- function() {
   # expectedResult$result$showType<<-input$EvidenceEffect_type
   
   if (switches$showAnimation) {
-    if (explore$Explore_family!="MetaAnalysis" && !explore$ExploreLongHand) {
-      ns<-10^(min(2,floor(log10(max(100,exploreResult$result$count)))))
-    } else {
-      ns<-10^(min(2,floor(log10(max(100,exploreResult$result$count)))))
-      # ns<-10^(min(2,floor(log10(max(exploreResult$nsims/10,exploreResult$result$count)))))
-    }
+    ns<-10^(min(2,floor(log10(max(100,exploreResult$result$count)))))
   } else {
     ns<-exploreResult$nsims-exploreResult$result$count
   }

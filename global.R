@@ -1,9 +1,9 @@
 switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
                doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,
                doPossible=TRUE,doLikelihoodInfer=FALSE,
-               startBlank=FALSE,doBootstrap=TRUE,doCheating=TRUE,
+               doBootstrap=TRUE,doCheating=TRUE,
                doVariablesExplore=FALSE,
-               extras=FALSE,
+               startBlank=FALSE,
                showAnimation=TRUE,
                importOrdinals=TRUE,
                rigidWithin=TRUE)
@@ -123,7 +123,7 @@ evidence<-list(rInteractionOn=TRUE,
                showType="EffectSize",
                showTheory=FALSE,
                sigOnly=FALSE,
-               longHand=TRUE,
+               shortHand=FALSE,
                ssqType="Type3",
                llr=list(e1=c(),e2=0),
                evidenceCaseOrder="Alphabetic",
@@ -164,7 +164,7 @@ explore<-list(Explore_type="IV",
               Explore_esRange=0.8,Explore_nRange=250,
               Explore_metaRange=10000,Explore_Mxlog = TRUE,Explore_nrRange=250,
               ExploreFull_ylim=FALSE,
-              ExploreTheory=TRUE,ExploreLongHand=TRUE,
+              ExploreTheory=TRUE,
               Explore_family="Hypothesis"  
 )
 
@@ -179,7 +179,6 @@ likelihood<-
        sigOnly=FALSE,
        ResultHistory=c(),
        likelihoodTheory=TRUE,
-       likelihoodLongHand=FALSE,
        likelihoodSimSlice=0.1,likelihoodCorrection=TRUE,
        likelihoodHQ=FALSE,
        appendSim=FALSE,Likelihood_length="10",
@@ -230,7 +229,7 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 
-doPlus<-TRUE
+doPlus<-FALSE
 
 if (doPlus) {
   switches$doReplications<-TRUE
@@ -245,7 +244,6 @@ if (is_local) {
   switches$doClipboard<-TRUE
   
   if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
-    # switches$extras<-TRUE
     # switches$doBatchFiles<-TRUE
     # switches$doReplications<-TRUE
     # switches$doMetaAnalysis<-TRUE

@@ -70,10 +70,6 @@ updateDesign<-function(){
                sNClu_Convenience=input$sNClu_Convenience, sRClu_Convenience=input$sRClu_Convenience, sNCont_Convenience=input$sNCont_Convenience, sRCont_Convenience=input$sRCont_Convenience, sRSpread_Convenience=input$sRSpread_Convenience,
                sNClu_Snowball=input$sNClu_Snowball, sRClu_Snowball=input$sRClu_Snowball, sNCont_Snowball=input$sNCont_Snowball, sRCont_Snowball=input$sRCont_Snowball, sRSpread_Snowball=input$sRSpread_Snowball
   )
-  if (!switches$extras) {
-    design$sReplVarAlpha<-FALSE
-    design$sReplUseBudget<-FALSE
-  }
   design$sN<-checkNumber(design$sN,c=10)
   if (is.null(oldDesign)) {
     design$sNRandK<-checkNumber(design$sNRandK)
@@ -96,7 +92,6 @@ updateEvidence<-function(){
                  showTheory=input$evidenceTheory,
                  sigOnly=input$evidenceSigOnly,
                  allScatter=input$allScatter,
-                 longHand=input$evidenceLongHand,
                  ssqType=input$ssqType,
                  llr=list(e1=input$llr1,e2=input$llr2),
                  evidenceCaseOrder=input$evidenceCaseOrder,Welch=input$Welch,

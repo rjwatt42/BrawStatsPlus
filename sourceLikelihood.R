@@ -79,7 +79,7 @@ updateLikelihood<-function(){
   #                            design=list(sampleN=input$LGlikelihoodsN,sampleNRand=input$LGlikelihoodsNRand,sampleNRandK=input$LGlikelihoodsNRandK),
   #                          targetSample=input$LGlikelihoodPSampRho,targetPopulation=effect$rIV,
   #                          ResultHistory=ResultHistory,
-  #                          likelihoodTheory=input$LGlikelihoodTheory,likelihoodLongHand=input$LGlikelihoodLongHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
+  #                          likelihoodTheory=input$LGlikelihoodTheory,likelihoodshortHand=input$LGlikelihoodshortHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
   #                          appendSim=input$LGlikelihoodP_append,Likelihood_length=as.numeric(input$LGlikelihoodP_length),
   #                          view=input$LGlikelihoodView,azimuth=input$LGlikelihoodAzimuth,elevation=input$LGlikelihoodElevation,range=input$LGlikelihoodRange,
   #                          textResult=TRUE
@@ -100,7 +100,7 @@ updateLikelihood<-function(){
   #                            design=list(sampleN=input$LGlikelihoodsN,sampleNRand=input$LGlikelihoodsNRand,sampleNRandK=input$LGlikelihoodsNRandK),
   #                            targetSample=input$LGlikelihoodSampRho,cutaway=input$LGlikelihood_cutaway,targetPopulation=input$LGlikelihoodPrior_distr_k,
   #                            ResultHistory=ResultHistory,
-  #                            likelihoodTheory=input$LGlikelihoodTheory,likelihoodLongHand=input$LGlikelihoodLongHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
+  #                            likelihoodTheory=input$LGlikelihoodTheory,likelihoodshortHand=input$LGlikelihoodshortHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
   #                          appendSim=input$LGlikelihood_append,Likelihood_length=as.numeric(input$LGlikelihood_length),
   #                          view=input$LGlikelihoodView,azimuth=input$LGlikelihoodAzimuth,elevation=input$LGlikelihoodElevation,range=input$LGlikelihoodRange,
   #                          textResult=TRUE
@@ -124,7 +124,7 @@ updateLikelihood<-function(){
                    targetSample=input$likelihoodPSampRho,targetPopulation=effect$rIV,
                    ResultHistory=ResultHistory,
                    sigOnly=input$likelihood_sigonly,
-                   likelihoodTheory=input$likelihoodTheory,likelihoodLongHand=input$likelihoodLongHand,
+                   likelihoodTheory=input$likelihoodTheory,
                    likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihoodP_append,Likelihood_length=as.numeric(input$likelihoodP_length),
@@ -145,7 +145,7 @@ updateLikelihood<-function(){
                    cutaway=input$likelihood_cutaway,
                    sigOnly=input$likelihood_sigonly,
                    ResultHistory=ResultHistory,
-                   likelihoodTheory=input$likelihoodTheory,likelihoodLongHand=input$likelihoodLongHand,likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
+                   likelihoodTheory=input$likelihoodTheory,likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihood_append,Likelihood_length=as.numeric(input$likelihood_length),
                    view=input$LikelihoodView,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
@@ -184,11 +184,9 @@ likelihoodReset<-observeEvent(c(input$likelihoodPrior_Nullp,
                                 input$likelihoodPrior_distr,input$likelihoodPrior_distr_rz,input$likelihoodPrior_distr_k,
                                 input$likelihoodUsePrior,
                                 input$sN,
-                                input$likelihoodLongHand,
                                 input$LGlikelihoodPrior_Nullp,
                                 input$LGlikelihoodPrior_distr,input$LGlikelihoodPrior_distr_rz,input$LGlikelihoodPrior_distr_k,input$LGlikelihoodUsePrior,
-                                input$LGlikelihoodsN,
-                                input$LGlikelihoodLongHand
+                                input$LGlikelihoodsN
 ),{
   likelihood_P_ResultHold<<-c()
   likelihood_S_ResultHold<<-c()
@@ -204,7 +202,7 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
                                     input$sN,input$sNRand,input$sNRandK,
                                     input$EvidencenewSample,
                                     input$likelihoodTheory,input$likelihood_sigonly,
-                                    input$likelihoodLongHand,input$likelihoodSimSlice,input$likelihoodCorrection,
+                                    input$likelihoodSimSlice,input$likelihoodCorrection,
                                     input$likelihoodHQ,
                                     input$likelihoodViewRZ,
                                     input$LGshowPossible,
@@ -215,7 +213,7 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
                                     input$LGlikelihoodworld_on,input$LGlikelihoodworld_distr,input$LGlikelihoodworld_distr_rz,input$LGlikelihoodworld_distr_k,input$LGlikelihoodworld_distr_Nullp,
                                     input$LGlikelihoodsN,input$LGlikelihoodsNRand,input$LGlikelihoodsNRandK,
                                     input$LGlikelihoodTheory,input$LGlikelihood_sigonly,
-                                    input$LGlikelihoodLongHand,input$LGlikelihoodSimSlice,input$LGlikelihoodCorrection
+                                    input$LGlikelihoodSimSlice,input$LGlikelihoodCorrection
 ),{
   if (graphicSource=="None") {return(likelihoodResult)}
   

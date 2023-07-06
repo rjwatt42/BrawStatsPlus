@@ -107,7 +107,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
   if (!isempty(design$sReplicationOn) && !is.na(design$sReplicationOn) && design$sReplicationOn) {
     if (design$sReplVarAlpha) alpha<<-oldalpha*design$sReplAlpha
     while (design$sReplSigOnly=="Yes" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
-      if (evidence$longHand) {
+      if (!shortHand) {
         sample<-makeSample(IV,IV2,DV,effect,design)
         res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
       } else {
@@ -148,7 +148,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
         design1$sNRand<-FALSE
       }
       
-      if (evidence$longHand) {
+      if (!shortHand) {
         sample<-makeSample(IV,IV2,DV,effect,design1)
         res<-analyseSample(IV,IV2,DV,effect,design1,evidence,sample)
       } else {

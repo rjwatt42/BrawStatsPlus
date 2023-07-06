@@ -65,7 +65,7 @@ HypothesisTab <-
                                                                            selectize=FALSE
                                         )),
                                         tags$td(width = "25%", actionButton("editDV","Edit DV")),
-                                        tags$td(width = "25%", actionButton("EvidenceHypothesisApply1","Apply")),
+                                        tags$td(width = "25%", tags$div(style = localStyle, " ")),
                                         tags$td(width = "5%", tags$div(style = localStyle, " ")),
                                         tags$td(width = "10%", actionButton("inspectDV","i")),
                                       ),

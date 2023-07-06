@@ -84,7 +84,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "Heteroscedasticity"={vals<-seq(0,1,length.out=npoints)},
           "IVRange"={vals<-seq(3,0.5,length.out=npoints)},
           "DVRange"={vals<-seq(3,0.5,length.out=npoints)},
-          "Cheating"={vals<-c("Grow","Prune","Replace","Retry")},
+          "Cheating"={vals<-c("None","Grow","Prune","Replace","Retry")},
           "CheatingAmount"={
             if (explore$Explore_xlog){
               vals<-round(10^seq(log10(1),log10(max_n),length.out=npoints))

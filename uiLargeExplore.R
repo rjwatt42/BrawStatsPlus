@@ -28,7 +28,7 @@ LGmodalExplore <-
                                                            tags$td(width = "10%", tags$div(style = localStyle, "Vary:")),
                                                            tags$td(width = "40%", 
                                                                    selectInput("LGExplore_typeH",label=NULL,
-                                                                               hypothesisChoices3,selectize=FALSE)
+                                                                               hypothesisChoicesV3,selectize=FALSE)
                                                            ),
                                                            tags$td(width = "25%", 
                                                                    conditionalPanel(condition="input.LGExplore_typeH == 'IV' || input.LGExplore_typeH == 'DV' || input.LGExplore_typeH == 'IV2'",

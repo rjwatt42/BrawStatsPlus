@@ -71,7 +71,6 @@ updateMetaAnalysis<-function(){
     nsims=as.numeric(input$meta_runlength),
     meta_showAnal=input$meta_showAnal,
     meta_showParams=input$meta_showParams,
-    longHand=input$evidenceLongHand,
     showTheory=input$evidenceTheory,
     append=input$meta_append
   )
@@ -102,7 +101,7 @@ resetMeta()
 # make this a stand-alone function to be called from observEvent
 doMetaAnalysis<-function(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResult) {
   if (debug) {print("     doMetaAnalysis - start")}
-  # if (metaAnalysis$longHand) {
+  # if (metaAnalysis$shortHand) {
   result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only,
                            showProgress=FALSE)
   # } else {

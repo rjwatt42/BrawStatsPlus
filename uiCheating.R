@@ -1,4 +1,5 @@
 uiCheating<-function(prefix="") {
+  conditionalPanel(condition="input.LoadExtras",
     tags$table(width = "100%",class="myTable",id=paste0(prefix,"Cheating"),
                tags$tr(
                  tags$td(width = "30%", tags$div(style = localStyle, "Cheating:")),
@@ -19,4 +20,5 @@ uiCheating<-function(prefix="") {
                          numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount))
                ),
     )
+  )
 }

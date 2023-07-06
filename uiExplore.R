@@ -1,12 +1,12 @@
 source("uiExploreMeta.R")
 
-hypothesisChoices3Plain=list("Variables"=list("IV" = "IV",
+hypothesisChoicesV3Plain=list("Variables"=list("IV" = "IV",
                                          "IV2" = "IV2",
                                          "DV" = "DV",
                                          "IV/DV Types" = "IVDVType")
 )
 
-hypothesisChoices3=list("Variables"=list("IV" = "IV",
+hypothesisChoicesV3=list("Variables"=list("IV" = "IV",
                                          "IV2" = "IV2",
                                          "DV" = "DV",
                                          "IV/DV Types" = "IVDVType"),
@@ -18,18 +18,31 @@ hypothesisChoices3=list("Variables"=list("IV" = "IV",
                         )
 )
 
-hypothesisChoices2Plain=list("Variables"=list("IV" = "IV",
+hypothesisChoicesV2Plain=list("Variables"=list("IV" = "IV",
                                          "DV" = "DV",
                                          "IV/DV Types" = "IVDVType")
 )
 
-hypothesisChoices2=list("Variables"=list("IV" = "IV",
-                                         "DV" = "DV",
-                                         "IV/DV Types" = "IVDVType"),
-                        "Effects"=list("Effect Size" = "EffectSize1",
-                                       "Heteroscedasticity" = "Heteroscedasticity"),
-                        "Worlds"=list("pdf"="PDF","k"="k","pNull"="pNull")
+hypothesisChoicesV2=list("Variables"=list("IV" = "IV",
+                                          "DV" = "DV",
+                                          "IV/DV Types" = "IVDVType"),
+                         "Effects"=list("Effect Size" = "EffectSize1",
+                                        "Heteroscedasticity" = "Heteroscedasticity")
 )
+if (switches$doWorlds) {
+  hypothesisChoicesV2<-c(hypothesisChoicesV2,
+                              list("Worlds"=list("pdf"="PDF","k"="k","pNull"="pNull"))
+                              )
+}
+
+hypothesisChoicesV2Extra=list("Variables"=list("IV" = "IV",
+                                          "DV" = "DV",
+                                          "IV/DV Types" = "IVDVType"),
+                         "Effects"=list("Effect Size" = "EffectSize1",
+                                        "Heteroscedasticity" = "Heteroscedasticity"),
+                         "Worlds"=list("pdf"="PDF","k"="k","pNull"="pNull")
+)
+
 
 variableChoices=list("& type"="Type",
                      "& skew"="skew",
@@ -40,6 +53,26 @@ variableChoices=list("& type"="Type",
 )
 
 designChoices=list("Sampling"=list("Sample Size" = "SampleSize",
+                                   "Sampling Method" = "Method",
+                                   "Sample Usage" = "Usage"),
+                   "Anomalies"=list("Dependence" = "Dependence",
+                                    "Outliers" = "Outliers",
+                                    "IV Range" = "IVRange",
+                                    "DV Range" = "DVRange")
+)
+if (switches$doCheating) {
+  designChoices<-c(designChoices,list("Cheating"=list("Method" = "Cheating",
+                                                      "Cheating amount" = "CheatingAmount"))
+  )
+}
+if (switches$doReplications) {
+  designChoices<-c(designChoices,list("Replications"=list("SigOnly"="SigOnly",
+                                                          "Repl Power"="Power",
+                                                          "Repl Repeats" = "Repeats"))
+  )
+}
+
+designChoicesExtra=list("Sampling"=list("Sample Size" = "SampleSize",
                                    "Sampling Method" = "Method",
                                    "Sample Usage" = "Usage",
                                    "Sample Gamma" = "SampleGamma",
@@ -55,15 +88,6 @@ designChoices=list("Sampling"=list("Sample Size" = "SampleSize",
                                        "Repl Repeats" = "Repeats")
 )
 
-designChoicesPlain=list("Sampling"=list("Sample Size" = "SampleSize",
-                                     "Sampling Method" = "Method",
-                                     "Sample Usage" = "Usage"),
-                     "Anomalies"=list("Dependence" = "Dependence",
-                                      "Outliers" = "Outliers",
-                                      "IV Range" = "IVRange",
-                                      "DV Range" = "DVRange")
-  )
-
 effectChoices=list("IV1-DV"="MainEffectIV",
                    "IV2-DV"="MainEffectIV2",
                    "IV1xIV2-DV"="InteractionEffect")
@@ -71,27 +95,38 @@ effectChoices=list("IV1-DV"="MainEffectIV",
 showInfer<-list("p-value" = "p",
                 "p(sig)" = "p(sig)",
                 "Power" = "w",
-                "NHST errors" = "NHSTErrors")
+                "NHST errors" = "NHSTErrors"
+                )
 
-if (switches$doWorlds) {
-  showInfer<-c(showInfer,list("False Discovery" = "FDR","FDR & FMR"="FDR;FMR","Sample Size"="SampleSize"))
-}
-if (switches$doLikelihoodInfer) {
-  showInfer<-c(showInfer,list("log(lrs)" = "log(lrs)",
-                              "log(lrd)" = "log(lrd)",
-                              "likelihood" = "likelihood"))
-}
+showWorlds<-list("False Discovery" = "FDR",
+                 "FDR & FMR"="FDR;FMR",
+                 "Sample Size"="SampleSize"
+)
+
+showLike<-list("log(lrs)" = "log(lrs)",
+               "log(lrd)" = "log(lrd)",
+               "likelihood" = "likelihood"
+)
+
+showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize"),
+                 "Infer" = showInfer,
+                 "Worlds" = showWorlds,
+                 "Lk" = showLike
+)
+use<-c("Describe","Infer")
+if (switches$doWorlds) use<-c(use,"Worlds")
+if (switches$doLikelihoodInfer) use<-c(use,"Lk")
+showChoices<-showChoicesExtra[use]
+
 if (switches$doVariablesExplore) {
-  showChoices=list("Describe" = list("Effect Size" = "EffectSize"),
-                   "Infer" = showInfer,
-                   "Variables"= list("mean(IV)","sd(IV)","skew(IV)","kurtosis(IV)",
-                                     "mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)")
+  showChoices<-c(showChoices,
+                 list("Variables"=list("mean(IV)","sd(IV)","skew(IV)","kurtosis(IV)",
+                                       "mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)")
+                 )
   )
-} else {
-  showChoices=list("Describe" = list("Effect Size" = "EffectSize"),
-                   "Infer" = showInfer
-  )
-}
+} 
+
+
 extraShowChoices=c("direct"="direct",
                    "unique"="unique",
                    "total"="total",
@@ -129,7 +164,7 @@ ExploreTab <-
                                                 tags$td(width = "10%", tags$div(style = localStyle, "Vary:")),
                                                 tags$td(width = "40%", 
                                                         selectInput("Explore_typeH",label=NULL,
-                                                                    hypothesisChoices3,selectize=FALSE)
+                                                                    hypothesisChoicesV3,selectize=FALSE)
                                                 ),
                                                 tags$td(width = "25%", 
                                                         conditionalPanel(condition="input.Explore_typeH == 'IV' || input.Explore_typeH == 'DV' || input.Explore_typeH == 'IV2'",

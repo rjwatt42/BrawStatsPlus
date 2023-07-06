@@ -27,7 +27,7 @@ observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
     startTime<<-Sys.time()
     cycleTime<<-0
     if (!input$EvidenceExpected_append) {resetExpected()} 
-    if (input$evidenceLongHand) {
+    if (shortHand) {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)
     } else {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
@@ -104,7 +104,7 @@ doExpectedAnalysis<-function(IV,IV2,DV,effect,design,evidence,expected,result,ns
   if (debug) {debugPrint("     doExpectedAnalysis")}
   
   append<-TRUE
-  # if (evidence$longHand || design$sReplicationOn) {
+  # if (evidence$shortHand || design$sReplicationOn) {
   if (IV$process=="data" && DV$process=="data"){
     design$sMethod="Resample"
   }
@@ -169,7 +169,7 @@ makeExpectedGraph <- function() {
   
   if (validExpected) {
     
-    if (switches$showAnimation && evidence$longHand) {
+    if (switches$showAnimation && !shortHand) {
       # ns<-10^(min(2,floor(log10(max(1,expectedResult$count)))))
       ns<-10^(min(2,floor(log10(max(expectedResult$nsims/10,expectedResult$count)))))
       if (expectedResult$count+ns>expectedResult$nsims) {
@@ -194,7 +194,7 @@ makeExpectedGraph <- function() {
     }
     if (expected$type=="NHSTErrors" && (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
          expectedResult$nullcount<expectedResult$nsims) {
-      if (switches$showAnimation  && evidence$longHand) {
+      if (switches$showAnimation  && !shortHand) {
         # ns<-10^(min(2,floor(log10(max(1,expectedResult$nullcount)))))
         ns<-10^(min(2,floor(log10(max(expectedResult$nsims/10,expectedResult$nullcount)))))
         if (expectedResult$nullcount+ns>expectedResult$nsims) {

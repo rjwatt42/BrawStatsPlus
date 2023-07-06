@@ -56,10 +56,10 @@ changeUI2Data<-function() {
   } else {
     updateActionButton(session,"EvidencenewSample", label="Resample")
     if (input$IV2choice=="none") {
-      updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices2Plain)
+      updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2Plain)
     }
     else {
-      updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices3Plain)
+      updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3Plain)
     }
     updateSelectInput(session,"Explore_VtypeH",choices=c("& type"="Type"))
     updateSelectInput(session,"Explore_typeD",choices=c("Sample Size" = "SampleSize"))
@@ -115,9 +115,9 @@ changeUI2Simulations<-function() {
   showTab("Evidence","Multiple")
   shinyjs::showElement(id="uiExplore")
   if (input$IV2choice=="none") {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices2)
+    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2)
   } else {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoices3)
+    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3)
   }
   updateSelectInput(session,"Explore_VtypeH",choices=variableChoices)
   updateSelectInput(session,"Explore_typeD",choices=designChoices)

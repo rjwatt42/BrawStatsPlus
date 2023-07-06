@@ -1024,7 +1024,7 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
     res<-analyseSample(IV,IV2,DV,effect,design,evidence,oldResult)
     return(res)
   }
-  if (evidence$longHand) {
+  if (!shortHand) {
     sample<-makeSample(IV,IV2,DV,effect,design)
     res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
   } else {
@@ -1032,7 +1032,7 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
   }
   # sig only
   while (sig_only && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
-    if (evidence$longHand) {
+    if (!shortHand) {
       sample<-makeSample(IV,IV2,DV,effect,design)
       res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
     } else {

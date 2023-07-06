@@ -25,7 +25,7 @@ exploreFields<-list(select=c("Explore_typeH","Explore_VtypeH","Explore_showH","E
 possibleFields<-list(select=c("likelihoodP_length","likelihood_length","likelihoodViewRZ","likelihoodPrior_distr","likelihoodPrior_distr_rz","likelihoodUsePrior","likelihoodUseSource"),
                      number=c("likelihoodSampRho","likelihoodSimSlice","likelihoodPSampRho","likelihoodPrior_distr_k","likelihoodPrior_distr_Nullp",
                               "LikelihoodAzimuth","LikelihoodElevation","likelihoodRange"),
-                     check=c("likelihood_cutaway","likelihood_sigonly","likelihoodTheory","likelihoodLongHand","likelihoodCorrection","likelihoodP_append","likelihood_append")
+                     check=c("likelihood_cutaway","likelihood_sigonly","likelihoodTheory","likelihoodCorrection","likelihoodP_append","likelihood_append")
 )
 
 updateHypothesisFields<-function(prefix) {

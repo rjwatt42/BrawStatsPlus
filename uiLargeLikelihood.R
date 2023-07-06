@@ -107,8 +107,7 @@ LGmodalPossible <-
                                             ),
                                             tags$table(width = "100%",class="myTable",
                                                        tags$tr(
-                                                         tags$td(width = "30%", tags$div(style = localStyle, "longhand:")),
-                                                         tags$td(width = "5%", checkboxInput("LGlikelihoodLongHand", value=TRUE, label=NULL)),
+                                                         tags$td(width = "35%", tags$div(style = localStyle, "")),
                                                          tags$td(width = "40%", tags$div(style = localStyle, "sim slice:")),
                                                          tags$td(width = "15%",numericInput("LGlikelihoodSimSlice",label=NULL,value=0.1,max=0.2,min=0.0001,step=0.01)),
                                                          tags$td(width = "10%", checkboxInput("LGlikelihoodCorrection", value=FALSE, label=NULL)),

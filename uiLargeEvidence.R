@@ -135,8 +135,7 @@ LGmodalEvidence <-
                                                ),
                                                tags$table(width = "100%",class="myTable",
                                                           tags$tr(
-                                                            tags$td(width = "45%", tags$div(style = localPlainStyle, "long hand:")),
-                                                            tags$td(width = "5%", checkboxInput("LGevidenceLongHand",label=NULL,value=evidence$longHand)),
+                                                            tags$td(width = "50%", tags$div(style = localPlainStyle, "")),
                                                             tags$td(width = "45%", tags$div(style = localPlainStyle, "show theory:")),
                                                             tags$td(width = "5%", checkboxInput("LGevidenceTheory",label=NULL,value=evidence$showTheory)),
                                                           )),
