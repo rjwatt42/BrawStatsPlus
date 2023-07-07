@@ -235,9 +235,9 @@ EvidenceTab <-
                                     ),
                                     tags$table(width = "100%",class="myTable",
                                                tags$tr(
-                                                 tags$td(width = "50%", tags$div(style = localPlainStyle, "")),
-                                                 tags$td(width = "45%", tags$div(style = localPlainStyle, "show theory:")),
+                                                 tags$td(width = "35%", tags$div(style = localPlainStyle, "show theory:")),
                                                  tags$td(width = "5%", checkboxInput("evidenceTheory",label=NULL,value=evidence$showTheory)),
+                                                 tags$td(width = "60%", tags$div(style = localPlainStyle, "")),
                                                )),
                                   )
                         )

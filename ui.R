@@ -168,9 +168,6 @@ shinyUI(fluidPage(
     # 
     tags$head(
         tags$style(paste0("label{font-size: ",format(8*fontScale) ,"pt;}")),
-        # tags$style(HTML( # textInput
-        #     ".form-control {font-size: 8pt; height:20px; padding:0px 0px; margin-top:-20px; margin-bottom:-5px; min-height:10px;}"
-        # )),
         tags$style(HTML( # textInput
             paste0(".form-control {font-size: ",format(8*fontScale) ,"pt; height:20px; padding:0px 0px;}")
         )),
@@ -210,12 +207,15 @@ shinyUI(fluidPage(
         tags$style(HTML( # well panels
                 ".well {padding:5px; margin:0px;margin-bottom:8px;margin-left:0px;margin-right:0px;} ",
         )),
-        tags$style(HTML(paste(".help-block b {color:", maincolours$panelC,  "!important;margin:0px;padding:0px;margin-bottom:8px;font-size:",format(12*fontScale) ,"pt; font-weight:bold;}"))),
-        tags$style(HTML(paste(".help-block a {color:", maincolours$panelC,  "!important;margin:0px;padding:0px;margin-bottom:8px;font-size:",format(8*fontScale) ,"pt; font-weight:normal;font-style: italic;}"))),
-        tags$style(HTML(paste0(".btn-file {padding:0px; margin: 0px; font-size:",format(8*fontScale) ,"pt; font-weight:Bold; color:white; background-color: #005886;height:20px;padding-top:0px;padding-bottom:0px;padding-left:4px;padding-right:4px;margin-bottom:8px;margin-right:12px;margin-top:0px;margin-left:0px}")
+        tags$style(HTML( # checkbox
+            ".checkbox {line-height: 10px;margin:0px;padding:0px;padding-left:4px;}"
         )),
-        tags$style(HTML(
-            ".checkbox {line-height: 10px;margin:0px;padding:0px;}"
+           # help panel specifics
+        tags$style(HTML(paste(".help-block b {color:", maincolours$panelC,  "!important;margin:0px;padding:0px;margin-bottom:8px;font-size:",format(12*fontScale) ,"pt; font-weight:bold;}")
+        )),
+        tags$style(HTML(paste(".help-block a {color:", maincolours$panelC,  "!important;margin:0px;padding:0px;margin-bottom:8px;font-size:",format(8*fontScale) ,"pt; font-weight:normal;font-style: italic;}")
+        )),
+        tags$style(HTML(paste0(".btn-file {padding:0px; margin: 0px; font-size:",format(8*fontScale) ,"pt; font-weight:Bold; color:white; background-color: #005886;height:20px;padding-top:0px;padding-bottom:0px;padding-left:4px;padding-right:4px;margin-bottom:8px;margin-right:12px;margin-top:0px;margin-left:0px}")
         )),
     ),
     tags$head( # input tables

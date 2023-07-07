@@ -267,7 +267,7 @@ pSigLabel<-bquote(bold(p[.('sig')]))
 alphaChar<-'\u03B1'
   
 # P notation 
-pPlus<-FALSE           # for p_0 vs p_+
+pPlus<-TRUE           # for p_0 vs p_+
 LabelUD<-"U"
 Pchar<-"P" 
 # Pchar<-'\u03A9'
