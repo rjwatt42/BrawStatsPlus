@@ -629,7 +629,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         }
       } else {
         switch (expType,
-                "p"={labelPt1<-"p(sig) = "},
+                "p"={labelPt1<-paste0(pSigLabel," = ")},
                 "e1"={labelPt1<-"p(Type I) = "},
                 "e2"={labelPt1<-"p(Type II) = "}
         )

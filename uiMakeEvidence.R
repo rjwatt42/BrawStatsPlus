@@ -48,7 +48,6 @@ EvidenceTab <-
                                                                             c("Basic" = "EffectSize",
                                                                               "Power" = "Power",
                                                                               "NHST errors" = "NHSTErrors",
-                                                                              "CI limits" = "CILimits",
                                                                               "log(lrs)" = "log(lrs)",
                                                                               "log(lrd)" = "log(lrd)",
                                                                               "2D" = "2D"

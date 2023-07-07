@@ -5,7 +5,7 @@
                                 tags$tr(
                                   tags$td(width = "25%", tags$div(style = localStyle, " ")),
                                   tags$td(width = "5%", tags$div(style = localStyle, " ")),
-                                  tags$td(width = "30%", tags$div(style = localStyle, "Variable Alpha")),
+                                  tags$td(width = "30%", tags$div(style = localStyle, paste0("Variable ",alphaChar,":"))),
                                   tags$td(width = "5%",
                                           checkboxInput("sReplVarAlpha",label=NULL,value=design$sReplVarAlpha)
                                   ),

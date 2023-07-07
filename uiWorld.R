@@ -41,7 +41,7 @@ worldPanel<-function(prefix="",asTable=FALSE,doAnyway=FALSE) {
                  )
                ),
                tags$tr(
-                 tags$td(width = "40%", tags$div(style = localStyle, "p(null):")),
+                 tags$td(width = "40%", tags$div(style = localStyle, pPlusLabel)),
                  tags$td(width = "30%", numericInput(paste0(prefix, "world_distr_Nullp"), label=NULL,min=0,max=1, step=0.05,value=effect$world$populationNullp)),
                  tags$td(width = "15%", tags$div(style = localStyle, "abs:")),
                  tags$td(width = "15%",

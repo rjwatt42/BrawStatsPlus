@@ -103,7 +103,6 @@ shinyServer(function(input, output, session) {
   source("serverKeys.R",local=TRUE)
 
   observeEvent(input$LoadExtras, {
-                 if (input$LoadExtras)
                  loadExtras()
                })
   
@@ -218,6 +217,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$RZ,{
     RZ<<-input$RZ
   })
+  
+  observeEvent(input$EvidenceExpected_type,{
+    if (input$EvidenceExpected_type=="NHSTErrors") {
+      shinyjs::hideElement("EvidenceExpected_par1")
+      shinyjs::hideElement("EvidenceExpected_par2")
+    } else {
+      shinyjs::showElement("EvidenceExpected_par1")
+      shinyjs::showElement("EvidenceExpected_par2")
+    }
+  })
+  
 ####################################
 # generic warning dialogue
   

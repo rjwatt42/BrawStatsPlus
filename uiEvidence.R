@@ -1,6 +1,15 @@
 source("uiMetaAnalysis.R")
 
 
+
+basicType<-list("r"="r","p"="p")
+likeType<-list("log(lrs)"="log(lrs)","log(lrd)"="log(lrd)")
+powerType<-list("w"="w","nw"="nw")
+worldType<-list("n"="n","rp"="rp","wp"="wp")
+replicationType<-list("r1"="r1","p1"="p1")
+
+
+
 inferTypeChoices<-list("Basic"=basicType,"Power"=powerType)
 inferTypeChoicesExtra<-c(inferTypeChoices,list("Likelihood"=likeType))
 inferTypeChoicesExtra<-c(inferTypeChoicesExtra,list("World"=worldType))
@@ -14,11 +23,7 @@ singleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power")
 singleTypeChoicesExtra<-c(singleTypeChoices,list("Likelihood"=likeType))
 if (switches$doLikelihoodInfer) singleTypeChoices<-singleTypeChoicesExtra
 
-multipleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","NHST errors" = "NHSTErrors","CI limits" = "CILimits")
-multipleTypeChoices<-c(multipleTypeChoices,"2D"="2D")
-multipleTypeChoicesExtra<-c(multipleTypeChoices,likeType)
-multipleTypeChoicesExtra<-c(multipleTypeChoicesExtra,"2D"="2D")
-if (switches$doLikelihoodInfer) multipleTypeChoices<-multipleTypeChoicesExtra
+multipleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D")
 
 
 EvidenceTab <-
@@ -60,7 +65,7 @@ EvidenceTab <-
                                                         tags$td(width = "10%", tags$div(style = localStyle, "Show:")),
                                                         tags$td(width = "40%", 
                                                                 selectInput("EvidenceExpected_type",label=NULL,
-                                                                            multipleType,
+                                                                            multipleTypeChoices,
                                                                             selected="Basic",
                                                                             selectize=FALSE)
                                                         ),
@@ -152,7 +157,7 @@ EvidenceTab <-
                                                                                       selectize=FALSE
                                                                           )
                                                                   ),
-                                                                  tags$td(width = "15%",tags$div(style = localPlainStyle, "alpha")),
+                                                                  tags$td(width = "15%",tags$div(style = localPlainStyle, paste0(alphaChar,":"))),
                                                                   tags$td(width = "15%",
                                                                           numericInput("alpha",label=NULL,value=alpha,step=0.01)
                                                                   ),

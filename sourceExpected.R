@@ -27,7 +27,7 @@ observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
     startTime<<-Sys.time()
     cycleTime<<-0
     if (!input$EvidenceExpected_append) {resetExpected()} 
-    if (shortHand) {
+    if (!shortHand) {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)
     } else {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain

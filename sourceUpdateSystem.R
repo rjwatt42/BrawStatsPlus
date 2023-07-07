@@ -16,6 +16,8 @@ updateEffect<-function(type=0){
   } else {
     world<-list(worldOn=FALSE,populationPDF="Single",populationPDFk=NA,populationRZ=NA,populationNullp=NA,worldAbs=FALSE)
   }
+  if (pPlus) world$populationNullp<-1-world$populationNullp
+  
   if (is.null(world$worldOn)) {world$worldOn<-FALSE}
   
   if (is.null(type)) {
@@ -114,11 +116,13 @@ updateEvidence<-function(){
            evidence$prior=list(worldOn=input$world_on,populationPDF=input$world_distr,
                                populationPDFk=input$world_distr_k,populationRZ=input$world_distr_rz,
                                populationNullp=input$world_distr_Nullp)
+           if (pPlus) evidence$prior$populationNullp<-1-evidence$prior$populationNullp
          },
          "prior"={
            evidence$prior=list(worldOn=TRUE,populationPDF=input$likelihoodPrior_distr,
                                populationPDFk=input$likelihoodPrior_distr_k,populationRZ=input$likelihoodPrior_distr_rz,
                                populationNullp=input$likelihoodPrior_Nullp)
+           if (pPlus) evidence$prior$populationNullp<-1-evidence$prior$populationNullp
          }
   )
   if (!switches$doWorlds) {

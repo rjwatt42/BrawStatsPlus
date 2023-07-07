@@ -20,6 +20,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     doLine=FALSE
   } else {doLine=TRUE}
   
+  if (explore$Explore_type=="pNull" && pPlus) vals<-1-vals
+  
   g<-ggplot()
   ybreaks=c()
   ylabels=c()
@@ -51,7 +53,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             }
           },
           "p(sig)"={
-            ylabel<-"p(sig)"
+            ylabel<-pSigLabel
             ylim<-c(0,1)
             g<-g+scale_y_continuous(limits=ylim)
           },
@@ -96,7 +98,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           },
           "k"={
             ylim<-c(-0.01,1.01)
-            ylabel<-"k"
+            ylabel<-Llabel
             g<-g+scale_y_continuous(limits=ylim)
           },
           "SampleSize"={
@@ -106,7 +108,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           },
           "pNull"={
             ylim<-c(-0.01,1.01)
-            ylabel<-bquote(P[0])
+            ylabel<-Plabel
             g<-g+scale_y_continuous(limits=ylim)
           },
           "PDF"={
@@ -699,6 +701,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "pNull"={
               showVals<-exploreResult$result$pnulls
+              if (pPlus) showVals<-1-showVals
               lines<-c()
               col<-"white"
               colFill<-col
@@ -1084,17 +1087,16 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               # g<-g+annotate("text",x=Inf,y=-Inf, hjust=1, vjust=-1, angle=0, label="Interaction",color="white")
             },
             "pNull"={
-              g<-g+xlab(bquote(P[0]))
+              g<-g+xlab(Plabel)
+            },
+            "k"={
+              g<-g+xlab(Llabel)
+            },
+            "Alpha"={
+              g<-g+xlab(alphaChar)
             },
             g<-g+xlab(exploreResult$Explore_type)
     )
-    
-    # if (explore$Explore_show=="p(sig)") {
-    #   top<-max(y75,na.rm=TRUE)
-    #   top<-ceil(top*10)/10
-    #   ylim<-c(0,top)
-    #   g<-g+scale_y_continuous(limits=ylim)
-    # }
     
   g+plotTheme
 }

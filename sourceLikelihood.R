@@ -55,6 +55,7 @@ updateLikelihood<-function(){
                 populationPDFk=input$world_distr_k,
                 populationNullp=input$world_distr_Nullp
     )
+    if (pPlus) world$populationNullp<-1-world$populationNullp
   } else {
     world<-list(worldOn=FALSE,populationPDF="Single",populationRZ="R", 
                 populationPDFk=effect$rIV,
@@ -153,6 +154,8 @@ updateLikelihood<-function(){
               )
           }
   )
+  if (pPlus) likelihood$prior$populationNullp<-1-likelihood$prior$populationNullp
+  
   # }
   if (likelihood$world$worldOn==FALSE) {
     likelihood$world$populationPDF<-"Single"

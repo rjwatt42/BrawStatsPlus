@@ -41,7 +41,7 @@ observeEvent(c(input$LGexploreRunH,input$LGexploreRunD,input$LGexploreRunM),{
 # and watch for IV2 appearing
 observeEvent(input$IV2choice,{
   if (input$IV2choice=="none") {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2[exploreHypothesisChoices])
+    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2)
   }
   else {
     updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3)
@@ -67,7 +67,7 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
                if (switches$doMetaAnalysis) runPressed<-c(runPressed,input$exploreRunM,input$LGexploreRunM)
                
                if (notRunningExplore) {
-                 if (!shortHand) {
+                 if (shortHand) {
                    gain<-shortHandGain
                  } else {
                    gain<-1
@@ -152,9 +152,9 @@ updateExplore<-function(){
       explore$Explore_type<-paste(explore$Explore_type,input$Explore_VtypeH,sep="")
     }
   }
-  if (!shortHand) {
-    explore$Explore_length<-explore$Explore_length*shortHandGain
-  }
+  # if (shortHand) {
+  #   explore$Explore_length<-explore$Explore_length*shortHandGain
+  # }
   lastExplore<<-explore
   explore
 } 
@@ -221,7 +221,7 @@ makeExploreGraph <- function() {
   # expectedResult$result$showType<<-input$EvidenceEffect_type
   
   if (switches$showAnimation) {
-    ns<-10^(min(2,floor(log10(max(100,exploreResult$result$count)))))
+    ns<-10^(min(0,floor(log10(max(100,exploreResult$result$count)))))
   } else {
     ns<-exploreResult$nsims-exploreResult$result$count
   }

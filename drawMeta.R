@@ -114,13 +114,13 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
                 y<-yS
                 ylim<-c(min(sAll,na.rm=TRUE),max(sAll,na.rm=TRUE))+c(-1,1)*(max(sAll,na.rm=TRUE)-min(sAll,na.rm=TRUE))/4
                 ylabel<-"log(lk)"
-                xlabel<-"k"
+                xlabel<-Llabel
               },
               "n-k"={
                 y<-y1
                 ylim<-c(-0.02,1.1)
                 ylabel<-bquote(bold(p[null]))
-                xlabel<-"k"
+                xlabel<-Llabel
               },
               "S-S"={
                 y<-yS
@@ -180,7 +180,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
                   }
                   g<-g+theme(legend.position = "none")+plotTheme
                   ylim<-c(0,max(50,max(y,na.rm=TRUE)*1.1))
-                  g<-g+scale_x_continuous(limits=xlim)+xlab("k")
+                  g<-g+scale_x_continuous(limits=xlim)+xlab(Llabel)
                   g<-g+scale_y_continuous(limits=ylim,breaks=c())+ylab("")
                 } else {
                   h1<-makeMetaHist(x,use,xlim)

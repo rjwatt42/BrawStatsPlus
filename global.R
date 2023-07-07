@@ -8,14 +8,14 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
                importOrdinals=TRUE,
                rigidWithin=TRUE)
 
+################################
+# ui design
+
 fontScale=0.85 # use with 400% zoom in Google Chrome
 fontScale=1.0
 
 # these are minimum widths
-# fullPanelWidth="16cm"
-
 LGGraphHeight="14cm"
-# LGGraphHeightTabs="14.5cm"
 LGPanelHeight="15.3cm"
 LGModalHeight="16.4cm"
 
@@ -23,9 +23,6 @@ LGModalHeight="16.4cm"
 LGModalWidth="30cm"
 LGModalWidth="95%"
 
-expandLabel<-HTML("&#9974")
-emdash="\u2014"
-  
 maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
 # maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
 
@@ -79,17 +76,44 @@ plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF8833",
 
 shapes<-list(data=21,study=22,parameter=21,meta=24)
 
-basicType<-list("r"="r","p"="p")
-likeType<-list("log(lrs)"="log(lrs)","log(lrd)"="log(lrd)")
-powerType<-list("w"="w","nw"="nw")
-worldType<-list("n"="n","rp"="rp","wp"="wp")
-replicationType<-list("r1"="r1","p1"="p1")
+#useful character codes
+expandLabel<-HTML("&#9974")
+emdash="\u2014"
+helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
 
+# ui styles
 labelStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: left;")
 localStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: right;")
 localPlainStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:normal;text-align: right;")
 helpStyle=paste("font-size:",format(7*fontScale) ,"pt;line-height:75%;margin:0px;margin-top:-6px;padding:0px;", "color:", maincolours$panelC, ";",sep="")
-helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
+
+report_precision<-3
+graph_precision<-2
+fullShowHelp<-FALSE
+
+# graph themes
+mainplotMargins<-margin(1,3,1,3,"cm");
+popplotMargins<-margin(0.15,0.8,0,0.25,"cm");
+
+mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
+                panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
+SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
+LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=32,face="bold"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))
+
+plotTheme=mainTheme+SMplotTheme
+
+plotBlankTheme=theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                     panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                     plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                     axis.title=element_text(size=16,face="bold")
+)
+
+gridTheme=theme(plot.margin=margin(0,0,0,0,"cm"))
+
+
+################################
+# starting values for important variables
 
 IV<-list(name="IV",type="Interval",mu=0,sd=1,ncats=2,cases="C1,C2",proportions="1,1")
 IV2<-list(name="none",type="Interval",mu=0,sd=1,ncats=2,cases="D1,D2",proportions="1,1")
@@ -186,11 +210,35 @@ likelihood<-
        textResult=FALSE
   )
 
+
+exploreResultHold<-list(Hypothesis=c(),Design=c(),MetaAnalysis=c())
+likelihood_P_ResultHold<-c()
+likelihood_S_ResultHold<-c()
+
+oldEffect<-effect
+oldDesign<-design
+oldEvidence<-evidence
+oldMetaAnalysis<-metaAnalysis
+oldLikelihood<-likelihood
+
+importedData<-c()
+lastSample<-c()
+ResultHistory<-c()
+oldWorld_distr_k<-0.2
+
+##########################
+# NHST constants
 alpha<-0.05
 alphaLLR<-0.5*qnorm(1-alpha/2)^2
 STMethod<-"NHST"
 lrRange<-20
 
+#########################
+# display choices
+
+RZ<-"r"
+showPossible<-"Samples"
+shortHand<-FALSE      # instead of making full samples
 shortHandGain=10
 
 z_range<-1.5
@@ -204,13 +252,59 @@ allScatter<-"all"
 minN<-10
 maxRandN<-5 # times mean sample size
 
+points_threshold=50 # for displaying expected results
+wPlotScale="log10"
+pPlotScale="log10"
+nPlotScale="log10"
+
+useSignificanceCols<-TRUE
+showInteractionOnly<-TRUE
+
+includeSingle<-FALSE  # in "All" meta-analysis
+
+pSigLabel<-"p(p<.05)"
+pSigLabel<-bquote(bold(p[.('sig')]))
+alphaChar<-'\u03B1'
+  
+# P notation 
+pPlus<-FALSE           # for p_0 vs p_+
+LabelUD<-"U"
+Pchar<-"P" 
+# Pchar<-'\u03A9'
+if (pPlus) {Ptypechar<-'+' } else {Ptypechar<-'\u2013'}
+
+Lchar<-'\u03BB'
+Ltypechar<-"+"
+
+switch (LabelUD, 
+        "U"={
+          Plabel<-bquote(bold(.(Pchar)^.(Ptypechar)))
+          Llabel<-bquote(bold(.(Lchar)^.(Ltypechar)))
+        },
+        "D"={
+          Plabel<-bquote(bold(.(Pchar)[.(Ptypechar)]))
+          Llabel<-bquote(bold(.(Lchar)[.(Ltypechar)]))
+        })
+
+if (pPlus) {
+  pPlusLabel<-"P(+)"
+  effect$world$populationNullp<-1-effect$world$populationNullp
+} else {
+  pPlusLabel<-"P(0)"
+}
+
+worldsList<-list("pdf"="PDF","k"="k","pNull"="pNull")
+names(worldsList)[3]<-pPlusLabel
+names(worldsList)[2]<-Lchar
+
+#####################
+# warnings to generate
+
 warn3Cat2<-FALSE
 warnOrd<-FALSE
 warn3Ord<-FALSE
 
-showPossible<-"Samples"
-RZ<-"r"
-
+##############################
 # the stop running mechanism is complex
 # at its heart is a call to invalidate(ms) to trigger the next cycle
 # if the stop button is pressed, the calls to invalidate() stop
@@ -229,14 +323,12 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 
-doPlus<-FALSE
-
-if (doPlus) {
+###########################################
+# fine tuning
+doMainExtras<-FALSE
+if (doMainExtras) {
   switches$doReplications<-TRUE
-  # switches$doMetaAnalysis<-TRUE
   switches$doWorlds<-TRUE
-  # switches$doLikelihoodInfer<-TRUE
-  
 }
 
 is_local <- Sys.getenv('SHINY_PORT') == ""
@@ -244,14 +336,7 @@ if (is_local) {
   switches$doClipboard<-TRUE
   
   if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
-    # switches$doBatchFiles<-TRUE
-    # switches$doReplications<-TRUE
-    # switches$doMetaAnalysis<-TRUE
-    # switches$doWorlds<-TRUE
-    # switches$doLikelihoodInfer<-TRUE
-    
-    # evidence$showTheory<-TRUE
-    # switches$doVariablesExplore<-TRUE
+    loadExtras<-TRUE
   } 
 }
 

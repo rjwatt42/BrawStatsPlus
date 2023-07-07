@@ -137,7 +137,7 @@ wellPanel(id="HelpTabset",
                                         tags$td(width="25%",tags$div(style = localPlainStyle, "")),
                                         tags$td(width="10%",tags$div(style = localPlainStyle, "")),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Load extras:")),
-                                        tags$td(width="25%",checkboxInput("LoadExtras", label=NULL))
+                                        tags$td(width="25%",checkboxInput("LoadExtras", label=NULL,value=loadExtras))
                                       ),
                                       tags$tr(
                                         tags$td(width="25%",tags$div(style = localPlainStyle, "Short hand:")),

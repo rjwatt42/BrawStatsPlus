@@ -3,11 +3,40 @@
 
 loadExtras<-function(which=0){
   
+  if (!input$LoadExtras) {
+    switches$doReplications<<-FALSE
+    removeTab("Design","Replicate",session)
+    
+    switches$doWorlds<<-FALSE
+    removeTab("Hypothesis","World",session)
+    removeTab("HypothesisDiagram","World",session)
+    updateSelectInput(session,"likelihoodUseSource",choices=c("null","prior"))
+    updateSelectInput(session,"likelihoodUsePrior",choices=c("none","prior"))
+
+    switches$doCheating<<-FALSE
+    switches$doLikelihoodInfer<<-FALSE
+    
+    updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2)
+    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2)
+    updateSelectInput(session,"Explore_typeD",choices=designChoices)
+    updateSelectInput(session,"LGExplore_typeD",choices=designChoices)
+    
+    updateSelectInput(session,"Explore_showH",choices=showChoices)
+    updateSelectInput(session,"LGExplore_showH",choices=showChoices)
+    updateSelectInput(session,"Explore_showD",choices=showChoices)
+    updateSelectInput(session,"LGExplore_showD",choices=showChoices)
+    
+    updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoices)
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected="r")
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected="p")
+  } else {
+    
   # replications
   if (!switches$doReplications) {
     switches$doReplications<<-TRUE
     insertTab("Design",replicationTab(),"Anomalies","after",select=FALSE,session)
   }
+  
   # worlds
   if (!switches$doWorlds) {
     switches$doWorlds<<-TRUE
@@ -16,6 +45,7 @@ loadExtras<-function(which=0){
     updateSelectInput(session,"likelihoodUseSource",choices=c("null","world","prior"))
     updateSelectInput(session,"likelihoodUsePrior",choices=c("none","world","prior"))
   }
+  
   # cheating
   if (!switches$doCheating) {
     switches$doCheating<<-TRUE
@@ -24,6 +54,7 @@ loadExtras<-function(which=0){
   if (!switches$doLikelihoodInfer) {
     switches$doLikelihoodInfer<<-TRUE
   }
+  
   # meta-analysis
   if (which==1 && !switches$doMetaAnalysis) {
     switches$doMetaAnalysis<<-TRUE
@@ -33,21 +64,22 @@ loadExtras<-function(which=0){
     insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
     insertTab("FileTab",metaFilePanel(),"Data","after",select=FALSE,session)
   }
-  # explore
-  updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2Extra)
-  updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2Extra)
-  updateSelectInput(session,"Explore_typeD",choices=designChoicesExtra)
-  updateSelectInput(session,"LGExplore_typeD",choices=designChoicesExtra)
   
-  updateSelectInput(session,"Explore_showH",choices=showChoicesExtra)
-  updateSelectInput(session,"LGExplore_showH",choices=showChoicesExtra)
-  updateSelectInput(session,"Explore_showD",choices=showChoicesExtra)
-  updateSelectInput(session,"LGExplore_showD",choices=showChoicesExtra)
-  
-  updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoicesExtra)
-  updateSelectInput(session,"EvidenceExpected_type",choices=multipleTypeChoicesExtra)
-  updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra,selected="r")
-  updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra,selected="p")
+    # explore
+    updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2Extra)
+    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2Extra)
+    updateSelectInput(session,"Explore_typeD",choices=designChoicesExtra)
+    updateSelectInput(session,"LGExplore_typeD",choices=designChoicesExtra)
+    
+    updateSelectInput(session,"Explore_showH",choices=showChoicesExtra)
+    updateSelectInput(session,"LGExplore_showH",choices=showChoicesExtra)
+    updateSelectInput(session,"Explore_showD",choices=showChoicesExtra)
+    updateSelectInput(session,"LGExplore_showD",choices=showChoicesExtra)
+    
+    updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoicesExtra)
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra,selected="r")
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra,selected="p")
+  }
 }
 
 ascii<-function(ch) strtoi(charToRaw(toupper(ch)),16L)
@@ -72,6 +104,7 @@ if (switches$doKeys) {
     
     # control-x - switch to (offline) full version
     if (input$keypress==ascii("x") && controlKeyOn){
+      updateCheckboxInput(session,"LoadExtras",value=TRUE)
       loadExtras()
     }
     
@@ -110,6 +143,8 @@ if (switches$doKeys) {
       write_clip(data,allow_non_interactive = TRUE)
     }
     
+    if (pPlus) {v<-0.26}
+    else       {v<-0.74}
     # control-alt-p set world to model psych
     if (input$keypress==ascii("p") && controlKeyOn && !shiftKeyOn){
       loadExtras()
@@ -117,13 +152,13 @@ if (switches$doKeys) {
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
       updateNumericInput(session,"world_distr_k",value=0.325)
-      updateNumericInput(session,"world_distr_Nullp",value=0.74)
+      updateNumericInput(session,"world_distr_Nullp",value=v)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
       
       updateSelectInput(session,"likelihoodPrior_distr",selected="Exp")
       updateSelectInput(session,"likelihoodPrior_distr_rz",selected="z")
       updateNumericInput(session,"likelihoodPrior_distr_k",value=0.325)
-      updateNumericInput(session,"likelihoodPrior_Nullp",value=0.74)
+      updateNumericInput(session,"likelihoodPrior_Nullp",value=v)
     }
     
     if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){
@@ -132,7 +167,7 @@ if (switches$doKeys) {
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
       updateNumericInput(session,"world_distr_k",value=0.325)
-      updateNumericInput(session,"world_distr_Nullp",value=0.74)
+      updateNumericInput(session,"world_distr_Nullp",value=v)
       updateCheckboxInput(session,"sNRand",value=TRUE)
       updateNumericInput(session,"sNRandK",value=1.2)
       updateNumericInput(session,"sN",value=72)

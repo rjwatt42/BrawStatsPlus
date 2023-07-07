@@ -4,17 +4,10 @@ metaChoices=list("meta"=list("NoStudies"="NoStudies",
                              "SampleGamma"="SampleGamma",
                              "sig_only"="sig_only"
                         ),
-                  "Worlds"=list("pdf"="PDF",
-                                "k"="k",
-                                "pNull"="pNull"
-                  )
+                  "Worlds"=worldsList
 )
-showMetaChoices=c(
-  "pdf"="PDF",
-  "k"="k",
-  "pNull"="pNull",
-  "log(lk)"="S"
-)
+showMetaChoices=c(worldsList, "log(lk)"="S")
+
 exploreLengthChoices=c("10" = "10",
                        "50" = "50",
                        "100" = "100",

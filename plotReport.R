@@ -49,49 +49,77 @@ reportPlot<-function(outputText,nc,nr,rd=1){
   outputText<-sub("!g","",outputText)
   pts<-data.frame(x=x_gap1,y=d$y)
   g<-ggplot()
-  # print(c(sum(boldlabels),sum(!boldlabels)))
+
+  for (i in 1:length(outputText)) {
+    x<-x_gap1[i]+1
+    y<-d$y[i]
+    label<-outputText[i]
+    parse<-FALSE
+    switch(label,
+           "Alpha"={label<-alphaChar},
+           "pNull"={label<-deparse(Plabel)},
+           "k"={label<-deparse(Llabel)},
+           "p(sig)"={label<-deparse(pSigLabel)}
+           )
+    if (boldlabels[i]) fontface<-"bold" else fontface<-"plain"
+    if (rightlabels[i]) hjust<- 1 else hjust<- 0
+    if (rightlabels[i]) x<- x_gap1[i+1]+1-characterWidth*4
+    fill<-bg
+    if (redlabels[i]) fill="red"
+    if (redlabels[i]) fill="green"
+    
+    mathlabel<-grepl("['^']{1}",label) || grepl("['[']{1}",label)
+    if (any(mathlabel)) parse<-TRUE
+    pts<-data.frame(x=x,y=top+1-y)
+    g<-g+geom_label(data=pts,aes(x=x, y=y), label=label, 
+                                         hjust=hjust, vjust=0, 
+                                         size=font_size+font_size_extra, 
+                                         fill=fill,fontface=fontface,
+                                         parse=parse,
+                                         label.size=NA,label.padding=unit(0,"lines"))
+  }
   
-  if (any(boldlabels & !rightlabels)){
-    pts1<-data.frame(x=x_gap1[boldlabels & !rightlabels],y=d$y[boldlabels & !rightlabels],labels=outputText[boldlabels & !rightlabels])
-    g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fill=bg,fontface="bold",
-                    label.size=NA,label.padding=unit(0,"lines"))
-  }
-  if (any(boldlabels & rightlabels)) {
-    use<-which(boldlabels & rightlabels)+1
-    pts1<-data.frame(x=x_gap1[use]-characterWidth*4,y=d$y[boldlabels & rightlabels],labels=outputText[boldlabels & rightlabels])
-    g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=1, vjust=0, size=font_size+font_size_extra, fill=bg,fontface="bold",
-                    label.size=NA,label.padding=unit(0,"lines"))
-  }
-  if (any(rightlabels & !boldlabels)){
-    use<-which(!boldlabels & rightlabels)+1
-    pts1<-data.frame(x=x_gap1[use]-characterWidth*4,y=d$y[rightlabels & !boldlabels],labels=outputText[rightlabels & !boldlabels])
-    g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=1, vjust=0, size=font_size+font_size_extra, fill=bg,
-                    label.size=NA,label.padding=unit(0,"lines"))
-  }
-  if (any(redlabels)) {
-    pts1<-data.frame(x=x_gap1[redlabels],y=d$y[redlabels],labels=outputText[redlabels])
-    g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fontface="bold", color="black",fill="red",
-                    label.size=NA,label.padding=unit(0,"lines"))
-  }
-  if (any(greenlabels)) {
-    pts1<-data.frame(x=x_gap1[greenlabels],y=d$y[greenlabels],labels=outputText[greenlabels])
-    g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fontface="bold", color="black",fill="green",
-                    label.size = NA,label.padding=unit(0,"lines"))
-  }
-  if (any(!boldlabels)) {
-    x1<-x_gap1[!boldlabels & !redlabels & !greenlabels & !rightlabels]
-    y1<-d$y[!boldlabels & !redlabels & !greenlabels & !rightlabels]
-    t1<-outputText[!boldlabels & !redlabels & !greenlabels & !rightlabels]
-    mathlabels<-grepl("['^']{1}[0-9.{}]",t1)
-    pts<-data.frame(x=x1[!mathlabels],y=y1[!mathlabels],labels=t1[!mathlabels])
-    g<-g+geom_label(data=pts,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size, fill=bg,
-                    label.size=NA,label.padding=unit(0,"lines"))
-    if (any(mathlabels)) {
-    pts<-data.frame(x=x1[mathlabels],y=y1[mathlabels],labels=t1[mathlabels])
-    g<-g+geom_label(data=pts,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size, fill=bg,parse=TRUE,
-                    label.size=NA,label.padding=unit(0,"lines"))
-    }
-  }
+  # if (any(boldlabels & !rightlabels)){
+  #   pts1<-data.frame(x=x_gap1[boldlabels & !rightlabels],y=d$y[boldlabels & !rightlabels],labels=outputText[boldlabels & !rightlabels])
+  #   g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fill=bg,fontface="bold",
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  # }
+  # if (any(boldlabels & rightlabels)) {
+  #   use<-which(boldlabels & rightlabels)+1
+  #   pts1<-data.frame(x=x_gap1[use]-characterWidth*4,y=d$y[boldlabels & rightlabels],labels=outputText[boldlabels & rightlabels])
+  #   g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=1, vjust=0, size=font_size+font_size_extra, fill=bg,fontface="bold",
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  # }
+  # if (any(rightlabels & !boldlabels)){
+  #   use<-which(!boldlabels & rightlabels)+1
+  #   pts1<-data.frame(x=x_gap1[use]-characterWidth*4,y=d$y[rightlabels & !boldlabels],labels=outputText[rightlabels & !boldlabels])
+  #   g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=1, vjust=0, size=font_size+font_size_extra, fill=bg,
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  # }
+  # if (any(redlabels)) {
+  #   pts1<-data.frame(x=x_gap1[redlabels],y=d$y[redlabels],labels=outputText[redlabels])
+  #   g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fontface="bold", color="black",fill="red",
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  # }
+  # if (any(greenlabels)) {
+  #   pts1<-data.frame(x=x_gap1[greenlabels],y=d$y[greenlabels],labels=outputText[greenlabels])
+  #   g<-g+geom_label(data=pts1,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size+font_size_extra, fontface="bold", color="black",fill="green",
+  #                   label.size = NA,label.padding=unit(0,"lines"))
+  # }
+  # if (any(!boldlabels)) {
+  #   x1<-x_gap1[!boldlabels & !redlabels & !greenlabels & !rightlabels]
+  #   y1<-d$y[!boldlabels & !redlabels & !greenlabels & !rightlabels]
+  #   t1<-outputText[!boldlabels & !redlabels & !greenlabels & !rightlabels]
+  #   mathlabels<-grepl("['^']{1}[0-9.{}]",t1)
+  #   pts<-data.frame(x=x1[!mathlabels],y=y1[!mathlabels],labels=t1[!mathlabels])
+  #   g<-g+geom_label(data=pts,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size, fill=bg,
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  #   if (any(mathlabels)) {
+  #   pts<-data.frame(x=x1[mathlabels],y=y1[mathlabels],labels=t1[mathlabels])
+  #   g<-g+geom_label(data=pts,aes(x=x+1, y=top+1-y, label=labels), hjust=0, vjust=0, size=font_size, fill=bg,parse=TRUE,
+  #                   label.size=NA,label.padding=unit(0,"lines"))
+  #   }
+  # }
 
   g<-g+labs(x="  ",y="  ")+plotTheme+theme(legend.position = "none")
   g<-g+theme(axis.title.x=element_blank(),

@@ -3,6 +3,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   max_cols<-8
   
   vals<-exploreResult$result$vals
+  if (explore$Explore_type=="pNull" && pPlus) vals<-1-vals
+  
   if (length(vals)>max_cols)  {
     use<-seq(1,length(vals),2)
   } else {
@@ -11,6 +13,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   nc<-length(use)
 
   extra_y_label<-explore$Explore_show
+
   if (is.null(IV2)){
     rVals<-exploreResult$result$rIVs
     pVals<-exploreResult$result$pIVs
@@ -257,10 +260,13 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
     outputText<-c(outputText,rep("",nc))
   }
   
-  outputText<-c(outputText,paste("\b", extra_y_label,":  "))
+  outputText<-c(outputText," ")
   for (i in 1:nc) {
     outputText<-c(outputText,paste("\b",format(vals[use[i]],digits=report_precision),sep=""))
   }
+  
+  outputText<-c(outputText,paste0("!j\b", extra_y_label))
+  outputText<-c(outputText,rep("",nc))
   outputText<-c(outputText,"!jlower 25%")
   for (i in 1:nc) {
     outputText<-c(outputText,format(y25[use[i]],digits=report_precision))

@@ -1,37 +1,7 @@
-library(ggplot2)
+################################
+# some global values for general running
 
-useSignificanceCols<-TRUE
-
-fullShowHelp<-FALSE
-
-report_precision<-3
-graph_precision<-2
-
-mainplotMargins<-margin(1,3,1,3,"cm");
-popplotMargins<-margin(0.15,0.8,0,0.25,"cm");
-
-mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
-                panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
-SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
-LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=32,face="bold"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))
-
-plotTheme=mainTheme+SMplotTheme
-
-plotBlankTheme=theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
-                panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
-                axis.title=element_text(size=16,face="bold")
-)
-
-gridTheme=theme(plot.margin=margin(0,0,0,0,"cm"))
-
-shortCut<-FALSE
-
-mergeVariables<-FALSE
-showInteractionOnly<-TRUE
-shortHand<-FALSE
-hideIV2Tab<-FALSE
+mergeVariables<-FALSE # when reading data - add to existing data?
 
 shiftKeyOn<-FALSE
 controlKeyOn<-FALSE
@@ -41,15 +11,18 @@ validSample<-FALSE
 validExpected<-FALSE
 validExplore<-FALSE
 validLikelihood<-0
-
 show<-0
-includeSingle<-FALSE
 
-points_threshold=50
-wPlotScale="log10"
-# wPlotScale="linear"
-pPlotScale="log10"
-nPlotScale="log10"
+#because numericInput with "0." returns NA
+checkNumber<-function(a,b=a,c=0) {
+  if (!isempty(a)) {
+    if (is.na(a) || is.null(a)) {a<-c}
+  }
+  a
+}
+
+###########################
+# variables
 
 makeVar<-function(name,type="Interval",
                   mu=0,sd=1,skew=0,kurtosis=3,
@@ -166,33 +139,4 @@ varTypes<- c("Interval" = "Interval",
              "Ordinal" = "Ordinal",
              "Categorical" = "Categorical"
 )
-
-#because numericInput with "0." returns NA
-checkNumber<-function(a,b=a,c=0) {
-  if (!isempty(a)) {
-    if (is.na(a) || is.null(a)) {a<-c}
-  }
-  a
-}
-
-oldEffect<-effect
-oldDesign<-design
-oldEvidence<-evidence
-oldMetaAnalysis<-metaAnalysis
-oldLikelihood<-likelihood
-
-importedData<-c()
-lastSample<-c()
-ResultHistory<-c()
-oldWorld_distr_k<-0.2
-
-expectedRunning<-FALSE
-
-exploreResultHold<-list(Hypothesis=c(),Design=c(),MetaAnalysis=c())
-likelihood_P_ResultHold<-c()
-likelihood_S_ResultHold<-c()
-
-exploreDesignChoices<-c("Sampling","Anomalies")
-exploreHypothesisChoices<-c("Variables","Effects")
-# worldPanelReserve<-worldPanel("",asTable=FALSE,doAnyway=TRUE)
 

@@ -29,9 +29,10 @@ hypothesisChoicesV2=list("Variables"=list("IV" = "IV",
                          "Effects"=list("Effect Size" = "EffectSize1",
                                         "Heteroscedasticity" = "Heteroscedasticity")
 )
+
 if (switches$doWorlds) {
   hypothesisChoicesV2<-c(hypothesisChoicesV2,
-                              list("Worlds"=list("pdf"="PDF","k"="k","pNull"="pNull"))
+                              list("Worlds"=worldsList)
                               )
 }
 
@@ -40,7 +41,7 @@ hypothesisChoicesV2Extra=list("Variables"=list("IV" = "IV",
                                           "IV/DV Types" = "IVDVType"),
                          "Effects"=list("Effect Size" = "EffectSize1",
                                         "Heteroscedasticity" = "Heteroscedasticity"),
-                         "Worlds"=list("pdf"="PDF","k"="k","pNull"="pNull")
+                         "Worlds"=worldsList
 )
 
 
@@ -87,6 +88,7 @@ designChoicesExtra=list("Sampling"=list("Sample Size" = "SampleSize",
                                        "Repl Power"="Power",
                                        "Repl Repeats" = "Repeats")
 )
+names(designChoicesExtra$Sampling)[5]<-alphaChar
 
 effectChoices=list("IV1-DV"="MainEffectIV",
                    "IV2-DV"="MainEffectIV2",

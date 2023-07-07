@@ -32,7 +32,7 @@ priorPanel<-function(prefix="",asTable=FALSE) {
                  tags$td(width="10%")
                ),
                tags$tr(
-                 tags$td(width = "30%", tags$div(style = localStyle, "p(null):")),
+                 tags$td(width = "30%", tags$div(style = localStyle, pPlusLabel)),
                  tags$td(width = "30%", numericInput(paste0(prefix, "Prior_Nullp"), label=NULL,min=0,max=1, step=0.025,value=0.5)),
                  tags$td(width = "15%"),
                  tags$td(width = "15%"),
