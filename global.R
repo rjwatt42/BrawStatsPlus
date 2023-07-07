@@ -297,6 +297,14 @@ worldsList<-list("pdf"="PDF","k"="k","pNull"="pNull")
 names(worldsList)[3]<-pPlusLabel
 names(worldsList)[2]<-Lchar
 
+Zchar<-"Z"
+posChar<-"+"
+nullChar<-"0"
+nonNullPositive<-bquote(.(Zchar)^.(posChar)~'+ve')  # "Z+ +ve"
+nonNullNegative<-bquote(.(Zchar)^.(posChar) ~"-ve")  # "Z+ -ve"
+nullPositive<-bquote(.(Zchar)^.(nullChar) ~"+ve")   # "Z0 +ve"
+nullNegative<-bquote(.(Zchar)^.(nullChar) ~"-ve")  # "Z0 -ve"
+
 #####################
 # warnings to generate
 

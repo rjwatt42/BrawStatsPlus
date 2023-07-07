@@ -320,7 +320,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
       )
     }
 
-    outputText<-c(outputText,paste("\b", extra_y_label,":  "))
+    outputText<-c(outputText,paste("!j\b", extra_y_label))
     for (i in 1:nc) {
       outputText<-c(outputText,paste("\b",format(vals[use[i]],digits=report_precision),sep=""))
     }

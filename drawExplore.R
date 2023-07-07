@@ -490,8 +490,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                     alpha<<-exploreResult$result$vals[i]
                     alphaLLR<<-0.5*qnorm(1-alpha/2)^2
                   }
-                  p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
-                  y50[i]<-p
+                  p1<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
+                  y50[i]<-p1
                   p_se<-sqrt(p1*(1-p1)/length(pVals[,i]))
                   y75[i]<-p1+p_se*qnorm(0.75)
                   y25[i]<-p1+p_se*qnorm(0.25)
@@ -788,8 +788,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       ytop<-1-y50a
       pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50,rev(ytop)))
       col1<-plotcolours$infer_misserr
-      lb1<-"F -ve"
-      lb1<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50[endI])),lb=lb1)
+      lb1<-nonNullNegative
+      lb1xy<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50[endI])))
       ytop<-ytop-y50
       
       if (is.null(y50e)) {
@@ -801,22 +801,23 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           # true hits
           pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50t,rev(ytop)))
           col2<-plotcolours$infer_sigC
-          lb2<-"T +ve"
-          lb2<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50t[endI])),lb=lb2)
+          lb2<-nonNullPositive
+          lb2xy<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50t[endI])))
           ytop<-ytop-y50t
           
           # true misses
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50et,rev(ytop)))
           col3<-plotcolours$infer_nsigC
-          lb3<-"T -ve"
-          lb3<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50et[endI])),lb=lb3)
+          lb3<-nullNegative
+          lb3xy<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50et[endI])))
           ytop<-ytop-y50et
           
           # false hits  
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ytop-y50e,rev(ytop)))
           col4<-plotcolours$infer_hiterr
-          lb4<-"F +ve"
-          lb4<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50e[endI])),lb=lb4)
+          lb4<-nullPositive
+          lb4xy<-data.frame(x=max(vals),y=mean(c(ytop[endI],ytop[endI]-y50e[endI])))
+          ytop<-ytop-y50e
           
           if (STMethod=="dLLR") {
           }
@@ -827,31 +828,27 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
 
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
           col4<-plotcolours$fdr
-          lb4<-"F +ve"
-          lb4<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])),lb=lb4)
+          lb4<-nullPositive
+          lb4xy<-data.frame(x=max(vals),y=mean(c(0,y50e[endI])))
         }
       }
 
     if (doLine) {
       # type 2 errors
         g<-g+geom_polygon(data=pts1,aes(x=x,y=y),fill=col1)
-        g<-g+geom_label(data=lb1,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col1)
-        
+
         if (!is.null(pts2)) {
           g<-g+geom_polygon(data=pts2,aes(x=x,y=y),fill=col2)
-          g<-g+geom_label(data=lb2,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col2)
         }
         if (!is.null(pts3)) {
           g<-g+geom_polygon(data=pts3,aes(x=x,y=y),fill=col3)
-          g<-g+geom_label(data=lb3,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col3)
         }
         if (!is.null(pts4)) {
           g<-g+geom_polygon(data=pts4,aes(x=x,y=y),fill=col4)
-          g<-g+geom_label(data=lb4,aes(x=x,y=y,label=lb),hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col4)
         }
     } else {
       npts<-length(y50)
-      bwidth<-0.4
+      bwidth<-0.4*(pts1$x[2]-pts1$x[1])
       for (i in 1:npts) {
         y1<-pts1$y[c(i,npts*2-i+1)]
         y1<-y1[c(1,2,2,1)]
@@ -866,8 +863,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts<-data.frame(x=x2,y=y2)
           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill=col2)
         }
-        # g<-g+geom_point(data=data.frame(x=pts1$x[i],y=y1[1]),aes(x=x,y=y),size=2)
-        
+
         if (!is.null(pts3)) {
           y3<-pts3$y[c(i,npts*2-i+1)]
           y3<-y3[c(1,2,2,1)]
@@ -875,10 +871,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           pts<-data.frame(x=x3,y=y3)
           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill=col3)
         }
-        # if (!is.null(pts2)) {
-        #   g<-g+geom_point(data=data.frame(x=pts2$x[i],y=y2[1]),aes(x=x,y=y),size=2)
-        # }
-        
+
         if (!is.null(pts4)) {
           y4<-pts4$y[c(i,npts*2-i+1)]
           y4<-y4[c(1,2,2,1)]
@@ -887,18 +880,41 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill=col4)
         }
       }
-      g<-g+geom_label(data=lb1,aes(x=x,y=y,label=lb),hjust=-0.7,vjust=0.5,size=4,colour="white",fill=col1)
+    }
+      if (doLine) xoff<-0
+      else        xoff<-bwidth
+      mathlabel<-grepl("['^']{1}",lb1) | grepl("['[']{1}",lb1)
+      if (any(mathlabel)) {
+        lb1<-deparse(lb1)
+        mathlabel<-TRUE
+      }
+      g<-g+geom_label(data=lb1xy,aes(x=x+xoff,y=y),label=lb1,hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col1,parse=mathlabel)
+      
       if (!is.null(pts2)) {
-        g<-g+geom_label(data=lb2,aes(x=x,y=y,label=lb),hjust=-0.7,vjust=0.5,size=4,colour="white",fill=col2)
+        mathlabel<-grepl("['^']{1}",lb2) | grepl("['[']{1}",lb2)
+        if (any(mathlabel)) {
+          lb2<-deparse(lb2)
+          mathlabel<-TRUE
+        }
+        g<-g+geom_label(data=lb2xy,aes(x=x+xoff,y=y),label=lb2,hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col2,parse=mathlabel)
       }
       if (!is.null(pts3)) {
-        g<-g+geom_label(data=lb3,aes(x=x,y=y,label=lb),hjust=-0.7,vjust=0.5,size=4,colour="white",fill=col3)
+        mathlabel<-grepl("['^']{1}",lb3) | grepl("['[']{1}",lb3)
+        if (any(mathlabel)) {
+          lb3<-deparse(lb3)
+          mathlabel<-TRUE
+        }
+        g<-g+geom_label(data=lb3xy,aes(x=x+xoff,y=y,),label=lb3,hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col3,parse=mathlabel)
       }
       if (!is.null(pts4)) {
-        g<-g+geom_label(data=lb4,aes(x=x,y=y,label=lb),hjust=-0.7,vjust=0.5,size=4,colour="white",fill=col4)
+        mathlabel<-grepl("['^']{1}",lb4) | grepl("['[']{1}",lb4)
+        if (any(mathlabel)) {
+          lb4<-deparse(lb4)
+          mathlabel<-TRUE
+        }
+        g<-g+geom_label(data=lb4xy,aes(x=x+xoff,y=y),label=lb4,hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col4,parse=mathlabel)
       }
       
-    }
     } else {
       if (explore$Explore_show=="PDF") {
         y=rep(0,length(ySingle))
@@ -1040,29 +1056,32 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     } else {
     g<-g+scale_x_continuous(breaks=c(tk,tk+jk,tk+jk*2),labels=c(tk,tk,tk),limits=c(tk[1],1+jk*2)+c(-1,1)*0.25)
     }
-  } else {
-    if (is.character(exploreResult$result$vals[1]))
-      g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
-  }
+  } 
+  
   if ((is.element(exploreResult$Explore_type,c("SampleSize","Repeats","CheatingAmount")) &&
                  explore$Explore_xlog) 
       || (exploreResult$Explore_type=="Alpha")
       || ((exploreResult$Explore_type=="NoStudies") && explore$Explore_Mxlog)) {
     xd<-(log10(max(vals))-log10(min(vals)))/100
-    if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
+    if (is.element(explore$Explore_show,c("NHSTErrors","FDR;FMR"))) {
       g<-g+scale_x_log10(limits=c(10^(log10(min(vals))-xd),10^(log10(max(vals))+xd*10)))
     } else {
       g<-g+scale_x_log10(limits=c(10^(log10(min(vals))-xd),10^(log10(max(vals)))))
     }
   } else {
-    if (is.element(explore$Explore_show,c("NHSTErrors","FDR"))) {
+    if (is.element(explore$Explore_show,c("NHSTErrors","FDR;FMR"))) {
       if (doLine) {
         g<-g+scale_x_continuous(limits=c(min(vals)/1.11,max(vals)*1.11))
       } else {
-        g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,limits=c(min(vals)-0.5,(max(vals)+0.5)*1.11))
+        dx<-(vals[2]-vals[1])*0.5
+        g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals,
+                                limits=c((min(vals)-dx)/1.11,(max(vals)+dx)*1.11))
       }
+    } else {
+      if (is.character(exploreResult$result$vals[1]))
+        g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
     }
-  }
+  } 
   
   if (explore$ExploreFull_ylim){
   g<-g+coord_cartesian(ylim = ylim*1.05)

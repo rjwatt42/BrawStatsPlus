@@ -222,6 +222,7 @@ makeExploreGraph <- function() {
   
   if (switches$showAnimation) {
     ns<-10^(min(0,floor(log10(max(100,exploreResult$result$count)))))
+    if (shortHand) ns<-ns*shortHandGain
   } else {
     ns<-exploreResult$nsims-exploreResult$result$count
   }
