@@ -161,7 +161,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     use_col_names<-FALSE
   }
   
-  markersize<-7
+  markersize<-5
   ni_max1<-1
   ni_max2<-1
   multi="none"
@@ -590,7 +590,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         for (i in 1:length(vals))
           g<-expected_plot(g,
                            data.frame(x=vals[i]+vals_offset,y1=showVals[,i],y2=sigVals[,i]),
-                           expType=expType,scale=0.35,col=col)
+                           expType=expType,scale=2.25/(length(vals)+1),col=col)
         if (ni_max2==1 || !no_se_multiple){
           g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.35/length(vals)))
         }
@@ -821,8 +821,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     xscale<-TRUE
   }
   if (!xscale) {
-      if (is.character(exploreResult$result$vals[1]))
-        g<-g+scale_x_continuous(breaks=vals,labels=exploreResult$result$vals)
+      if (is.character(exploreResult$result$vals[1])) {
+        dx<-vals[2]-vals[1]
+        g<-g+scale_x_continuous(limits=c(min(vals)-dx,max(vals)+dx),breaks=vals,labels=exploreResult$result$vals)
+      }
     }
 
   if (explore$ExploreFull_ylim){
