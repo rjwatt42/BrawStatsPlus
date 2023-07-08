@@ -583,6 +583,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                )
         if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize"))){
           sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+          col<-"white"
         } else {
           sigVals<-!is.na(showVals)
         }
