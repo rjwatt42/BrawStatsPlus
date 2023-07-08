@@ -47,6 +47,10 @@ observeEvent(input$IV2choice,{
     updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3)
   }
 })
+
+observeEvent(c(input$Explore_typeD,input$Explore_typeH,input$Explore_typeM),{
+  validExplore<<-FALSE
+})
 # watch for changes to design
 observeEvent(input$Explore_typeD,{
   if (input$Explore_typeD=="SampleSize") {

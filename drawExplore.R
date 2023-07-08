@@ -572,10 +572,15 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         }
         g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
       } else{
+        for (i in 1:length(vals))
+          g<-expected_plot(g,
+                           data.frame(x=vals[i]+vals_offset,y1=showVals[,i],y2=!is.na(showVals[,i])),
+                           expType=NULL,scale=0.35,col=col)
         if (ni_max2==1 || !no_se_multiple){
           g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
         }
       }
+      
       if (use_col_names){
         pts1<-data.frame(x=vals+vals_offset,y=y50,fill=explore$Explore_typeShow)
         g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)

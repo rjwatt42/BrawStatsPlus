@@ -147,6 +147,7 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
 
 expected_hist<-function(vals,svals,valType){
 
+  if (is.null(valType)) valType<-"r"
   if (is.element(valType,c("r1","rp","ci1","ci2"))) valType<-"r"
   if (is.element(valType,c("e1","e2","p1"))) valType<-"p"
   if (is.element(valType,c("wp"))) valType<-"w"
@@ -229,53 +230,68 @@ start_plot<-function() {
           axis.ticks.x=element_blank())
 }
 
-expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
-  if (useSignificanceCols){
-    c1=plotcolours$infer_sigC
-    c2=plotcolours$infer_nsigC
-  } else {
-    c1=plotcolours$descriptionC
-    c2=plotcolours$descriptionC
-  }
-  if (expType=="e1") {
-    c1=plotcolours$infer_hiterr
-    c2=plotcolours$infer_nsigC
-  }
-  if (expType=="e2") {
-    c1=plotcolours$infer_sigC
-    c2=plotcolours$infer_misserr
-  }
-  if (expType=="e1d") {
-    c1=plotcolours$infer_sigC
-    c2=plotcolours$infer_misserr
-    c3<-plotcolours$infer_hiterr
-  }
-  if (expType=="e2d") {
-    c1=plotcolours$infer_sigC
-    c2=plotcolours$infer_misserr
-    c3<-plotcolours$infer_hiterr
-  }
-  dotSize<-(plotTheme$axis.title$size)/3
+expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,col="white"){
+  dotSize<-(plotTheme$axis.title$size)/3*scale
   
-  if (single) {
-    xr<-makeFiddle(pts$y1,2/40)
-    
-    if (expType=="r" && length(pts$y1)==1 && !is.null(result$rCI)){
-      pts1se<-data.frame(x=pts$x,y=result$rCI)
-      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
-      g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
+  if (!is.null(result)) {
+    if (useSignificanceCols){
+      c1=plotcolours$infer_sigC
+      c2=plotcolours$infer_nsigC
+    } else {
+      c1=plotcolours$descriptionC
+      c2=plotcolours$descriptionC
     }
-    if (expType=="p" && length(pts$y1)==1 && !is.null(result$pCI)){
-      pts1se<-data.frame(x=pts$x,y=log10(result$pCI))
-      if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
-      g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
+    if (expType=="e1") {
+      c1=plotcolours$infer_hiterr
+      c2=plotcolours$infer_nsigC
     }
-    
+    if (expType=="e2") {
+      c1=plotcolours$infer_sigC
+      c2=plotcolours$infer_misserr
+    }
+    if (expType=="e1d") {
+      c1=plotcolours$infer_sigC
+      c2=plotcolours$infer_misserr
+      c3<-plotcolours$infer_hiterr
+    }
+    if (expType=="e2d") {
+      c1=plotcolours$infer_sigC
+      c2=plotcolours$infer_misserr
+      c3<-plotcolours$infer_hiterr
+    }
+  } else {
+    c1=col
+    c2=col
+  }
+  
+  if (length(pts$y1)<=points_threshold) {
+    if (!is.null(result)) {
+      if (expType=="r" && length(pts$y1)==1 && !is.null(result$rCI)){
+        pts1se<-data.frame(x=pts$x,y=result$rCI)
+        if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
+        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
+      }
+      if (expType=="p" && length(pts$y1)==1 && !is.null(result$pCI)){
+        pts1se<-data.frame(x=pts$x,y=log10(result$pCI))
+        if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
+        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,size=se_size)
+      }
+    }
+      
+    xr<-makeFiddle(pts$y1,2/40)*scale*scale
     pts$x<-pts$x+xr
+    
+    if (scale<1) {
+      co1<-c1
+      co2<-c2
+    } else {
+      co1<-"black"
+      co2<-"black"
+    }
     pts1=pts[!pts$y2,]
-    g<-g+geom_point(data=pts1,aes(x=x, y=y1),shape=shapes$study, colour = "black", fill = c2, size = dotSize)
+    g<-g+geom_point(data=pts1,aes(x=x, y=y1),shape=shapes$study, colour = co2, fill = c2, size = dotSize)
     pts2=pts[pts$y2,]
-    g<-g+geom_point(data=pts2,aes(x=x, y=y1),shape=shapes$study, colour = "black", fill = c1, size = dotSize)
+    g<-g+geom_point(data=pts2,aes(x=x, y=y1),shape=shapes$study, colour = co1, fill = c1, size = dotSize)
     
   } else {
     if (is.logical(pts$y2)) {
@@ -285,8 +301,9 @@ expected_plot<-function(g,pts,result,IV,DV,expType,single=FALSE){
     }
     xoff<-pts$x[1]
     g<-g+
-      geom_polygon(data=pts1,aes(y=x,x=y1+xoff),colour=NA, fill = c2)+
-      geom_polygon(data=pts1,aes(y=x,x=y2+xoff),colour=NA, fill = c1)
+      geom_polygon(data=pts1,aes(y=x,x=y1*scale*scale+xoff),colour=NA, fill = c2)+
+      geom_polygon(data=pts1,aes(y=x,x=y2*scale*scale+xoff),colour=NA, fill = c1)
+    if (!is.null(expType))
     if (is.element(expType,c("e1d","e2d"))) {
       if (is.logical(pts$y3)) {
         pts1<-expected_hist(pts$y1,pts$y1[pts$y3],expType)
@@ -315,9 +332,6 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
     rActual<-r
   rActual[is.na(r)]<-0
 
-  single<-TRUE
-  if (length(result$rIV)>points_threshold) {single<-FALSE}
-  
   if (all(is.na(result$rIVIV2DV)) && is.null(IV2)){
     xoff=0
   } else {
@@ -545,7 +559,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       } else {
         pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,n<-data$ns)
       }
-      g<-expected_plot(g,pts,result,IV,DV,expType,single)
+      g<-expected_plot(g,pts,expType,result,IV,DV)
     
     if (is.element(expType,c("p","e1","e2","e1d","e2d"))) {
       if (effect$world$worldOn && is.element(expType,c("e1","e2","e1d","e2d"))) {
