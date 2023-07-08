@@ -49,7 +49,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             if (RZ=="z") {ylabel<-bquote(z[sample])}
           },
           "p"={
-            ylim<-c(-4,0)
+            ylim<-c(-4,0.1)
             ylabel<-bquote(log[10](p))
             ybreaks<-c(-4,-3,-2,-1,0)
             ylabels<-c(0.0001,0.001,0.01,0.1,1)
@@ -572,12 +572,26 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         }
         g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
       } else{
+        switch(explore$Explore_show,
+               "EffectSize"={expType<-"r"},
+               "p"={expType<-"p"},
+               "w"={expType<-"w"},
+               "SampleSize"={expType<-"n"},
+               "log(lrs)"={expType<-"log(lrs)"},
+               "log(lrd)"={expType<-"log(lrd)"},
+               expType=NULL
+               )
+        if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize"))){
+          sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+        } else {
+          sigVals<-!is.na(showVals)
+        }
         for (i in 1:length(vals))
           g<-expected_plot(g,
-                           data.frame(x=vals[i]+vals_offset,y1=showVals[,i],y2=!is.na(showVals[,i])),
-                           expType=NULL,scale=0.35,col=col)
+                           data.frame(x=vals[i]+vals_offset,y1=showVals[,i],y2=sigVals[,i]),
+                           expType=expType,scale=0.35,col=col)
         if (ni_max2==1 || !no_se_multiple){
-          g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+          g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.35/length(vals)))
         }
       }
       

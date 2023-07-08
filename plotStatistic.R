@@ -90,17 +90,17 @@ makeFiddle<-function(y,yd){
   return(xz)
 }
 
-get_upperEdge<-function(nsvals,vals){
-  target1<-max(nsvals,na.rm=TRUE)
-  if (any(vals>target1,na.rm=TRUE)){
-    target2<-min(vals[vals>target1],na.rm=TRUE)
+get_upperEdge<-function(allvals,svals){
+  target1<-min(svals,na.rm=TRUE)
+  if (any(allvals<target1,na.rm=TRUE)){
+    target2<-max(allvals[allvals<target1],na.rm=TRUE)
     target<-(target1+target2)/2
   } else target<-target1+0.001
 }
-get_lowerEdge<-function(nsvals,vals) {
-  target1<-min(nsvals,na.rm=TRUE)
-  if (any(vals<target1)){
-    target2<-max(vals[vals<target1],na.rm=TRUE)
+get_lowerEdge<-function(allvals,svals) {
+  target1<-min(svals,na.rm=TRUE)
+  if (any(allvals<target1)){
+    target2<-max(allvals[allvals<target1],na.rm=TRUE)
     if (target2==-Inf) target2=target1-0.5
     target<-(target1+target2)/2
   } else {target<-target1-0.5}
@@ -115,10 +115,10 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
   high_p<-max(vals,na.rm=TRUE)+0.2
   low_p<-min(vals,na.rm=TRUE)-0.2
   if (!is.null(minVal)) {
-    low_p<-min(max(minVal-0.2,low_p,na.rm=TRUE),target)
+    low_p<-min(max(minVal,low_p,na.rm=TRUE),target)
   }
   if (!is.null(maxVal)) {
-    high_p<-min(maxVal+0.2,high_p,na.rm=TRUE)
+    high_p<-min(maxVal,high_p,na.rm=TRUE)
   }
   if ((length(nsvals)==0) || (length(nsvals)==length(vals))){
     bins<-seq(low_p,high_p,length.out=nb)
@@ -137,9 +137,9 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
         bins<-c(rev(seq(-target-binStep,low_p-binStep,-binStep)),bins)
       }
     } else {
-    nbs<-ceiling(nb*(high_p-target)/(high_p-low_p))
-    binStep<-(high_p-target)/nbs
-    bins<-rev(seq(high_p,low_p-binStep,-binStep))
+      nbs<-ceiling(nb*(high_p-target)/(high_p-low_p))
+      binStep<-(high_p-target)/nbs
+      bins<-rev(seq(high_p,low_p-binStep,-binStep))
     }
   }
   bins
@@ -154,13 +154,13 @@ expected_hist<-function(vals,svals,valType){
   
   switch (valType,
           "r"=  { # ns is small
-            target<-get_upperEdge(abs(svals),abs(vals))
+            target<-get_upperEdge(abs(vals),abs(svals))
             bins<-getBins(vals,svals,target,NULL,NULL,TRUE)
           },
           
           "p"=  { # ns is large
             target<-log10(alpha)
-            bins<-getBins(vals,svals,target,log10(min_p),NULL)
+            bins<-getBins(vals,svals,target,log10(min_p),log10(1))
           },
             
           "log(lrs)"={
@@ -184,28 +184,27 @@ expected_hist<-function(vals,svals,valType){
           },
           
           "w"=  { # ns is small
-            target<-get_upperEdge(abs(svals),abs(vals))
+            target<-get_upperEdge(abs(vals),abs(svals))
             bins<-getBins(vals,svals,target,log10(min_p),NULL)
           },
           
           "n"= { # ns is small
-            target<-get_lowerEdge(svals,vals)
+            target<-get_lowerEdge(vals,svals)
             bins<-getBins(vals,svals,target,NULL,10000,FALSE)
           },
           
           "nw"= { # ns is large
-            target<-get_lowerEdge(svals,vals)
+            target<-get_lowerEdge(vals,svals)
             bins<-getBins(vals,svals,target,NULL,max_nw,FALSE)
           }
   )
-  useBins<-c(-Inf,bins,Inf)
-  dens<-hist(vals,breaks=useBins,plot=FALSE,warn.unused = FALSE,right=TRUE)
+  use<-vals>=bins[1] & vals<bins[length(bins)]
+  dens<-hist(vals[use],breaks=bins,plot=FALSE,warn.unused = FALSE,right=TRUE)
   dens<-dens$counts
-  dens<-dens[2:(length(dens)-1)]
 
-  sdens<-hist(svals,breaks=useBins,plot=FALSE,warn.unused = FALSE,right=TRUE)
+  use<-svals>=bins[1] & svals<bins[length(bins)]
+  sdens<-hist(svals[use],breaks=bins,plot=FALSE,warn.unused = FALSE,right=TRUE)
   sdens<-sdens$counts
-  sdens<-sdens[2:(length(sdens)-1)]
 
   if (is.na(histGain)) {
     sdens<-sdens/max(dens,na.rm=TRUE)/2
@@ -214,7 +213,7 @@ expected_hist<-function(vals,svals,valType){
     sdens<-sdens/(sum(dens)*(bins[2]-bins[1]))*histGain
     dens<-dens/(sum(dens)*(bins[2]-bins[1]))*histGain
   }
-  
+  # browser()
   x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
   y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
   y2<-c(0,as.vector(matrix(c(sdens,sdens),2,byrow=TRUE)),0)
@@ -233,7 +232,7 @@ start_plot<-function() {
 expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,col="white"){
   dotSize<-(plotTheme$axis.title$size)/3*scale
   
-  if (!is.null(result)) {
+  if (!is.null(expType)) {
     if (useSignificanceCols){
       c1=plotcolours$infer_sigC
       c2=plotcolours$infer_nsigC
