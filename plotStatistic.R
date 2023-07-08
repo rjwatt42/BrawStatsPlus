@@ -159,8 +159,13 @@ expected_hist<-function(vals,svals,valType){
           },
           
           "p"=  { # ns is large
+            if (pPlotScale=="log10") {
             target<-log10(alpha)
             bins<-getBins(vals,svals,target,log10(min_p),log10(1))
+            } else {
+              target<-alpha
+              bins<-getBins(vals,svals,target,min_p,1)
+            }
           },
             
           "log(lrs)"={
@@ -316,6 +321,7 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
 
 
 r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherresult=NULL){
+  
   r<-effect$rIV
   if (!is.null(IV2)){
     r<-c(r,effect$rIV2,effect$rIVIV2DV)
@@ -722,12 +728,12 @@ llrd_plot<-function(result,IV,IV2=NULL,DV,effect,ptype=NULL,otherresult=NULL){
   g
 }
 
-p_plot<-function(result,IV,IV2=NULL,DV,effect,ptype="p",otherresult=NULL,pPlotScale="log10"){
+p_plot<-function(result,IV,IV2=NULL,DV,effect,ptype="p",otherresult=NULL,PlotScale=pPlotScale){
 
-  g<-r_plot(result,IV,IV2,DV,effect,ptype,pPlotScale=="log10",otherresult)
+  g<-r_plot(result,IV,IV2,DV,effect,ptype,PlotScale=="log10",otherresult)
   
   if (ptype=="p") {
-  if (pPlotScale=="log10") {
+  if (PlotScale=="log10") {
     g<-g+geom_hline(yintercept=log10(1), linetype="dotted", color="#FF4422", linewidth=0.5)+
       geom_hline(yintercept=log10(0.005), linetype="dotted", color="#44FF22", linewidth=0.5)+
       geom_hline(yintercept=log10(0.01), linetype="dotted", color="#44FF22", linewidth=0.5)+
@@ -819,7 +825,7 @@ e2_plot<-function(result,IV,IV2=NULL,DV,effect,nullresult=NULL){
               ggtitle(lab)
           },
           "dLLR"={
-            p_plot(result,IV,IV2,DV,effect,ptype="e2d",otherresult=nullresult,pPlotScale="linear")+
+            p_plot(result,IV,IV2,DV,effect,ptype="e2d",otherresult=nullresult,PlotScale="linear")+
               geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
               geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
               ggtitle(lab)
@@ -846,7 +852,7 @@ e1_plot<-function(nullresult,IV,IV2=NULL,DV,effect,result=NULL){
               ggtitle(lab)
           },
           "dLLR"={
-            p_plot(nullresult,IV,IV2,DV,effect,ptype="e1d",otherresult=result,pPlotScale="linear")+
+            p_plot(nullresult,IV,IV2,DV,effect,ptype="e1d",otherresult=result,PlotScale="linear")+
               geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
               geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
               ggtitle(lab)
