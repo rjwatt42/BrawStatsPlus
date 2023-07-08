@@ -1,8 +1,11 @@
-isSignificant<-function(method="NHST",p,r,n,df1,evidence) {
-  
+isSignificant<-function(method="NHST",p,r,n,df1,evidence,alphaLocal=alpha) {
+  if (length(alphaLocal)>1) {
+    alphaLocal<-rep(alphaLocal,each=nrow(p))
+    alphaLLR<-0.5*qnorm(1-alphaLocal/2)^2
+  }
   switch (method,
           "NHST"={
-            sig<-p<alpha
+            sig<-p<alphaLocal
           },
           "sLLR"={
             s<-r2llr(r,n,df1,"sLLR",evidence$llr,evidence$prior)

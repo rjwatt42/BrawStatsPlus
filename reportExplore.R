@@ -56,15 +56,14 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             showVals<-exploreResult$result$nvals
           },
           "p(sig)"={
-            y75<-c()
-            y50<-c()
-            y25<-c()
-            for (i in 1:length(exploreResult$result$vals)){
-              p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
-              y50[i]<-p
-              y75[i]<-p+sqrt(p*(1-p)/length(pVals[,i]))
-              y25[i]<-p-sqrt(p*(1-p)/length(pVals[,i]))
+            if (explore$Explore_type=="Alpha") {
+              alpha<-exploreResult$result$vals
             }
+            ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+            ps<-colMeans(ps)
+            y25<-ps-sqrt(ps*(1-ps)/nrow(pVals))
+            y50<-ps
+            y75<-ps+sqrt(ps*(1-ps)/nrow(pVals))
           },
           "NHSTErrors"={
             extra_y_label<-"Type II errors"

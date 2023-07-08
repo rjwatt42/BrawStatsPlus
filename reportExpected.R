@@ -187,29 +187,29 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
         )
       }
       ot1<-c(ot1,
-             "mean",
+             "!jmean",
              format(mean(a,na.rm=TRUE),digits=report_precision),
              format(mean(b,na.rm=TRUE),digits=report_precision)
       )
       ot2<-c(ot2,
-             "sd",
+             "!jsd",
              format(sd(a,na.rm=TRUE),digits=report_precision),
              format(sd(b,na.rm=TRUE),digits=report_precision)
       )
       ot4<-c(ot4,
-             "quant75",
-             format(quantile(a,0.75,na.rm=TRUE),digits=report_precision),
-             format(quantile(b,0.75,na.rm=TRUE),digits=report_precision)
+             "!jquant75",
+             format(quantile(a,0.75,na.rm=TRUE,names<-FALSE),digits=report_precision),
+             format(quantile(b,0.75,na.rm=TRUE,names<-FALSE),digits=report_precision)
       )
       ot5<-c(ot5,
-             "median",
-             format(quantile(a,0.5,na.rm=TRUE),digits=report_precision),
-             format(quantile(b,0.5,na.rm=TRUE),digits=report_precision)
+             "!jmedian",
+             format(quantile(a,0.5,na.rm=TRUE,names<-FALSE),digits=report_precision),
+             format(quantile(b,0.5,na.rm=TRUE,names<-FALSE),digits=report_precision)
       )
       ot6<-c(ot6,
-             "quant25",
-             format(quantile(a,0.25,na.rm=TRUE),digits=report_precision),
-             format(quantile(b,0.25,na.rm=TRUE),digits=report_precision)
+             "!jquant25",
+             format(quantile(a,0.25,na.rm=TRUE,names<-FALSE),digits=report_precision),
+             format(quantile(b,0.25,na.rm=TRUE,names<-FALSE),digits=report_precision)
       )
       if (i>1){
         ot1[length(ot1)-2]<-""
@@ -221,13 +221,12 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
     }
     outputText<-c(outputText,ot1,ot2,rep("  ",nc),ot4,ot5,ot6)
     if (expected$Expected_par1=="p") {
-      outputText<-c(outputText,rep("  ",nc),pSigLabel,paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-2))
+      outputText<-c(outputText,rep("  ",nc),"p(sig)",paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-2))
     }
     if (expected$Expected_par2=="p") {
-      outputText<-c(outputText,rep("  ",nc),pSigLabel," ",paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-3))
+      outputText<-c(outputText,rep("  ",nc),"p(sig)"," ",paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-3))
     }
   }
-  
   nr<-length(outputText)/nc
   reportPlot(outputText,nc,nr)        
   

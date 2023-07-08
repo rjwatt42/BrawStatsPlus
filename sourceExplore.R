@@ -197,7 +197,7 @@ makeExploreGraph <- function() {
       silentTime<<-max(silentTime,Sys.time()-time2)
     }
     if (exploreResult$result$count>cycles2observe) {
-      pauseWait<<-100
+      pauseWait<<-1000
     }
   }
   
@@ -221,8 +221,8 @@ makeExploreGraph <- function() {
   # expectedResult$result$showType<<-input$EvidenceEffect_type
   
   if (switches$showAnimation) {
-    ns<-10^(min(0,floor(log10(max(100,exploreResult$result$count)))))
-    if (shortHand) ns<-ns*shortHandGain
+    min_ns<-floor(log10((exploreResult$nsims+1)/100))
+    ns<-10^(floor(max(min_ns,log10(exploreResult$result$count))))
   } else {
     ns<-exploreResult$nsims-exploreResult$result$count
   }

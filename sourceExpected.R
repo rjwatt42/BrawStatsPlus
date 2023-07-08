@@ -138,7 +138,7 @@ makeExpectedGraph <- function() {
     silentTime<<-max(silentTime,Sys.time()-time2)
   }
   if (expectedResult$count>cycles2observe) {
-    pauseWait<<-100
+    pauseWait<<-500
   }
   }
   
@@ -169,9 +169,9 @@ makeExpectedGraph <- function() {
   
   if (validExpected) {
     
-    if (switches$showAnimation && !shortHand) {
-      # ns<-10^(min(2,floor(log10(max(1,expectedResult$count)))))
-      ns<-10^(min(2,floor(log10(max(expectedResult$nsims/10,expectedResult$count)))))
+    if (switches$showAnimation) {
+      min_ns<-floor(log10(expectedResult$nsims/100))
+      ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
       if (expectedResult$count+ns>expectedResult$nsims) {
         ns<-expectedResult$nsims-expectedResult$count
       }
@@ -192,17 +192,10 @@ makeExpectedGraph <- function() {
     if (expectedResult$count<expectedResult$nsims) {
       stopRunning<-FALSE
     }
-    if (expected$type=="NHSTErrors" && (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
+    if (expected$type=="NHSTErrors" && 
+        (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
          expectedResult$nullcount<expectedResult$nsims) {
-      if (switches$showAnimation  && !shortHand) {
-        # ns<-10^(min(2,floor(log10(max(1,expectedResult$nullcount)))))
-        ns<-10^(min(2,floor(log10(max(expectedResult$nsims/10,expectedResult$nullcount)))))
-        if (expectedResult$nullcount+ns>expectedResult$nsims) {
-          ns<-expectedResult$nsims-expectedResult$nullcount
-        }
-      } else {
-        ns<-expectedResult$nsims-expectedResult$nullcount
-      }
+        ns<-expectedResult$count-expectedResult$nullcount
       if (ns>0) {
         expected$doingNull<-TRUE
         if (showProgress) {
