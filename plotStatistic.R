@@ -164,7 +164,8 @@ expected_hist<-function(vals,svals,valType){
             bins<-getBins(vals,svals,target,log10(min_p),log10(1))
             } else {
               target<-alpha
-              bins<-getBins(vals,svals,target,min_p,1)
+              bins<-getBins(vals,svals,target,0,1)
+              bins<-c(0,bins[bins>0])
             }
           },
             

@@ -49,10 +49,17 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             if (RZ=="z") {ylabel<-bquote(z[sample])}
           },
           "p"={
-            ylim<-c(-4,0.1)
-            ylabel<-bquote(log[10](p))
-            ybreaks<-c(-4,-3,-2,-1,0)
-            ylabels<-c(0.0001,0.001,0.01,0.1,1)
+            if (pPlotScale=="log10") {
+              ylim<-c(-4,0.1)
+              ylabel<-bquote(log[10](p))
+              ybreaks<-c(-4,-3,-2,-1,0)
+              ylabels<-c(0.0001,0.001,0.01,0.1,1)
+            } else {
+              ylim<-c(0,1)
+              ylabel<-"p"
+              ybreaks<-seq(0,1,0.2)
+              ylabels<-ybreaks
+            }
             g<-g+scale_y_continuous(limits=ylim,breaks=ybreaks,labels=ylabels)
           },
           "w"={
