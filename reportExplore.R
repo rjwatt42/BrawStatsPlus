@@ -247,7 +247,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   outputText[2]<-explore$Explore_type
   outputText[3]<-paste(" (nsims=",format(nrow(exploreResult$result$rIVs)),")",sep="")
   outputText<-c(outputText,rep("",nc+1))
-  
+
   if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR") {
     switch (STMethod,
             "NHST"={outputText<-c(outputText,"NHST")},
@@ -263,7 +263,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   for (i in 1:nc) {
     outputText<-c(outputText,paste("\b",format(vals[use[i]],digits=report_precision),sep=""))
   }
-  
+
   outputText<-c(outputText,paste0("!j\b", extra_y_label))
   outputText<-c(outputText,rep("",nc))
   outputText<-c(outputText,"!jlower 25%")
@@ -278,6 +278,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   for (i in 1:nc) {
     outputText<-c(outputText,format(y75[use[i]],digits=report_precision))
   }
+  
   if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","pNull","S"))) {
     outputText<-c(outputText,rep(" ",nc+1))
     outputText<-c(outputText,"!jmean")
@@ -289,6 +290,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
       outputText<-c(outputText,format(ysd[use[i]],digits=report_precision))
     }
   }    
+
   if (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR") {
     switch(explore$Explore_show,
            "NHSTErrors"={extra_y_label<-"Type I errors"},

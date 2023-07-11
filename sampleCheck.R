@@ -2,6 +2,7 @@
 cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   if (design$sCheating=="None") return(result)
+  if (design$sCheatingAmount==0) return(result)
   if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence)) return(result)
   
   if (design$sCheating=="Retry") {
@@ -43,8 +44,11 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
     return(result)
   }
   
+  if (design$sCheating=="Add") changeAmount<-design$sN
+  else changeAmount<-1
   
   design2<-design
+  design2$sN<-design$sCheatingAmount*changeAmount
   design2$sNRand<-FALSE
   
   effect2<-effect
@@ -53,18 +57,18 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   
   sample2<-makeSample(IV,IV2,DV,effect2,design2)
   
-  if (design$sCheating=="Grow") {
+  if (is.element(design$sCheating,c("Grow","Add"))) {
     ntrials<-0
-    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount) {
-      sample$participant<-c(sample$participant,length(sample$participant)+1)
-      sample$iv<-c(sample$iv,sample2$iv[ntrials+1])
-      sample$dv<-c(sample$dv,sample2$dv[ntrials+1])
-      sample$ivplot<-c(sample$ivplot,sample2$ivplot[ntrials+1])
-      sample$dvplot<-c(sample$dvplot,sample2$dvplot[ntrials+1])
-      design$sN<-design$sN+1
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingAmount*changeAmount) {
+      sample$participant<-c(sample$participant,length(sample$participant)+(1:changeAmount))
+      sample$iv<-c(sample$iv,sample2$iv[ntrials+(1:changeAmount)])
+      sample$dv<-c(sample$dv,sample2$dv[ntrials+(1:changeAmount)])
+      sample$ivplot<-c(sample$ivplot,sample2$ivplot[ntrials+(1:changeAmount)])
+      sample$dvplot<-c(sample$dvplot,sample2$dvplot[ntrials+(1:changeAmount)])
+      design$sN<-design$sN+(1:changeAmount)
       
       result<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
-      ntrials<-ntrials+1
+      ntrials<-ntrials+changeAmount
     }
     return(result)
   }
