@@ -194,13 +194,16 @@ makeExploreGraph <- function() {
     silentTime<<-0
     pauseWait<<-10
   } else {
+    cycleTime<-Sys.time()-time2
     if (exploreResult$result$count==2) {
-      silentTime<<-Sys.time()-time2
+      silentTime<<-cycleTime
     }
     if (exploreResult$result$count>2 && exploreResult$result$count<=cycles2observe) {
-      silentTime<<-max(silentTime,Sys.time()-time2)
+      silentTime<<-max(silentTime,cycleTime)
     }
+    print(c(exploreResult$result$count,silentTime,cycleTime))
     if (exploreResult$result$count>cycles2observe) {
+      silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
       pauseWait<<-1000
     }
   }
@@ -267,6 +270,9 @@ makeExploreGraph <- function() {
           "MetaAnalysis"={exploreResultHold$MetaAnalysis<<-exploreResult}
   )
   
+  if (stopRunning) {
+    if (showProgress) {removeNotification(id = "counting")}
+  }
   
   g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-1.2,0,0,"cm"))
   g<-g+scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)

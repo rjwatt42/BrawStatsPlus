@@ -206,7 +206,7 @@ if (switches$doKeys) {
     
     # control-l set shortHand to TRUE
     if (input$keypress==ascii("l") && controlKeyOn){
-      updateCheckboxInput(session,"shortHand",value=TRUE)
+      updateCheckboxInput(session,"shortHand",value=!input$shortHand)
       updateSelectInput(session,"EvidenceExpected_length",selected="1000")
       updateSelectInput(session,"Explore_lengthH",selected="100")
       updateSelectInput(session,"Explore_lengthD",selected="100")

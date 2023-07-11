@@ -551,7 +551,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         # }
       }
     }
-  removeNotification(id = "counting")
+  # removeNotification(id = "counting")
   
   alpha<<-localAlpha
   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
