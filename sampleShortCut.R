@@ -57,19 +57,21 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
               pops<-tanh(pops)
             }
     )
+    popsOld<-pops
     if (effect$world$populationNullp>0) {
       change<-rand(length(pops),1)<=effect$world$populationNullp
       pops[change]<-0
     }
     # make some sample sizes
-    if (design$sNRand) {
-      ns<-minN+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
-      ns<-round(ns)
+    if (design$sN<1) {
+      pops1<-pops
+      pops1[pops==0]<-popsOld[pops==0]
+      ns<-rw2n(pops1,design$sN)
     } else {
-      if (design$sN<0) {
-        ns<-rw2n(pops,design$sN)
-      } else {
-        ns<-rep(design$sN,sample_increase)
+      ns<-rep(design$sN,sample_increase)
+      if (design$sNRand) {
+        ns<-minN+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
+        ns<-round(ns)
       }
     }
     

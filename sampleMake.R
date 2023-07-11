@@ -168,8 +168,46 @@ makeSampleVar<-function(design,n,MV){
 
 makeSample<-function(IV,IV2,DV,effect,design){
   
+  rho<-effect$rIV
+  
+  if (effect$world$worldOn) {
+    if (!is.na(effect$world$populationRZ) && !isempty(effect$world$populationRZ)){
+      switch (effect$world$populationRZ,
+              "r"={
+                switch (effect$world$populationPDF,
+                        "Single"={rho<-effect$world$populationPDFk},
+                        "Uniform"={rho<-runif(1,min=-1,max=1)},
+                        "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
+                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
+                )
+              },
+              "z"={
+                switch (effect$world$populationPDF,
+                        "Single"={rho<-effect$world$populationPDFk},
+                        "Uniform"={rho<-runif(1,min=-10,max=10)},
+                        "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
+                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
+                )
+                rho<-tanh(rho)
+              }
+      )
+      rhoOld<-rho
+      if (effect$world$populationNullp>0) {
+        if (runif(1)<=effect$world$populationNullp)
+        {rho<-0}
+      }
+      rho<-max(min(rho,0.99),-0.99)
+    }
+  }
+  
   n<-design$sN
-  if (n<1) n<-rw2n(effect$rIV,n)
+  if (n<1) {
+    if (effect$world$worldOn && rho==0) {
+      n<-rw2n(rhoOld,n)
+    } else {
+    n<-rw2n(rho,n)
+    }
+  }
   if (design$sNRand) {
     n<-minN+rgamma(1,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     while (n>100000) {n<-rgamma(1,shape=design$sNRandK,scale=design$sN/design$sNRandK)}
@@ -346,37 +384,6 @@ makeSample<-function(IV,IV2,DV,effect,design){
         effect$rIV2<-effect$rIV2*0.9
         effect$rIVIV2<-effect$rIVIV2*0.9
         total1<-effect$rIV2+effect$rIV*effect$rIVIV2
-      }
-      
-      rho<-effect$rIV
-      
-      if (effect$world$worldOn) {
-      if (!is.na(effect$world$populationRZ) && !isempty(effect$world$populationRZ)){
-        switch (effect$world$populationRZ,
-                "r"={
-                  switch (effect$world$populationPDF,
-                          "Single"={rho<-effect$world$populationPDFk},
-                          "Uniform"={rho<-runif(1,min=-1,max=1)},
-                          "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
-                          "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
-                  )
-                },
-                "z"={
-                  switch (effect$world$populationPDF,
-                          "Single"={rho<-effect$world$populationPDFk},
-                          "Uniform"={rho<-runif(1,min=-10,max=10)},
-                          "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
-                          "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
-                  )
-                  rho<-tanh(rho)
-                }
-        )
-        if (effect$world$populationNullp>0) {
-          if (runif(1)<=effect$world$populationNullp)
-          {rho<-0}
-        }
-        rho<-max(min(rho,0.99),-0.99)
-      }
       }
       
       # deal with opportunity sampling    

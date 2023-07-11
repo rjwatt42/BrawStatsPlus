@@ -157,12 +157,6 @@ shinyUI(fluidPage(
     
     tags$style(type="text/css", ".shiny-file-input-progress { display: none }"),
     
-    tags$head(
-        tags$style(
-            HTML(".shiny-notification {position:fixed;top: calc(20%);left: calc(35%);}")
-        )
-    ),
-    
     # 
     # tags$style("#DataTabset { display:none; }"), 
     # 
@@ -223,8 +217,8 @@ shinyUI(fluidPage(
     ),
     tags$head(
       tags$style(
-        HTML(".shiny-notification {position:fixed;top: calc(5%);left: calc(50.5%);}"
-        )
+        HTML(paste0(".shiny-notification {background-color:", maincolours$panelC,";color:#FFFFFF;position:fixed;top: calc(10%);left: calc(45%);}"
+        ))
       )
     ),
     
