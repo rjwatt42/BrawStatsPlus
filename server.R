@@ -158,6 +158,13 @@ shinyServer(function(input, output, session) {
   }
   )
   
+  observeEvent(c(input$Notation1,input$Notation2,input$Notation3), {
+    oldPlus<-pPlus
+    setNotation(paste0(input$Notation1,";",input$Notation2,";",input$Notation3))
+    if (pPlus!=oldPlus)
+      updateNumericInput(session,"world_distr_Nullp",value=1-input$world_distr_Nullp)
+  })
+  
   observeEvent(input$Hypothesis,{
     if (input$Hypothesis=="World") {
       updateTabsetPanel(session,"HypothesisDiagram",selected = "World")

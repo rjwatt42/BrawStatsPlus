@@ -262,48 +262,24 @@ showInteractionOnly<-TRUE
 
 includeSingle<-FALSE  # in "All" meta-analysis
 
-pSigLabel<-"p(p<.05)"
-pSigLabel<-bquote(bold(p[.('sig')]))
+# pSigLabel<-"p(p<.05)"
 alphaChar<-'\u03B1'
-  
-# P notation 
-pPlus<-TRUE           # for p_0 vs p_+
-LabelUD<-"U"
-Pchar<-"P" 
+
 # Pchar<-'\u03A9'
-if (pPlus) {Ptypechar<-'+' } else {Ptypechar<-'\u2013'}
-
+Pchar<-"P" 
+Zchar<-"Z"
 Lchar<-'\u03BB'
-Ltypechar<-"+"
 
-switch (LabelUD, 
-        "U"={
-          Plabel<-bquote(bold(.(Pchar)^.(Ptypechar)))
-          Llabel<-bquote(bold(.(Lchar)^.(Ltypechar)))
-        },
-        "D"={
-          Plabel<-bquote(bold(.(Pchar)[.(Ptypechar)]))
-          Llabel<-bquote(bold(.(Lchar)[.(Ltypechar)]))
-        })
+pPlus<-FALSE
 
-if (pPlus) {
-  pPlusLabel<-"P(+)"
-  effect$world$populationNullp<-1-effect$world$populationNullp
-} else {
-  pPlusLabel<-"P(0)"
-}
+source("Notation.R")
+useLabels<-"psig;D;0"
+setNotation(useLabels)
+if (pPlus) effect$world$populationNullp<<-1-effect$world$populationNullp
 
 worldsList<-list("pdf"="PDF","k"="k","pNull"="pNull")
 names(worldsList)[3]<-pPlusLabel
 names(worldsList)[2]<-Lchar
-
-Zchar<-"Z"
-posChar<-"+"
-nullChar<-"0"
-nonNullPositive<-bquote(.(Zchar)^.(posChar)~'+ve')  # "Z+ +ve"
-nonNullNegative<-bquote(.(Zchar)^.(posChar) ~"-ve")  # "Z+ -ve"
-nullPositive<-bquote(.(Zchar)^.(nullChar) ~"+ve")   # "Z0 +ve"
-nullNegative<-bquote(.(Zchar)^.(nullChar) ~"-ve")  # "Z0 -ve"
 
 #####################
 # warnings to generate

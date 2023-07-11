@@ -144,13 +144,33 @@ wellPanel(id="HelpTabset",
                                         tags$td(width="10%",checkboxInput("shortHand",value=FALSE, label=NULL)),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
                                         tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))
-                                      ),
-                                      tags$tr(
-                                        tags$td(width="25%",tags$div(style = localPlainStyle, "")),
-                                        tags$td(width="10%",tags$div(style = localPlainStyle, "")),
-                                        tags$td(width="40%",tags$div(style = localPlainStyle, "Display:")),
-                                        tags$td(width="25%",selectInput("RZ",label=NULL, c("r"="r","z"="z"), selected=RZ, selectize=FALSE))
                                       )
+                           ),
+                           conditionalPanel(condition="input.LoadExtras",
+                                            tags$table(width = "100%",class="myTable",
+                                                       tags$tr(
+                                                         tags$td(width="25%",tags$div(style = localPlainStyle, "")),
+                                                         tags$td(width="10%",tags$div(style = localPlainStyle, "")),
+                                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Display:")),
+                                                         tags$td(width="25%",selectInput("RZ",label=NULL, c("r"="r","z"="z"), selected=RZ, selectize=FALSE))
+                                                       )
+                                                       )
+                                            ),
+                           conditionalPanel(condition="input.LoadExtras",
+                                            tags$table(width = "100%",class="myTable",
+                                                       tags$tr(
+                                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Notation:")),
+                                                         tags$td(width="20%",selectInput("Notation1",label=NULL, 
+                                                                                         c("psig"="psig","w"="w"), 
+                                                                                         selected="psig", selectize=FALSE)),
+                                                         tags$td(width="20%",selectInput("Notation2",label=NULL, 
+                                                                                         c("U"="U","D"="D"), 
+                                                                                         selected="U", selectize=FALSE)),
+                                                         tags$td(width="20%",selectInput("Notation3",label=NULL, 
+                                                                                         c("+"="+","0"="0","-"="-"), 
+                                                                                         selected="0", selectize=FALSE)),
+                                                       )
+                                            )
                            )
                          )
                 )
