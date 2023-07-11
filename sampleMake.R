@@ -169,6 +169,7 @@ makeSampleVar<-function(design,n,MV){
 makeSample<-function(IV,IV2,DV,effect,design){
   
   n<-design$sN
+  if (n<1) n<-rw2n(effect$rIV,n)
   if (design$sNRand) {
     n<-minN+rgamma(1,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     while (n>100000) {n<-rgamma(1,shape=design$sNRandK,scale=design$sN/design$sNRandK)}

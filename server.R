@@ -131,13 +131,30 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$sN, {
-    n<-input$sN
-    if (!is.null(n) && !is.na(n)) {
-    if (n<1 && n>0) {
-      n<-rw2n(input$rIV,n,2)
-      updateNumericInput(session,"sN",value=n)
-    }
-    }
+    #   worldOn<-input$world_on
+    # if (is.null(worldOn)) {
+    #   worldOn<-FALSE
+    # }
+    # if (!worldOn) {
+    #   n<-input$sN
+    #   if (!is.null(n) && !is.na(n)) {
+    #     if (n<1 && n>0) {
+    #       n<-rw2n(input$rIV,n,2)
+    #       updateNumericInput(session,"sN",value=n)
+    #     }
+    #   }
+    # }
+    
+    before<-paste0("<div style='",localStyle,"'>")
+    after<-"</div>"
+      n<-input$sN
+      if (!is.null(n) && !is.na(n)) {
+        if (n<1 && n>0) {
+          html("sNLabel",paste0(before,"Sample Power:",after))
+        } else {
+          html("sNLabel",paste0(before,"Sample Size:",after))
+        }
+      }
   }
   )
   

@@ -159,7 +159,7 @@ shinyUI(fluidPage(
     
     tags$head(
         tags$style(
-            HTML(".shiny-notification {position:fixed;top: calc(20%);left: calc(55%);}")
+            HTML(".shiny-notification {position:fixed;top: calc(20%);left: calc(35%);}")
         )
     ),
     

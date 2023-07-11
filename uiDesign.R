@@ -17,7 +17,7 @@ DesignTab <-
                            style = paste("background: ",subpanelcolours$designC,";"),
                            tags$table(width = "100%",class="myTable",
                                       tags$tr(
-                                        tags$td(width = "40%", tags$div(style = localStyle, "Sample Size:")),
+                                        tags$td(width = "40%", id="sNLabel", tags$div(style = localStyle, "Sample Size:")),
                                         tags$td(width = "20%", 
                                                 numericInput("sN",label=NULL,value=design$sN)
                                         ),

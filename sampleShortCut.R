@@ -66,8 +66,13 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
       ns<-minN+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
       ns<-round(ns)
     } else {
-      ns<-rep(design$sN,sample_increase)
+      if (design$sN<0) {
+        ns<-rw2n(pops,design$sN)
+      } else {
+        ns<-rep(design$sN,sample_increase)
+      }
     }
+    
     s1<-1/sqrt(ns-3)
     rs<-tanh(rnorm(sample_increase,mean=atanh(pops),sd=s1))
     ps<-(1-pnorm(atanh(abs(rs)),0,s1))*2
