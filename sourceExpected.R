@@ -26,6 +26,7 @@ observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
   if (notRunningExpected) {
     startTime<<-Sys.time()
     cycleTime<<-0
+    cycleCount<<-0
     if (!input$EvidenceExpected_append) {resetExpected()} 
     if (!shortHand) {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)
@@ -127,21 +128,16 @@ makeExpectedGraph <- function() {
           input$LGEvidenceworld_distr,input$LGEvidenceworld_distr_rz,input$LGEvidenceworld_distr_k,input$LGEvidenceworld_distr_Nullp,
           input$EvidenceExpectedRun,input$LGEvidenceExpectedRun)
   
-  if (expectedResult$count<2) {
+  cycleCount<<-cycleCount+1
+  if (cycleCount<2) {
     silentTime<<-0
     pauseWait<<-10
   } else {
-  if (expectedResult$count==2) {
-    silentTime<<-Sys.time()-time2
-  }
-  if (expectedResult$count>2 && expectedResult$count<=cycles2observe) {
-    silentTime<<-max(silentTime,Sys.time()-time2)
-  }
-  if (expectedResult$count>cycles2observe) {
+    cycleTime<-Sys.time()-time2
+    silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
     pauseWait<<-500
   }
-  }
-  
+
   llrConsts<-c(input$llr1,input$llr2)
   
   IV<-updateIV()

@@ -99,6 +99,7 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
                    updateActionButton(session,"LGexploreRunM",label=stopLabel)
                    notRunningExplore<<-FALSE
                  }
+                 cycleCount<<-0
                } else {
                  exploreResult$nsims<<-exploreResult$result$count
                  updateActionButton(session,"exploreRunH",label="Run")
@@ -190,22 +191,14 @@ makeExploreGraph <- function() {
     exploreResult<<-exploreResultHold[[input$ExploreTab]]
   }
   
-  if (exploreResult$result$count<2) {
+  cycleCount<<-cycleCount+1
+  if (cycleCount<2) {
     silentTime<<-0
     pauseWait<<-10
   } else {
     cycleTime<-Sys.time()-time2
-    if (exploreResult$result$count==2) {
-      silentTime<<-cycleTime
-    }
-    if (exploreResult$result$count>2 && exploreResult$result$count<=cycles2observe) {
-      silentTime<<-max(silentTime,cycleTime)
-    }
-    print(c(exploreResult$result$count,silentTime,cycleTime))
-    if (exploreResult$result$count>cycles2observe) {
-      silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
-      pauseWait<<-1000
-    }
+    silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
+    pauseWait<<-500
   }
   
   IV<-updateIV()

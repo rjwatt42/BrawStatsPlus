@@ -330,6 +330,7 @@ silentTime<-0
 stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
+cycleCount<-0
 
 ###########################################
 # fine tuning
