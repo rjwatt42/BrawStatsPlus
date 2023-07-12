@@ -138,13 +138,17 @@ wellPanel(id="HelpTabset",
                                         tags$td(width="10%",tags$div(style = localPlainStyle, "")),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Load extras:")),
                                         tags$td(width="25%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue))
-                                      ),
-                                      tags$tr(
-                                        tags$td(width="25%",tags$div(style = localPlainStyle, "Short hand:")),
-                                        tags$td(width="10%",checkboxInput("shortHand",value=FALSE, label=NULL)),
-                                        tags$td(width="40%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
-                                        tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))
                                       )
+                                      ),
+                           conditionalPanel(condition="input.LoadExtras",
+                                            tags$table(width = "100%",class="myTable",
+                                                       tags$tr(
+                                                         tags$td(width="25%",tags$div(style = localPlainStyle, "Short hand:")),
+                                                         tags$td(width="10%",checkboxInput("shortHand",value=FALSE, label=NULL)),
+                                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
+                                                         tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))
+                                                       )
+                                            )
                            ),
                            conditionalPanel(condition="input.LoadExtras",
                                             tags$table(width = "100%",class="myTable",
@@ -154,8 +158,8 @@ wellPanel(id="HelpTabset",
                                                          tags$td(width="40%",tags$div(style = localPlainStyle, "Display:")),
                                                          tags$td(width="25%",selectInput("RZ",label=NULL, c("r"="r","z"="z"), selected=RZ, selectize=FALSE))
                                                        )
-                                                       )
-                                            ),
+                                            )
+                           ),
                            conditionalPanel(condition="input.LoadExtras",
                                             tags$table(width = "100%",class="myTable",
                                                        tags$tr(
