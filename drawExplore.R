@@ -678,7 +678,6 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # false hits
         pts2<-c()
         pts3<-c()
-        
         pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
         col4<-plotcolours$fdr
         lb4<-nullPositive
@@ -698,7 +697,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           g<-g+drawNHSTBar(i,npts,pts1,bwidth,col1)
           if (!is.null(pts2)) g<-g+drawNHSTBar(i,npts,pts2,bwidth,col2)
           if (!is.null(pts3)) g<-g+drawNHSTBar(i,npts,pts3,bwidth,col3)
-          if (!is.null(pts3)) g<-g+drawNHSTBar(i,npts,pts4,bwidth,col4)
+          if (!is.null(pts4)) g<-g+drawNHSTBar(i,npts,pts4,bwidth,col4)
         }
       }
       

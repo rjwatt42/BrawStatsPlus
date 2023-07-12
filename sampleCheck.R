@@ -190,7 +190,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     }
     
     if (design$sReplKeep=="median" && design$sReplRepeats>0) {
-      use<-which(ResultHistory$p==sort(ResultHistory$p)[floor(length(ResultHistory$p)/2)])
+      use<-which(ResultHistory$p==sort(ResultHistory$p)[ceil(length(ResultHistory$p)/2)])
       use<-use[1]
         res$rIV<-ResultHistory$r[use]
         res$nval<-ResultHistory$n[use]
