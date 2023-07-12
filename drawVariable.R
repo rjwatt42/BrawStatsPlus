@@ -1,6 +1,5 @@
 source("varUtilities.R")
 
-varplotMargins<-margin(0.0,-0.2,0,-1,"cm");
 darkYellow<-"#FFCC00"
 
 
@@ -15,7 +14,7 @@ drawVar<-function(pts,var){
             axis.text.x=element_blank(),
             axis.ticks.x=element_blank()
       )+
-      theme(plot.margin=varplotMargins)+
+      theme(plot.margin=margin(0.0,-0.2,0,-1,"cm"))+
     coord_cartesian(xlim = c(-1,1), ylim = c(0, 1))
   } else {
   ggplot(pts,aes(x=r,y=dens))+geom_polygon(fill=plotcolours$sampleC)+
@@ -24,7 +23,7 @@ drawVar<-function(pts,var){
       labs(x=var$name,y="")+
       plotTheme+
       theme(axis.text.y=element_blank(),axis.ticks.y=element_blank())+
-      theme(plot.margin=varplotMargins)
+      theme(plot.margin=margin(0.0,-0.2,0,-1,"cm"))
     
 }
 }

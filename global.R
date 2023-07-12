@@ -1,3 +1,5 @@
+library(ggplot2)
+
 switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
                doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,
                doPossible=TRUE,doLikelihoodInfer=FALSE,
@@ -92,8 +94,7 @@ graph_precision<-2
 fullShowHelp<-FALSE
 
 # graph themes
-mainplotMargins<-margin(1,3,1,3,"cm");
-popplotMargins<-margin(0.15,0.8,0,0.25,"cm");
+popplotMarginsTheme<-theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
 
 mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
@@ -273,7 +274,7 @@ Lchar<-'\u03BB'
 pPlus<-FALSE
 
 source("Notation.R")
-useLabels<-"psig;D;0"
+useLabels<-list(psig="psig",UD="D",P="0")
 setNotation(useLabels)
 if (pPlus) effect$world$populationNullp<<-1-effect$world$populationNullp
 

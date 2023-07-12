@@ -1,21 +1,21 @@
 setNotation<-function(useLabels) {
-
-  a<-str_split(useLabels,";")
+  useLabels<-list(psig="psig",UD="D",P="0")
   
-  switch(a[[1]][1],
+  switch(useLabels$psig,
          "psig"={pSigLabel<<-bquote(bold(p[.('sig')]))},
          "w"={pSigLabel<<-bquote(bold(w))}
          )
 
-  LabelUD<<-a[[1]][2]
+  LabelUD<<-useLabels$UD
 
-  switch(a[[1]][3],
+  posChar<<-"+"
+  nullChar<<-"0"
+  switch(useLabels$P,
          "+"={
            pPlus<<-TRUE
-           posChar<<-"+"},
+         },
          "0"={
            pPlus<<-FALSE
-           nullChar<<-"0" # '\u2013'
          },
          "-"={
            pPlus<<-FALSE
