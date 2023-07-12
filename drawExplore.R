@@ -467,11 +467,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 alpha<-exploreResult$result$vals
               }
               if (!effect$world$worldOn) {
-                pVals<-c(pVals,exploreResult$nullresult$pIVs)
-                rVals<-c(rVals,exploreResult$nullresult$rIVs)
-                nVals<-c(nVals,exploreResult$nullresult$nvals)
-                df1Vals<-c(df1Vals,exploreResult$nullresult$df1)
-                rpVals<-c(rpVals,exploreResult$nullresult$rpIVs)
+                pVals<-rbind(pVals,exploreResult$nullresult$pIVs)
+                rVals<-rbind(rVals,exploreResult$nullresult$rIVs)
+                nVals<-rbind(nVals,exploreResult$nullresult$nvals)
+                df1Vals<-rbind(df1Vals,exploreResult$nullresult$df1)
+                rpVals<-rbind(rpVals,exploreResult$nullresult$rpIVs)
               }
               
               sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)

@@ -96,7 +96,10 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           
           "SigOnly"={vals<-c("Yes","No")},
           "Power"={vals<-seq(0.1,0.9,length.out=npoints)},
-          "Repeats" ={vals<-seq(0,explore$Explore_nrRange)},
+          "Repeats" ={
+            if (design$sReplKeep=="median") vals<-c(0,seq(1,explore$Explore_nrRange,by=2))
+            else vals<-seq(0,explore$Explore_nrRange)
+            },
           
           "NoStudies"={
             if (explore$Explore_Mxlog){
