@@ -83,7 +83,10 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
     evidence<-updateEvidence()
 
     showNotification("Sample: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")
+    oldShortHand<-shortHand
+    shortHand<<-FALSE
     result<-doSampleAnalysis(IV,IV2,DV,effect,design,evidence)
+    shortHand<-oldShortHand
     ResultHistory<<-result$ResultHistory
     
     # set the result into likelihood: populations

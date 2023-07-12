@@ -5,9 +5,9 @@ account: stirpsych
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5462455
-bundleId: 7448581
+bundleId: 7449038
 url: https://stirpsych.shinyapps.io/BrawStats/
-when: 1689171096.60282
-lastSyncTime: 1689171096.60283
+when: 1689178019.04666
+lastSyncTime: 1689178019.04668
 asMultiple: FALSE
 asStatic: FALSE
