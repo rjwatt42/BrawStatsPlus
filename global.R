@@ -291,18 +291,27 @@ warnOrd<-FALSE
 warn3Ord<-FALSE
 
 ##############################
-# the stop running mechanism is complex
-# at its heart is a call to invalidate(ms) to trigger the next cycle
-# if the stop button is pressed, the calls to invalidate() stop
-# But these calls queue up, if one is called before the previous one has finished.
+# the stop running mechanism is complex...
+#
+# at the heart of the simulations is a repeating cycle through the simulation
+# this is kept going by call to invalidate(ms) to trigger the next cycle
+#
+# if the stop button is pressed, the calls to invalidate() should stop
+# But these invalidate() calls queue up, if one is called before the previous one has finished.
+# Any press of the stop button joins that queue.
 # For the stop to be (nearly) immediate, we have to make sure there is never a queue.
 # For this, it is important not to invalidate() before the current one is done.
 #
 # To achieve this, the duration ms is set slightly longer than the time it takes to 
-# do a cycle. This is established by timing the first few runs (cycles2observe)
-# and uses that as a good guess for how long subsequent cycles will last.
-# It then calls for the next cycle with an additional time of pauseWait ms
-# this guarantees a gap between cycles for the stop button to be registered
+# do a cycle. There is.a significant bit oft he cycle that we cannot see - this is the
+# part where graphs/reports are drawn. 
+# So the cycle time is established by timing the first few runs (cycles2observe)
+# and using that as a good guess for how long subsequent cycles will last.
+# 
+# The call to invalidate() for the next cycle takes that cycle time and adds 
+# an additional time of pauseWait ms
+# this (nearly) guarantees a gap between cycles for the stop button to be registered
+#
 doStop<-TRUE
 silentTime<-0
 stopLabel<-"Stop"
@@ -312,12 +321,6 @@ cycleCount<-0
 
 ###########################################
 # fine tuning
-doMainExtras<-FALSE
-if (doMainExtras) {
-  switches$doReplications<-TRUE
-  switches$doWorlds<-TRUE
-}
-
 is_local <- Sys.getenv('SHINY_PORT') == ""
 if (is_local) {
   switches$doClipboard<-TRUE
