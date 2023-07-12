@@ -13,14 +13,8 @@ if (switches$doKeys) {
     if (input$keypress==17) controlKeyOn<<-TRUE
     if (input$keypress==18) altKeyOn<<-TRUE
 
-    # control-alt-n - switch to online version
-    if (is_local && input$keypress==ascii("n") && controlKeyOn && altKeyOn){
-      switches$doReplications<<-FALSE
-      switches$doWorlds<<-FALSE
-      removeTab("Design","Replicate",session)
-      removeTab("Hypothesis","World",session)
-      removeTab("HypothesisDiagram","World",session)
-      removeTab("FileTab","Batch",session)
+    if (input$keypress==ascii("x") && controlKeyOn){
+      loadExtras(session)
     }
     
     # control-m - add in meta-analysis
@@ -66,8 +60,8 @@ if (switches$doKeys) {
     if (pPlus) {v<-0.26}
     else       {v<-0.74}
     # control-alt-p set world to model psych
-    if (input$keypress==ascii("p") && controlKeyOn && !shiftKeyOn){
-      # loadExtras(session)
+    if (input$keypress==ascii("p") && controlKeyOn){
+      loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -75,53 +69,12 @@ if (switches$doKeys) {
       updateNumericInput(session,"world_distr_Nullp",value=v)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
       
-      updateSelectInput(session,"likelihoodPrior_distr",selected="Exp")
-      updateSelectInput(session,"likelihoodPrior_distr_rz",selected="z")
-      updateNumericInput(session,"likelihoodPrior_distr_k",value=0.325)
-      updateNumericInput(session,"likelihoodPrior_Nullp",value=v)
-    }
-    
-    if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){
-      # loadExtras(session)
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Exp")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.325)
-      updateNumericInput(session,"world_distr_Nullp",value=v)
+      if (shiftKeyOn) {
       updateCheckboxInput(session,"sNRand",value=TRUE)
       updateNumericInput(session,"sNRandK",value=1.2)
       updateNumericInput(session,"sN",value=72)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
-    }
-    
-    # control-alt-e set world to exp(0.2)
-    if (input$keypress==ascii("e") && controlKeyOn && altKeyOn){
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Exp")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.2)
-      updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
-    }
-    
-    # control-alt-g set world to gauss(0.2)
-    if (input$keypress==ascii("g") && controlKeyOn && altKeyOn){
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Gauss")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.2)
-      updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
-    }
-    
-    # control-alt-s set world to single(0.2)
-    if (input$keypress==ascii("s") && controlKeyOn && altKeyOn){
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Single")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"rIV",value=0.2)
-      updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
+      }
+      
     }
     
     # control-l set shortHand to TRUE
@@ -136,82 +89,6 @@ if (switches$doKeys) {
     if (input$keypress==ascii("t") && controlKeyOn){
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
       updateCheckboxInput(session,"likelihoodTheory",value=TRUE)
-    }
-    
-    # control-alt-n set sample size to big (1000)
-    if (input$keypress==78 && controlKeyOn && altKeyOn){
-      updateNumericInput(session,"sN",value=1000)
-    }
-    
-    # control-alt-f set effect size to 0.3
-    if (input$keypress==70 && controlKeyOn && altKeyOn){
-      updateNumericInput(session,"rIV",value=0.3)
-    }
-    
-    # control-alt-r set replication
-    if (input$keypress==82 && controlKeyOn && altKeyOn){
-      updateCheckboxInput(session,"sReplicationOn",value=TRUE)
-      updateNumericInput(session,"sReplRepeats",value=3)
-    }
-    
-    # control-alt-3 set IV2
-    if (input$keypress==51 && controlKeyOn && altKeyOn){
-      updateSelectInput(session,"IV2choice",selected="IV2")
-    }
-    
-    # control-alt-w set sample usage to within
-    if (input$keypress==87 && controlKeyOn && altKeyOn){
-      updateSelectInput(session,"sIV1Use",selected="Within")
-      updateSelectInput(session,"sIV2Use",selected="Within")
-    }
-    
-    # control-alt-d do debug
-    if (input$keypress==68 && controlKeyOn && altKeyOn){
-      toggleModal(session, modalId = "debugOutput", toggle = "open")
-      IV<-updateIV()
-      IV2<-updateIV2()
-      DV<-updateDV()
-      
-      effect<-updatePrediction()
-      design<-updateDesign()
-      evidence<-updateEvidence()
-      expected<-updateExpected()
-      
-      validSample<<-TRUE
-      
-      if (is.null(IV2)) {
-        nc=7
-        effect$rIV=0.3
-      } else {
-        nc=12
-        effect$rIV=0.3
-        effect$rIV2=-0.3
-        effect$rIVIV2DV=0.5
-      }
-      design$sN<-1000
-      
-      expected$nSims<-100
-      expected$EvidenceExpected_type<-"EffectSize"
-      expected$append<-FALSE
-      
-      if (is.null(IV2)) {
-        result<-doSampleAnalysis(IV,IV2,DV,effect,design,evidence)
-      }
-      doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected)
-      op<-runDebug(IV,IV2,DV,effect,design,evidence,expected,result,expectedResult)
-      
-      if (!is.null(IV2)) {
-        effect$rIVIV2=0.25
-        doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected)
-        op<-c(op,runDebug(IV,IV2,DV,effect,design,evidence,expected,result,expectedResult))
-        
-        effect$rIVIV2=-0.25
-        doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected)
-        op<-c(op,runDebug(IV,IV2,DV,effect,design,evidence,expected,result,expectedResult))
-      }
-      
-      output$plotPopUp<-renderPlot(reportPlot(op,nc,length(op)/nc,2))
-      return()
     }
     
   })
