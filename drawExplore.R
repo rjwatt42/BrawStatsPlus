@@ -473,7 +473,6 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 df1Vals<-rbind(df1Vals,exploreResult$nullresult$df1)
                 rpVals<-rbind(rpVals,exploreResult$nullresult$rpIVs)
               }
-              
               sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
               nulls<-rpVals==0
               if (STMethod=="NHST") {
@@ -846,7 +845,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     xscale<-TRUE
   }
   if (!xscale) {
-      if (is.character(exploreResult$result$vals[1])) {
+      if (!doLine) {
         dx<-(vals[2]-vals[1])/1.5
         g<-g+scale_x_continuous(limits=c(min(vals)-dx,max(vals)+dx*xmargin),breaks=vals,labels=exploreResult$result$vals)
       } else {
