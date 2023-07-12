@@ -1,6 +1,8 @@
 ####################################
 #KEYBOARD: capture keyboard events
 
+source("loadExtras.R")
+
 ascii<-function(ch) strtoi(charToRaw(toupper(ch)),16L)
 
 if (switches$doKeys) {
@@ -21,15 +23,14 @@ if (switches$doKeys) {
       removeTab("FileTab","Batch",session)
     }
     
-    # control-x - switch to (offline) full version
-    if (input$keypress==ascii("x") && controlKeyOn){
-      updateCheckboxInput(session,"LoadExtras",value=TRUE)
-      loadExtras(session)
-    }
-    
     # control-m - add in meta-analysis
     if (input$keypress==ascii("m") && controlKeyOn){
-      loadExtras(session,which=1)
+      switches$doMetaAnalysis<<-TRUE
+      insertTab("Evidence",metaPanel(),"Multiple","after",select=FALSE,session)
+      insertTab("Graphs",metaGraphPanel(),"Expect","after",select=FALSE,session)
+      insertTab("Reports",metaReportPanel(),"Expect","after",select=FALSE,session)
+      insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
+      insertTab("FileTab",metaFilePanel(),"Data","after",select=FALSE,session)
     }
     
     if (input$keypress==ascii("d") && controlKeyOn){
@@ -66,7 +67,7 @@ if (switches$doKeys) {
     else       {v<-0.74}
     # control-alt-p set world to model psych
     if (input$keypress==ascii("p") && controlKeyOn && !shiftKeyOn){
-      loadExtras(session)
+      # loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -81,7 +82,7 @@ if (switches$doKeys) {
     }
     
     if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){
-      loadExtras(session)
+      # loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -129,34 +130,6 @@ if (switches$doKeys) {
       updateSelectInput(session,"EvidenceExpected_length",selected="1000")
       updateSelectInput(session,"Explore_lengthH",selected="100")
       updateSelectInput(session,"Explore_lengthD",selected="100")
-    }
-    
-    # control-1 set up World A
-    if (input$keypress==ascii("1") && controlKeyOn){
-      loadExtras(session)
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Exp")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.325)
-      updateNumericInput(session,"world_distr_Nullp",value=1)
-      updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.2)
-      updateNumericInput(session,"sN",value=21)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
-    }
-    
-    # control-2 set up World B
-    if (input$keypress==ascii("2") && controlKeyOn){
-      loadExtras(session)
-      updateCheckboxInput(session,"world_on",value=TRUE)
-      updateSelectInput(session,"world_distr",selected="Exp")
-      updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.325)
-      updateNumericInput(session,"world_distr_Nullp",value=0)
-      updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.2)
-      updateNumericInput(session,"sN",value=21)
-      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
     }
     
     # control-t set showTheory to TRUE

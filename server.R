@@ -100,8 +100,8 @@ shinyServer(function(input, output, session) {
 ####################################
   if (debug) debugPrint("ServerKeys")
   
-  source("serverKeys.R",local=TRUE)
   source("loadExtras.R")
+  source("serverKeys.R",local=TRUE)
   
   observeEvent(input$LoadExtras, {
                  loadExtras(session,input$LoadExtras)

@@ -5,6 +5,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
                doPossible=TRUE,doLikelihoodInfer=FALSE,
                doBootstrap=TRUE,doCheating=TRUE,
                doVariablesExplore=FALSE,
+               loadExtrasValue=FALSE,
                startBlank=FALSE,
                showAnimation=TRUE,
                importOrdinals=TRUE,
@@ -322,7 +323,7 @@ if (is_local) {
   switches$doClipboard<-TRUE
   
   if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
-    loadExtras<-TRUE
+    switches$loadExtrasValue<-TRUE
   } 
 }
 

@@ -1,8 +1,8 @@
 
 
-loadExtras<-function(session,inorout=TRUE,which=0){
+loadExtras<-function(session,inorout=TRUE){
   
-  if (inorout) {
+  if (!inorout) {
     switches$doReplications<<-FALSE
     removeTab("Design","Replicate",session)
     
@@ -52,16 +52,6 @@ loadExtras<-function(session,inorout=TRUE,which=0){
     # likelihood inferences
     if (!switches$doLikelihoodInfer) {
       switches$doLikelihoodInfer<<-TRUE
-    }
-    
-    # meta-analysis
-    if (which==1 && !switches$doMetaAnalysis) {
-      switches$doMetaAnalysis<<-TRUE
-      insertTab("Evidence",metaPanel(),"Multiple","after",select=FALSE,session)
-      insertTab("Graphs",metaGraphPanel(),"Expect","after",select=FALSE,session)
-      insertTab("Reports",metaReportPanel(),"Expect","after",select=FALSE,session)
-      insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
-      insertTab("FileTab",metaFilePanel(),"Data","after",select=FALSE,session)
     }
     
     # explore
