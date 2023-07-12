@@ -5,9 +5,9 @@ account: rjw1
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9445077
-bundleId: 7447976
+bundleId: 7448028
 url: https://rjw1.shinyapps.io/BrawStatsPlus/
-when: 1689159821.7211
-lastSyncTime: 1689159821.72111
+when: 1689160681.14408
+lastSyncTime: 1689160681.14409
 asMultiple: FALSE
 asStatic: FALSE

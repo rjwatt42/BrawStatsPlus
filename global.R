@@ -1,11 +1,11 @@
 library(ggplot2)
 
 switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
-               doWorlds=FALSE,doReplications=FALSE,doMetaAnalysis=FALSE,
-               doPossible=TRUE,doLikelihoodInfer=FALSE,
-               doBootstrap=TRUE,doCheating=TRUE,
+               doReplications=TRUE,doPossible=TRUE,doBootstrap=TRUE,
+               doWorlds=FALSE,doMetaAnalysis=FALSE,doLikelihoodInfer=FALSE,
+               doCheating=TRUE,
                doVariablesExplore=FALSE,
-               loadExtrasValue=TRUE,
+               loadExtrasValue=FALSE,
                startBlank=FALSE,
                showAnimation=TRUE,
                importOrdinals=TRUE,
