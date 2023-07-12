@@ -1,87 +1,6 @@
 ####################################
 #KEYBOARD: capture keyboard events
 
-loadExtras<-function(which=0){
-  
-  if (!input$LoadExtras) {
-    switches$doReplications<<-FALSE
-    removeTab("Design","Replicate",session)
-    
-    switches$doWorlds<<-FALSE
-    removeTab("Hypothesis","World",session)
-    removeTab("HypothesisDiagram","World",session)
-    updateSelectInput(session,"likelihoodUseSource",choices=c("null","prior"))
-    updateSelectInput(session,"likelihoodUsePrior",choices=c("none","prior"))
-
-    switches$doCheating<<-FALSE
-    switches$doLikelihoodInfer<<-FALSE
-    
-    updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2)
-    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2)
-    updateSelectInput(session,"Explore_typeD",choices=designChoices)
-    updateSelectInput(session,"LGExplore_typeD",choices=designChoices)
-    
-    updateSelectInput(session,"Explore_showH",choices=showChoices)
-    updateSelectInput(session,"LGExplore_showH",choices=showChoices)
-    updateSelectInput(session,"Explore_showD",choices=showChoices)
-    updateSelectInput(session,"LGExplore_showD",choices=showChoices)
-    
-    updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoices)
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected="r")
-    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected="p")
-  } else {
-    
-  # replications
-  if (!switches$doReplications) {
-    switches$doReplications<<-TRUE
-    insertTab("Design",replicationTab(),"Anomalies","after",select=FALSE,session)
-  }
-  
-  # worlds
-  if (!switches$doWorlds) {
-    switches$doWorlds<<-TRUE
-    insertTab("Hypothesis",worldPanel(),"Effects","after",select=FALSE,session)
-    insertTab("HypothesisDiagram",worldDiagram(),"Hypothesis","after",select=FALSE,session)
-    updateSelectInput(session,"likelihoodUseSource",choices=c("null","world","prior"))
-    updateSelectInput(session,"likelihoodUsePrior",choices=c("none","world","prior"))
-  }
-  
-  # cheating
-  if (!switches$doCheating) {
-    switches$doCheating<<-TRUE
-  }
-  # likelihood inferences
-  if (!switches$doLikelihoodInfer) {
-    switches$doLikelihoodInfer<<-TRUE
-  }
-  
-  # meta-analysis
-  if (which==1 && !switches$doMetaAnalysis) {
-    switches$doMetaAnalysis<<-TRUE
-    insertTab("Evidence",metaPanel(),"Multiple","after",select=FALSE,session)
-    insertTab("Graphs",metaGraphPanel(),"Expect","after",select=FALSE,session)
-    insertTab("Reports",metaReportPanel(),"Expect","after",select=FALSE,session)
-    insertTab("ExploreTab",exploreMeta(),"Design","after",select=FALSE,session)
-    insertTab("FileTab",metaFilePanel(),"Data","after",select=FALSE,session)
-  }
-  
-    # explore
-    updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2Extra)
-    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2Extra)
-    updateSelectInput(session,"Explore_typeD",choices=designChoicesExtra)
-    updateSelectInput(session,"LGExplore_typeD",choices=designChoicesExtra)
-    
-    updateSelectInput(session,"Explore_showH",choices=showChoicesExtra)
-    updateSelectInput(session,"LGExplore_showH",choices=showChoicesExtra)
-    updateSelectInput(session,"Explore_showD",choices=showChoicesExtra)
-    updateSelectInput(session,"LGExplore_showD",choices=showChoicesExtra)
-    
-    updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoicesExtra)
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra,selected="r")
-    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra,selected="p")
-  }
-}
-
 ascii<-function(ch) strtoi(charToRaw(toupper(ch)),16L)
 
 if (switches$doKeys) {
@@ -105,12 +24,12 @@ if (switches$doKeys) {
     # control-x - switch to (offline) full version
     if (input$keypress==ascii("x") && controlKeyOn){
       updateCheckboxInput(session,"LoadExtras",value=TRUE)
-      loadExtras()
+      loadExtras(session)
     }
     
     # control-m - add in meta-analysis
     if (input$keypress==ascii("m") && controlKeyOn){
-      loadExtras(1)
+      loadExtras(session,which=1)
     }
     
     if (input$keypress==ascii("d") && controlKeyOn){
@@ -147,7 +66,7 @@ if (switches$doKeys) {
     else       {v<-0.74}
     # control-alt-p set world to model psych
     if (input$keypress==ascii("p") && controlKeyOn && !shiftKeyOn){
-      loadExtras()
+      loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -162,7 +81,7 @@ if (switches$doKeys) {
     }
     
     if (input$keypress==ascii("p") && controlKeyOn && shiftKeyOn){
-      loadExtras()
+      loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -214,7 +133,7 @@ if (switches$doKeys) {
     
     # control-1 set up World A
     if (input$keypress==ascii("1") && controlKeyOn){
-      loadExtras()
+      loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
@@ -228,7 +147,7 @@ if (switches$doKeys) {
     
     # control-2 set up World B
     if (input$keypress==ascii("2") && controlKeyOn){
-      loadExtras()
+      loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")

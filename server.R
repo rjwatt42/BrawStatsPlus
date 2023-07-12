@@ -101,9 +101,10 @@ shinyServer(function(input, output, session) {
   if (debug) debugPrint("ServerKeys")
   
   source("serverKeys.R",local=TRUE)
-
+  source("loadExtras.R")
+  
   observeEvent(input$LoadExtras, {
-                 loadExtras()
+                 loadExtras(session,input$LoadExtras)
                })
   
   observeEvent(input$shortHandGain, {
