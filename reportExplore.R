@@ -1,5 +1,5 @@
 reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
-
+  oldAlpha<-alpha
   max_cols<-8
   
   vals<-exploreResult$result$vals
@@ -341,7 +341,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   
   nc=nc+1
   nr=length(outputText)/nc
-
+  alpha<<-oldAlpha
+  
   reportPlot(outputText,nc,nr)        
 
 }

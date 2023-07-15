@@ -53,5 +53,6 @@ switch (LabelUD,
           nullNegative<<-bquote(.(Zchar)[.(nullChar)] ~"-ve")  # "Z0 -ve"
         }
 )
-
+allPositive<<-bquote(.(Zchar) ~"+ve")
+allNegative<<-bquote(.(Zchar) ~"-ve")
 }

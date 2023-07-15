@@ -40,11 +40,19 @@ observeEvent(c(input$LGexploreRunH,input$LGexploreRunD,input$LGexploreRunM),{
 
 # and watch for IV2 appearing
 observeEvent(input$IV2choice,{
+  if (switches$doWorlds) {
+    use2<-hypothesisChoicesV2Extra
+    use3<-hypothesisChoicesV3
+  }  else {
+    use2<-hypothesisChoicesV2
+    use3<-hypothesisChoicesV3
+  }
+  
   if (input$IV2choice=="none") {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV2)
+    updateSelectInput(session,"Explore_typeH", choices=use2)
   }
   else {
-    updateSelectInput(session,"Explore_typeH", choices=hypothesisChoicesV3)
+    updateSelectInput(session,"Explore_typeH", choices=use3)
   }
 })
 
@@ -124,6 +132,8 @@ updateExplore<-function(){
                       Explore_show=input$Explore_showH, 
                       Explore_typeShow=input$Explore_typeShowH, 
                       Explore_whichShow=input$Explore_whichShowH, 
+                      Explore_xlog = input$Explore_xlogD,
+                      Explore_ylog = input$Explore_ylogH,
                       Explore_length=as.numeric(input$Explore_lengthH),
                       Append=input$ExploreAppendH)  
             },
@@ -132,6 +142,8 @@ updateExplore<-function(){
                       Explore_show=input$Explore_showD, 
                       Explore_typeShow=input$Explore_typeShowD, 
                       Explore_whichShow=input$Explore_whichShowD, 
+                      Explore_xlog = input$Explore_xlogD,
+                      Explore_ylog = input$Explore_ylogD,
                       Explore_length=as.numeric(input$Explore_lengthD),
                       Append=input$ExploreAppendD)  
             },
@@ -140,15 +152,18 @@ updateExplore<-function(){
                       Explore_show=input$Explore_showM, 
                       Explore_typeShow=explore$Explore_typeShow, 
                       Explore_whichShow=explore$Explore_whichShow, 
+                      Explore_xlog = input$Explore_xlogD,
+                      Explore_ylog = input$Explore_ylogD,
                       Explore_length=as.numeric(input$Explore_lengthM),
                       Append=input$ExploreAppendM)  
             }
     )
-    explore<-c(l,list(Explore_npoints=input$Explore_npoints,Explore_xlog = input$Explore_xlog,
+    explore<-c(l,list(Explore_npoints=input$Explore_npoints,
                       Explore_quants=input$Explore_quants,
                       Explore_esRange=input$Explore_esRange,Explore_nRange=input$Explore_nRange,
                       Explore_metaRange=input$Explore_metaRange,Explore_Mxlog = input$Explore_Mxlog,Explore_nrRange=input$Explore_nRange,
-                      ExploreFull_ylim=input$ExploreFull_ylim,
+                      ExploreAny_ylim=input$ExploreFull_ylim,
+                      ExploreFull_ylim=TRUE,
                       ExploreTheory=input$evidenceTheory,
                       Explore_family=input$ExploreTab)
     )

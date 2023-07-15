@@ -31,7 +31,7 @@ hypothesisChoicesV2=list("Variables"=list("IV" = "IV",
 )
 
 if (switches$doWorlds) {
-  hypothesisChoicesV2<-c(hypothesisChoicesV2,
+  hypothesisChoicesV2<-list(hypothesisChoicesV2,
                               list("Worlds"=worldsList)
                               )
 }
@@ -188,7 +188,7 @@ ExploreTab <-
                                                         selectInput("Explore_showH", label=NULL,
                                                                     showChoices,selectize = FALSE)
                                                 ),
-                                                tags$td(width = "25%", 
+                                                tags$td(width = "15%", 
                                                         conditionalPanel(condition="input.IV2choice != 'none'",
                                                                          selectInput("Explore_whichShowH", label=NULL,
                                                                     whichShowChoices, selected="Main 1",selectize = FALSE)
@@ -197,7 +197,13 @@ ExploreTab <-
                                                         conditionalPanel(condition="input.IV2choice != 'none'",
                                                                          selectInput("Explore_typeShowH", label=NULL,
                                                                     extraShowChoices, selected="direct",selectize = FALSE)
-                                                ))
+                                                )),
+                                                conditionalPanel(condition="Explore_showH == 'p(sig)' || input.Explore_typeH == 'p' || input.Explore_typeH == 'FDR'",
+                                                                 tags$td(width = "5%", tags$div(style = localStyle, "log"))
+                                                ),
+                                                conditionalPanel(condition="Explore_showH == 'p(sig)' || input.Explore_typeH == 'p' || input.Explore_typeH == 'FDR'",
+                                                                 tags$td(width = "5%", checkboxInput("Explore_ylogH",label="",value=FALSE))
+                                                ),
                                               )),
                                    tags$table(width = "100%",class="myTable",
                                               tags$tr(
@@ -232,12 +238,12 @@ ExploreTab <-
                                                                          numericInput("Explore_nRange", label=NULL,value=250,min=10,step=50)
                                                 )),
                                                 tags$td(width = "5%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount' || input.Explore_typeD == 'Alpha'",
                                                                          tags$div(style = localStyle, "log")
                                                         )),
                                                 tags$td(width = "5%", 
-                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount'",
-                                                                         checkboxInput("Explore_xlog",label="",value=FALSE)
+                                                        conditionalPanel(condition="input.Explore_typeD == 'SampleSize' || input.Explore_typeD == 'Repeats' || input.Explore_typeD == 'CheatingAmount' || input.Explore_typeD == 'Alpha'",
+                                                                         checkboxInput("Explore_xlogD",label="",value=FALSE)
                                                         )),
                                               ),
                                               tags$tr(
@@ -256,8 +262,12 @@ ExploreTab <-
                                                                          selectInput("Explore_typeShowD", label=NULL,
                                                                     extraShowChoices, selected="direct",selectize = FALSE)
                                                 )),
-                                                tags$td(width = "5%", tags$div(style = localStyle, "")),
-                                                tags$td(width = "5%", tags$div(style = localStyle, "")),
+                                                conditionalPanel(condition="Explore_showD == 'p(sig)' || input.Explore_typeD == 'p' || input.Explore_typeD == 'FDR'",
+                                                                 tags$td(width = "5%", tags$div(style = localStyle, "log"))
+                                                                 ),
+                                                conditionalPanel(condition="Explore_showD == 'p(sig)' || input.Explore_typeD == 'p' || input.Explore_typeD == 'FDR'",
+                                                                 tags$td(width = "5%", checkboxInput("Explore_ylogD",label="",value=FALSE))
+                                                                 ),
                                               )),
                                    tags$table(width = "100%",class="myTable",
                                               tags$tr(
@@ -316,7 +326,7 @@ ExploreTab <-
                                                         numericInput("Explore_quants", label=NULL,value=0.95, step = 0.01,min=0.01,max=0.99)
                                                 ),
                                                 tags$td(width = "30%", tags$div(style = localPlainStyle, "full y-lim:")),
-                                                tags$td(width = "25%", checkboxInput("ExploreFull_ylim", label=NULL,value=FALSE)),
+                                                tags$td(width = "25%", checkboxInput("ExploreFull_ylim", label=NULL,value=TRUE)),
                                                 tags$td(width = "5%")
                                               ),
                                               # tags$tr(

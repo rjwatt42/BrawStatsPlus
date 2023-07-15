@@ -1,8 +1,8 @@
 
 
-loadExtras<-function(session,inorout=TRUE){
+loadExtras<-function(session,addingExtras=TRUE){
   
-  if (!inorout) {
+  if (!addingExtras) {
     switches$doReplications<<-FALSE
     removeTab("Design","Replicate",session)
     

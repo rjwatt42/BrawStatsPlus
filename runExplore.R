@@ -9,7 +9,7 @@ quants=0.25
 
 exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult,nsim,doingNull=FALSE,showProgress=FALSE){
   
-  localAlpha<-alpha
+  oldAlpha<-alpha
   npoints<-explore$Explore_npoints
   quants<-explore$Explore_quants
   max_n<-explore$Explore_nRange
@@ -77,7 +77,11 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "Usage"={vals<-c("Between","Within")},
           "SampleGamma"={vals<-seq(1,10,length.out=npoints)},
           "Alpha"={
-            vals<-vals<-10^seq(log10(0.0005),log10(0.5),length.out=npoints)
+            if (explore$Explore_xlog) {
+            vals<-vals<-10^seq(log10(0.001),log10(0.5),length.out=npoints)
+            } else {
+              vals<-vals<-seq(0.001,0.1,length.out=npoints)
+            }
             },
           "Dependence"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Outliers"={vals<-seq(0,anomaliesRange,length.out=npoints)},
@@ -556,7 +560,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
     }
   # removeNotification(id = "counting")
   
-  alpha<<-localAlpha
+  alpha<<-oldAlpha
   alphaLLR<<-0.5*qnorm(1-alpha/2)^2
 
   exploreResult$vals<-vals

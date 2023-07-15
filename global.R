@@ -190,6 +190,7 @@ explore<-list(Explore_type="IV",
               Explore_esRange=0.8,Explore_nRange=250,
               Explore_metaRange=10000,Explore_Mxlog = TRUE,Explore_nrRange=250,
               ExploreFull_ylim=FALSE,
+              ExploreAny_ylim=FALSE,
               ExploreTheory=TRUE,
               Explore_family="Hypothesis"  
 )
