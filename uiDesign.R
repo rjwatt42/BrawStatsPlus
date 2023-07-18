@@ -64,7 +64,22 @@ DesignTab <-
                                                       ),
                                               )
                                       )
-                           ))
+                           ),
+                         conditionalPanel(condition="input.LoadExtras",
+                                          tags$table(width = "100%",class="myTable",
+                                                     tags$tr(
+                                                       tags$td(width = "40%", tags$div(style = localStyle, "Budget:")),
+                                                       tags$td(width = "10%", 
+                                                               checkboxInput("sBudgetOn",label=NULL,value=design$sBudgetOn)
+                                                       ),
+                                                       tags$td(width = "30%", tags$div(style = localPlainStyle, "Budget Size:")),
+                                                       tags$td(width = "20%", 
+                                                               numericInput("sBudget",label=NULL,value=design$sBudget)
+                                                       )
+                                                     ),
+                                          ),
+                         )
+                         )
                 ),
                 tabPanel("Anomalies",
                          style = paste("background: ",subpanelcolours$designC), 

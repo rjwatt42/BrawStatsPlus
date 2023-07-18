@@ -60,6 +60,7 @@ updateDesign<-function(){
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
                sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,
+               sBudgetOn=input$sBudgetOn,sBudget=input$sBudget,
                sReplicationOn=input$sReplicationOn,
                sReplPowerOn=input$sReplPowerOn,sReplPower=input$sReplPower,
                sReplSigOnly=input$sReplSigOnly,

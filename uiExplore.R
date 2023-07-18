@@ -326,7 +326,7 @@ ExploreTab <-
                                                         numericInput("Explore_quants", label=NULL,value=0.95, step = 0.01,min=0.01,max=0.99)
                                                 ),
                                                 tags$td(width = "30%", tags$div(style = localPlainStyle, "full y-lim:")),
-                                                tags$td(width = "25%", checkboxInput("ExploreFull_ylim", label=NULL,value=TRUE)),
+                                                tags$td(width = "25%", checkboxInput("ExploreAny_ylim", label=NULL,value=explore$ExploreAny_ylim)),
                                                 tags$td(width = "5%")
                                               ),
                                               # tags$tr(

@@ -162,7 +162,7 @@ updateExplore<-function(){
                       Explore_quants=input$Explore_quants,
                       Explore_esRange=input$Explore_esRange,Explore_nRange=input$Explore_nRange,
                       Explore_metaRange=input$Explore_metaRange,Explore_Mxlog = input$Explore_Mxlog,Explore_nrRange=input$Explore_nRange,
-                      ExploreAny_ylim=input$ExploreFull_ylim,
+                      ExploreAny_ylim=input$ExploreAny_ylim,
                       ExploreFull_ylim=TRUE,
                       ExploreTheory=input$evidenceTheory,
                       Explore_family=input$ExploreTab)

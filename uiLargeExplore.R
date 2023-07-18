@@ -205,7 +205,7 @@ LGmodalExplore <-
                                                          ),
                                                          tags$tr(
                                                            tags$td(width = "25%", tags$div(style = localPlainStyle, "full y-lim:")),
-                                                           tags$td(width = "15%", checkboxInput("LGExploreFull_ylim", label=NULL,value=FALSE)),
+                                                           tags$td(width = "15%", checkboxInput("LGExploreAny_ylim", label=NULL,value=explore$ExploreAny_ylim)),
                                                            tags$td(width = "30%", tags$div(style = localPlainStyle, "anom-range:")),
                                                            tags$td(width = "20%", 
                                                                    numericInput("LGExplore_anomRange", label=NULL,value=0.9)

@@ -367,9 +367,17 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               if (explore$Explore_type=="Alpha") {
                 alpha<-exploreResult$result$vals
               }
+              if (design$sBudgetOn) {
+                getStat<-function(x,n) {colMeans(x*(design$sBudget/n))}
+                explore$ExploreAny_ylim<-FALSE
+                ylabel<-bquote(bold(n["sig"]))
+              } else {
+                getStat<-function(x,n) {colMeans(x)}
+              }
               ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
-              ps_mn<-colMeans(ps)
-              p_se<-sqrt(ps_mn*(1-ps_mn)/nrow(pVals))
+              ps_mn<-getStat(ps,nVals)
+              ps1<-colMeans(ps)
+              p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
               y50<-ps_mn
               y25<-ps_mn+p_se*qnorm(0.25)
               y38<-ps_mn+p_se*qnorm(0.375)
@@ -389,21 +397,23 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               
               if (effect$world$worldOn && effect$world$populationNullp>0) {
-                g<-g+scale_fill_manual(name="outcome",values=c(plotcolours$infer_misserr,plotcolours$infer_sigC,plotcolours$infer_hiterr))
-                col<-"p(sig)"
-                cole<-"p(sig|Z0)"
-                cola<-"p(ns|Z+)"
+                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_hiterr))
+                col<-"sig"
+                cole<-"sig|Z0"
+                cola<-"sig|Z+"
                 nulls<-rpVals==0
-                ps_mn<-colMeans(ps & nulls)
-                p_se<-sqrt(ps_mn*(1-ps_mn)/nrow(pVals))
+                ps_mn<-getStat(ps & nulls,nVals)
+                ps1<-colMeans(ps)
+                p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
                 y50e<-ps_mn
                 y25e<-ps_mn+p_se*qnorm(0.25)
                 y38e<-ps_mn+p_se*qnorm(0.375)
                 y62e<-ps_mn+p_se*qnorm(0.625)
                 y75e<-ps_mn+p_se*qnorm(0.75)
                 
-                ps_mn<-colMeans(!ps & !nulls)
-                p_se<-sqrt(ps_mn*(1-ps_mn)/nrow(pVals))
+                ps_mn<-getStat(ps & !nulls,nVals)
+                ps1<-colMeans(ps)
+                p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
                 y50a<-ps_mn
                 y25a<-ps_mn+p_se*qnorm(0.25)
                 y38a<-ps_mn+p_se*qnorm(0.375)
