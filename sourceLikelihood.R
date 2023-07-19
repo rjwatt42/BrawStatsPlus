@@ -129,7 +129,7 @@ updateLikelihood<-function(){
                    likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihoodP_append,Likelihood_length=as.numeric(input$likelihoodP_length),
-                   view=input$LikelihoodView,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
+                   view=input$LikelihoodView,show=input$LikelihoodShow,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
               )
           },
@@ -149,7 +149,7 @@ updateLikelihood<-function(){
                    likelihoodTheory=input$likelihoodTheory,likelihoodSimSlice=input$likelihoodSimSlice,likelihoodCorrection=input$likelihoodCorrection,
                    likelihoodHQ=input$likelihoodHQ,
                    appendSim=input$likelihood_append,Likelihood_length=as.numeric(input$likelihood_length),
-                   view=input$LikelihoodView,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
+                   view=input$LikelihoodView,show=input$LikelihoodShow,azimuth=input$LikelihoodAzimuth,elevation=input$LikelihoodElevation,range=input$LikelihoodRange,
                    textResult=FALSE
               )
           }
@@ -252,11 +252,11 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
   if ((input$likelihood_run+input$likelihoodP_run+input$LGlikelihood_run+input$LGlikelihoodP_run>validLikelihood)){
     showNotification(paste0("Possible ",likelihood$type," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
     validLikelihood<<-validLikelihood+1
-    likelihoodRes<-likelihood_run(IV,DV,effect,design,evidence,likelihood,doSample = TRUE)
+    likelihoodRes<-likelihood_run(IV,DV,effect,design,evidence,likelihood,metaResult,doSample = TRUE)
     removeNotification(id="counting")
     keepSamples<-FALSE
   } else {
-    likelihoodRes<-likelihood_run(IV,DV,effect,design,evidence,likelihood,doSample = FALSE)
+    likelihoodRes<-likelihood_run(IV,DV,effect,design,evidence,likelihood,metaResult,doSample = FALSE)
     keepSamples<-all(unlist(lapply(seq(3),function(i)likelihoodRes$likelihood$world[[i]]==likelihoodResult$samples$likelihood$world[[i]])))
     keepSamples<-keepSamples && all(unlist(lapply(seq(3),function(i)likelihoodRes$likelihood$design[[i]]==likelihoodResult$populations$likelihood$design[[i]])))
   }

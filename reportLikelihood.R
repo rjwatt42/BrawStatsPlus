@@ -63,8 +63,8 @@ reportLikelihood<-function(Iv,DV,effect,design,likelihood,likelihoodResult){
             outputText<-c(outputText,"max(samples)  ",format(likelihoodResult$Theory$rs_peak,digits=report_precision),format(likelihoodResult$Sims$rsSim_peak,digits=report_precision))
             outputText<-c(outputText,"sd(samples)",format(likelihoodResult$Theory$rs_sd,digits=report_precision),format(likelihoodResult$Sims$rsSim_sd,digits=report_precision))
             outputText<-c(outputText,"CI(samples)",
-                          paste("[", format(likelihoodResult$Theory$rs_ci[1],digits=report_precision), ",", format(likelihoodResult$Theory$rs_ci[2],digits=report_precision), "]"),
-                          paste("[", format(likelihoodResult$Sims$rsSim_ci[1],digits=report_precision), ",", format(likelihoodResult$Sims$rsSim_ci[2],digits=report_precision), "]")
+                          paste("<", format(likelihoodResult$Theory$rs_ci[1],digits=report_precision), ",", format(likelihoodResult$Theory$rs_ci[2],digits=report_precision), ">"),
+                          paste("<", format(likelihoodResult$Sims$rsSim_ci[1],digits=report_precision), ",", format(likelihoodResult$Sims$rsSim_ci[2],digits=report_precision), ">")
             )
             outputText<-c(outputText,rep(" ",nc))
             if (length(likelihoodResult$Sims$sSims)==0){

@@ -459,7 +459,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   sDens_r_plus
 }
 
-likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE){
+likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,metaResult,doSample=TRUE){
   n<-likelihood$design$sampleN
   design$sN<-n
   
@@ -477,12 +477,15 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   zs<-seq(-1,1,length=npoints)*z_range
   zp<-seq(-1,1,length=npoints)*z_range
   
-  if (is.null(likelihood$ResultHistory)) {
-    sRho<-likelihood$targetSample
-    n<-likelihood$design$sampleN
-  } else {
+  sRho<-likelihood$targetSample
+  n<-likelihood$design$sampleN
+  if (!is.null(likelihood$ResultHistory)) {
     sRho<-likelihood$ResultHistory$r
     n<-likelihood$ResultHistory$n
+  }
+  if (!is.null(metaResult$result$rIV)) {
+    sRho<-metaResult$result$rIV
+    n<-metaResult$result$nval
   }
   sRho<-atanh(sRho)
   
@@ -847,9 +850,12 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
   
   # pDens_r<-pDens_r*(1-prior$populationNullp)
   if (!doNullsSingle) {
-    spDens_r<-spDens_r*(1-prior$populationNullp)*dnorm(atanh(sRho),0,1/sqrt(n-3))
+    spDens_r<-spDens_r*(1-prior$populationNullp)
     apDens_r<-apDens_r*(1-prior$populationNullp)
     asDens_r<-asDens_r*(1-source$populationNullp)
+    for (i in 1:length(sRho)) {
+      spDens_r<-spDens_r*dnorm(atanh(sRho[i]),0,1/sqrt(n[i]-3))
+    }
     pDens_r_plus<-pDens_r_plus/sum(pDens_r_plus)*(1-prior$populationNullp)
     pDens_r_null<-pDens_r_null/sum(pDens_r_null)*(prior$populationNullp)
   }
@@ -870,7 +876,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,doSample=TRUE
           "Samples"={
             likelihoodResult<-list(likelihood=likelihood,
                                    pRho=pRho,
-                                   sRho=likelihood$targetSample,
+                                   sRho=sRho,
                                    n=n,
                                    Theory=list(
                                      rs=rs,sDens_r=sDens_r,sDens_r_plus=sDens_r_plus,sDens_r_null=sDens_r_null,sDens_r_total=sDens_r_total,
