@@ -478,6 +478,7 @@ likelihood_run <- function(IV,DV,effect,design,evidence,likelihood,metaResult,do
   zp<-seq(-1,1,length=npoints)*z_range
   
   sRho<-likelihood$targetSample
+  if (RZ=="z") sRho<-tanh(sRho)
   n<-likelihood$design$sampleN
   if (!is.null(likelihood$ResultHistory)) {
     sRho<-likelihood$ResultHistory$r

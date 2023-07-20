@@ -587,13 +587,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   if ((!is.na(sRho[1]))) {
                     for (i in 1:length(sRho)) {
                     s<-sRho[i]
+                    gain<-sum(sDens_r_total)*diff(rs[1:2])
                     p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
                     pn_at_sample<-(sum(sDens_r_null[rs>=s])+sum(sDens_r_null[rs< -s]))/sum(sDens_r_total)
                     pd_at_sample<-(sum(sDens_r_plus[rs>=s])+sum(sDens_r_plus[rs< -s]))/sum(sDens_r_total)
+                    
                     l_at_sample<-approx(rs,sDens_r_total,s)$y#/mean(sDens_r_total)
                     ln_at_sample<-approx(rs,sDens_r_null,s)$y#/mean(sDens_r_total)
                     ld_at_sample<-approx(rs,sDens_r_plus,s)$y#/mean(sDens_r_total)
-                    gain<-sum(sDens_r_total)*diff(rs[1:2])
                     
                     lines(x=c(sRho[i],sRho[i]),y=c(0,l_at_sample),col="black",lwd=1)
                     points(x=sRho[i],y=l_at_sample,col="black",pch=20)
@@ -607,7 +608,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     #   lines(x=c(sRho[1],sRho[1]),y=c(0,ln_at_sample-0.01),col=colNullS,lwd=2)
                     # }
                     
-                      if (length(sRho)==1) {
+                      if (length(sRho)<=5) {
                         ptext<-bquote(
                           bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
                         )
@@ -619,7 +620,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           text(s+0.05,l_at_sample+0.05,labels=ltext,col="black",adj=0,cex=0.9)
                         } else  {
                           # text(s,0.95,labels=ptext,col=colPdark,adj=1,cex=0.9)
-                          text(s-0.05,l_at_sample+0.05,labels=ltext,col="black",adj=1,cex=0.9)
+                          text(s-0.05,l_at_sample+0.05,labels=ltext,col="black",adj=0.6,cex=0.9)
                         } 
                       }
                       # if (likelihood$world$populationNullp>0) {
@@ -648,16 +649,16 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                       bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3)))
                     ),col=colPdark,adj=-0.1,cex=0.9)
                     text(0,1.05,labels=bquote(
-                      bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3)))
+                      bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample/gain,digits=3)))
                     ),col=colPdark,adj=1.1,cex=0.9)
                   }
                   }
                     if (length(sRho)>1) {
-                      l_at_sample<-mean(log(approx(rs,sDens_r_total,sRho)$y))#/mean(sDens_r_total)
+                      l_at_sample<-sum(log(approx(rs,sDens_r_total/gain,sRho)$y))#/mean(sDens_r_total)
                       ltext<-bquote(
-                        bold(log(lk(.(RZ)[s])))==.(format(l_at_sample/gain,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
+                        bold(log(lk(.(RZ)[s])))==.(format(l_at_sample,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
                       )
-                      text(0+0.05,1+0.05,labels=ltext,col="black",adj=0.5,cex=0.9)
+                      text(0+0.05,1+0.15,labels=ltext,col="black",adj=0.5,cex=0.9)
                     }
                   }
                 }

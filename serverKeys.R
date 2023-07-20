@@ -77,6 +77,22 @@ if (switches$doKeys) {
       
     }
     
+    if (input$keypress==ascii("g") && controlKeyOn){
+      loadExtras(session)
+      updateCheckboxInput(session,"world_on",value=TRUE)
+      updateSelectInput(session,"world_distr",selected="Gauss")
+      updateSelectInput(session,"world_distr_rz",selected="z")
+      updateNumericInput(session,"world_distr_k",value=0.3)
+      updateNumericInput(session,"world_distr_Nullp",value=0.6)
+      updateTabsetPanel(session,"HypothesisDiagram",selected="World")
+      
+      if (shiftKeyOn) {
+        updateCheckboxInput(session,"sNRand",value=FALSE)
+        updateNumericInput(session,"sNRandK",value=1.2)
+        updateNumericInput(session,"sN",value=29)
+      }
+      
+    }
     # control-l set shortHand to TRUE
     if (input$keypress==ascii("l") && controlKeyOn){
       updateCheckboxInput(session,"shortHand",value=!input$shortHand)
