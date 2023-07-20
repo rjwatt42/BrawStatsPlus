@@ -162,7 +162,7 @@ LikelihoodTab <-
                                       tags$td(width = "40%", 
                                               selectInput("LikelihoodShow", label=NULL,
                                                           c("Normal" = "Normal",
-                                                            "Opp" = "Opp"),selected=likelihood$show,selectize=FALSE)
+                                                            "Inverse" = "Inverse"),selected=likelihood$show,selectize=FALSE)
                                       )
                                     ),
                                     tags$tr(

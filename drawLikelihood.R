@@ -66,7 +66,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             likelihoodResult<-likelihoodResult$samples
             switch(likelihood$show,
                    "Normal"={ylab<-"Probability Density"},
-                   "Opp"={ylab<-"Likelihood"},
+                   "Inverse"={ylab<-"Likelihood"},
             )
             col=colP
             col2=colS
@@ -74,7 +74,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
           "Populations"={
             likelihoodResult<-likelihoodResult$populations
             switch(likelihood$show,
-                   "Opp"={ylab<-"Probability Density"},
+                   "Inverse"={ylab<-"Probability Density"},
                    "Normal"={ylab<-"Likelihood"},
             )
             col=colS
