@@ -26,7 +26,7 @@ hypothesisChoicesV2Plain=list("Variables"=list("IV" = "IV",
 hypothesisChoicesV2=list("Variables"=list("IV" = "IV",
                                           "DV" = "DV",
                                           "IV/DV Types" = "IVDVType"),
-                         "Effects"=list("Effect Size" = "EffectSize1",
+                         "Effects"=list("Effect Size" = "EffectSize",
                                         "Heteroscedasticity" = "Heteroscedasticity")
 )
 
@@ -39,7 +39,7 @@ if (switches$doWorlds) {
 hypothesisChoicesV2Extra=list("Variables"=list("IV" = "IV",
                                           "DV" = "DV",
                                           "IV/DV Types" = "IVDVType"),
-                         "Effects"=list("Effect Size" = "EffectSize1",
+                         "Effects"=list("Effect Size" = "EffectSize",
                                         "Heteroscedasticity" = "Heteroscedasticity"),
                          "Worlds"=worldsList
 )

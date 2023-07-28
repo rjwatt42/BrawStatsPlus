@@ -19,12 +19,15 @@
     conditionalPanel(condition = "input.LoadExtras",
                      tags$table(width = "100%",class="myTable",
                                 tags$tr(
-                                  tags$td(width = "40%", tags$div(style = localStyle, " ")),
+                                  tags$td(width = "30%", id="sBudget1", tags$div(style = localStyle, "No Reps:")),
+                                  tags$td(width = "10%", 
+                                          numericInput("sReplRepeats",label=NULL,value=design$sReplRepeats,min=0, max=100, step=1)
+                                  ),
                                   tags$td(width = "20%", tags$div(style = localStyle, "Budget")),
                                   tags$td(width = "5%", 
                                           checkboxInput("sReplUseBudget",label=NULL,value=design$sReplUseBudget)
                                   ),
-                                  tags$td(width = "15%", tags$div(style = localStyle, "Total n:")),
+                                  tags$td(width = "15%", id="sBudget2", tags$div(style = localStyle, "Total:")),
                                   tags$td(width = "20%", numericInput("sReplBudget",label=NULL,value=design$sReplBudget)
                                   )
                                 )
@@ -53,10 +56,8 @@ replicationTab<-function(prefix="") {
                                     ),
                                     tags$table(width = "100%",class="myTable",
                                                tags$tr(
-                                                 tags$td(width = "25%", tags$div(style = localStyle, "No Reps:")),
-                                                 tags$td(width = "10%", 
-                                                         numericInput("sReplRepeats",label=NULL,value=design$sReplRepeats,min=0, max=100, step=1)
-                                                 ),
+                                                 tags$td(width = "25%"),
+                                                 tags$td(width = "10%"), 
                                                  tags$td(width = "25%", tags$div(style = localStyle, "Out:")),
                                                  tags$td(width = "40%", 
                                                          selectInput("sReplKeep",label=NULL,

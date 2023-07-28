@@ -367,13 +367,12 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               if (explore$Explore_type=="Alpha") {
                 alpha<-exploreResult$result$vals
               }
-              if (design$sBudgetOn) {
-                getStat<-function(x,n) {colMeans(x*(design$sBudget/n))}
-                explore$ExploreAny_ylim<-FALSE
-                ylabel<-bquote(bold(n["sig"]))
-              } else {
-                getStat<-function(x,n) {colMeans(x)}
-              }
+              getStat<-function(x,n) {colMeans(x)}
+              # if (design$sBudgetOn) {
+              #   getStat<-function(x,n) {colMeans(x*(design$sBudget/n))}
+              #   explore$ExploreAny_ylim<-FALSE
+              #   ylabel<-bquote(bold(n["sig"]))
+              # }
               ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
               ps_mn<-getStat(ps,nVals)
               ps1<-colMeans(ps)
@@ -643,31 +642,32 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
 
     # p(sig) and FDR
     if (is.element(explore$Explore_show,c("p(sig)","FDR"))) {
-      pts1<-data.frame(vals=vals+vals_offset,y50=y50,fill=col)
-      if (doLine) {
-        pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)),fill=col)
-        pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)),fill=col)
-        if (ni_max2==1 || !no_se_multiple) {
-          g<-g+geom_polygon(data=pts1f,aes(x=x,y=y,fill=fill),alpha=0.5)
-          g<-g+geom_polygon(data=pts2f,aes(x=x,y=y,fill=fill),alpha=0.45)
+      if (isempty(y50e)) {
+        pts1<-data.frame(vals=vals+vals_offset,y50=y50)
+        if (doLine) {
+          pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)))
+          pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)))
+          if (ni_max2==1 || !no_se_multiple) {
+            g<-g+geom_polygon(data=pts1f,aes(x=x,y=y),fill=col,alpha=0.5)
+            g<-g+geom_polygon(data=pts2f,aes(x=x,y=y),fill=col,alpha=0.45)
+          }
+          g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
+        } else{
+          if (ni_max2==1 || !no_se_multiple){
+            g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+          }
         }
-        g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
-      } else{
-        if (ni_max2==1 || !no_se_multiple){
-          g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+        if (use_col_names){
+          pts1<-data.frame(x=vals+vals_offset,y=y50,fill=explore$Explore_typeShow)
+          g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+        } else {
+          g<-g+geom_point(data=pts1,aes(x=vals,y=y50),shape=shapes$parameter, fill=col,colour = "black",size = markersize)
         }
-      }
-      if (use_col_names){
-        pts1<-data.frame(x=vals+vals_offset,y=y50,fill=explore$Explore_typeShow)
-        g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
       } else {
-        g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black",size = markersize)
-      }
-      if (!isempty(y50e)) {
-        pts1<-data.frame(vals=vals+vals_offset,y50=y50e,fill=cole)
+        pts1<-data.frame(vals=vals+vals_offset,y50=y50,fill=col)
         if (doLine) {
-          pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25e,rev(y75e)),fill=cole)
-          pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38e,rev(y62e)),fill=cole)
+          pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25,rev(y75)),fill=col)
+          pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38,rev(y62)),fill=col)
           if (ni_max2==1 || !no_se_multiple) {
             g<-g+geom_polygon(data=pts1f,aes(x=x,y=y,fill=fill),alpha=0.5)
             g<-g+geom_polygon(data=pts2f,aes(x=x,y=y,fill=fill),alpha=0.45)
@@ -679,33 +679,56 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           }
         }
         if (use_col_names){
-          pts1<-data.frame(x=vals+vals_offset,y=y50e,fill=explore$Explore_typeShow)
+          pts1<-data.frame(x=vals+vals_offset,y=y50,fill=explore$Explore_typeShow)
           g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
         } else {
-          g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+          g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black",size = markersize)
         }
-      }
-      if (!isempty(y50a)) {
-        pts1<-data.frame(vals=vals+vals_offset,y50=y50a,fill=cola)
-        if (doLine) {
-          pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25a,rev(y75a)),fill=cola)
-          pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38a,rev(y62a)),fill=cola)
-          if (ni_max2==1 || !no_se_multiple) {
-            g<-g+geom_polygon(data=pts1f,aes(x=x,y=y,fill=fill),alpha=0.5)
-            g<-g+geom_polygon(data=pts2f,aes(x=x,y=y,fill=fill),alpha=0.45)
+        if (!isempty(y50e)) {
+          pts1<-data.frame(vals=vals+vals_offset,y50=y50e,fill=cole)
+          if (doLine) {
+            pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25e,rev(y75e)),fill=cole)
+            pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38e,rev(y62e)),fill=cole)
+            if (ni_max2==1 || !no_se_multiple) {
+              g<-g+geom_polygon(data=pts1f,aes(x=x,y=y,fill=fill),alpha=0.5)
+              g<-g+geom_polygon(data=pts2f,aes(x=x,y=y,fill=fill),alpha=0.45)
+            }
+            g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
+          } else{
+            if (ni_max2==1 || !no_se_multiple){
+              g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+            }
           }
-          g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
-        } else{
-          if (ni_max2==1 || !no_se_multiple){
-            g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+          if (use_col_names){
+            pts1<-data.frame(x=vals+vals_offset,y=y50e,fill=explore$Explore_typeShow)
+            g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+          } else {
+            g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
           }
         }
-        if (use_col_names){
-          pts1<-data.frame(x=vals+vals_offset,y=y50a,fill=explore$Explore_typeShow)
-          g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
-        } else {
-          g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+        if (!isempty(y50a)) {
+          pts1<-data.frame(vals=vals+vals_offset,y50=y50a,fill=cola)
+          if (doLine) {
+            pts1f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y25a,rev(y75a)),fill=cola)
+            pts2f<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y38a,rev(y62a)),fill=cola)
+            if (ni_max2==1 || !no_se_multiple) {
+              g<-g+geom_polygon(data=pts1f,aes(x=x,y=y,fill=fill),alpha=0.5)
+              g<-g+geom_polygon(data=pts2f,aes(x=x,y=y,fill=fill),alpha=0.45)
+            }
+            g<-g+geom_line(data=pts1,aes(x=vals,y=y50),color="black")
+          } else{
+            if (ni_max2==1 || !no_se_multiple){
+              g<-g+geom_errorbar(data=pts1,aes(x=vals,ymin=y25,ymax=y75,width=0.7/length(vals)))
+            }
+          }
+          if (use_col_names){
+            pts1<-data.frame(x=vals+vals_offset,y=y50a,fill=explore$Explore_typeShow)
+            g<-g+geom_point(data=pts1,aes(x=x,y=y,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+          } else {
+            g<-g+geom_point(data=pts1,aes(x=vals,y=y50,fill=fill),shape=shapes$parameter, colour = "black", size = markersize)
+          }
         }
+        
       }
       g<-g+geom_hline(yintercept=0,colour="white")
     }
@@ -869,7 +892,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # label<-paste("Unsafe result","  r_est =", format(r_est,digits=3))
       }
       if (ni_max2>1){label<-paste(explore$Explore_typeShow,": ",label,sep="")}
-      lpts<-data.frame(x=0+vals_offset,y=0.8+(ni-1)/10,label=label)
+      lpts<-data.frame(x=0+vals_offset,y=0.8+(ni_max2-1)/10,label=label)
       g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=3.5)
     }
   }

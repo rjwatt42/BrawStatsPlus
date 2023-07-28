@@ -148,14 +148,29 @@ shinyServer(function(input, output, session) {
     
     before<-paste0("<div style='",localStyle,"'>")
     after<-"</div>"
-      n<-input$sN
-      if (!is.null(n) && !is.na(n)) {
-        if (n<1 && n>0) {
-          html("sNLabel",paste0(before,"Sample Power:",after))
-        } else {
-          html("sNLabel",paste0(before,"Sample Size:",after))
-        }
+    n<-input$sN
+    if (!is.null(n) && !is.na(n)) {
+      if (n<1 && n>0) {
+        html("sNLabel",paste0(before,"Sample Power:",after))
+      } else {
+        html("sNLabel",paste0(before,"Sample Size:",after))
       }
+    }
+  }
+  )
+  
+  observeEvent(input$sReplUseBudget, {
+    if (input$sReplUseBudget) {
+      hideElement("sBudget1")
+      hideElement("sReplRepeats")
+      showElement("sBudget2")
+      showElement("sReplBudget")
+    } else {
+      showElement("sBudget1")
+      showElement("sReplRepeats")
+      hideElement("sBudget2")
+      hideElement("sReplBudget")
+    }
   }
   )
   
