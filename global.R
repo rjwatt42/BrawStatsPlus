@@ -134,9 +134,8 @@ design<-list(sN=42, sNRand=FALSE,sNRandK=2,
              sRangeOn=FALSE, sIVRange=c(-3,3), sDVRange=c(-3,3), 
              sDependence=0, sOutliers=0, sClustering=0,
              sCheating=FALSE,sCheatingAmount=5,
-             sBudgetOn=FALSE,sBudget=1000,
-             sReplicationOn=FALSE,sReplPowerOn=TRUE,sReplPower=0.8,sReplTails=2,
-             sReplSigOnly="No",sReplUseBudget=FALSE,sReplRepeats=1,sReplKeep="last",sReplBudget=1000,
+             sReplicationOn=FALSE,sReplPowerOn=TRUE,sReplPower=0.8,sReplTails=2,sReplType="Fixed",
+             sReplSigOnly="No",sReplRepeats=1,sReplKeep="last",sReplBudget=1000,
              sReplCorrection="None",
              sReplVarAlpha=FALSE,sReplAlpha=2,
              sN_Strata=5, sR_Strata=2,
@@ -323,12 +322,8 @@ cycleCount<-0
 
 ###########################################
 # fine tuning
-is_local <- Sys.getenv('SHINY_PORT') == ""
+is_local <- (Sys.getenv('SHINY_PORT') == "") && (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt")
 if (is_local) {
-  switches$doClipboard<-TRUE
-  
-  if (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt") {
     switches$loadExtrasValue<-TRUE
-  } 
 }
 

@@ -97,6 +97,12 @@ shinyServer(function(input, output, session) {
   updateSelectInput(session, "IV2choice", choices = c("none",variables$name), selected = "none")
   updateSelectInput(session, "DVchoice", choices = variables$name, selected = variables$name[3])
   
+  if (!is_local) {
+  hideElement("extraRep1")
+  hideElement("extraRep2")
+  hideElement("extraRep3")
+  }
+  
 ####################################
   if (debug) debugPrint("ServerKeys")
   
@@ -155,21 +161,6 @@ shinyServer(function(input, output, session) {
       } else {
         html("sNLabel",paste0(before,"Sample Size:",after))
       }
-    }
-  }
-  )
-  
-  observeEvent(input$sReplUseBudget, {
-    if (input$sReplUseBudget) {
-      hideElement("sBudget1")
-      hideElement("sReplRepeats")
-      showElement("sBudget2")
-      showElement("sReplBudget")
-    } else {
-      showElement("sBudget1")
-      showElement("sReplRepeats")
-      hideElement("sBudget2")
-      hideElement("sReplBudget")
     }
   }
   )

@@ -65,20 +65,6 @@ DesignTab <-
                                               )
                                       )
                            ),
-                         # conditionalPanel(condition="input.LoadExtras",
-                         #                  tags$table(width = "100%",class="myTable",
-                         #                             tags$tr(
-                         #                               tags$td(width = "40%", tags$div(style = localStyle, "Budget:")),
-                         #                               tags$td(width = "10%", 
-                         #                                       checkboxInput("sBudgetOn",label=NULL,value=design$sBudgetOn)
-                         #                               ),
-                         #                               tags$td(width = "30%", tags$div(style = localPlainStyle, "Budget Size:")),
-                         #                               tags$td(width = "20%", 
-                         #                                       numericInput("sBudget",label=NULL,value=design$sBudget)
-                         #                               )
-                         #                             ),
-                         #                  ),
-                         # )
                          )
                 ),
                 tabPanel("Anomalies",
@@ -225,7 +211,19 @@ DesignTab <-
                                                           tags$td(width = "30%", tags$div(style = localPlainStyle, "spread:")),
                                                           tags$td(width = "50%",numericInput("sRSpread_Snowball",label=NULL,value=design$sRSpread_Snowball)),
                                                         ))),
-                          )
+                          ),
+                          tags$table(width = "100%",class="myTable", id="extraRep3",
+                                     tags$tr(
+                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Replication:")),
+                                       tags$td(width = "25%"),
+                                       tags$td(width = "20%", tags$div(style = localPlainStyle, paste0("Vary ",alphaChar,":"))),
+                                       tags$td(width = "5%",
+                                               checkboxInput("sReplVarAlpha",label=NULL,value=design$sReplVarAlpha)
+                                       ),
+                                       tags$td(width = "25%", numericInput("sReplAlpha",label=NULL,value=design$sReplAlpha)
+                                       ),
+                                     )
+                          ),
                 )
                 # help tab
                 ,tabPanel(helpChar,value="?",

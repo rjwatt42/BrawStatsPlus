@@ -132,8 +132,9 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     design1<-design
     design1$sNRand<-FALSE
     design1$sN<-res$nval
-    if (design$sReplUseBudget) {
-      design$sReplRepeats<-floor(design$sReplBudget/design$sN)-1
+    if (design$sReplType=="Budget") {
+      design$sReplRepeats<-1000
+      budgetUse<-res$nval
     }
     if (design$sReplRepeats>0) {
     for (i in 1:design$sReplRepeats) {
@@ -150,8 +151,11 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
         # get the new sample size
         design1$sN<-rw2n(r,design$sReplPower,design$sReplTails)
         design1$sNRand<-FALSE
+        if (design$sReplType=="Budget") {
+          design1$sN<-min(design1$sN,design$sReplBudget-budgetUse)
+        }
       }
-      
+
       if (!shortHand) {
         sample<-makeSample(IV,IV2,DV,effect,design1)
         res<-analyseSample(IV,IV2,DV,effect,design1,evidence,sample)
@@ -173,6 +177,11 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       ResultHistory$r<-c(ResultHistory$r,res$rIV)
       ResultHistory$rp<-c(ResultHistory$rp,res$rpIV)
       ResultHistory$p<-c(ResultHistory$p,res$pIV)
+      
+      if (design$sReplType=="Budget") {
+        budgetUse<-budgetUse+res$nval
+        if (budgetUse>=design$sReplBudget) break;
+      }
     }
     }
     res<-resHold

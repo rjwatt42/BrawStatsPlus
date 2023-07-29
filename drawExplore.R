@@ -368,11 +368,6 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 alpha<-exploreResult$result$vals
               }
               getStat<-function(x,n) {colMeans(x)}
-              # if (design$sBudgetOn) {
-              #   getStat<-function(x,n) {colMeans(x*(design$sBudget/n))}
-              #   explore$ExploreAny_ylim<-FALSE
-              #   ylabel<-bquote(bold(n["sig"]))
-              # }
               ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
               ps_mn<-getStat(ps,nVals)
               ps1<-colMeans(ps)
