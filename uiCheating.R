@@ -25,7 +25,7 @@ uiCheating<-function(prefix="") {
                          conditionalPanel(condition="input.sCheating=='Budget'",
                                           tags$table(width = "100%",class="myTable",
                                                      tags$tr(
-                                                       tags$td(width = "50%", tags$div(style = localStyle, "Budget:")),
+                                                       tags$td(width = "50%", tags$div(style = localPlainStyle, "Available:")),
                                                        tags$td(width = "50%",
                                                                numericInput(paste0(prefix,"sCheatingBudget"),label=NULL,value=design$sCheatingBudget))
                                                      )
@@ -34,7 +34,7 @@ uiCheating<-function(prefix="") {
                          conditionalPanel(condition="input.sCheating!='Budget'",
                                           tags$table(width = "100%",class="myTable",
                                                      tags$tr(
-                                                       tags$td(width = "50%", tags$div(style = localStyle, "Amount:")),
+                                                       tags$td(width = "50%", tags$div(style = localPlainStyle, "Amount:")),
                                                        tags$td(width = "50%",
                                                                numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount))
                                                      )

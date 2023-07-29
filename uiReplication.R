@@ -50,7 +50,7 @@ replicationTab<-function(prefix="") {
                                                          conditionalPanel(condition="input.sReplType=='Budget'",
                                                                           tags$table(width = "100%",class="myTable",
                                                                                      tags$tr(
-                                                                                       tags$td(width = "50%",tags$div(style = localPlainStyle, "number:")),
+                                                                                       tags$td(width = "50%",tags$div(style = localPlainStyle, "available:")),
                                                                                        tags$td(width = "50%", 
                                                                                                numericInput("sReplBudget",label=NULL,value=design$sReplBudget)
                                                                                        )
