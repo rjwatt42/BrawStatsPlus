@@ -138,8 +138,14 @@ wellPanel(id="HelpTabset",
                                         tags$td(width="10%",tags$div(style = localPlainStyle, "")),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Load extras:")),
                                         tags$td(width="25%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue))
-                                      )
                                       ),
+                                      tags$tr(
+                                        tags$td(width="25%",tags$div(style = localPlainStyle, "")),
+                                        tags$td(width="10%",tags$div(style = localPlainStyle, "")),
+                                        tags$td(width="40%",tags$div(style = localPlainStyle, "Large graphs:")),
+                                        tags$td(width="25%",checkboxInput("LargeGraphs", label=NULL,value=FALSE))
+                                      )
+                           ),
                            conditionalPanel(condition="input.LoadExtras",
                                             tags$table(width = "100%",class="myTable",
                                                        tags$tr(

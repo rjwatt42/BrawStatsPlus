@@ -117,19 +117,11 @@ LikelihoodTab <-
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
                                       tags$td(width = "25%"),
-                                      tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                      tags$td(width = "25%", 
-                                              # actionButton("LGEvidenceStart","i")
-                                      )
+                                      tags$td(width = "25%"),
+                                      tags$td(width = "25%")
                                     ),
                                     ),
                          tags$table(width = "100%",class="myTable",
-                                    # tags$tr(
-                                    #   tags$td(width = "50%", tags$div(style = localStyle, "include nulls:")),
-                                    #   tags$td(width = "30%", checkboxInput("includeNulls", value=FALSE, label=NULL)),
-                                    #   tags$td(width = "10%"),
-                                    #   tags$td(width = "10%",actionButton("LGdoPossible","i"))
-                                    # ),
                                     tags$tr(
                                       tags$td(width = "20%", tags$div(style = localPlainStyle, "sim slice:")),
                                       tags$td(width = "20%",numericInput("likelihoodSimSlice",label=NULL,value=likelihood$likelihoodSimSlice,max=0.2,min=0.0001,step=0.01)),
@@ -144,10 +136,8 @@ LikelihoodTab <-
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Display")),
                                       tags$td(width = "25%"),
-                                      tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                      tags$td(width = "25%", 
-                                              # actionButton("LGEvidenceStart","i")
-                                      )
+                                      tags$td(width = "25%"),
+                                      tags$td(width = "25%")
                                     ),
                                     ),
                          tags$table(width = "100%",class="myTable",

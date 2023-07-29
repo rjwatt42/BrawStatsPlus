@@ -27,7 +27,6 @@ changeUI2Data<-function() {
   updateNumericInput(session,"sN",value=length(unique(importedData[[1]])))
   if (switches$doBootstrap) {
     shinyjs::showElement(id= "EvidenceHypothesisApply")
-    shinyjs::showElement(id= "LGEvidenceHypothesisApply")
   }
   updateTabsetPanel(session, "Hypothesis",selected = "Variables")
   updateTabsetPanel(session, "Evidence",selected = "Single")
@@ -48,7 +47,6 @@ changeUI2Data<-function() {
   
   if (!switches$doBootstrap) {
     shinyjs::hideElement(id="EvidenceHypothesisApply")
-    shinyjs::hideElement(id= "LGEvidenceHypothesisApply")
     updateActionButton(session,"EvidencenewSample", label="Analyze")
     hideTab("Hypothesis","Effects")
     hideTab("Evidence","Multiple")
@@ -92,7 +90,6 @@ changeUI2Simulations<-function() {
   
   if (switches$doBootstrap) {
     shinyjs::hideElement(id= "EvidenceHypothesisApply")
-    shinyjs::hideElement(id= "LGEvidenceHypothesisApply")
   }
   updateTabsetPanel(session, "Hypothesis",selected = "Variables")
   updateNumericInput(session,"rIV",value=0)

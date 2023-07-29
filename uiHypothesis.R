@@ -1,5 +1,4 @@
 source("uiWorld.R")
-source("uiEffectPart.R")
 source("uiQuickHyp.R")
 
 HypothesisTab <-

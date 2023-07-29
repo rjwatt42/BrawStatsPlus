@@ -17,14 +17,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
 fontScale=0.85 # use with 400% zoom in Google Chrome
 fontScale=1.0
 
-# these are minimum widths
-LGGraphHeight="14cm"
-LGPanelHeight="15.3cm"
-LGModalHeight="16.4cm"
-
-# not sure which of these is more useful
-LGModalWidth="30cm"
-LGModalWidth="95%"
+GraphsOnly<-FALSE
 
 maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
 # maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
@@ -83,6 +76,7 @@ shapes<-list(data=21,study=22,parameter=21,meta=24)
 expandLabel<-HTML("&#9974")
 emdash="\u2014"
 helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
+labelSize=4
 
 # ui styles
 labelStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: left;")
@@ -101,7 +95,7 @@ mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colo
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
                 plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
 SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
-LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=32,face="bold"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))
+LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=24,face="bold"),axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
 plotTheme=mainTheme+SMplotTheme
 

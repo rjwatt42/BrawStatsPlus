@@ -131,10 +131,8 @@ EvidenceTab <-
                                                tags$tr(
                                                  tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
                                                  tags$td(width = "25%"),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                                 tags$td(width = "25%", 
-                                                         # actionButton("LGEvidenceStart","i")
-                                                 )
+                                                 tags$td(width = "25%"),
+                                                 tags$td(width = "25%")
                                                )
                                     ),
                                     tags$table(width = "100%",class="myTable",
@@ -143,8 +141,8 @@ EvidenceTab <-
                                                  tags$td(width = "25%", 
                                                          checkboxInput("Welch",label=NULL,value=evidence$Welch),
                                                  ),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
+                                                 tags$td(width = "25%"),
+                                                 tags$td(width = "25%"),
                                                )
                                     ),
                                     conditionalPanel(condition="input.LoadExtras",

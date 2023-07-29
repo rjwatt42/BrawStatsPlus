@@ -19,13 +19,6 @@ likelihoodUpdateTabs<-observeEvent(input$Likelihood,{
     showPossible<<-input$Likelihood
   }
 },priority=100)
-# if the tabs are selected
-likelihoodUpdateTabs<-observeEvent(input$LGshowPossible,{
-  if (input$LGshowPossible=="Samples" || input$LGshowPossible=="Populations")
-  {
-    showPossible<<-input$LGshowPossible
-  }
-},priority=100)
 
 # update samples from populations and vice versa
 # we check to make sure that we are only copying from the current tab to the hidden one
@@ -63,53 +56,6 @@ updateLikelihood<-function(){
     )     
   }
   
-  # if (graphicSource=="Modal") {
-  #           switch (showPossible,
-  #                   "Populations"={
-  #                     likelihood<-
-  #                       list(type=showPossible,
-  #                            Use=input$LGlikelihoodUsePrior,
-  #                            prior=list(populationPDF=input$LGlikelihoodPrior_distr,populationRZ=input$LGlikelihoodPrior_distr_rz, 
-  #                                       populationPDFk=input$LGlikelihoodPrior_distr_k,
-  #                                       populationNullp=input$LGlikelihoodPrior_Nullp
-  #                            ),
-  #                            world=list(populationPDF=input$LGlikelihoodworld_distr,populationRZ=input$LGlikelihoodworld_distr_rz, 
-  #                                       populationPDFk=input$LGlikelihoodworld_distr_k,
-  #                                       populationNullp=input$LGlikelihoodworld_distr_Nullp
-  #                            ),
-  #                            design=list(sampleN=input$LGlikelihoodsN,sampleNRand=input$LGlikelihoodsNRand,sampleNRandK=input$LGlikelihoodsNRandK),
-  #                          targetSample=input$LGlikelihoodPSampRho,targetPopulation=effect$rIV,
-  #                          ResultHistory=ResultHistory,
-  #                          likelihoodTheory=input$LGlikelihoodTheory,likelihoodshortHand=input$LGlikelihoodshortHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
-  #                          appendSim=input$LGlikelihoodP_append,Likelihood_length=as.numeric(input$LGlikelihoodP_length),
-  #                          view=input$LGlikelihoodView,azimuth=input$LGlikelihoodAzimuth,elevation=input$LGlikelihoodElevation,range=input$LGlikelihoodRange,
-  #                          textResult=TRUE
-  #                     )
-  #                   },
-  #                   "Samples"={
-  #                     likelihood<-
-  #                       list(type=showPossible,
-  #                            Use=input$LGlikelihoodUsePrior,
-  #                            prior=list(populationPDF=input$LGlikelihoodPrior_distr,populationRZ=input$LGlikelihoodPrior_distr_rz, 
-  #                                       populationPDFk=input$LGlikelihoodPrior_distr_k,
-  #                                       populationNullp=input$LGlikelihoodPrior_Nullp
-  #                            ),
-  #                            world=list(populationPDF=input$LGlikelihoodworld_distr,populationRZ=input$LGlikelihoodworld_distr_rz, 
-  #                                       populationPDFk=input$LGlikelihoodworld_distr_k,
-  #                                       populationNullp=input$LGlikelihoodworld_distr_Nullp
-  #                            ),
-  #                            design=list(sampleN=input$LGlikelihoodsN,sampleNRand=input$LGlikelihoodsNRand,sampleNRandK=input$LGlikelihoodsNRandK),
-  #                            targetSample=input$LGlikelihoodSampRho,cutaway=input$LGlikelihood_cutaway,targetPopulation=input$LGlikelihoodPrior_distr_k,
-  #                            ResultHistory=ResultHistory,
-  #                            likelihoodTheory=input$LGlikelihoodTheory,likelihoodshortHand=input$LGlikelihoodshortHand,likelihoodSimSlice=input$LGlikelihoodSimSlice,likelihoodCorrection=input$LGlikelihoodCorrection,
-  #                          appendSim=input$LGlikelihood_append,Likelihood_length=as.numeric(input$LGlikelihood_length),
-  #                          view=input$LGlikelihoodView,azimuth=input$LGlikelihoodAzimuth,elevation=input$LGlikelihoodElevation,range=input$LGlikelihoodRange,
-  #                          textResult=TRUE
-  #                     )
-  #                   }
-  #           )
-  #   
-  #         } else {
   switch (showPossible,
           "Populations"={
             likelihood<-
@@ -156,7 +102,6 @@ updateLikelihood<-function(){
   )
   if (pPlus) likelihood$prior$populationNullp<-1-likelihood$prior$populationNullp
   
-  # }
   if (likelihood$world$worldOn==FALSE) {
     likelihood$world$populationPDF<-"Single"
     likelihood$world$populationRZ<-"r"
@@ -186,10 +131,7 @@ updateLikelihood<-function(){
 likelihoodReset<-observeEvent(c(input$likelihoodPrior_Nullp,
                                 input$likelihoodPrior_distr,input$likelihoodPrior_distr_rz,input$likelihoodPrior_distr_k,
                                 input$likelihoodUsePrior,
-                                input$sN,
-                                input$LGlikelihoodPrior_Nullp,
-                                input$LGlikelihoodPrior_distr,input$LGlikelihoodPrior_distr_rz,input$LGlikelihoodPrior_distr_k,input$LGlikelihoodUsePrior,
-                                input$LGlikelihoodsN
+                                input$sN
 ),{
   likelihood_P_ResultHold<<-c()
   likelihood_S_ResultHold<<-c()
@@ -206,16 +148,7 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
                                     input$EvidencenewSample,
                                     input$likelihoodTheory,input$likelihood_sigonly,
                                     input$likelihoodSimSlice,input$likelihoodCorrection,
-                                    input$likelihoodHQ,
-                                    input$LGshowPossible,
-                                    input$LGlikelihood_run,input$LGlikelihoodP_run,
-                                    input$LGlikelihoodSampRho,input$LGlikelihoodPSampRho,
-                                    input$LGlikelihoodUsePrior,input$LGlikelihoodUseSource,
-                                    input$LGlikelihoodPrior_distr,input$LGlikelihoodPrior_distr_rz,input$LGlikelihoodPrior_distr_k,input$LGlikelihoodPrior_Nullp,
-                                    input$LGlikelihoodworld_on,input$LGlikelihoodworld_distr,input$LGlikelihoodworld_distr_rz,input$LGlikelihoodworld_distr_k,input$LGlikelihoodworld_distr_Nullp,
-                                    input$LGlikelihoodsN,input$LGlikelihoodsNRand,input$LGlikelihoodsNRandK,
-                                    input$LGlikelihoodTheory,input$LGlikelihood_sigonly,
-                                    input$LGlikelihoodSimSlice,input$LGlikelihoodCorrection
+                                    input$likelihoodHQ
 ),{
   if (graphicSource=="None") {return(likelihoodResult)}
   
@@ -224,21 +157,11 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
   if (is.element(input$changed,c("Likelihood","likelihood_run","likelihoodP_run","likelihoodPSampRho",
                                  "world_on","world_distr","world_distr_rz","world_distr_k","world_distr_Nullp",
                                  "Prior_distr","Prior_distr_rz","Prior_distr_k","Prior_Nullp",
-                                 "likelihoodTheory","LGlikelihoodSimSlice","LGlikelihoodCorrection",
+                                 "likelihoodTheory",
                                  "sN","sNRand","sNRandK")))
   {
     graphicSource<<-"Main"
     showPossible<-input$Likelihood
-  }
-  if (is.element(input$changed,c("LGshowPossible",
-                                 "LGlikelihood_run","LGlikelihood_run","LGlikelihoodSampRho",
-                                 "LGlikelihoodworld_on","LGlikelihoodworld_distr","LGlikelihoodworld_distr_rz","LGlikelihoodworld_distr_k","LGlikelihoodworld_distr_Nullp",
-                                 "LGlikelihoodPrior_distr","LGlikelihoodPrior_distr_rz","LGlikelihoodPrior_distr_k","LGlikelihoodPrior_Nullp",
-                                 "LGlikelihoodTheory","LGlikelihoodSimSlice","LGlikelihoodCorrection",
-                                 "LGlikelihoodsN","LGlikelihoodsNRand","LGlikelihoodsNRandK")))
-  {
-    graphicSource<<-"Modal"
-    showPossible<-input$LGshowPossible
   }
   IV<-updateIV()
   DV<-updateDV()
@@ -249,7 +172,7 @@ likelihoodAnalysis<-eventReactive(c(input$Likelihood,
   result<-sampleAnalysis()
   likelihood<-updateLikelihood()
   
-  if ((input$likelihood_run+input$likelihoodP_run+input$LGlikelihood_run+input$LGlikelihoodP_run>validLikelihood)){
+  if ((input$likelihood_run+input$likelihoodP_run>validLikelihood)){
     showNotification(paste0("Possible ",likelihood$type," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
     validLikelihood<<-validLikelihood+1
     likelihoodRes<-likelihood_run(IV,DV,effect,design,evidence,likelihood,metaResult,doSample = TRUE)
@@ -302,6 +225,12 @@ makeLikelihoodGraph<-function(){
 # likelihood outputs    
 # show likelihood analysis        
 output$LikelihoodPlot <- renderPlot( {
+  LKtype<-c(input$Likelihood,input$EvidencenewSample)
+  par(cex=1.2)
+  makeLikelihoodGraph()
+})
+
+output$LikelihoodPlot1 <- renderPlot( {
   LKtype<-c(input$Likelihood,input$EvidencenewSample)
   par(cex=1.2)
   makeLikelihoodGraph()

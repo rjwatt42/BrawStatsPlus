@@ -16,15 +16,11 @@ loadExtras<-function(session,addingExtras=TRUE){
     switches$doLikelihoodInfer<<-FALSE
     
     updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2)
-    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2)
     updateSelectInput(session,"Explore_typeD",choices=designChoices)
-    updateSelectInput(session,"LGExplore_typeD",choices=designChoices)
-    
+
     updateSelectInput(session,"Explore_showH",choices=showChoices)
-    updateSelectInput(session,"LGExplore_showH",choices=showChoices)
     updateSelectInput(session,"Explore_showD",choices=showChoices)
-    updateSelectInput(session,"LGExplore_showD",choices=showChoices)
-    
+
     updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoices)
     updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected="r")
     updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected="p")
@@ -56,15 +52,11 @@ loadExtras<-function(session,addingExtras=TRUE){
     
     # explore
     updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2Extra)
-    updateSelectInput(session,"LGExplore_typeH",choices=hypothesisChoicesV2Extra)
     updateSelectInput(session,"Explore_typeD",choices=designChoicesExtra)
-    updateSelectInput(session,"LGExplore_typeD",choices=designChoicesExtra)
-    
+
     updateSelectInput(session,"Explore_showH",choices=showChoicesExtra)
-    updateSelectInput(session,"LGExplore_showH",choices=showChoicesExtra)
     updateSelectInput(session,"Explore_showD",choices=showChoicesExtra)
-    updateSelectInput(session,"LGExplore_showD",choices=showChoicesExtra)
-    
+
     updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoicesExtra)
     updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra,selected="r")
     updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra,selected="p")

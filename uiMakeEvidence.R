@@ -114,18 +114,16 @@ EvidenceTab <-
                                                tags$tr(
                                                  tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
                                                  tags$td(width = "25%"),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                                 tags$td(width = "25%", 
-                                                         # actionButton("LGEvidenceStart","i")
-                                                 )
+                                                 tags$td(width = "25%"),
+                                                 tags$td(width = "25%")
                                                ),
                                                tags$tr(
                                                  tags$td(width = "25%", tags$div(style = localPlainStyle, "Welch")),
                                                  tags$td(width = "25%", 
                                                          checkboxInput(paste0(prefix,"Welch"),label=NULL,value=evidence$Welch),
                                                  ),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
-                                                 tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
+                                                 tags$td(width = "25%"),
+                                                 tags$td(width = "25%"),
                                                ),
                                                tags$tr(
                                                  tags$td(width = "25%", tags$div(style = localPlainStyle, "llr(0)")),

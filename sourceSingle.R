@@ -12,7 +12,7 @@ onlyAnalysis<-FALSE
 observeEvent(c(input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
   onlyAnalysis<<-TRUE
 },priority=100)
-observeEvent(c(input$EvidencenewSample,input$LGEvidencenewSample),{
+observeEvent(c(input$EvidencenewSample),{
   onlyAnalysis<<-FALSE
 },priority=100)
 
@@ -25,15 +25,6 @@ sampleUpdate<-observeEvent(c(input$Single,input$EvidencenewSample,input$Evidence
                        selected = "Sample")
       updateTabsetPanel(session, "Reports",
                         selected = "Sample")
-    }
-  }
-}
-)
-observeEvent(input$LGEvidencenewSample,{
-  if (input$LGEvidencenewSample>0) {
-    if (!is.element(input$LGEvidenceGraphs,c("Sample","Describe","Infer")))
-    {updateTabsetPanel(session, "LGEvidenceGraphs",
-                       selected = "Sample")
     }
   }
 }
@@ -70,9 +61,9 @@ doSampleAnalysis<-function(IV,IV2,DV,effect,design,evidence){
 }
 
 # eventReactive wrapper
-sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewSample,input$LGEvidencenewSample,
+sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewSample,
                                 input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
-  if (any(input$EvidenceHypothesisApply,input$EvidencenewSample,input$LGEvidencenewSample)>0){
+  if (any(input$EvidenceHypothesisApply,input$EvidencenewSample)>0){
     validSample<<-TRUE
     IV<-updateIV()
     IV2<-updateIV2()
@@ -264,7 +255,7 @@ makeDescriptiveGraph <- function(){
 
 # single inferential graph
 makeInferentialGraph <- function() {
-  doit<-c(input$EvidenceInfer_type,input$LGEvidenceInfer_type,input$evidenceTheory,
+  doit<-c(input$EvidenceInfer_type,input$evidenceTheory,
           input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
   doIt<-editVar$data
   llrConsts<-c(input$llr1,input$llr2)
@@ -335,6 +326,30 @@ output$DescriptivePlot <- renderPlot({
 })
 
 output$InferentialPlot <- renderPlot({
+  if (debug) debugPrint("InferentialPlot")
+  doIt<-editVar$data
+  g<-makeInferentialGraph()
+  if (debug) debugPrint("InferentialPlot - exit")
+  g
+})
+
+output$SamplePlot1 <- renderPlot({
+  if (debug) debugPrint("SamplePlot")
+  doIt<-editVar$data
+  g<-makeSampleGraph()
+  if (debug) debugPrint("SamplePlot - exit")
+  g
+})
+
+output$DescriptivePlot1 <- renderPlot({
+  if (debug) debugPrint("DescriptivePlot")
+  doIt<-editVar$data
+  g<-makeDescriptiveGraph()
+  if (debug) debugPrint("DescriptivePlot - exit")
+  g
+})
+
+output$InferentialPlot1 <- renderPlot({
   if (debug) debugPrint("InferentialPlot")
   doIt<-editVar$data
   g<-makeInferentialGraph()

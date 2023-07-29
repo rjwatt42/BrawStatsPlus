@@ -1,5 +1,5 @@
 MainReports <-
-  wellPanel(
+  wellPanel(id="MainReports",
     # style=paste("min-width:", graphWidth, ";"),
     style = paste("background: ",maincolours$panelC), 
     tabsetPanel(type="tabs",
@@ -20,7 +20,7 @@ MainReports <-
                 ,tabPanel("Explore",value="Explore",
                           plotOutput("ExploreReport"),
                           style =paste("background:", maincolours$graphC, ";"))
-                ,possibleReportPanel
+                ,possibleReportPanel()
     )
     # ,width=fullPanelWidth
   )

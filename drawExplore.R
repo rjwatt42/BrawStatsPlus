@@ -21,7 +21,7 @@ drawNHSTLabel<-function(lb1,lb1xy,xoff,col1) {
     mathlabel<-TRUE
   }
   geom_label(data=lb1xy,aes(x=x+xoff,y=y),label=lb1,
-             hjust=-0.2,vjust=0.5,size=4,colour="white",fill=col1,parse=mathlabel)
+             hjust=-0.2,vjust=0.5,size=labelSize,colour="white",fill=col1,parse=mathlabel)
 }
 
 drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
@@ -860,7 +860,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       }
       if (ni_max2>1){label<-paste(explore$Explore_typeShow,": ",label,sep="")}
       lpts<-data.frame(x=min(n)+vals_offset,y=0.8+(ni_max2-1)/10,label=label)
-      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=3.5)
+      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=labelSize)
     }
     
     # find r80
@@ -888,7 +888,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       }
       if (ni_max2>1){label<-paste(explore$Explore_typeShow,": ",label,sep="")}
       lpts<-data.frame(x=0+vals_offset,y=0.8+(ni_max2-1)/10,label=label)
-      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=3.5)
+      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=labelSize)
     }
   }
 
@@ -905,7 +905,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         vals_offset<-(ni2-1)*valsGap*2 
       }
       td<-data.frame(x=vals_offset,y=ylim[2]-diff(ylim)/6,label=explore$Explore_whichShow)
-      g<-g+geom_label(data=td,aes(x=x, y=y, label=label,hjust=0.5))
+      g<-g+geom_label(data=td,aes(x=x, y=y, label=label,hjust=0.5),size=labelSize)
     }
     if (is.character(exploreResult$result$vals[1])) {
       g<-g+geom_vline(aes(xintercept=valsGap*c(1,ni_max2-1)-0.5*(valsGap-1)))

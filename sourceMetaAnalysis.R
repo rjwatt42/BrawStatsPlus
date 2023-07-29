@@ -20,35 +20,10 @@ observeEvent(input$metaRun,{
       }
       metaResult$nsims<<-metaResult$count+as.numeric(input$meta_runlength)
       updateActionButton(session,"metaRun",label=stopLabel)
-      updateActionButton(session,"LGmetaRun",label=stopLabel)
       notRunningMeta<<-FALSE
     } else {
       metaResult$nsims<<-metaResult$count
       updateActionButton(session,"metaRun",label="Run")
-      updateActionButton(session,"LGmetaRun",label="Run")
-      notRunningMeta<<-TRUE
-    }
-  }
-}
-,priority=100
-)
-
-observeEvent(input$LGmetaRun,{
-  if (debug) print("LGmetaRun")
-  if (input$LGmetaRun>0) {
-    if (notRunningMeta) {
-      validMeta<<-TRUE
-      if (!input$LGmeta_append) {
-        resetMeta()
-      }
-      metaResult$nsims<<-metaResult$count+as.numeric(input$LGmeta_runlength)
-      updateActionButton(session,"metaRun",label=stopLabel)
-      updateActionButton(session,"LGmetaRun",label=stopLabel)
-      notRunningMeta<<-FALSE
-    } else {
-      metaResult$nsims<<-metaResult$count
-      updateActionButton(session,"metaRun",label="Run")
-      updateActionButton(session,"LGmetaRun",label="Run")
       notRunningMeta<<-TRUE
     }
   }
@@ -119,7 +94,7 @@ doMetaAnalysis<-function(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResul
 # Expected outputs
 # show expected result    
 makeMetaGraph <- function() {
-  doit<-c(input$metaRun,input$LGmetaRun)
+  doit<-c(input$metaRun)
   
   if (!validMeta) {return(ggplot()+plotBlankTheme)}
   
@@ -222,7 +197,6 @@ makeMetaGraph <- function() {
     }
   } else {
     updateActionButton(session,"metaRun",label="Run")
-    updateActionButton(session,"LGmetaRun",label="Run")
     notRunningMeta<<-TRUE
   }
   
@@ -231,6 +205,11 @@ makeMetaGraph <- function() {
 }
 
 output$MetaAnalysisPlot <- renderPlot({
+  doit<-c(input$metaRun)
+  makeMetaGraph()
+})
+
+output$MetaAnalysisPlot1 <- renderPlot({
   doit<-c(input$metaRun)
   makeMetaGraph()
 })

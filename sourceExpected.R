@@ -22,7 +22,7 @@ resetExpected()
 notRunningExpected<-TRUE
 
 # here's where we start a run
-observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
+observeEvent(c(input$EvidenceExpectedRun),{
   if (notRunningExpected) {
     startTime<<-Sys.time()
     cycleTime<<-0
@@ -33,15 +33,13 @@ observeEvent(c(input$EvidenceExpectedRun,input$LGEvidenceExpectedRun),{
     } else {
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
     }
-    if (input$EvidenceExpectedRun>0 || input$LGEvidenceExpectedRun>0) {
+    if (input$EvidenceExpectedRun>0) {
       updateActionButton(session,"EvidenceExpectedRun",label=stopLabel)
-      updateActionButton(session,"LGEvidenceExpectedRun",label=stopLabel)
       notRunningExpected<<-FALSE
     }
   } else {
     expectedResult$nsims<<-expectedResult$count
     updateActionButton(session,"EvidenceExpectedRun",label="Run")
-    updateActionButton(session,"LGEvidenceExpectedRun",label="Run")
     notRunningExpected<<-TRUE
   }
 })
@@ -58,14 +56,7 @@ expectedUpdate<-observeEvent(input$EvidenceExpectedRun,{
 }
 ,priority=100
 )
-expectedLGUpdate<-observeEvent(input$LGEvidenceExpectedRun,{
-  if (input$LGEvidenceExpectedRun>0) {
-    updateTabsetPanel(session, "LGEvidenceGraphs",selected = "Expect")
-    validExpected<<-TRUE
-  }
-}
-,priority=100
-)
+
 observeEvent(input$EvidenceExpected_type,{
   if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D"))) {
     switch(input$EvidenceExpected_type,
@@ -123,10 +114,8 @@ makeExpectedGraph <- function() {
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
           input$evidenceTheory,
           input$STMethod,input$alpha,
-          input$LGEvidenceExpected_type,input$LGEvidenceExpected_par1,input$LGEvidenceExpected_par2,input$LGEvidenceEffect_type,
           input$world_distr,input$world_distr_rz,input$world_distr_k,input$world_distr_Nullp,
-          input$LGEvidenceworld_distr,input$LGEvidenceworld_distr_rz,input$LGEvidenceworld_distr_k,input$LGEvidenceworld_distr_Nullp,
-          input$EvidenceExpectedRun,input$LGEvidenceExpectedRun)
+          input$EvidenceExpectedRun)
   
   cycleCount<<-cycleCount+1
   if (cycleCount<2) {
@@ -277,11 +266,7 @@ makeExpectedGraph <- function() {
     }
   } else {
     updateActionButton(session,"EvidenceExpectedRun",label="Run")
-    updateActionButton(session,"LGEvidenceExpectedRun",label="Run")
     notRunningExpected<<-TRUE
-    # n<-expectedResult$result$nval
-    # fd<-fitdist(n[,1]-min(n)+1,"gamma",method="mge")
-    # print(c(fd$estimate["shape"],1/fd$estimate["rate"]))
   }
   return(g)
 }
@@ -289,8 +274,16 @@ makeExpectedGraph <- function() {
 output$ExpectedPlot <- renderPlot({
   if (debug) {debugPrint("ExpectedPlot")}
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
-          input$LGEvidenceExpected_type,input$LGEvidenceExpected_par1,input$LGEvidenceExpected_par2,input$LGEvidenceEffect_type,
-          input$EvidenceExpectedRun,input$LGEvidenceExpectedRun)
+          input$EvidenceExpectedRun)
+  g<-makeExpectedGraph()
+  if (debug) {debugPrint("ExpectedPlot - exit")}
+  g
+})
+
+output$ExpectedPlot1 <- renderPlot({
+  if (debug) {debugPrint("ExpectedPlot")}
+  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
+          input$EvidenceExpectedRun)
   g<-makeExpectedGraph()
   if (debug) {debugPrint("ExpectedPlot - exit")}
   g

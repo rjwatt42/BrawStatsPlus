@@ -640,12 +640,12 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                 }
         )
         lpts1<-data.frame(x = xoff[i]-0.98, y = ylim[2]+diff(ylim)/25,label = labelPt1)
-        g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill = "white",size=3)
+        g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill="white",size=labelSize)
         lpts1a<-data.frame(x = xoff[i]-0.98, y = ylim[1]-diff(ylim)/25,label = labelPt1a)
-        g<-g+geom_label(data=lpts1a,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill = "white",size=3)
+        g<-g+geom_label(data=lpts1a,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill="white",size=labelSize)
         if (is.element(expType,c("e1d","e2d"))) {
           lpts1<-data.frame(x = xoff[i]-0.98, y = sum(ylim)/2,label = labelPt1b)
-          g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill = "white",size=3)
+          g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill="white",size=labelSize)
         }
       } else {
         switch (expType,
@@ -667,16 +667,16 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         lpts1<-data.frame(x = xoff[i]-0.95, y = ylim[2]+diff(ylim)/25,label = labelPt3)
         # lpts2<-data.frame(x = xoff[i]-0.95, y = ylim[1]-diff(ylim)/25,label = labelPt3)
       }
-      g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill = "white",size=3)
+      g<-g+geom_label(data=lpts1,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill="white",size=labelSize)
       # if (!is.null(lpts2)) {
-      # g<-g+geom_label(data=lpts2,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill = "white",size=3)
+      # g<-g+geom_label(data=lpts2,aes(x = x, y = y, label=label), hjust=0, vjust=0, fill="white",size=labelSize)
       # }
       }
     }
     
     if (is.element(expType,c("r","ci1","ci2"))) {
       lpts<-data.frame(x = xoff[i]-0.95, y = ylim[2],label=paste("actual =",format(rActual[i],digits=graph_precision)))
-      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill = "white",size=3)
+      g<-g+geom_label(data=lpts,aes(x = x, y = y, label = label), hjust=0, vjust=0, fill="white",size=labelSize)
     }
   }
   }

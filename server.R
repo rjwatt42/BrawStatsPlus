@@ -90,7 +90,6 @@ shinyServer(function(input, output, session) {
 ####################################
 # BASIC SET UP that cannot be done inside ui.R  
   shinyjs::hideElement(id= "EvidenceHypothesisApply")
-  shinyjs::hideElement(id= "LGEvidenceHypothesisApply")
   shinyjs::hideElement(id= "Using")
   shinyjs::hideElement(id="EvidenceExpectedStop")
   updateSelectInput(session, "IVchoice", choices = variables$name, selected = variables$name[1])
@@ -103,6 +102,7 @@ shinyServer(function(input, output, session) {
   hideElement("extraRep3")
   }
   
+
 ####################################
   if (debug) debugPrint("ServerKeys")
   
@@ -121,6 +121,44 @@ shinyServer(function(input, output, session) {
     shortHand<<-input$shortHand
   }
   )
+  
+  observeEvent(input$LargeGraphs, {
+    if (input$LargeGraphs) {
+      plotTheme<<-mainTheme+LGplotTheme
+      labelSize<<-6
+      
+      output$mainColumns <- renderUI({
+        tagList(
+          column(width=12,
+                 style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
+                 MainGraphs1
+          )
+        )
+      }
+      )
+      hideElement("HypothesisPopulation")
+    } else {
+      plotTheme<<-mainTheme+SMplotTheme
+      labelSize<<-4
+      
+      output$mainColumns <- renderUI({
+        tagList(
+          column(width=4, id="HypothesisPopulation",
+                 style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
+                 HypothesisDiagram,
+                 PopulationDiagram
+          ),
+          column(width=8,
+                 style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
+                 MainGraphs,
+                 MainReports
+          )
+        )
+      }
+      )
+      showElement("HypothesisPopulation")
+    }
+  })
   
 ####################################
 # other housekeeping
@@ -344,8 +382,6 @@ source("sourceUpdateData.R",local=TRUE)
 
   source("sourceInspectVariables.R",local=TRUE)
   source("sourceVariables.R",local=TRUE)
-  
-  source("sourceLGDisplay.R",local=TRUE)
   
   source("sourceUpdateVariables.R",local=TRUE)
   source("sourceUpdateSystem.R",local=TRUE)

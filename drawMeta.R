@@ -242,9 +242,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$exp$Smax),digits=2),"\u00B1",format(std(metaResult$exp$Smax),digits=2)," (",format(sum(y>x)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[1], y=ylim[2], lb=fullText)
       if (mean(y>x)) {
-      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="yellow")
+      g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=labelSize,fill="yellow")
       } else {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=3,fill="grey")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0,vjust=1,size=labelSize,fill="grey")
       }
       fullText<-paste0("Gauss","(",format(metaResult$gauss$Kmax,digits=3),"\u00B1",format(std(metaResult$gauss$Kmax),digits=2),")")
       if (metaAnalysis$meta_nullAnal) {
@@ -253,9 +253,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       fullText<-paste0(fullText,"\nS= ",format(mean(metaResult$gauss$Smax),digits=2),"\u00B1",format(std(metaResult$gauss$Smax),digits=2)," (",format(sum(x>y)),"/",length(metaResult$bestDist),")")
       pts_lb<-data.frame(x=xlim[2], y=ylim[1], lb=fullText)
       if (mean(y>x)) {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="grey")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=labelSize,fill="grey")
       } else {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=3,fill="yellow")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=1,vjust=0,size=labelSize,fill="yellow")
       }
     } else {
       lb<-paste0("\u2014",metaResult$bestDist,"(",format(metaResult$bestK,digits=3),"\u00B1",format(std(result$exp$Kmax),digits=2),")")
@@ -269,9 +269,9 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
       use<-which.max(c(n1,n2,n3))
       bestD<-c("Single","Gauss","Exp")[use]
       if (metaWhich==bestD) {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="yellow")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=labelSize,fill="yellow")
       } else {
-        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=3,fill="grey")
+        g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),hjust=0.5,vjust=vj,size=labelSize,fill="grey")
       }
     g+ggtitle(metaWhich)
     }
@@ -417,6 +417,6 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
   }
   pts_lb<-data.frame(x=0,y=max(y)*1.1,lb=lb)
   if (absPlot) pts_lb$x[1]<-0.5
-  g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),colour=colour,fill="white",fontface="bold")
+  g<-g+geom_label(data=pts_lb,aes(x=x,y=y,label=lb),colour=colour,fill="white",size=labelSize,fontface="bold")
   return(g)
 }
