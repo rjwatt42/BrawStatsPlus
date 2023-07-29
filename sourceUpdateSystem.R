@@ -59,7 +59,7 @@ updateDesign<-function(){
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
-               sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,
+               sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,sCheatingBudget=input$sCheatingBudget,
                sReplicationOn=input$sReplicationOn,
                sReplPowerOn=input$sReplPowerOn,sReplPower=input$sReplPower,
                sReplSigOnly=input$sReplSigOnly,

@@ -15,6 +15,15 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
     return(result)
   }
   
+  if (design$sCheating=="Budget") {
+    ntrials<-0
+    while (!isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence) && ntrials<design$sCheatingBudget) {
+      sample<-makeSample(IV,IV2,DV,effect,design)
+      result<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+      ntrials<-ntrials+result$nval
+    }
+    return(result)
+  }
   
   if (design$sCheating=="Prune") {
     ntrials<-0

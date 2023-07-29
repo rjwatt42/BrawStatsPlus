@@ -13,6 +13,7 @@ uiCheating<-function(prefix="") {
                                                   ),
                                                   "Studies"=list(
                                                     "Retry"="Retry",
+                                                    "Budget"="Budget",
                                                     "Add"="Add"
                                                   )
                                      ),
@@ -20,9 +21,26 @@ uiCheating<-function(prefix="") {
                                      selectize=FALSE
                          )
                  ),
-                 tags$td(width = "20%", tags$div(style = localStyle, "Amount:")),
-                 tags$td(width = "20%",
-                         numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount))
+                 tags$td(width = "40%",
+                         conditionalPanel(condition="input.sCheating=='Budget'",
+                                          tags$table(width = "100%",class="myTable",
+                                                     tags$tr(
+                                                       tags$td(width = "50%", tags$div(style = localStyle, "Budget:")),
+                                                       tags$td(width = "50%",
+                                                               numericInput(paste0(prefix,"sCheatingBudget"),label=NULL,value=design$sCheatingBudget))
+                                                     )
+                                          )
+                         ),
+                         conditionalPanel(condition="input.sCheating!='Budget'",
+                                          tags$table(width = "100%",class="myTable",
+                                                     tags$tr(
+                                                       tags$td(width = "50%", tags$div(style = localStyle, "Amount:")),
+                                                       tags$td(width = "50%",
+                                                               numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount))
+                                                     )
+                                          )
+                         ),
+                 ),
                ),
     )
   )
