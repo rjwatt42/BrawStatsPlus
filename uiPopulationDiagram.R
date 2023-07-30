@@ -1,5 +1,5 @@
 
-PopulationDiagram <-
+PopulationDiagram <- function() {
   
   wellPanel(
     style = paste("background: ",maincolours$panelC), 
@@ -16,4 +16,4 @@ PopulationDiagram <-
     ),
     width="8cm"
   )
-    
+}

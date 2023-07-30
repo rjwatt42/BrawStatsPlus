@@ -12,7 +12,7 @@ worldDiagram<-function() {
 }
 
 
-  HypothesisDiagram <-
+  HypothesisDiagram <-function() {
     wellPanel(
       style = paste("background: ",maincolours$panelC), 
       tabsetPanel(type="tabs",
@@ -25,4 +25,5 @@ worldDiagram<-function() {
       ),
       width="8cm"
     )
+  }
   

@@ -122,8 +122,32 @@ shinyServer(function(input, output, session) {
   }
   )
   
-  observeEvent(input$LargeGraphs, {
-    currentTab<-input$Graphs
+  observeEvent(c(input$LargeGraphs,input$WhiteGraphs), {
+    currentGraph<-input$Graphs
+    currentReport<-input$Reports
+    
+    if (input$WhiteGraphs) {
+      maincolours<<-maincoloursBW
+      mainTheme<<-theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
+                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                        plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
+      plotBlankTheme<<-theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                             panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                             plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                             axis.title=element_text(size=16,face="bold")
+      )
+    } else {
+      maincolours<<-maincoloursBL
+      mainTheme<<-theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
+                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                        plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
+      plotBlankTheme<<-theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                             panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                             plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                             axis.title=element_text(size=16,face="bold")
+      )
+    }
+    
     if (input$LargeGraphs) {
       plotTheme<<-mainTheme+LGplotTheme
       labelSize<<-6
@@ -133,8 +157,8 @@ shinyServer(function(input, output, session) {
         tagList(
           column(width=12,
                  style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
-                 MainGraphs1,
-                 MainReports1
+                 MainGraphs1(),
+                 MainReports1()
           )
         )
       }
@@ -142,6 +166,7 @@ shinyServer(function(input, output, session) {
       hideElement("HypothesisPopulation")
     } else {
       plotTheme<<-mainTheme+SMplotTheme
+      pplotTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
       labelSize<<-4
       char3D<<-1.3
       
@@ -149,20 +174,21 @@ shinyServer(function(input, output, session) {
         tagList(
           column(width=4, id="HypothesisPopulation",
                  style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
-                 HypothesisDiagram,
-                 PopulationDiagram
+                 HypothesisDiagram(),
+                 PopulationDiagram()
           ),
           column(width=8,
                  style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
-                 MainGraphs,
-                 MainReports
+                 MainGraphs(),
+                 MainReports()
           )
         )
       }
       )
       showElement("HypothesisPopulation")
     }
-    updateTabsetPanel(session, "Graphs",selected = currentTab)
+    updateTabsetPanel(session, "Graphs",selected = currentGraph)
+    updateTabsetPanel(session, "Reports",selected = currentReport)
   })
   
 ####################################

@@ -1,4 +1,4 @@
-MainReports <-
+MainReports <- function() {
   wellPanel(id="MainReports",
             style = paste("background: ",maincolours$panelC), 
             tabsetPanel(type="tabs",
@@ -21,9 +21,9 @@ MainReports <-
                         ,possibleReportPanel()
             )
   )
+}
 
-
-MainReports1 <-
+MainReports1 <- function() {
   wellPanel(id="MainReports",
             style = paste("background: ",maincolours$panelC), 
             tabsetPanel(type="tabs",
@@ -47,5 +47,5 @@ MainReports1 <-
                         ,possibleReportPanel()
             )
   )
-
+}
 

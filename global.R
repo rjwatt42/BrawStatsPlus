@@ -19,8 +19,9 @@ char3D=1.3
 
 GraphsOnly<-FALSE
 
-maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
+maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
 maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF",graphBack="#888888")
+maincolours<-maincoloursBL
 
 mainHue=0.55
 

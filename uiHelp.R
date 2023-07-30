@@ -134,14 +134,14 @@ wellPanel(id="HelpTabset",
                            style = paste("background: ",panelcolours$helpC,";"),
                            tags$table(width = "100%",class="myTable",
                                       tags$tr(
-                                        tags$td(width="25%",tags$div(style = localPlainStyle, "")),
-                                        tags$td(width="10%",tags$div(style = localPlainStyle, "")),
-                                        tags$td(width="40%",tags$div(style = localPlainStyle, "Load extras:")),
-                                        tags$td(width="25%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue))
+                                        tags$td(width="25%",tags$div(style = localPlainStyle, "Load extras:")),
+                                        tags$td(width="10%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue)),
+                                        tags$td(width="40%"),
+                                        tags$td(width="25%")
                                       ),
                                       tags$tr(
-                                        tags$td(width="25%",tags$div(style = localPlainStyle, "")),
-                                        tags$td(width="10%",tags$div(style = localPlainStyle, "")),
+                                        tags$td(width="25%",tags$div(style = localPlainStyle, "White graphs:")),
+                                        tags$td(width="10%",checkboxInput("WhiteGraphs", label=NULL,value=FALSE)),
                                         tags$td(width="40%",tags$div(style = localPlainStyle, "Large graphs:")),
                                         tags$td(width="25%",checkboxInput("LargeGraphs", label=NULL,value=FALSE))
                                       )

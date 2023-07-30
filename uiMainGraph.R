@@ -2,7 +2,7 @@ source("uiMetaGraph.R")
 source("uiPossibleGraph.R")
 
 
-MainGraphs <-
+MainGraphs <- function() {
   wellPanel(
     # style=paste("min-width:", graphWidth, ";"),
     style = paste("background: ",maincolours$panelC), 
@@ -28,8 +28,9 @@ MainGraphs <-
     ),
     # ,width=fullPanelWidth
   )
+}
 
-MainGraphs1 <-
+MainGraphs1 <-function() {
   wellPanel(
     # style=paste("min-width:", graphWidth, ";"),
     style = paste("background: ",maincolours$panelC), 
@@ -55,3 +56,4 @@ MainGraphs1 <-
     ),
     # ,width=fullPanelWidth
   )
+}

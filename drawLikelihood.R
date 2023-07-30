@@ -29,7 +29,7 @@ colDistS=darken(plotcolours$infer_sigC,off=-0.4)
 highTransparency=0.25
 
 scale3D<-1.1
-wallHeight<-0.75
+wallHeight<-0.85
 
 doConnecting<-TRUE
 draw_lower_limit=0.01
@@ -155,11 +155,18 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                            cex.axis=0.6,
                            xlab = "Populations", ylab = "Samples", zlab = ylab
             )
-            lines(trans3d(x=c(view_lims[1],view_lims[1]),
-                          y=c(view_lims[1],view_lims[1]),
-                          z=c(0,1),pmat=mapping),col="black")
-            
+            # outside box            
             if (likelihood$boxed){
+              polygon(trans3d(x=c(view_lims[1], view_lims[1], view_lims[1],view_lims[1]),
+                              y=c(view_lims[1], view_lims[1], view_lims[2],view_lims[2]),
+                              z=c(0, 1, 1,0),mapping),
+                      col="#aaaaaa",border=NA
+              )
+              polygon(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2],view_lims[2]),
+                              y=c(view_lims[2], view_lims[2], view_lims[2],view_lims[2]),
+                              z=c(0, 1, 1,0),mapping),
+                      col="#aaaaaa",border=NA
+              )
               BoxCol<-"#666666"
               lines(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2]),
                             y=c(view_lims[1],view_lims[2],view_lims[2]),
@@ -174,27 +181,54 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                             y=c(view_lims[2],view_lims[2]),
                             z=c(0,1),pmat=mapping),col=BoxCol)
             }
-            tick_grow<-2
             
+            tick_grow<-2
+            # z-axis
+            lines(trans3d(x=c(view_lims[1],view_lims[1]),
+                          y=c(view_lims[1],view_lims[1]),
+                          z=c(0,1)*wallHeight,pmat=mapping),col="black")
+            # short ticks
+            if (likelihood$boxed) {
+              plot_ticks<-seq(0,1/wallHeight,0.1)*wallHeight
+            } else {
+              plot_ticks<-seq(0,1,0.1)*wallHeight
+            }
+            tick.z.start <- trans3d(view_lims[1],view_lims[1],plot_ticks, mapping)
+            tick.z.end <- trans3d(view_lims[1],view_lims[1]-tick_length,plot_ticks, mapping)
+            segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
+            # long ticks
+            long_ticks<-seq(0,1,0.5)*wallHeight
+            tick.z.start <- trans3d(view_lims[1],view_lims[1],long_ticks, mapping)
+            tick.z.end <- trans3d(view_lims[1],view_lims[1]-tick_length*tick_grow,long_ticks, mapping)
+            segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
+            # label
+            pos.z<-trans3d(-1*view_lims[2],-1.2*view_lims[2],0.5*wallHeight,mapping)
+            rotate.z=trans3d(x=c(view_lims[1],view_lims[1]),
+                             y=c(view_lims[1],view_lims[1]),
+                             z=c(0,1),pmat=mapping)
+            rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
+            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=0.65*char3D)
+            
+            # x and y ticks
               plot_ticks<-seq(0.1,view_lims[2],0.1)
               long_ticks<-seq(0.5,view_lims[2],0.5)
               plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
               long_ticks<-c(-rev(long_ticks),0,long_ticks)
-              
+            # short ticks  
             tick.x.start <- trans3d(plot_ticks, view_lims[1], 0.0, mapping)
             tick.x.end <- trans3d(plot_ticks , view_lims[1]-tick_length, 0.0, mapping)
             tick.y.start <- trans3d(view_lims[2], plot_ticks, 0.0, mapping)
             tick.y.end <- trans3d(view_lims[2]+tick_length, plot_ticks , 0.0, mapping)
             segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
-            
+            # long ticks
             tick.x.start <- trans3d(long_ticks, view_lims[1], 0.0, mapping)
             tick.x.end <- trans3d(long_ticks , view_lims[1]-tick_length*tick_grow, 0.0, mapping)
             tick.y.start <- trans3d(view_lims[2], long_ticks, 0.0, mapping)
             tick.y.end <- trans3d(view_lims[2]+tick_length*tick_grow, long_ticks , 0.0, mapping)
             segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
-            
+            # tick labels
             ticks.x<-trans3d(long_ticks+tick_length,view_lims[1]- tick_length*char3D-0.1,0,mapping)
             ticks.y<-trans3d(view_lims[2]+tick_length*char3D+0.1,long_ticks-0.02,0,mapping)
             text(ticks.x$x,ticks.x$y,long_ticks,cex=0.6*char3D,adj=c(1,NA))
@@ -213,13 +247,6 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             
             pos.y<-trans3d(view_lims[2]+tick_length*tick_grow*char3D+0.1,0,0,mapping)
             text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D)
-            
-            pos.z<-trans3d(-1*view_lims[2],-1.1*view_lims[2],0.5,mapping)
-            rotate.z=trans3d(x=c(view_lims[1],view_lims[1]),
-                           y=c(view_lims[1],view_lims[1]),
-                           z=c(0,1),pmat=mapping)
-            rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
-            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=0.75*char3D)
             
             # general lines on the floor
             if (doFloorLines) {

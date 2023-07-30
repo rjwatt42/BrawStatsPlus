@@ -18,16 +18,8 @@ if (switches$doKeys) {
     }
     
     if (input$keypress==ascii("w") && controlKeyOn){
-      maincolours<<-maincoloursBW
-      mainTheme<<-theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
-                      panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                      plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
-      plotTheme<<-mainTheme+SMplotTheme
-      plotBlankTheme<<-theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
-                           panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                           plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
-                           axis.title=element_text(size=16,face="bold")
-      )
+      was<-input$WhiteGraphs
+      updateCheckboxInput(session,"WhiteGraphs",value=!was)
     }
     
     # control-m - add in meta-analysis
@@ -78,7 +70,7 @@ if (switches$doKeys) {
     
     if (pPlus) {v<-0.26}
     else       {v<-0.74}
-    # control-alt-p set world to model psych
+    # control-shift-p set world to model psych
     if (input$keypress==ascii("p") && controlKeyOn){
       loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
