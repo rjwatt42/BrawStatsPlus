@@ -67,6 +67,7 @@ source("uiInspectDiagram.R")
   graphH="50vh"
   graphH1="90vh"
   reportH="30vh"
+  reportH1="60vh"
   graphW=8
 
 shinyUI(fluidPage(
@@ -74,6 +75,14 @@ shinyUI(fluidPage(
     
     tags$style(type="text/css",".recalculating {opacity: 1.0;}" ),   
 
+    tags$head(tags$style(paste0("#HypothesisPlot{height:",graphH," !important;}"))),
+    tags$head(tags$style(paste0("#WorldPlot{height:","25vh"," !important;}"))),
+    tags$head(tags$style(paste0("#WorldPlot2{height:","25vh"," !important;}"))),
+    
+    tags$head(tags$style(paste0("#PopulationPlot{height:",reportH," !important;}"))),
+    tags$head(tags$style(paste0("#PredictionPlot{height:",reportH," !important;}"))),
+    
+    
     tags$head(tags$style(paste0("#SamplePlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#DescriptivePlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#InferentialPlot{height:",graphH," !important;}"))),
@@ -81,10 +90,6 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#ExplorePlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#LikelihoodPlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisPlot{height:",graphH," !important;}"))),
-    
-    tags$head(tags$style(paste0("#HypothesisPlot{height:",graphH," !important;}"))),
-    tags$head(tags$style(paste0("#WorldPlot{height:","25vh"," !important;}"))),
-    tags$head(tags$style(paste0("#WorldPlot2{height:","25vh"," !important;}"))),
     
     tags$head(tags$style(paste0("#SamplePlot1{height:",graphH1," !important;}"))),
     tags$head(tags$style(paste0("#DescriptivePlot1{height:",graphH1," !important;}"))),
@@ -101,9 +106,14 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#ExploreReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#LikelihoodReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisReport{height:",reportH," !important;}"))),
-
-    tags$head(tags$style(paste0("#PopulationPlot{height:",reportH," !important;}"))),
-    tags$head(tags$style(paste0("#PredictionPlot{height:",reportH," !important;}"))),
+    
+    tags$head(tags$style(paste0("#SampleReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#DescriptiveReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#InferentialReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#ExpectedReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#ExploreReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#LikelihoodReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#MetaAnalysisReport1{height:",reportH1," !important;}"))),
     
     tags$head(tags$script('
                         var width = 0;

@@ -133,7 +133,8 @@ shinyServer(function(input, output, session) {
         tagList(
           column(width=12,
                  style = paste("margin-left: 4px;padding-left: 0px;margin-right: -10px;padding-right: -10px;"),
-                 MainGraphs1
+                 MainGraphs1,
+                 MainReports1
           )
         )
       }

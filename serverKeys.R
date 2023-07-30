@@ -14,7 +14,7 @@ if (switches$doKeys) {
     if (input$keypress==18) altKeyOn<<-TRUE
 
     if (input$keypress==ascii("x") && controlKeyOn){
-      loadExtras(session)
+      updateCheckboxInput(session,"LoadExtras",value=!input$LoadExtras)
     }
     
     # control-m - add in meta-analysis
@@ -34,6 +34,7 @@ if (switches$doKeys) {
       updateNumericInput(session,"Explore_nRange",value=10000)
     }
     
+    # toggle LARGE GRAPHS
     if (input$keypress==ascii("g") && controlKeyOn){
       was<-input$LargeGraphs
       updateCheckboxInput(session,"LargeGraphs",value=!was)
@@ -82,7 +83,7 @@ if (switches$doKeys) {
       
     }
     
-    if (input$keypress==ascii("g") && controlKeyOn){
+    if (input$keypress==ascii("G") && controlKeyOn){
       loadExtras(session)
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Gauss")

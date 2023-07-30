@@ -1,20 +1,19 @@
 library(ggplot2)
 
-switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
-               doReplications=TRUE,doPossible=TRUE,doBootstrap=TRUE,
+switches<-list(doKeys=TRUE,doClipboard=FALSE,
+               doCheating=TRUE,doReplications=TRUE,doPossible=TRUE,doBootstrap=TRUE,
                doWorlds=FALSE,doMetaAnalysis=FALSE,doLikelihoodInfer=FALSE,
-               doCheating=TRUE,
                doVariablesExplore=FALSE,
+               doBatchFiles=FALSE,
                loadExtrasValue=FALSE,
                startBlank=FALSE,
                showAnimation=TRUE,
                importOrdinals=TRUE,
-               rigidWithin=TRUE)
+               rigidWithin=TRUE) # only applies to imported data
 
 ################################
 # ui design
 
-fontScale=0.85 # use with 400% zoom in Google Chrome
 fontScale=1.0
 char3D=1.3
 
@@ -318,6 +317,7 @@ cycleCount<-0
 # fine tuning
 is_local <- (Sys.getenv('SHINY_PORT') == "") && (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt")
 if (is_local) {
-    switches$loadExtrasValue<-TRUE
+  # switches$doWorlds<-TRUE
+    # switches$loadExtrasValue<-TRUE
 }
 

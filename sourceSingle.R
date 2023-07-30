@@ -452,4 +452,28 @@ output$InferentialReport <- renderPlot({
   g
 })
 
+output$SampleReport1 <- renderPlot({
+  if (debug) debugPrint("SampleReport")
+  doIt<-editVar$data
+  g<-makeSampleReport()
+  if (debug) debugPrint("SampleReport - exit")
+  g
+})
+
+output$DescriptiveReport1 <- renderPlot({
+  if (debug) debugPrint("DescriptiveReport")
+  doIt<-editVar$data
+  g<-makeDescriptiveReport()
+  if (debug) debugPrint("DescriptiveReport - exit")
+  g
+})
+
+output$InferentialReport1 <- renderPlot({
+  if (debug) debugPrint("InferentialReport")
+  doIt<-editVar$data
+  g<-makeInferentialReport()
+  if (debug) debugPrint("InferentialReport - exit")
+  g
+})
+
 ##################################################################################    
