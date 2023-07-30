@@ -73,7 +73,7 @@ inspectMainGraph<-function(inspect) {
             g<-g+coord_cartesian(xlim=c(-1,1)*3*var$sd+var$mu,ylim = c(1,inspect$n)+c(-1,1)*(inspect$n-1)/10)
           }
           )
-  g+labs(x=var$name,y=NULL)+plotTheme
+  g+labs(x=var$name,y=NULL)+pplotTheme
 }
 
 
@@ -162,12 +162,12 @@ inspectPenaltyGraph<-function(inspect) {
             g<-g+coord_cartesian(xlim=c(-1,1)*3*var$sd+var$mu,ylim = c(-1,1))
           }
   )
-  # g+labs(x=var$name,y=paste("Residuals^(",inspect$whichResiduals,")",sep=""))+plotTheme
+  # g+labs(x=var$name,y=paste("Residuals^(",inspect$whichResiduals,")",sep=""))+pplotTheme
   switch (inspect$whichResidual,
           "1"={g<-g+labs(x=var$name,y=bquote(Residuals^1))},
           "2"={g<-g+labs(x=var$name,y=bquote(Residuals^2))}
           )
-  g+plotTheme
+  g+pplotTheme
 
   
 }

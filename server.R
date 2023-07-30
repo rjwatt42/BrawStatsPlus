@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
 ####################################
   if (debug) debugPrint("ServerKeys")
   
-  source("loadExtras.R")
+  source("extras.R")
   source("serverKeys.R",local=TRUE)
   
   observeEvent(input$LoadExtras, {
@@ -123,9 +123,11 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$LargeGraphs, {
+    currentTab<-input$Graphs
     if (input$LargeGraphs) {
       plotTheme<<-mainTheme+LGplotTheme
       labelSize<<-6
+      char3D<<-2
       
       output$mainColumns <- renderUI({
         tagList(
@@ -140,6 +142,7 @@ shinyServer(function(input, output, session) {
     } else {
       plotTheme<<-mainTheme+SMplotTheme
       labelSize<<-4
+      char3D<<-1.3
       
       output$mainColumns <- renderUI({
         tagList(
@@ -158,6 +161,7 @@ shinyServer(function(input, output, session) {
       )
       showElement("HypothesisPopulation")
     }
+    updateTabsetPanel(session, "Graphs",selected = currentTab)
   })
   
 ####################################

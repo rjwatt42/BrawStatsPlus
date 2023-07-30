@@ -28,6 +28,7 @@ colNullS=plotcolours$infer_nsigC
 colDistS=darken(plotcolours$infer_sigC,off=-0.4)
 highTransparency=0.25
 
+scale3D<-1.1
 wallHeight<-0.75
 
 doConnecting<-TRUE
@@ -134,55 +135,91 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   switch (likelihood$view,
           "3D"= {
             tick_length<-0.05*view_lims[2]
-            charExp<-1.3
             
             # make the floor
-            x<-view_lims    
+            x<-view_lims
             y<-view_lims
             f <- function(x, y) { x*0+y*0 }
             z <- outer(x, y, f)
             z[is.na(z)] <- 0
             par(bg=maincolours$graphC,mar=c(0,5,0,0),font.lab=2)
-            persp(x, y, z, zlim = range(c(0,1), na.rm = TRUE),
-                  theta = likelihood$azimuth, phi = likelihood$elevation, r=likelihood$range, 
-                  ticktype = "simple", 
-                  axes = FALSE,
-                  expand = 0.5, col = "#aaaaaa",
-                  cex.axis=0.6,
-                  xlab = "Populations", ylab = "Samples", zlab = ylab
-            )->mapping
+            mapping<-persp(x,y,z, 
+                           xlim=x+c(-1,1)*diff(view_lims)*(scale3D-1),
+                           ylim=y+c(-1,1)*diff(view_lims)*(scale3D-1),
+                           zlim = range(c(0,1), na.rm = TRUE),
+                           theta = likelihood$azimuth, phi = likelihood$elevation, r=likelihood$range, 
+                           ticktype = "simple", 
+                           box = FALSE,
+                           axes = FALSE,
+                           expand = 0.5, col = "#aaaaaa",
+                           cex.axis=0.6,
+                           xlab = "Populations", ylab = "Samples", zlab = ylab
+            )
+            lines(trans3d(x=c(view_lims[1],view_lims[1]),
+                          y=c(view_lims[1],view_lims[1]),
+                          z=c(0,1),pmat=mapping),col="black")
             
-            if (view_lims[2]<=1) {
-            plot_ticks=seq(view_lims[1],view_lims[2],0.25)
-            } else {
-              plot_ticks=seq(view_lims[1],view_lims[2],0.5)
+            if (likelihood$boxed){
+              col<-maincolours$graphBack
+              lines(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2]),
+                            y=c(view_lims[1],view_lims[2],view_lims[2]),
+                            z=c(1,1,1),pmat=mapping), col=col)        
+              lines(trans3d(x=c(view_lims[1],view_lims[1]),
+                            y=c(view_lims[1],view_lims[1]),
+                            z=c(0,1),pmat=mapping),col=col)
+              lines(trans3d(x=c(view_lims[1],view_lims[1]),
+                            y=c(view_lims[2],view_lims[2]),
+                            z=c(0,1),pmat=mapping),col=col)
+              lines(trans3d(x=c(view_lims[2],view_lims[2]),
+                            y=c(view_lims[2],view_lims[2]),
+                            z=c(0,1),pmat=mapping),col=col)
             }
+            tick_grow<-2
+            
+              plot_ticks<-seq(0.1,view_lims[2],0.1)
+              long_ticks<-seq(0.5,view_lims[2],0.5)
+              plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
+              long_ticks<-c(-rev(long_ticks),0,long_ticks)
+              
             tick.x.start <- trans3d(plot_ticks, view_lims[1], 0.0, mapping)
             tick.x.end <- trans3d(plot_ticks , view_lims[1]-tick_length, 0.0, mapping)
             tick.y.start <- trans3d(view_lims[2], plot_ticks, 0.0, mapping)
             tick.y.end <- trans3d(view_lims[2]+tick_length, plot_ticks , 0.0, mapping)
-            
-            ticks.x<-trans3d(plot_ticks+tick_length,view_lims[1]- tick_length*2*charExp,0,mapping)
-            pos.x<-trans3d(view_lims[2]/2,1.3*view_lims[1],0,mapping)
-            
-            ticks.y<-trans3d(view_lims[2]+tick_length*charExp+0.02,plot_ticks-0.02,0,mapping)
-            pos.y<-trans3d(1.3*view_lims[2],view_lims[1]/2,0,mapping)
-            
-            pos.z<-trans3d(-1*view_lims[2],-1.05*view_lims[2],0.5,mapping)
-            
             segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
             
-            text(ticks.x$x,ticks.x$y,plot_ticks,cex=0.6*charExp,adj=c(1,NA))
-            text(ticks.y$x,ticks.y$y,plot_ticks,cex=0.6*charExp,adj=c(0,NA))
+            tick.x.start <- trans3d(long_ticks, view_lims[1], 0.0, mapping)
+            tick.x.end <- trans3d(long_ticks , view_lims[1]-tick_length*tick_grow, 0.0, mapping)
+            tick.y.start <- trans3d(view_lims[2], long_ticks, 0.0, mapping)
+            tick.y.end <- trans3d(view_lims[2]+tick_length*tick_grow, long_ticks , 0.0, mapping)
+            segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
+            segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
+            
+            ticks.x<-trans3d(long_ticks+tick_length,view_lims[1]- tick_length*char3D-0.1,0,mapping)
+            ticks.y<-trans3d(view_lims[2]+tick_length*char3D+0.1,long_ticks-0.02,0,mapping)
+            text(ticks.x$x,ticks.x$y,long_ticks,cex=0.6*char3D,adj=c(1,NA))
+            text(ticks.y$x,ticks.y$y,long_ticks,cex=0.6*char3D,adj=c(0,NA))
+            
             if (RZ=="r") {
-              text(pos.x$x,pos.x$y,bquote(bold(r[population])),font=2,adj=c(1,1),cex=0.8*charExp)
-              text(pos.y$x,pos.y$y,bquote(bold(r[sample])),font=2,adj=c(0,1),cex=0.8*charExp)
+              label.x<-bquote(bold(r[p]))
+              label.y<-bquote(bold(r[s]))
             } else {
-              text(pos.x$x,pos.x$y,bquote(bold(z[population])),font=2,adj=c(1,1),cex=0.8*charExp)
-              text(pos.y$x,pos.y$y,bquote(bold(z[sample])),font=2,adj=c(0,1),cex=0.8*charExp)
+              label.x<-bquote(bold(z[p]))
+              label.y<-bquote(bold(z[s]))
             }
-            text(pos.z$x,pos.z$y,ylab,font=2,srt=90,cex=0.65*charExp)
+            
+            pos.x<-trans3d(0,view_lims[1]-tick_length*tick_grow*char3D-0.1,0,mapping)
+            text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D)
+            
+            pos.y<-trans3d(view_lims[2]+tick_length*tick_grow*char3D+0.1,0,0,mapping)
+            text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D)
+            
+            pos.z<-trans3d(-1*view_lims[2],-1.1*view_lims[2],0.5,mapping)
+            rotate.z=trans3d(x=c(view_lims[1],view_lims[1]),
+                           y=c(view_lims[1],view_lims[1]),
+                           z=c(0,1),pmat=mapping)
+            rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
+            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=0.75*char3D)
             
             # general lines on the floor
             if (doFloorLines) {
@@ -474,15 +511,13 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             )
 
             # finish off plot box
+            if (likelihood$boxed){
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
                           z=c(1,1,1),pmat=mapping), col=maincolours$graphBack, lty=3)        
             lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col=maincolours$graphBack,lty=3)
+            }
           },
-  "Samples"={
-    par(bg=maincolours$graphC)
-    
-  },
   "2D"={
     par(bg=maincolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,1))
     

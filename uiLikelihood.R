@@ -149,11 +149,15 @@ LikelihoodTab <-
                                                             "2D" = "2D"),selected=likelihood$view,selectize=FALSE)
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "show:")),
-                                      tags$td(width = "40%", 
+                                      tags$td(width = "20%", 
                                               selectInput("LikelihoodShow", label=NULL,
                                                           c("Normal" = "Normal",
                                                             "Inverse" = "Inverse"),selected=likelihood$show,selectize=FALSE)
-                                      )
+                                      ),
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "box:")),
+                                      tags$td(width = "5%", 
+                                              checkboxInput("LikelihoodBoxed", label=NULL,value=likelihood$boxed)
+                                              ),
                                     ),
                                     tags$tr(
                                       tags$td(width = "5%", tags$div(style = localPlainStyle, "az:")),

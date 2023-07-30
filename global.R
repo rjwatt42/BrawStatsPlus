@@ -16,6 +16,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,doBatchFiles=FALSE,doLarge=TRUE,
 
 fontScale=0.85 # use with 400% zoom in Google Chrome
 fontScale=1.0
+char3D=1.3
 
 GraphsOnly<-FALSE
 
@@ -89,8 +90,6 @@ graph_precision<-2
 fullShowHelp<-FALSE
 
 # graph themes
-popplotMarginsTheme<-theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
-
 mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
                 plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
@@ -98,6 +97,7 @@ SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=elemen
 LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=24,face="bold"),axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
 plotTheme=mainTheme+SMplotTheme
+pplotTheme=mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
 
 plotBlankTheme=theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
                      panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
@@ -203,7 +203,7 @@ likelihood<-
        likelihoodSimSlice=0.1,likelihoodCorrection=TRUE,
        likelihoodHQ=FALSE,
        appendSim=FALSE,Likelihood_length="10",
-       view="3D",show="Normal",azimuth=50,elevation=5,range=2,
+       view="3D",show="Normal",azimuth=50,elevation=5,range=2,boxed=FALSE,
        textResult=FALSE
   )
 

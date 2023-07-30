@@ -1,3 +1,4 @@
+source("uiEffect.R")
 source("uiWorld.R")
 source("uiQuickHyp.R")
 

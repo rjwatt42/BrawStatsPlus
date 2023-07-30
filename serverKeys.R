@@ -1,7 +1,7 @@
 ####################################
 #KEYBOARD: capture keyboard events
 
-source("loadExtras.R")
+source("extras.R")
 
 ascii<-function(ch) strtoi(charToRaw(toupper(ch)),16L)
 
@@ -32,6 +32,11 @@ if (switches$doKeys) {
       updateSelectInput(session,"Explore_showD",selected="NHSTErrors")
       updateCheckboxInput(session,"Explore_xlog",value=TRUE)
       updateNumericInput(session,"Explore_nRange",value=10000)
+    }
+    
+    if (input$keypress==ascii("g") && controlKeyOn){
+      was<-input$LargeGraphs
+      updateCheckboxInput(session,"LargeGraphs",value=!was)
     }
     
     if (input$keypress==ascii("z") && controlKeyOn){

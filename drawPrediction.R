@@ -513,7 +513,7 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL){
   #       
   #     }
   #   }
-  g<-g+labs(x=IV$name,y=DV$name)+plotTheme+popplotMarginsTheme
+  g<-g+labs(x=IV$name,y=DV$name)+pplotTheme
   
 }
 
@@ -540,5 +540,5 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   pts=data.frame(x=x,y=y)
   g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   
-  g<-g+labs(x=bquote(r[sample]),y="Frequency")+plotTheme+popplotMarginsTheme
+  g<-g+labs(x=bquote(r[sample]),y="Frequency")+pplotTheme
 }

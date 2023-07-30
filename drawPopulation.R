@@ -429,7 +429,6 @@ drawPopulation<-function(IV,DV,effect,alpha=1){
           }
   )
 }
-  g+plotTheme+popplotMarginsTheme+
-    labs(x=IV$name,y=DV$name)
+  g+labs(x=IV$name,y=DV$name)+pplotTheme
   
 }
