@@ -1,56 +1,51 @@
 MainReports <-
   wellPanel(id="MainReports",
-            # style=paste("min-width:", graphWidth, ";"),
             style = paste("background: ",maincolours$panelC), 
             tabsetPanel(type="tabs",
                         id="Reports",
                         tabPanel("Sample",     
-                                 plotOutput("SampleReport"),
-                                 style =paste("background:", maincolours$graphC, ";")),
+                                 plotOutput("SampleReport")
+                                 ),
                         tabPanel("Describe",   
-                                 plotOutput("DescriptiveReport"),
-                                 style =paste("background:", maincolours$graphC, ";")),
+                                 plotOutput("DescriptiveReport")
+                                 ),
                         tabPanel("Infer",      
-                                 plotOutput("InferentialReport"),
-                                 style =paste("background:", maincolours$graphC, ";"))
+                                 plotOutput("InferentialReport")
+                                 )
                         ,tabPanel("Expect",value="Expect",   
-                                  plotOutput("ExpectedReport"),
-                                  style =paste("background:", maincolours$graphC, ";"))
+                                  plotOutput("ExpectedReport"))
                         ,metaGraphPanel()
                         ,tabPanel("Explore",value="Explore",
-                                  plotOutput("ExploreReport"),
-                                  style =paste("background:", maincolours$graphC, ";"))
+                                  plotOutput("ExploreReport")
+                                  )
                         ,possibleReportPanel()
             )
-            # ,width=fullPanelWidth
   )
 
 
 MainReports1 <-
   wellPanel(id="MainReports",
-            # style=paste("min-width:", graphWidth, ";"),
             style = paste("background: ",maincolours$panelC), 
             tabsetPanel(type="tabs",
                         id="Reports",
                         tabPanel("Sample",     
-                                 plotOutput("SampleReport1"),
-                                 style =paste("background:", maincolours$graphC, ";")),
+                                 plotOutput("SampleReport1")
+                                 ),
                         tabPanel("Describe",   
-                                 plotOutput("DescriptiveReport1"),
-                                 style =paste("background:", maincolours$graphC, ";")),
+                                 plotOutput("DescriptiveReport1")
+                                 ),
                         tabPanel("Infer",      
-                                 plotOutput("InferentialReport1"),
-                                 style =paste("background:", maincolours$graphC, ";"))
+                                 plotOutput("InferentialReport1")
+                                 )
                         ,tabPanel("Expect",value="Expect",   
-                                  plotOutput("ExpectedReport1"),
-                                  style =paste("background:", maincolours$graphC, ";"))
+                                  plotOutput("ExpectedReport1")
+                                  )
                         ,metaGraphPanel()
                         ,tabPanel("Explore",value="Explore",
-                                  plotOutput("ExploreReport1"),
-                                  style =paste("background:", maincolours$graphC, ";"))
+                                  plotOutput("ExploreReport1")
+                                  )
                         ,possibleReportPanel()
             )
-            # ,width=fullPanelWidth
   )
 
 

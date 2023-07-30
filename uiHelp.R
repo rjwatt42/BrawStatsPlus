@@ -2,7 +2,7 @@ HelpTab <-
   
 
 wellPanel(id="HelpTabset",
-  style = paste("background: ",maincolours$graphC,";","margin-left:0px"),
+  style = paste("background: ",panelcolours$helpC,";","margin-left:0px"),
   # tags$table(width = "100%",class="myTable",
   #            tags$tr(
   #              tags$td(width = "5%",  tags$div(style = localStyle, "?")),
@@ -15,7 +15,7 @@ wellPanel(id="HelpTabset",
                            tabsetPanel(id="Help",
                 # Help tab
                                  tabPanel("Help:",
-                         style = paste("background: ",maincolours$graphC,";"),
+                         style = paste("background: ",panelcolours$helpC,";"),
                          # wellPanel(
                          #   style = paste("background: ",maincolours$graphC,";"),
                          #   tags$table(width = "100%",class="myTable",
@@ -30,7 +30,7 @@ wellPanel(id="HelpTabset",
 
                 # Step 1 tab
                 tabPanel("Step1",id="Step1",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            style = paste("background: ",subpanelcolours$hypothesisC,";"),
                            tags$table(width = "100%",class="myTable",
@@ -47,7 +47,7 @@ wellPanel(id="HelpTabset",
 
                 # Step 2 tab
                 tabPanel("Step2",id="Step2",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            style = paste("background: ",subpanelcolours$designC,";"),
                            tags$table(width = "100%",class="myTable",
@@ -64,7 +64,7 @@ wellPanel(id="HelpTabset",
 
                 # Step 3 tab
                 tabPanel("Step3",id="Step3",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            style = paste("background: ",subpanelcolours$simulateC,";"),
                            tags$table(width = "100%",class="myTable",
@@ -81,7 +81,7 @@ wellPanel(id="HelpTabset",
                 
                 # Step 4 tab
                 tabPanel("Step4",id="Step4",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            style = paste("background: ",subpanelcolours$exploreC,";"),
                            tags$table(width = "100%",class="myTable",
@@ -98,7 +98,7 @@ wellPanel(id="HelpTabset",
                 
                 # Files tab
                 tabPanel("More",id="More",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            style = paste("background: ",subpanelcolours$filesC,";"),
                            tags$table(width = "100%",class="myTable",
@@ -128,10 +128,10 @@ wellPanel(id="HelpTabset",
                          )
                 ),
                 tabPanel("#",id="#",
-                         style = paste("background: ",maincolours$graphC),
+                         style = paste("background: ",panelcolours$helpC),
                          wellPanel(
                            
-                           style = paste("background: ",maincolours$graphC,";"),
+                           style = paste("background: ",panelcolours$helpC,";"),
                            tags$table(width = "100%",class="myTable",
                                       tags$tr(
                                         tags$td(width="25%",tags$div(style = localPlainStyle, "")),

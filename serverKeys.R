@@ -17,6 +17,19 @@ if (switches$doKeys) {
       updateCheckboxInput(session,"LoadExtras",value=!input$LoadExtras)
     }
     
+    if (input$keypress==ascii("w") && controlKeyOn){
+      maincolours<<-maincoloursBW
+      mainTheme<<-theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
+                      panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                      plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
+      plotTheme<<-mainTheme+SMplotTheme
+      plotBlankTheme<<-theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                           panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                           plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                           axis.title=element_text(size=16,face="bold")
+      )
+    }
+    
     # control-m - add in meta-analysis
     if (input$keypress==ascii("m") && controlKeyOn){
       switches$doMetaAnalysis<<-TRUE

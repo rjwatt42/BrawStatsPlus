@@ -9,25 +9,20 @@ MainGraphs <-
     tabsetPanel(type="tabs",
                 id="Graphs",
                 tabPanel("Sample",class="Graphs",
-                         plotOutput("SamplePlot"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("SamplePlot")
                 ),
                 tabPanel("Describe",class="Graphs",
-                         plotOutput("DescriptivePlot"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("DescriptivePlot")
                 ),
                 tabPanel("Infer",
-                         plotOutput("InferentialPlot"),
-                         style =paste("background:", maincolours$graphC, ";"),
+                         plotOutput("InferentialPlot")
                 ),
                 tabPanel("Expect",value="Expect", 
-                         plotOutput("ExpectedPlot"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("ExpectedPlot")
                 )
                 ,metaGraphPanel()
                 ,tabPanel("Explore",value="Explore",
-                          plotOutput("ExplorePlot"),
-                         style =paste("background:", maincolours$graphC, ";")
+                          plotOutput("ExplorePlot")
                 )
                 ,possibleGraphPanel()
     ),
@@ -41,25 +36,20 @@ MainGraphs1 <-
     tabsetPanel(type="tabs",
                 id="Graphs",
                 tabPanel("Sample",class="Graphs",
-                         plotOutput("SamplePlot1"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("SamplePlot1")
                 ),
                 tabPanel("Describe",class="Graphs",
-                         plotOutput("DescriptivePlot1"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("DescriptivePlot1")
                 ),
                 tabPanel("Infer",
-                         plotOutput("InferentialPlot1"),
-                         style =paste("background:", maincolours$graphC, ";"),
+                         plotOutput("InferentialPlot1")
                 ),
                 tabPanel("Expect",value="Expect", 
-                         plotOutput("ExpectedPlot1"),
-                         style =paste("background:", maincolours$graphC, ";")
+                         plotOutput("ExpectedPlot1")
                 )
                 ,metaGraphPanel1()
                 ,tabPanel("Explore",value="Explore",
-                          plotOutput("ExplorePlot1"),
-                          style =paste("background:", maincolours$graphC, ";")
+                          plotOutput("ExplorePlot1")
                 )
                 ,possibleGraphPanel1()
     ),

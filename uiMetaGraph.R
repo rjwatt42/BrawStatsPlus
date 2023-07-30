@@ -2,8 +2,7 @@
 metaGraphPanel<-function() {
   if (switches$doMetaAnalysis) {
     tabPanel("MetaAnalysis",class="Graphs",
-             plotOutput("MetaAnalysisPlot"),
-             style =paste("background:", maincolours$graphC, ";")
+             plotOutput("MetaAnalysisPlot")
     )
   } else {
     c()
@@ -13,8 +12,7 @@ metaGraphPanel<-function() {
 metaGraphPanel1<-function() {
   if (switches$doMetaAnalysis) {
     tabPanel("MetaAnalysis",class="Graphs",
-             plotOutput("MetaAnalysisPlot1"),
-             style =paste("background:", maincolours$graphC, ";")
+             plotOutput("MetaAnalysisPlot1")
     )
   } else {
     c()
@@ -24,8 +22,7 @@ metaGraphPanel1<-function() {
   metaReportPanel<-function() {
     if (switches$doMetaAnalysis) {
       tabPanel("MetaAnalysis",class="Graphs",
-               plotOutput("MetaAnalysisReport"),
-               style =paste("background:", maincolours$graphC, ";")
+               plotOutput("MetaAnalysisReport")
       )
   } else {
     c()

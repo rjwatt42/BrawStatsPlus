@@ -160,19 +160,19 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           z=c(0,1),pmat=mapping),col="black")
             
             if (likelihood$boxed){
-              col<-maincolours$graphBack
+              BoxCol<-"#666666"
               lines(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2]),
                             y=c(view_lims[1],view_lims[2],view_lims[2]),
-                            z=c(1,1,1),pmat=mapping), col=col)        
+                            z=c(1,1,1),pmat=mapping), col=BoxCol)        
               lines(trans3d(x=c(view_lims[1],view_lims[1]),
                             y=c(view_lims[1],view_lims[1]),
-                            z=c(0,1),pmat=mapping),col=col)
+                            z=c(0,1),pmat=mapping),col=BoxCol)
               lines(trans3d(x=c(view_lims[1],view_lims[1]),
                             y=c(view_lims[2],view_lims[2]),
-                            z=c(0,1),pmat=mapping),col=col)
+                            z=c(0,1),pmat=mapping),col=BoxCol)
               lines(trans3d(x=c(view_lims[2],view_lims[2]),
                             y=c(view_lims[2],view_lims[2]),
-                            z=c(0,1),pmat=mapping),col=col)
+                            z=c(0,1),pmat=mapping),col=BoxCol)
             }
             tick_grow<-2
             
@@ -514,8 +514,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             if (likelihood$boxed){
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
-                          z=c(1,1,1),pmat=mapping), col=maincolours$graphBack, lty=3)        
-            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col=maincolours$graphBack,lty=3)
+                          z=c(1,1,1),pmat=mapping), col=BoxCol, lty=3)        
+            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col=BoxCol,lty=3)
             }
           },
   "2D"={

@@ -20,7 +20,9 @@ char3D=1.3
 GraphsOnly<-FALSE
 
 maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
-# maincolours<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
+maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF",graphBack="#888888")
+
+mainHue=0.55
 
 hypHue=0.986667
 desHue=0.1
@@ -47,7 +49,8 @@ panelcolours<-list(hypothesisC=hsv(hypHue,mainSat,mainBright),
                    simulateC=hsv(eviHue,mainSat,mainBright),
                    exploreC=hsv(expHue,mainSat*exploreSat,mainBright),
                    likelihoodC=hsv(posHue,mainSat,mainBright*likeBright),
-                   filesC=hsv(filHue,mainSat,mainBright*fileBright)
+                   filesC=hsv(filHue,mainSat,mainBright*fileBright),
+                   helpC=hsv(mainHue,mainSat,mainBright)
 )
 subpanelcolours<-list(hypothesisC=hsv(hypHue,subSat,subBright),
                       designC=hsv(desHue,subSat,subBright),
@@ -92,8 +95,10 @@ fullShowHelp<-FALSE
 mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
                 plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
-SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
-LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=24,face="bold"),axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
+SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),
+                  axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
+LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=24,face="bold"),
+                  axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
 plotTheme=mainTheme+SMplotTheme
 pplotTheme=mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
