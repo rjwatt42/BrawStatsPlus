@@ -29,15 +29,7 @@ reportInference<-function(IV,IV2,DV,effect,evidence,result){
       outputText[2]<-paste("(",evidence$analysisType,"/",evidence$dataType,")",sep="")
     }
     
-    if (switches$doLikelihoodInfer) {
-      f1<-"\bllr"
-      f2<-paste("s=",format(result$sIV,digits=report_precision),"; d=",format(result$dIV,digits=report_precision),sep="")
-    } else {
-      f1<-" "
-      f2<-" "
-    }
     if (is.null(IV2)){
-      outputText<-c(outputText,"\btest-statistic","\b(df) ","\bvalue   ","\bp",f1,rep("",nc-5))
       pval<-result$pIV
       if (pval>=0.0001) {
         pvalText<-paste("p = ",format(pval,digits=report_precision),sep="")
@@ -51,7 +43,19 @@ reportInference<-function(IV,IV2,DV,effect,evidence,result){
       
       n<-result$nval
       result$sIV<-res2llr(result,"sLLR")
+      if (!result$evidence$prior$worldOn) {
+        result$evidence$prior<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=result$rIV,populationRZ="r",populationNullp=0.5)
+      }
       result$dIV<-res2llr(result,"dLLR")
+      if (switches$doLikelihoodInfer) {
+        f1<-"\bllr"
+        f2<-paste("s=",format(result$sIV,digits=report_precision),"; d=",format(result$dIV,digits=report_precision),sep="")
+      } else {
+        f1<-" "
+        f2<-" "
+      }
+      
+      outputText<-c(outputText,"\btest-statistic","\b(df) ","\bvalue   ","\bp",f1,rep("",nc-5))
       outputText<-c(outputText,t_name,df,format(tval,digits=report_precision),pvalText,f2,rep("",nc-5))
     }
     
