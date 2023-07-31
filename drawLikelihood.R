@@ -206,7 +206,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                              y=c(view_lims[1],view_lims[1]),
                              z=c(0,1),pmat=mapping)
             rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
-            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=0.65*char3D)
+            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=char3D*0.65)
             
             # x and y ticks
               plot_ticks<-seq(0.1,view_lims[2],0.1)
@@ -241,11 +241,11 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               label.y<-bquote(bold(z[s]))
             }
             
-            pos.x<-trans3d(0,view_lims[1]-tick_length*tick_grow*char3D-0.1,0,mapping)
-            text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D)
+            pos.x<-trans3d(0,view_lims[1]-tick_length*tick_grow*char3D-0.2,0,mapping)
+            text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D*0.75)
             
-            pos.y<-trans3d(view_lims[2]+tick_length*tick_grow*char3D+0.1,0,0,mapping)
-            text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D)
+            pos.y<-trans3d(view_lims[2]+tick_length*tick_grow*char3D+0.2,0,0,mapping)
+            text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D*0.75)
             
             # general lines on the floor
             if (doFloorLines) {
