@@ -575,13 +575,13 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
 
     rw<-c(rw[1],rw,rw[length(rw)])
     rw_dens<-c(0,rw_dens,0)
-    plot(x=rw,y=rw_dens,xlab=xlabel,ylab=ylab,type="n",yaxt="n",font.lab=2,xlim=view_lims,ylim=c(0,1.25))
+    plot(x=rw,y=rw_dens,xlab=xlabel,ylab=ylab,type="n",yaxt="n",font.lab=2, cex.lab=char3D,
+         xlim=view_lims,ylim=c(0,1.25))
     axis(side = 2,  at=0, labels = FALSE, tck=-0.05)
-    
-        u <- par("usr") # The coordinates of the plot area
+
+    u <- par("usr") # The coordinates of the plot area
     rect(u[1], u[3], u[2], u[4], col="#AAAAAA", border=NA)
     lines(u[c(1,2)],c(0,0),col="black")
-    
     # make the back wall
     if (likelihood$type=="Populations" && likelihood$source$populationNullp>0) {
       polygon(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=col)
@@ -646,7 +646,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                       lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=2)
                   }
                   
-                  if ((!is.na(sRho[1]))) {
+                  if (!all(is.na(sRho))) {
                     for (i in 1:length(sRho)) {
                     s<-sRho[i]
                     gain<-sum(sDens_r_total)*diff(rs[1:2])
@@ -670,7 +670,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     #   lines(x=c(sRho[1],sRho[1]),y=c(0,ln_at_sample-0.01),col=colNullS,lwd=2)
                     # }
                     
-                      if (length(sRho)<=5) {
+                      if (length(sRho)<=10) {
                         ptext<-bquote(
                           bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3))) ~" "~ atop(phantom(bold(.(format(pd_at_sample,digits=3)))),phantom(bold(.(format(pn_at_sample,digits=3)))))
                         )
@@ -717,7 +717,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   }
                   }
                     if (length(sRho)>1) {
-                      l_at_sample<-sum(log(approx(rs,sDens_r_total,sRho)$y))#/mean(sDens_r_total)
+                      l_at_sample<-sum(log(approx(rs,sDens_r_total,sRho)$y),na.rm=TRUE)#/mean(sDens_r_total)
                       ltext<-bquote(
                         bold(log(lk(.(RZ)[s])))==.(format(l_at_sample,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
                       )
