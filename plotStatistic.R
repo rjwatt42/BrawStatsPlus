@@ -351,7 +351,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   switch (expType,
           "r"={
             ylim<-rlims
-            ylabel<-rlab
+            ylabel<-bquote(.(rlab))
             },
           "p"={
             ylim<-c(min_p, 1)
@@ -420,8 +420,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   )
   if (logScale) {
     ylim<-log10(ylim)
-    ylabel<-bquote(log[10](.(ylabel)))
-  }  
+    ylabel<-bquote(bold(log[10](.(ylabel))))
+  }  else {
+    ylabel<-bquote(bold(.(ylabel)))
+  }
   
   if (!all(is.na(result$rIV))) {
     data<-collectData(result)
