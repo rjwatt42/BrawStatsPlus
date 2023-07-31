@@ -19,7 +19,8 @@ colPdark=darken(colP,off=-0.67)
 colPsim=darken(colP,off=-0.33)
 
 colVline="#FF5500"
-# colVline="#FFFFFF"
+colVline="#EEDD00"
+colVline="#000000"
 # colVline=darken(colP,off=-0.2)
 
 colS1="#FFAA77"
@@ -83,9 +84,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
           }
   )
 
-  pRho<-likelihoodResult$pRho
-  pRho<-sort(pRho)
-  sRho<-likelihoodResult$sRho
+  pRho<-sort(likelihoodResult$pRho)
+  sRho<-sort(likelihoodResult$sRho)
 
   rs<-likelihoodResult$Theory$rs
   sDens_r<-likelihoodResult$Theory$sDens_r
@@ -129,7 +129,6 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   sampleBackwall<-list(rsw=rsw,rsw_dens_plus=rsw_dens_plus,rsw_dens_null=rsw_dens_null,rs=rs)
   
   n<-likelihoodResult$n[1]
-  si<-1
 
   # graph frame
   switch (likelihood$view,
@@ -304,13 +303,17 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                 # horizontal lines
                 switch (likelihood$type,
                         "Samples"={
-                          z<-approx(sampleBackwall$rsw,ztotal,sRho[si])$y
-                          lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,z)*wallHeight,pmat=mapping),col=colSdark,lwd=2)
-                          if (doFloorCILines) {
-                            lines(trans3d(x=c(sRho[si],sRho[si]),y=view_lims,z=c(0,0),pmat=mapping),col=colSdark)
-                            lines(trans3d(x=view_lims,y=c(sRho[si],sRho[si]),z=c(0,0),pmat=mapping),col=colSdark)
+                          if (!isempty(sRho)){
+                            for (si in 1:length(sRho)) {
+                              z<-approx(sampleBackwall$rsw,ztotal,sRho[si])$y
+                              lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,z)*wallHeight,pmat=mapping),col=colVline,lwd=2)
+                              if (doFloorCILines) {
+                                # lines(trans3d(x=c(sRho[si],sRho[si]),y=view_lims,z=c(0,0),pmat=mapping),col=colSdark)
+                                # lines(trans3d(x=view_lims,y=c(sRho[si],sRho[si]),z=c(0,0),pmat=mapping),col=colSdark)
+                              }
+                            }
                           }
-                          },
+                        },
                         "Populations"={
                           if (showNull) {
                             lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
@@ -362,13 +365,6 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         theoryAlpha<-0.85
                         simAlpha<-0.95
                       }
-                      if (length(pRho)>11) {
-                        if (!is.na(likelihood$targetSample) && !likelihood$cutaway) {
-                          theoryAlpha<-theoryAlpha/2
-                        } else {
-                          theoryAlpha<-1
-                        }
-                      }
                       if (!is.null(likelihoodResult$Sims$sSimDens)) {
                         bins<-likelihoodResult$Sims$sSimBins
                         dens<-likelihoodResult$Sims$sSimDens
@@ -377,10 +373,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         dens<-dens*hgain
                         theoryAlpha<-0.25
                         if (likelihood$cutaway) {
-                          waste<-sum(bins<=sRho[si])
+                          waste<-sum(bins<=min(sRho))
                           use_s<-(waste):length(bins)
                           bins<-bins[use_s]
-                          bins[1]<-sRho[si]
+                          bins[1]<-min(sRho)
                           use_s<-use_s[1:(length(use_s)-1)]
                         } else {
                           if (!is.matrix(dens)) {
@@ -419,7 +415,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
 
                           z_use<-sDens_r[i,]
                           if (likelihood$cutaway) {
-                            z_use[rs<sRho[si]]<-0
+                            z_use[rs<min(sRho)]<-0
                           }
                           z_use[z_use<=draw_lower_limit]<-0
                           r_use<-rs
@@ -437,13 +433,17 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
                         }
                         # vertical lines
-                        z<-approx(rs,sDens_r[i,],sRho[si])$y
-                        # if (length(pRho)==1) {z<-1}
-                        lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(0,z)*gain,pmat=mapping),col=colVline, lwd=3)
-                        # connecting lines
-                        if (doConnecting && length(pRho)>5 && i<length(pRho)) {
-                          z1<-approx(rs,sDens_r[i+1,],sRho[si])$y
-                          lines(trans3d(x=c(pRho[i],pRho[i+1]),y=c(sRho[si],sRho[si]),z=c(z,z1)*gain,pmat=mapping),col=colVline, lwd=3)
+                        if (!isempty(sRho)){
+                          for (si in 1:length(sRho)) {
+                            z<-approx(rs,sDens_r[i,],sRho[si])$y
+                            # if (length(pRho)==1) {z<-1}
+                            lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(0,z)*gain,pmat=mapping),col=colVline, lwd=1)
+                            # connecting lines
+                            if (doConnecting && length(pRho)>5 && i<length(pRho)) {
+                              z1<-approx(rs,sDens_r[i+1,],sRho[si])$y
+                              lines(trans3d(x=c(pRho[i],pRho[i+1]),y=c(sRho[si],sRho[si]),z=c(z,z1)*gain,pmat=mapping),col=colVline, lwd=1)
+                            }
+                          }
                         }
                       }
                     },
@@ -658,8 +658,8 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     ln_at_sample<-approx(rs,sDens_r_null,s)$y#/mean(sDens_r_total)
                     ld_at_sample<-approx(rs,sDens_r_plus,s)$y#/mean(sDens_r_total)
                     
-                    lines(x=c(sRho[i],sRho[i]),y=c(0,l_at_sample),col="black",lwd=1)
-                    points(x=sRho[i],y=l_at_sample,col="black",pch=20)
+                    lines(x=c(sRho[i],sRho[i]),y=c(0,l_at_sample),col=colVline,lwd=1)
+                    points(x=sRho[i],y=l_at_sample,col=colVline,pch=16,cex=1.5)
                     if (likelihood$world$worldOn) {
                     # if (ln_at_sample>ld_at_sample) {
                     #   lines(x=c(sRho[1],sRho[1]),y=c(ld_at_sample,ln_at_sample-0.01),col=colNullS,lwd=2)
@@ -677,6 +677,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         ltext<-bquote(
                           bold(pd(.(RZ)[s]))==.(format(l_at_sample/gain,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
                         )
+                        ltext<-format(log(l_at_sample),digits=3)
                         if (s>0)   {
                           # text(s,0.95,labels=ptext,col=colPdark,adj=0,cex=0.9)
                           text(s+0.05,l_at_sample+0.05,labels=ltext,col="black",adj=0,cex=0.9)
@@ -716,9 +717,12 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   }
                   }
                     if (length(sRho)>1) {
-                      l_at_sample<-sum(log(approx(rs,sDens_r_total/gain,sRho)$y))#/mean(sDens_r_total)
+                      l_at_sample<-sum(log(approx(rs,sDens_r_total,sRho)$y))#/mean(sDens_r_total)
                       ltext<-bquote(
                         bold(log(lk(.(RZ)[s])))==.(format(l_at_sample,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
+                      )
+                      ltext<-bquote(
+                        bold(log(lk(Z)))==.(format(l_at_sample,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
                       )
                       text(0+0.05,1+0.15,labels=ltext,col="black",adj=0.5,cex=0.9)
                     }

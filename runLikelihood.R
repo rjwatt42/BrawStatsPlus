@@ -273,7 +273,7 @@ getZDist<-function(rs,pRho,pRhogain,source,design,likelihood) {
   n<-design$sN
   sDens_z<-matrix(nrow=length(pRho),ncol=length(rs))
   if (likelihood$likelihoodHQ) {
-    nis<-2.^seq(3,8,length.out=nNpoints*10)
+    nis<-2.^seq(3,8,length.out=nNpoints*8)
   } else {
     nis<-2.^seq(3,8,length.out=nNpoints)
   }
