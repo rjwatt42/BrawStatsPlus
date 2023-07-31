@@ -119,7 +119,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
               "n-k"={
                 y<-y1
                 ylim<-c(-0.02,1.1)
-                ylabel<-bquote(bold(p[null]))
+                ylabel<-bquote(bold(p['null']))
                 xlabel<-Llabel
               },
               "S-S"={

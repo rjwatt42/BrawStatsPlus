@@ -206,16 +206,16 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
   if (xsc==1) {
     d1<-log10(d1)
     xlim<-c(log10(min_p), 0)
-    disp1<-bquote(bold(log[10] (.(disp1))))
+    disp1<-bquote(bold(log['10'] (.(disp1))))
   }
   if (ysc==1) {
     d2<-log10(d2)
     ylim<-c(log10(min_p), 0)
-    disp2<-bquote(bold(log[10] (.(disp2))))
+    disp2<-bquote(bold(log['10'] (.(disp2))))
   }
   if (ysc==2) {
     d2<-log10(d2)
-    disp2<-bquote(bold(log[10] (.(disp2))))
+    disp2<-bquote(bold(log['10'] (.(disp2))))
   }
   pts<-data.frame(x=d1,y=d2)
   

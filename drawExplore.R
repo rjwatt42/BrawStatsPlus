@@ -46,13 +46,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             if (RZ=="z") {
               ylim<-c(-1,1*z_range)
             }
-            ylabel<-bquote(r[sample])
-            if (RZ=="z") {ylabel<-bquote(z[sample])}
+            ylabel<-bquote(bold(r['s']))
+            if (RZ=="z") {ylabel<-bquote(bold(z['s']))}
           },
           "p"={
             if (pPlotScale=="log10") {
               ylim<-c(-4,0.1)
-              ylabel<-bquote(log[10](p))
+              ylabel<-bquote(bold(log['10'](p)))
               ybreaks<-c(-4,-3,-2,-1,0)
               ylabels<-c(0.0001,0.001,0.01,0.1,1)
             } else {
@@ -66,13 +66,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "w"={
             if (wPlotScale=="log10"){
               ylim<-c(-2,0)
-              ylabel<-bquote(log[10](w[est]))
+              ylabel<-bquote(bold(log['10'](w['est'])))
               ybreaks=c(-2,-1,0)
               ylabels=c(0.01,0.1,1)
               g<-g+scale_y_continuous(breaks=ybreaks,labels=ylabels)
             } else {
               ylim<-c(0,1)
-              ylabel<-bquote(w[est])
+              ylabel<-bquote(bold(w['est']))
             }
           },
           "p(sig)"={
@@ -109,15 +109,15 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           },
           "log(lrs)"={
             ylim<-c(-0.1,10)
-            ylabel<-bquote(log[e](lr[s]))
+            ylabel<-bquote(bold(log['e'](lr['s'])))
           },
           "log(lrd)"={
             ylim<-c(-1,1)*lrRange
-            ylabel<-bquote(log[e](lr[d]))
+            ylabel<-bquote(bold(log['e'](lr['d'])))
           },
           "likelihood"={
             ylim<-c(-10,10)
-            ylabel<-bquote(log[e](lr[d]))
+            ylabel<-bquote(bold(log['e'](lr['d'])))
           },
           "k"={
             ylim<-c(-0.01,1.01)

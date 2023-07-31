@@ -239,7 +239,8 @@ makeExploreGraph <- function() {
   }
   
   if (!effect$world$worldOn  && (explore$Explore_show=="NHSTErrors" || explore$Explore_show=="FDR;FMR" || explore$Explore_show=="FDR")) {
-    ns<-exploreResult$result$count-exploreResult$nullresult$count
+    if (is.null(exploreResult$nullresult$count)) exploreResult$nullresult$count<-0
+      ns<-exploreResult$result$count-exploreResult$nullresult$count
     if (ns>0) {
       showNotification(paste0("Explore(null) ",explore$Explore_family," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
       exploreResult$nullresult<<-doExploreAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,metaAnalysis,explore,exploreResult$nullresult,ns,doingNull=TRUE)

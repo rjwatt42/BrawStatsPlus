@@ -420,7 +420,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   )
   if (logScale) {
     ylim<-log10(ylim)
-    ylabel<-bquote(bold(log[10](.(ylabel))))
+    ylabel<-bquote(bold(log['10'](.(ylabel))))
   }  else {
     ylabel<-bquote(bold(.(ylabel)))
   }

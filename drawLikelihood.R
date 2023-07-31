@@ -234,11 +234,11 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
             text(ticks.y$x,ticks.y$y,long_ticks,cex=0.6*char3D,adj=c(0,NA))
             
             if (RZ=="r") {
-              label.x<-bquote(bold(r[p]))
-              label.y<-bquote(bold(r[s]))
+              label.x<-bquote(bold(r['p']))
+              label.y<-bquote(bold(r['s']))
             } else {
-              label.x<-bquote(bold(z[p]))
-              label.y<-bquote(bold(z[s]))
+              label.x<-bquote(bold(z['p']))
+              label.y<-bquote(bold(z['s']))
             }
             
             pos.x<-trans3d(0,view_lims[1]-tick_length*tick_grow*char3D-0.2,0,mapping)
@@ -554,9 +554,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               rw<-rpw
               rw_dens<-rpw_dens
               if (RZ=="z") {
-                xlabel<-bquote(bold(z[p]))
+                xlabel<-bquote(bold(z['p']))
               } else {
-                xlabel<-bquote(bold(r[p]))
+                xlabel<-bquote(bold(r['p']))
               }
               col<-colP
               },
@@ -564,9 +564,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               rw<-rsw
               rw_dens<-rsw_dens
               if (RZ=="z") {
-                xlabel<-bquote(bold(z[s]))
+                xlabel<-bquote(bold(z['s']))
               } else {
-                xlabel<-bquote(bold(r[s]))
+                xlabel<-bquote(bold(r['s']))
               }
               col<-colS
             }
