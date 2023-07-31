@@ -49,6 +49,9 @@ updateMetaAnalysis<-function(){
     showTheory=input$evidenceTheory,
     append=input$meta_append
   )
+  if (metaAnalysis$meta_showParams==paste0(Pchar,"-",Lchar)) {metaAnalysis$meta_showParams<-"n-k"}
+  if (metaAnalysis$meta_showParams==paste0("S-",Lchar)) {metaAnalysis$meta_showParams<-"S-k"}
+
   if (metaAnalysis$meta_pdf!="All") metaAnalysis$meta_showAnal<-metaAnalysis$meta_pdf
   metaAnalysis
 }    
@@ -134,7 +137,7 @@ makeMetaGraph <- function() {
     metaAnalysis$append<-TRUE
     ns<-10^(min(2,floor(log10(max(1,metaResult$count)))))
     if (showProgress) {
-      showNotification(paste0("A MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="counting",duration=Inf,closeButton=FALSE,type="message")
+      showNotification(paste0("MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="counting",duration=Inf,closeButton=FALSE,type="message")
     }
     for (i in 1:ns) {
       metaResult<<-doMetaAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResult)
