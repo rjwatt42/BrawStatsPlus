@@ -19,7 +19,7 @@ if (switches$doLikelihoodInfer) inferTypeChoices<-c(inferTypeChoices,list("Likel
 if (switches$doWorlds) inferTypeChoices<-c(inferTypeChoices,list("World"=worldType))
 if (switches$doReplications) inferTypeChoices<-c(inferTypeChoices,list("Replication"=replicationType))
 
-singleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power")
+singleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","2D"="2D")
 singleTypeChoicesExtra<-c(singleTypeChoices,list("Likelihood"=likeType))
 if (switches$doLikelihoodInfer) singleTypeChoices<-singleTypeChoicesExtra
 

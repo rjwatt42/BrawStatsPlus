@@ -154,10 +154,7 @@ makeDescriptiveGraph <- function(){
   
   # make the sample
   result<-sampleAnalysis()
-  if (is.null(result) ||  !validSample)  {
-    # validate("Sample is empty")
-    return(ggplot()+plotBlankTheme)
-  }
+  if (is.null(result) ||  !validSample)  {return(ggplot()+plotBlankTheme)}
   if (is.na(result$rIV)) {
     validate("IV has no variability")
     return(ggplot()+plotBlankTheme)
@@ -271,10 +268,11 @@ makeInferentialGraph <- function() {
   evidence<-updateEvidence()
   
   result<-sampleAnalysis()
-  if (is.null(result)) {
-    result<-list(rIV=NA,effect=effect,design=design,evidence=evidence)
-  }
-  # if (is.null(result) ||  !validSample)  {return(ggplot()+plotBlankTheme)}
+  if (is.null(result) ||  !validSample)  {return(ggplot()+plotBlankTheme)}
+  
+  # if (is.null(result)) {
+  #   result<-list(rIV=NA,effect=effect,design=design,evidence=evidence)
+  # }
   if (is.na(result$rIV) && validSample) {
     validate("IV has no variability")
     return(ggplot()+plotBlankTheme)
@@ -286,7 +284,7 @@ makeInferentialGraph <- function() {
   g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   
-  switch (input$EvidenceInfer_type,
+    switch (input$EvidenceInfer_type,
           "EffectSize"={
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"r")
             g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
@@ -294,6 +292,10 @@ makeInferentialGraph <- function() {
           "Power"= {
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"w")
             g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"nw")
+          },
+          "2D"= {
+            g1<-draw2Inference(IV,IV2,DV,effect,design,evidence,result,"r","p")
+            return(g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=1,xmax=9,ymin=0,ymax=10))
           },
           "log(lrs)"={
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"log(lrs)")

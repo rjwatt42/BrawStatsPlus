@@ -152,18 +152,19 @@ makeExpectedGraph <- function() {
   if (debug) {print("ExpectedPlot1 - start")}
   stopRunning<-TRUE
   
-  if (validExpected) {
-    
-    if (switches$showAnimation) {
-      min_ns<-floor(log10(expectedResult$nsims/100))
-      ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
-      if (expectedResult$count+ns>expectedResult$nsims) {
-        ns<-expectedResult$nsims-expectedResult$count
-      }
-    } else {
+  if (!validExpected) {return(ggplot()+plotBlankTheme)}
+
+  if (switches$showAnimation) {
+    min_ns<-floor(log10(expectedResult$nsims/100))
+    ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
+    if (expectedResult$count+ns>expectedResult$nsims) {
       ns<-expectedResult$nsims-expectedResult$count
     }
-    if (ns>0) {
+  } else {
+    ns<-expectedResult$nsims-expectedResult$count
+  }
+  
+  if (ns>0) {
       expected$doingNull<-FALSE
       if (showProgress) {
         if (expectedResult$count==0) {
@@ -173,11 +174,13 @@ makeExpectedGraph <- function() {
         }
       }
       expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
-    }
-    if (expectedResult$count<expectedResult$nsims) {
-      stopRunning<-FALSE
-    }
-    if (expected$type=="NHSTErrors" && 
+  }
+  
+  if (expectedResult$count<expectedResult$nsims) {
+    stopRunning<-FALSE
+  }
+  
+  if (expected$type=="NHSTErrors" && 
         (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
          expectedResult$nullcount<expectedResult$nsims) {
         ns<-expectedResult$count-expectedResult$nullcount
@@ -219,8 +222,7 @@ makeExpectedGraph <- function() {
     if (stopRunning) {
       if (showProgress) {removeNotification(id = "counting")}
     }
-  }
-  
+
   # if (expectedResult$count==0) { return(ggplot()+plotBlankTheme) }
   
   g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))
@@ -289,13 +291,9 @@ output$ExpectedPlot1 <- renderPlot({
   g
 })
 
-# expected report
-output$ExpectedReport <- renderPlot({
-  if (debug) debugPrint("ExpectedReport")
-  doIt<-input$EvidenceExpectedRun
+makeExpectedReport<-function() {
   llrConsts<-c(input$llr1,input$llr2)
   
-  if (debug) {print("ExpectedReport - start")}
   IV<-updateIV()
   IV2<-updateIV2()
   DV<-updateDV()
@@ -349,7 +347,24 @@ output$ExpectedReport <- renderPlot({
     # invalidateLater(pauseWait)
   } 
   
-  if (debug) {debugPrint("ExpectedReport - exit")}
   return(g)
+}
+
+# expected report
+output$ExpectedReport <- renderPlot({
+  if (debug) debugPrint("ExpectedReport")
+  doIt<-input$EvidenceExpectedRun
+  g<-makeExpectedReport()
+  if (debug) {debugPrint("ExpectedReport - exit")}
+  g
 })
+
+output$ExpectedReport1 <- renderPlot({
+  if (debug) debugPrint("ExpectedReport")
+  doIt<-input$EvidenceExpectedRun
+  g<-makeExpectedReport()
+  if (debug) {debugPrint("ExpectedReport - exit")}
+  g
+})
+
 ##################################################################################    

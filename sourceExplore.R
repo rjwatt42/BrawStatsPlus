@@ -312,12 +312,8 @@ output$ExplorePlot1 <- renderPlot( {
   g  
 })
 
-
 # report explore analysis        
-output$ExploreReport <- renderPlot({
-  doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
-          input$STMethod,input$alpha)
-
+makeExploreReport<-function() {
   if (!is.null(exploreResult$Explore_family) && exploreResult$Explore_family!=input$ExploreTab) {
     if (is.null(exploreResultHold[[input$ExploreTab]])) {
       return(ggplot()+plotBlankTheme)
@@ -346,6 +342,16 @@ output$ExploreReport <- renderPlot({
   if (!validExplore || is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
   
   reportExplore(IV,IV2,DV,effect,design,explore,exploreResult)
+}
+output$ExploreReport <- renderPlot({
+  doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
+          input$STMethod,input$alpha)
+  makeExploreReport()
+})
+output$ExploreReport1 <- renderPlot({
+  doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM,
+          input$STMethod,input$alpha)
+  makeExploreReport()
 })
 
 ##################################################################################    

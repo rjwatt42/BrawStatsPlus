@@ -237,7 +237,7 @@ output$LikelihoodPlot1 <- renderPlot( {
 })
 
 # report likelihood analysis        
-output$LikelihoodReport <- renderPlot({
+makeLikelihoodReport<-function() {
   if (!is.element(showPossible,c("Samples","Populations"))) {return(ggplot()+plotBlankTheme)}
   IV<-updateIV()
   DV<-updateDV()
@@ -250,7 +250,13 @@ output$LikelihoodReport <- renderPlot({
   likelihoodResult<-likelihoodAnalysis()
   
   reportLikelihood(Iv,DV,effect,design,likelihood,likelihoodResult)
-  
+}
+
+output$LikelihoodReport <- renderPlot({
+  makeLikelihoodReport()
+})
+output$LikelihoodReport1 <- renderPlot({
+  makeLikelihoodReport()
 })
 
 ##################################################################################    

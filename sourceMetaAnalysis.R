@@ -217,16 +217,13 @@ output$MetaAnalysisPlot1 <- renderPlot({
   makeMetaGraph()
 })
 
-
-output$MetaAnalysisReport <- renderPlot({
-  doit<-c(input$metaRun)
-  
+makeMetaReport<-function() {
   if (metaResult$count>0) {
     g<-reportMetaAnalysis(metaResult)
   } else {
     g<-ggplot()+plotBlankTheme
   }
-
+  
   if (metaResult$count<metaResult$nsims) {
     if (doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)
@@ -236,6 +233,14 @@ output$MetaAnalysisReport <- renderPlot({
   }
   
   return(g)      
+}
+output$MetaAnalysisReport <- renderPlot({
+  doit<-c(input$metaRun)
+  makeMetaReport()
+})
+output$MetaAnalysisReport1 <- renderPlot({
+  doit<-c(input$metaRun)
+  makeMetaReport()
 })
 
 ##################################################################################    
