@@ -792,8 +792,19 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     spDens_r<-spDens_r/dr_gain
   }
   
+  # power calculations
   wp<-seq(w_range[1],w_range[2],length.out=npoints)
-  w<-zn2w(zp,design$sN)
+  if (design$sReplicationOn && design$sReplPowerOn) {
+    if (RZ=="r") {
+      nUse<-rw2n(sRho[1],design$sReplPower)
+    } else {
+      nUse<-rw2n(tanh(sRho[1]),design$sReplPower)
+    }
+  }
+  else {
+    nUse<-design$sN
+  }
+  w<-zn2w(zp,nUse)
   spDens_w<-spDens_z
   if (any(!is.na(spDens_z))) {
     for (i1 in 1:nrow(spDens_z)) {
@@ -805,7 +816,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
       use2<-!use & !duplicated(w*!use)
       wn2<-approx(w[use2],zd[use2],wp)$y
       z2<-approx(w[use2],zp[use2],wp)$y
-      spDens_w[i1,]<-(wn1+wn2)/abs(dwdz(z2,design$sN))
+      spDens_w[i1,]<-(wn1+wn2)/abs(dwdz(z2,nUse))
     }
     spDens_w<-spDens_w/max(spDens_w,na.rm=TRUE)
   }
