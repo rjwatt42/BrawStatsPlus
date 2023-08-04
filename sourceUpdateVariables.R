@@ -104,8 +104,8 @@ observeEvent(c(input$rIV,input$rIV2,input$rIVIV2,input$rIVIV2DV,
                  
                  # expectedResult<-c()
                  exploreResultHold<-list(Hypothesis=c(),Design=c(),MetaAnalysis=c())
-                 likelihood_P_ResultHold<-c()
-                 likelihood_S_ResultHold<-c()
+                 possiblePResultHold<-c()
+                 possibleSResultHold<-c()
                  
                  updateCheckboxInput(session,"EvidenceExpected_append",value=FALSE)
                  updateCheckboxInput(session,"ExploreAppendH",value=FALSE)

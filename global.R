@@ -2,7 +2,7 @@ library(ggplot2)
 
 switches<-list(doKeys=TRUE,doClipboard=FALSE,
                doCheating=TRUE,doReplications=TRUE,doPossible=TRUE,doBootstrap=TRUE,
-               doWorlds=FALSE,doMetaAnalysis=FALSE,doLikelihoodInfer=FALSE,
+               doWorlds=FALSE,doMetaAnalysis=FALSE,doLikelihoodInfer=FALSE,doPossiblePower=FALSE,
                doVariablesExplore=FALSE,
                doBatchFiles=FALSE,
                loadExtrasValue=FALSE,
@@ -49,7 +49,7 @@ panelcolours<-list(hypothesisC=hsv(hypHue,mainSat,mainBright),
                    designC=hsv(desHue,mainSat,mainBright),
                    simulateC=hsv(eviHue,mainSat,mainBright),
                    exploreC=hsv(expHue,mainSat*exploreSat,mainBright),
-                   likelihoodC=hsv(posHue,mainSat,mainBright*likeBright),
+                   possibleC=hsv(posHue,mainSat,mainBright*likeBright),
                    filesC=hsv(filHue,mainSat,mainBright*fileBright),
                    helpC=hsv(mainHue,mainSat,mainBright)
 )
@@ -57,14 +57,14 @@ subpanelcolours<-list(hypothesisC=hsv(hypHue,subSat,subBright),
                       designC=hsv(desHue,subSat,subBright),
                       simulateC=hsv(eviHue,subSat,subBright),
                       exploreC=hsv(expHue,subSat*exploreSat,subBright),
-                      likelihoodC=hsv(posHue,subSat,subBright),
+                      possibleC=hsv(posHue,subSat,subBright),
                       filesC=hsv(filHue,subSat,subBright*fileBright)
 )
 darkpanelcolours<-list(hypothesisC=hsv(hypHue,darkSat,darkBright),
                       designC=hsv(desHue,darkSat,darkBright),
                       simulateC=hsv(eviHue,darkSat,darkBright),
                       exploreC=hsv(expHue,darkSat*exploreSat,darkBright),
-                      likelihoodC=hsv(posHue,darkSat,darkBright*likeBright),
+                      possibleC=hsv(posHue,darkSat,darkBright*likeBright),
                       filesC=hsv(filHue,darkSat,darkBright*fileBright)
 )
 
@@ -194,7 +194,7 @@ explore<-list(Explore_type="IV",
               Explore_family="Hypothesis"  
 )
 
-likelihood<-
+possible<-
   list(type=c(),
        UsePrior="none", UseSource="world",
        prior=list(worldOn=TRUE,populationPDF="Uniform",populationPDFk=0.2,populationRZ="r",populationNullp=0),
@@ -204,24 +204,24 @@ likelihood<-
        cutaway=FALSE,
        sigOnly=FALSE,
        ResultHistory=c(),
-       likelihoodTheory=TRUE,
-       likelihoodSimSlice=0.1,likelihoodCorrection=TRUE,
-       likelihoodHQ=FALSE,
-       appendSim=FALSE,Likelihood_length="10",
+       possibleTheory=TRUE,
+       possibleSimSlice=0.1,possibleCorrection=TRUE,
+       possibleHQ=FALSE,
+       appendSim=FALSE,possibleLength="10",
        view="3D",show="Normal",azimuth=50,elevation=5,range=2,boxed=FALSE,
        textResult=FALSE
   )
 
 
 exploreResultHold<-list(Hypothesis=c(),Design=c(),MetaAnalysis=c())
-likelihood_P_ResultHold<-c()
-likelihood_S_ResultHold<-c()
+possiblePResultHold<-c()
+possibleSResultHold<-c()
 
 oldEffect<-effect
 oldDesign<-design
 oldEvidence<-evidence
 oldMetaAnalysis<-metaAnalysis
-oldLikelihood<-likelihood
+oldPossible<-possible
 
 importedData<-c()
 lastSample<-c()
@@ -245,6 +245,7 @@ shortHandGain=10
 
 z_range<-1.5
 r_range<-0.975
+w_range<-c(0.055,0.99)
 fullRange<-3
 nNpoints<-51
 worldNPoints<-51
@@ -323,6 +324,7 @@ cycleCount<-0
 # fine tuning
 is_local <- (Sys.getenv('SHINY_PORT') == "") && (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt")
 if (is_local) {
+  switches$doPossiblePower<-TRUE
   # switches$doWorlds<-TRUE
     # switches$loadExtrasValue<-TRUE
 }

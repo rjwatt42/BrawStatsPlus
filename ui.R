@@ -47,7 +47,7 @@ source("uiHelp.R")
 source("uiDesign.R")
 source("uiEvidence.R")
 source("uiExplore.R")
-source("uiLikelihood.R")
+source("uiPossible.R")
 source("uiFiles.R")
 
 source("uiWorld.R")
@@ -88,7 +88,7 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#InferentialPlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#ExpectedPlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#ExplorePlot{height:",graphH," !important;}"))),
-    tags$head(tags$style(paste0("#LikelihoodPlot{height:",graphH," !important;}"))),
+    tags$head(tags$style(paste0("#PossiblePlot{height:",graphH," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisPlot{height:",graphH," !important;}"))),
     
     tags$head(tags$style(paste0("#SamplePlot1{height:",graphH1," !important;}"))),
@@ -96,7 +96,7 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#InferentialPlot1{height:",graphH1," !important;}"))),
     tags$head(tags$style(paste0("#ExpectedPlot1{height:",graphH1," !important;}"))),
     tags$head(tags$style(paste0("#ExplorePlot1{height:",graphH1," !important;}"))),
-    tags$head(tags$style(paste0("#LikelihoodPlot1{height:",graphH1," !important;}"))),
+    tags$head(tags$style(paste0("#PossiblePlot1{height:",graphH1," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisPlot1{height:",graphH1," !important;}"))),
     
     tags$head(tags$style(paste0("#SampleReport{height:",reportH," !important;}"))),
@@ -104,7 +104,7 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#InferentialReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#ExpectedReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#ExploreReport{height:",reportH," !important;}"))),
-    tags$head(tags$style(paste0("#LikelihoodReport{height:",reportH," !important;}"))),
+    tags$head(tags$style(paste0("#PossibleReport{height:",reportH," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisReport{height:",reportH," !important;}"))),
     
     tags$head(tags$style(paste0("#SampleReport1{height:",reportH1," !important;}"))),
@@ -112,7 +112,7 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#InferentialReport1{height:",reportH1," !important;}"))),
     tags$head(tags$style(paste0("#ExpectedReport1{height:",reportH1," !important;}"))),
     tags$head(tags$style(paste0("#ExploreReport1{height:",reportH1," !important;}"))),
-    tags$head(tags$style(paste0("#LikelihoodReport1{height:",reportH1," !important;}"))),
+    tags$head(tags$style(paste0("#PossibleReport1{height:",reportH1," !important;}"))),
     tags$head(tags$style(paste0("#MetaAnalysisReport1{height:",reportH1," !important;}"))),
     
     tags$head(tags$script('
@@ -249,7 +249,7 @@ shinyUI(fluidPage(
                          # Explore panel
                          ExploreTab,
                          # Likelihood panel
-                         LikelihoodTab,
+                         PossibleTab,
                          # Files panel
                          FilesTab
                      ),

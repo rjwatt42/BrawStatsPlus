@@ -1,15 +1,15 @@
 
-
-rn2w<-function(r,n,t=2){
-  if (any(abs(r)>1)) {
-    print(paste0("rn2w exception: ",format(max(abs(r)),digits=3)))
-    r[r>1]<-1
-    r[r < -1]<- -1
+dwdz<-function(z,n,t=2) {
+  dwdz<-exp(-(z*sqrt(n - 3) + qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
+  if (t==2) {
+  dwdz<-dwdz-exp(-(z*sqrt(n - 3) - qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
   }
-  r<-abs(r)
-  z<-atanh(r)
+  return(dwdz)
+}
 
-  w<-(r+n)*0
+zn2w<-function(z,n,t=2){
+  z<-abs(z)
+  w<-(z+n)*0 # just in case z and n are different lengths
   # one-tailed
   if (t==1) {
     w<-pnorm(qnorm(alpha)+z*sqrt(n-3))
@@ -21,6 +21,16 @@ rn2w<-function(r,n,t=2){
   }
   w[n<3]<-0
   w  
+}
+
+rn2w<-function(r,n,t=2){
+  if (any(abs(r)>1)) {
+    print(paste0("rn2w exception: ",format(max(abs(r)),digits=3)))
+    r[r>1]<-1
+    r[r < -1]<- -1
+  }
+  z<-atanh(r)
+  zn2w(z,n,t)
 }
 
 rw2n<-function(r,w,t=2){

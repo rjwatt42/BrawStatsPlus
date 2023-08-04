@@ -9,8 +9,8 @@ loadExtras<-function(session,addingExtras=TRUE){
     switches$doWorlds<<-FALSE
     removeTab("Hypothesis","World",session)
     removeTab("HypothesisDiagram","World",session)
-    updateSelectInput(session,"likelihoodUseSource",choices=c("null","prior"))
-    updateSelectInput(session,"likelihoodUsePrior",choices=c("none","prior"))
+    updateSelectInput(session,"possibleUseSource",choices=c("null","prior"))
+    updateSelectInput(session,"possibleUsePrior",choices=c("none","prior"))
     
     switches$doCheating<<-FALSE
     switches$doLikelihoodInfer<<-FALSE
@@ -37,8 +37,8 @@ loadExtras<-function(session,addingExtras=TRUE){
       switches$doWorlds<<-TRUE
       insertTab("Hypothesis",worldPanel(),"Effects","after",select=FALSE,session)
       insertTab("HypothesisDiagram",worldDiagram(),"Hypothesis","after",select=FALSE,session)
-      updateSelectInput(session,"likelihoodUseSource",choices=c("null","world","prior"))
-      updateSelectInput(session,"likelihoodUsePrior",choices=c("none","world","prior"))
+      updateSelectInput(session,"possibleUseSource",choices=c("null","world","prior"))
+      updateSelectInput(session,"possibleUsePrior",choices=c("none","world","prior"))
     }
     
     # cheating

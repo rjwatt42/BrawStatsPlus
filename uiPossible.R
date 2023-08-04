@@ -1,11 +1,11 @@
 source("uiPrior.R")
 
-SlikelihoodLengthChoices=c("100" = "100",
+SpossibleLengthChoices=c("100" = "100",
                           "250" = "250",
                           "500" = "500",
                           "1000" = "1000"
 )
-PlikelihoodLengthChoices=c("10" = "10",
+PpossibleLengthChoices=c("10" = "10",
                           "50" = "50",
                           "100" = "100",
                           "500" = "500",
@@ -21,31 +21,40 @@ if (switches$doWorlds) {
   source1<-c("none","prior")
 }
 
-if (switches$doPossible) {
-LikelihoodTab <-
+if (switches$doPossiblePower) {
+  possibleShows<-c("Normal" = "Normal",
+                   "Inverse" = "Inverse",
+                   "Power" = "Power")
+} else {
+  possibleShows<-c("Normal" = "Normal",
+    "Inverse" = "Inverse")
+}
 
-  wellPanel(ID="MainLikelihood",
-    style = paste("background: ",panelcolours$likelihoodC), 
+if (switches$doPossible) {
+PossibleTab <-
+
+  wellPanel(ID="MainPossible",
+    style = paste("background: ",panelcolours$possibleC), 
     # h5("Evidence"),
   fluidRow(headerText("Likelihood functions based on sample or population")),
-  tabsetPanel(type="tabs",id="Likelihood",
+  tabsetPanel(type="tabs",id="PossiblePanel",
               # single tab
               tabPanel("Possible:",
-                       style = paste("background: ",subpanelcolours$likelihoodC), 
+                       style = paste("background: ",subpanelcolours$possibleC), 
                        fluidRow(
                        )
               ),
               tabPanel("Samples",
-                       style = paste("background: ",subpanelcolours$likelihoodC), 
+                       style = paste("background: ",subpanelcolours$possibleC), 
                        wellPanel(
-                         style = paste("background: ",subpanelcolours$likelihoodC,";"),
+                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",style=paste("margin:0px;padding:0px;margin-left:-20px;margin-right:-20px;"),
                                     tags$tr(
                                       tags$td(width = "40%", tags$div(style = localStyle, "Target Sample:")),
-                                      tags$td(width = "20%", numericInput("likelihoodSampRho", label=NULL,min=-1,max=1, step=0.1,value=likelihood$targetSample)),
+                                      tags$td(width = "20%", numericInput("possibleSampRho", label=NULL,min=-1,max=1, step=0.1,value=possible$targetSample)),
                                       tags$td(width = "15%",tags$div(style = localStyle, "from:")),
-                                      tags$td(width = "25%",selectInput("likelihoodUseSource",label=NULL,
-                                                                        choices=source2,selected=likelihood$UseSource,
+                                      tags$td(width = "25%",selectInput("possibleUseSource",label=NULL,
+                                                                        choices=source2,selected=possible$UseSource,
                                                                         selectize=FALSE)
                                       ),
                                     ),
@@ -53,36 +62,36 @@ LikelihoodTab <-
                          tags$table(width = "100%",class="myTable",style=paste("margin:0px;padding:0px;margin-left:-20px;margin-right:-20px;"),
                                     tags$tr(
                                       tags$td(width = "35%", tags$div(style = localStyle, "cut:")),
-                                      tags$td(width = "15%", checkboxInput("likelihood_cutaway",label=NULL,value=likelihood$cutaway)),
+                                      tags$td(width = "15%", checkboxInput("possible_cutaway",label=NULL,value=possible$cutaway)),
                                       tags$td(width = "35%", tags$div(style = localStyle, "Sig Only:")),
-                                      tags$td(width = "15%", checkboxInput("likelihood_sigonly",label=NULL,value=likelihood$sigOnly))
+                                      tags$td(width = "15%", checkboxInput("possible_sigonly",label=NULL,value=possible$sigOnly))
                                     )
                          ),
                          tags$table(width = "100%",class="myTable",
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = localStyle, "Runs:")),
                                       tags$td(width = "20%", 
-                                              selectInput("likelihood_length", label=NULL,
-                                                          SlikelihoodLengthChoices,selectize=FALSE)
+                                              selectInput("possible_length", label=NULL,
+                                                          SpossibleLengthChoices,selectize=FALSE)
                                       ),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
-                                      tags$td(width = "10%", checkboxInput("likelihood_append", label=NULL,value=likelihood$appendSim)),
-                                      tags$td(width = "10%", actionButton("likelihood_run", "Run"))
+                                      tags$td(width = "10%", checkboxInput("possible_append", label=NULL,value=possible$appendSim)),
+                                      tags$td(width = "10%", actionButton("possible_run", "Run"))
                                     )
                          ),
                        )
               ),
               tabPanel("Populations",
-                       style = paste("background: ",subpanelcolours$likelihoodC), 
+                       style = paste("background: ",subpanelcolours$possibleC), 
                        wellPanel(
-                         style = paste("background: ",subpanelcolours$likelihoodC,";"),
+                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",style=paste("margin:0px;padding:0px;margin-left:-20px;margin-right:-20px;"),
                                     tags$tr(
                                       tags$td(width = "40%", tags$div(style = localStyle, "Target Sample:")),
-                                      tags$td(width = "20%", numericInput("likelihoodPSampRho", label=NULL,min=-1,max=1, step=0.05,value=likelihood$targetSample)),
+                                      tags$td(width = "20%", numericInput("possiblePSampRho", label=NULL,min=-1,max=1, step=0.05,value=possible$targetSample)),
                                       tags$td(width = "15%",tags$div(style = localStyle, "prior:")),
-                                      tags$td(width = "25%",selectInput("likelihoodUsePrior",label=NULL,
-                                                                        choices=source1,selected=likelihood$UsePrior,
+                                      tags$td(width = "25%",selectInput("possibleUsePrior",label=NULL,
+                                                                        choices=source1,selected=possible$UsePrior,
                                                                         selectize=FALSE)
                                               ),
                                     )
@@ -91,28 +100,28 @@ LikelihoodTab <-
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = localStyle, "Runs:")),
                                       tags$td(width = "20%", 
-                                              selectInput("likelihoodP_length", label=NULL,
-                                                          PlikelihoodLengthChoices,selectize=FALSE)
+                                              selectInput("possibleP_length", label=NULL,
+                                                          PpossibleLengthChoices,selectize=FALSE)
                                       ),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
-                                      tags$td(width = "10%", checkboxInput("likelihoodP_append", label=NULL,value=likelihood$appendSim)),
-                                      tags$td(width = "10%", actionButton("likelihoodP_run", "Run")),
+                                      tags$td(width = "10%", checkboxInput("possibleP_append", label=NULL,value=possible$appendSim)),
+                                      tags$td(width = "10%", actionButton("possibleP_run", "Run")),
                                     )
                          ),
                          width="100%"
                        )
               ),
               tabPanel("Prior",
-                       style = paste("background: ",subpanelcolours$likelihoodC), 
+                       style = paste("background: ",subpanelcolours$possibleC), 
                        wellPanel(
-                         style = paste("background: ",subpanelcolours$likelihoodC,";"),
-                         priorPanel("likelihood",asTable=TRUE),
+                         style = paste("background: ",subpanelcolours$possibleC,";"),
+                         priorPanel("possible",asTable=TRUE),
                        )
               ),
               tabPanel("#",
-                       style = paste("background: ",subpanelcolours$likelihoodC), 
+                       style = paste("background: ",subpanelcolours$possibleC), 
                        wellPanel(
-                         style = paste("background: ",subpanelcolours$likelihoodC,";"),
+                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
@@ -124,11 +133,11 @@ LikelihoodTab <-
                          tags$table(width = "100%",class="myTable",
                                     tags$tr(
                                       tags$td(width = "20%", tags$div(style = localPlainStyle, "sim slice:")),
-                                      tags$td(width = "20%",numericInput("likelihoodSimSlice",label=NULL,value=likelihood$likelihoodSimSlice,max=0.2,min=0.0001,step=0.01)),
+                                      tags$td(width = "20%",numericInput("possibleSimSlice",label=NULL,value=possible$possibleSimSlice,max=0.2,min=0.0001,step=0.01)),
                                       tags$td(width = "25%", tags$div(style = localPlainStyle, "correction:")),
-                                      tags$td(width = "10%",checkboxInput("likelihoodCorrection", value=likelihood$likelihoodCorrection, label=NULL)),
+                                      tags$td(width = "10%",checkboxInput("possibleCorrection", value=possible$possibleCorrection, label=NULL)),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "HQ:")),
-                                      tags$td(width = "10%",checkboxInput("likelihoodHQ", value=likelihood$likelihoodHQ, label=NULL))
+                                      tags$td(width = "10%",checkboxInput("possibleHQ", value=possible$possibleHQ, label=NULL))
                                     ),
                                     
                          ),
@@ -144,45 +153,47 @@ LikelihoodTab <-
                                     tags$tr(
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "view:")),
                                       tags$td(width = "20%", 
-                                              selectInput("LikelihoodView", label=NULL,
+                                              selectInput("possibleView", label=NULL,
                                                           c("3D" = "3D",
-                                                            "2D" = "2D"),selected=likelihood$view,selectize=FALSE)
+                                                            "2D" = "2D"),selected=possible$view,selectize=FALSE)
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "show:")),
-                                      tags$td(width = "20%", 
-                                              selectInput("LikelihoodShow", label=NULL,
-                                                          c("Normal" = "Normal",
-                                                            "Inverse" = "Inverse"),selected=likelihood$show,selectize=FALSE)
+                                      tags$td(width = "30%", 
+                                              selectInput("possibleShow", label=NULL,
+                                                          choices=possibleShows,
+                                                          selected=possible$show,selectize=FALSE)
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "box:")),
                                       tags$td(width = "5%", 
-                                              checkboxInput("LikelihoodBoxed", label=NULL,value=likelihood$boxed)
+                                              checkboxInput("possibleBoxed", label=NULL,value=possible$boxed)
                                               ),
                                     ),
+                         ),
+                         tags$table(width = "100%",class="myTable",
                                     tags$tr(
-                                      tags$td(width = "5%", tags$div(style = localPlainStyle, "az:")),
-                                      tags$td(width = "15%", 
-                                              numericInput("LikelihoodAzimuth",label=NULL,
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "az:")),
+                                      tags$td(width = "20%", 
+                                              numericInput("possibleAzimuth",label=NULL,
                                                            min = -180,
                                                            max = 180,
                                                            step = 5,
-                                                           value = likelihood$azimuth)
+                                                           value = possible$azimuth)
                                       ),
-                                      tags$td(width = "5%", tags$div(style = localPlainStyle, "elev:")),
-                                      tags$td(width = "15%", 
-                                              numericInput("LikelihoodElevation",label=NULL,
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "elev:")),
+                                      tags$td(width = "20%", 
+                                              numericInput("possibleElevation",label=NULL,
                                                            min = 0,
                                                            max = 90,
                                                            step = 5,
-                                                           value = likelihood$elevation)
+                                                           value = possible$elevation)
                                       ),
-                                      tags$td(width = "5%", tags$div(style = localPlainStyle, "r:")),
-                                      tags$td(width = "20%", 
-                                              numericInput("LikelihoodRange",label=NULL,
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "r:")),
+                                      tags$td(width = "15%", 
+                                              numericInput("possibleRange",label=NULL,
                                                            min = 0,
                                                            max = 100,
                                                            step = 1,
-                                                           value = likelihood$range)
+                                                           value = possible$range)
                                       ),
                                     )
                          ),
@@ -190,16 +201,16 @@ LikelihoodTab <-
                                     tags$tr(
                                       tags$td(width = "50%", tags$div(style = localPlainStyle, "")),
                                       tags$td(width = "45%",tags$div(style = localPlainStyle, "show theory:")),
-                                      tags$td(width = "5%", checkboxInput("likelihoodTheory", value=likelihood$likelihoodTheory, label=NULL))
+                                      tags$td(width = "5%", checkboxInput("possibleTheory", value=possible$possibleTheory, label=NULL))
                                     ),
                          )
                        )
               )
               # help tab
               ,tabPanel("?",
-                        style = paste("background: ",subpanelcolours$likelihoodC),
+                        style = paste("background: ",subpanelcolours$possibleC),
                         wellPanel(
-                          style = paste("background: ",subpanelcolours$likelihoodC,";"),
+                          style = paste("background: ",subpanelcolours$possibleC,";"),
                           tags$table(width = "100%",class="myTable",
                                      tags$tr(
                                        tags$div(style = helpStyle, 
@@ -228,5 +239,5 @@ LikelihoodTab <-
 )
 } else
 {
-  LikelihoodTab <- c()
+  PossibleTab <- c()
 }

@@ -82,8 +82,8 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
     
     # set the result into likelihood: populations
     if (!is.na(result$rIV)) {
-      updateNumericInput(session,"likelihoodPSampRho",value=result$rIV)
-      updateNumericInput(session,"likelihoodSampRho",value=result$rIV)
+      updateNumericInput(session,"possiblePSampRho",value=result$rIV)
+      updateNumericInput(session,"possibleSampRho",value=result$rIV)
     }
     removeNotification(id = "counting")
   } else {

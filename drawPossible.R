@@ -44,72 +44,78 @@ showJointLk<-FALSE
 showNull<-TRUE
 normSampDist<-FALSE
 
-drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
-  switch(likelihood$type,
+drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
+  switch(possible$type,
          "Samples"={
-           switch (likelihood$UseSource,
-                   "world"={likelihood$source<-likelihood$world},
-                   "prior"={likelihood$source<-likelihood$prior},
-                   "null"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
+           switch (possible$UseSource,
+                   "world"={possible$source<-possible$world},
+                   "prior"={possible$source<-possible$prior},
+                   "null"={possible$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
            )
          },
          "Populations"={
-           switch (likelihood$UsePrior,
-                   "world"={likelihood$source<-likelihood$world},
-                   "prior"={likelihood$source<-likelihood$prior},
-                   "none"={likelihood$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
+           switch (possible$UsePrior,
+                   "world"={possible$source<-possible$world},
+                   "prior"={possible$source<-possible$prior},
+                   "none"={possible$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
            )
          }
       )
   # make the distribution        
 
-  switch (likelihood$type,
+  switch (possible$type,
           "Samples"={
-            likelihoodResult<-likelihoodResult$samples
-            switch(likelihood$show,
-                   "Normal"={ylab<-"Probability Density"},
-                   "Inverse"={ylab<-"Likelihood"},
+            possibleResult<-possibleResult$samples
+            switch(possible$show,
+                   "Normal"={label.z<-"Probability Density"},
+                   "Inverse"={label.z<-"Likelihood"},
+                   "Power"={label.z<-"Probability Density"},
             )
             col=colP
             col2=colS
           },
           "Populations"={
-            likelihoodResult<-likelihoodResult$populations
-            switch(likelihood$show,
-                   "Inverse"={ylab<-"Probability Density"},
-                   "Normal"={ylab<-"Likelihood"},
+            possibleResult<-possibleResult$populations
+            switch(possible$show,
+                   "Inverse"={label.z<-"Probability Density"},
+                   "Normal"={label.z<-"Likelihood"},
+                   "Power"={label.z<-"Likelihood"},
             )
             col=colS
             col2=colP
           }
   )
 
-  pRho<-sort(likelihoodResult$pRho)
-  sRho<-sort(likelihoodResult$sRho)
+  pRho<-sort(possibleResult$pRho)
+  sRho<-sort(possibleResult$sRho)
 
-  rs<-likelihoodResult$Theory$rs
-  sDens_r<-likelihoodResult$Theory$sDens_r
-  sDens_r_total<-likelihoodResult$Theory$sDens_r_total
-  sDens_r_null<-likelihoodResult$Theory$sDens_r_null
-  sDens_r_plus<-likelihoodResult$Theory$sDens_r_plus
-  rp<-likelihoodResult$Theory$rp
-  pDens_r<-likelihoodResult$Theory$pDens_r
-  spDens_r<-likelihoodResult$Theory$spDens_r
-  pDens_r_null<-likelihoodResult$Theory$pDens_r_null
-  pDens_r_plus<-likelihoodResult$Theory$pDens_r_plus
-
+  rs<-possibleResult$Theory$rs
+  sDens_r<-possibleResult$Theory$sDens_r
+  sDens_r_total<-possibleResult$Theory$sDens_r_total
+  sDens_r_null<-possibleResult$Theory$sDens_r_null
+  sDens_r_plus<-possibleResult$Theory$sDens_r_plus
+  rp<-possibleResult$Theory$rp
+  pDens_r<-possibleResult$Theory$pDens_r
+  spDens_r<-possibleResult$Theory$spDens_r
+  pDens_r_null<-possibleResult$Theory$pDens_r_null
+  pDens_r_plus<-possibleResult$Theory$pDens_r_plus
+  if (possible$show=="Power") {
+    spDens_r<-possibleResult$Theory$spDens_w
+    rp<-possibleResult$Theory$wp
+  }
+  
   # make the back wall population distributions
   rpw<-rp
-  if (likelihood$type=="Samples") {
-    rpw_dens<-likelihoodResult$Theory$asDens_r
+  if (possible$type=="Samples") {
+    rpw_dens<-possibleResult$Theory$asDens_r
   } else {
-    rpw_dens<-likelihoodResult$Theory$apDens_r
+    rpw_dens<-possibleResult$Theory$apDens_r
   }
 
   # make the back wall sample distributions
-  rsw<-likelihoodResult$Theory$rs
-  rsw_dens_plus<-likelihoodResult$Theory$sDens_r_plus
-  rsw_dens_null<-likelihoodResult$Theory$sDens_r_null
+  rsw<-possibleResult$Theory$rs
+  rsw_dens_plus<-possibleResult$Theory$sDens_r_plus
+  rsw_dens_null<-possibleResult$Theory$sDens_r_null
   rsw_dens<-rsw_dens_plus+rsw_dens_null
 
   view_lims<-c(-1,1)
@@ -128,109 +134,122 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
   populationBackwall<-list(rpw=rpw,rpw_dens=rpw_dens,pDens_r=pDens_r,rp=rp)
   sampleBackwall<-list(rsw=rsw,rsw_dens_plus=rsw_dens_plus,rsw_dens_null=rsw_dens_null,rs=rs)
   
-  n<-likelihoodResult$n[1]
+  n<-possibleResult$n[1]
 
   # graph frame
-  switch (likelihood$view,
+  switch (possible$view,
           "3D"= {
             tick_length<-0.05*view_lims[2]
             
             # make the floor
-            x<-view_lims
-            y<-view_lims
+            xlim<-view_lims
+            if (possible$show=="Power") xlim<-c(0,1)
+            ylim<-view_lims
             f <- function(x, y) { x*0+y*0 }
-            z <- outer(x, y, f)
+            z <- outer(xlim, xlim, f)
             z[is.na(z)] <- 0
             par(bg=maincolours$graphC,mar=c(0,5,0,0),font.lab=2)
-            mapping<-persp(x,y,z, 
-                           xlim=x+c(-1,1)*diff(view_lims)*(scale3D-1),
-                           ylim=y+c(-1,1)*diff(view_lims)*(scale3D-1),
+            mapping<-persp(xlim,ylim,z, 
+                           xlim=xlim+c(-1,1)*diff(view_lims)*(scale3D-1),
+                           ylim=ylim+c(-1,1)*diff(view_lims)*(scale3D-1),
                            zlim = range(c(0,1), na.rm = TRUE),
-                           theta = likelihood$azimuth, phi = likelihood$elevation, r=likelihood$range, 
+                           theta = possible$azimuth, phi = possible$elevation, r=possible$range, 
                            ticktype = "simple", 
                            box = FALSE,
                            axes = FALSE,
                            expand = 0.5, col = "#aaaaaa",
                            cex.axis=0.6,
-                           xlab = "Populations", ylab = "Samples", zlab = ylab
+                           xlab = "Populations", ylab = "Samples", zlab = label.z
             )
             # outside box            
-            if (likelihood$boxed){
-              polygon(trans3d(x=c(view_lims[1], view_lims[1], view_lims[1],view_lims[1]),
-                              y=c(view_lims[1], view_lims[1], view_lims[2],view_lims[2]),
+            if (possible$boxed){
+              polygon(trans3d(x=c(xlim[1], xlim[1], xlim[1],xlim[1]),
+                              y=c(ylim[1], ylim[1], ylim[2],ylim[2]),
                               z=c(0, 1, 1,0),mapping),
                       col="#aaaaaa",border=NA
               )
-              polygon(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2],view_lims[2]),
-                              y=c(view_lims[2], view_lims[2], view_lims[2],view_lims[2]),
+              polygon(trans3d(x=c(xlim[1], xlim[1], xlim[2],xlim[2]),
+                              y=c(ylim[2], ylim[2], ylim[2],ylim[2]),
                               z=c(0, 1, 1,0),mapping),
                       col="#aaaaaa",border=NA
               )
               BoxCol<-"#666666"
-              lines(trans3d(x=c(view_lims[1], view_lims[1], view_lims[2]),
-                            y=c(view_lims[1],view_lims[2],view_lims[2]),
+              lines(trans3d(x=c(xlim[1], xlim[1], xlim[2]),
+                            y=c(ylim[1],ylim[2],ylim[2]),
                             z=c(1,1,1),pmat=mapping), col=BoxCol)        
-              lines(trans3d(x=c(view_lims[1],view_lims[1]),
-                            y=c(view_lims[1],view_lims[1]),
+              lines(trans3d(x=c(xlim[1],xlim[1]),
+                            y=c(ylim[1],ylim[1]),
                             z=c(0,1),pmat=mapping),col=BoxCol)
-              lines(trans3d(x=c(view_lims[1],view_lims[1]),
-                            y=c(view_lims[2],view_lims[2]),
+              lines(trans3d(x=c(xlim[1],xlim[1]),
+                            y=c(ylim[2],ylim[2]),
                             z=c(0,1),pmat=mapping),col=BoxCol)
-              lines(trans3d(x=c(view_lims[2],view_lims[2]),
-                            y=c(view_lims[2],view_lims[2]),
+              lines(trans3d(x=c(xlim[2],xlim[2]),
+                            y=c(ylim[2],ylim[2]),
                             z=c(0,1),pmat=mapping),col=BoxCol)
             }
             
             tick_grow<-2
             # z-axis
-            lines(trans3d(x=c(view_lims[1],view_lims[1]),
-                          y=c(view_lims[1],view_lims[1]),
+            lines(trans3d(x=c(xlim[1],xlim[1]),
+                          y=c(ylim[1],ylim[1]),
                           z=c(0,1)*wallHeight,pmat=mapping),col="black")
             # short ticks
-            if (likelihood$boxed) {
+            if (possible$boxed) {
               plot_ticks<-seq(0,1/wallHeight,0.1)*wallHeight
             } else {
               plot_ticks<-seq(0,1,0.1)*wallHeight
             }
-            tick.z.start <- trans3d(view_lims[1],view_lims[1],plot_ticks, mapping)
-            tick.z.end <- trans3d(view_lims[1],view_lims[1]-tick_length,plot_ticks, mapping)
+            tick.z.start <- trans3d(xlim[1],ylim[1],plot_ticks, mapping)
+            tick.z.end <- trans3d(xlim[1],ylim[1]-tick_length,plot_ticks, mapping)
             segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
             # long ticks
             long_ticks<-seq(0,1,0.5)*wallHeight
-            tick.z.start <- trans3d(view_lims[1],view_lims[1],long_ticks, mapping)
-            tick.z.end <- trans3d(view_lims[1],view_lims[1]-tick_length*tick_grow,long_ticks, mapping)
+            tick.z.start <- trans3d(xlim[1],ylim[1],long_ticks, mapping)
+            tick.z.end <- trans3d(xlim[1],ylim[1]-tick_length*tick_grow,long_ticks, mapping)
             segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
             # label
-            pos.z<-trans3d(-1*view_lims[2],-1.2*view_lims[2],0.5*wallHeight,mapping)
-            rotate.z=trans3d(x=c(view_lims[1],view_lims[1]),
-                             y=c(view_lims[1],view_lims[1]),
+            pos.z<-trans3d(xlim[1],1.2*ylim[1],0.5*wallHeight,mapping)
+            rotate.z=trans3d(x=c(xlim[1],xlim[1]),
+                             y=c(ylim[1],ylim[1]),
                              z=c(0,1),pmat=mapping)
             rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
-            text(pos.z$x,pos.z$y,ylab,srt=rotate.z,font=2,cex=char3D*0.65)
+            text(pos.z$x,pos.z$y,label.z,srt=rotate.z,font=2,cex=char3D*0.65)
             
             # x and y ticks
-              plot_ticks<-seq(0.1,view_lims[2],0.1)
-              long_ticks<-seq(0.5,view_lims[2],0.5)
+              plot_ticks<-seq(0.1,xlim[2],0.1)
+              long_ticks<-seq(0.5,xlim[2],0.5)
+              if (possible$show=="Power") {
+                plot_ticks<-c(0,plot_ticks)
+                long_ticks<-c(0,long_ticks)
+              } else {
+                plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
+                long_ticks<-c(-rev(long_ticks),0,long_ticks)
+              }
+            # short ticks  
+            tick.x.start <- trans3d(plot_ticks, ylim[1], 0.0, mapping)
+            tick.x.end <- trans3d(plot_ticks , ylim[1]-tick_length, 0.0, mapping)
+            segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
+            # long ticks
+            tick.x.start <- trans3d(long_ticks, ylim[1], 0.0, mapping)
+            tick.x.end <- trans3d(long_ticks , ylim[1]-tick_length*tick_grow, 0.0, mapping)
+            segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
+            # tick labels
+            ticks.x<-trans3d(long_ticks+tick_length,ylim[1]- tick_length*char3D-0.1,0,mapping)
+            text(ticks.x$x,ticks.x$y,long_ticks,cex=0.6*char3D,adj=c(1,NA))
+            
+              plot_ticks<-seq(0.1,xlim[2],0.1)
+              long_ticks<-seq(0.5,xlim[2],0.5)
               plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
               long_ticks<-c(-rev(long_ticks),0,long_ticks)
-            # short ticks  
-            tick.x.start <- trans3d(plot_ticks, view_lims[1], 0.0, mapping)
-            tick.x.end <- trans3d(plot_ticks , view_lims[1]-tick_length, 0.0, mapping)
-            tick.y.start <- trans3d(view_lims[2], plot_ticks, 0.0, mapping)
-            tick.y.end <- trans3d(view_lims[2]+tick_length, plot_ticks , 0.0, mapping)
-            segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
+            tick.y.start <- trans3d(xlim[2], plot_ticks, 0.0, mapping)
+            tick.y.end <- trans3d(xlim[2]+tick_length, plot_ticks , 0.0, mapping)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
             # long ticks
-            tick.x.start <- trans3d(long_ticks, view_lims[1], 0.0, mapping)
-            tick.x.end <- trans3d(long_ticks , view_lims[1]-tick_length*tick_grow, 0.0, mapping)
-            tick.y.start <- trans3d(view_lims[2], long_ticks, 0.0, mapping)
-            tick.y.end <- trans3d(view_lims[2]+tick_length*tick_grow, long_ticks , 0.0, mapping)
-            segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
+            tick.y.start <- trans3d(xlim[2], long_ticks, 0.0, mapping)
+            tick.y.end <- trans3d(xlim[2]+tick_length*tick_grow, long_ticks , 0.0, mapping)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
             # tick labels
-            ticks.x<-trans3d(long_ticks+tick_length,view_lims[1]- tick_length*char3D-0.1,0,mapping)
-            ticks.y<-trans3d(view_lims[2]+tick_length*char3D+0.1,long_ticks-0.02,0,mapping)
-            text(ticks.x$x,ticks.x$y,long_ticks,cex=0.6*char3D,adj=c(1,NA))
+            ticks.y<-trans3d(xlim[2]+tick_length*char3D+0.1,long_ticks-0.02,0,mapping)
             text(ticks.y$x,ticks.y$y,long_ticks,cex=0.6*char3D,adj=c(0,NA))
             
             if (RZ=="r") {
@@ -240,14 +259,16 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               label.x<-bquote(bold(z['p']))
               label.y<-bquote(bold(z['s']))
             }
+            if (possible$show=="Power") label.x<-bquote(bold(w['s']))
             
-            pos.x<-trans3d(0,view_lims[1]-tick_length*tick_grow*char3D-0.2,0,mapping)
+            pos.x<-trans3d(sum(xlim)/2,ylim[1]-tick_length*tick_grow*char3D-0.2,0,mapping)
             text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D*0.75)
             
-            pos.y<-trans3d(view_lims[2]+tick_length*tick_grow*char3D+0.2,0,0,mapping)
+            pos.y<-trans3d(xlim[2]+tick_length*tick_grow*char3D+0.2,sum(ylim)/2,0,mapping)
             text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D*0.75)
             
             # general lines on the floor
+            if (possible$show!="Power") {
             if (doFloorLines) {
             lines(trans3d(x=view_lims,y=c(0,0),z=c(0,0),pmat=mapping),col="black",lty=3)
             lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col="black",lty=3)
@@ -279,7 +300,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               }
               polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,ztotal,0)*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
               
-              if (likelihood$source$worldOn && likelihood$source$populationNullp>0){
+              if (possible$source$worldOn && possible$source$populationNullp>0){
                 if (!any(is.na(sampleBackwall$rsw_dens_null))) {
                   znull <- sampleBackwall$rsw_dens_null
                 } else {
@@ -293,15 +314,15 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   zplus<-zplus*zgain
                 }
                 
-                if (likelihood$source$populationNullp>0 ) {
+                if (possible$source$populationNullp>0 ) {
                   lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                 }
                 lines(trans3d(x=x,y=y,z=zplus*wallHeight,pmat=mapping),col=colDistS,lwd=2)
               }
-
-              if (likelihood$likelihoodTheory){
+              
+            if (possible$possibleTheory){
                 # horizontal lines
-                switch (likelihood$type,
+                switch (possible$type,
                         "Samples"={
                           if (!isempty(sRho)){
                             for (si in 1:length(sRho)) {
@@ -318,7 +339,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           if (showNull) {
                             lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
                           }
-                          if (!is.na(likelihood$targetSample)) {
+                          if (!is.na(possible$targetSample)) {
                             # show peak and CIs on floor
                             if (doFloorCILines) {
                               y_ci<-view_lims
@@ -329,9 +350,10 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                               }
                               
                               # show likelihood on sample back wall
-                              zb<-approx(y,pDens_r_plus,sRho[si])$y
-                              if (length(pDens_r_null)==length(pDens_r_plus)) {
+                              si=1;
+                              if (possible$UsePrior!="none") {
                                 za<-approx(y,pDens_r_null,sRho[si])$y
+                                zb<-approx(y,pDens_r_plus,sRho[si])$y
                                 llrNull<-log(za/zb)
                                 if (za>=zb) {
                                   lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
@@ -341,6 +363,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                                   lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                                 }
                               } else  {
+                                zb<-approx(y,ztotal,sRho[si])$y
                                 lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
                               }
                               # show prob-dens on population back wall
@@ -348,7 +371,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                               lines(trans3d(x=c(0,0)+rp_peak,y=c(0,0)+view_lims[2],z=c(0,dens_rp_peak)*wallHeight,pmat=mapping),col=colVline,lwd=2)
 
                               # show rp==rs on floor
-                              if (likelihood$world$populationPDF!="Single"){
+                              if (possible$world$populationPDF!="Single"){
                                 lines(trans3d(x=c(sRho[si],sRho[si]),y=y_ci,z=c(0,0),pmat=mapping),col=colPdark)
                               }
                             }
@@ -356,23 +379,24 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         }
                 )
               }
-              
+            }
+            
             theoryAlpha=1
-            switch (likelihood$type,
+            switch (possible$type,
                     "Samples"={
                       simAlpha<-1
                       if (length(pRho)>1) {
                         theoryAlpha<-0.85
                         simAlpha<-0.95
                       }
-                      if (!is.null(likelihoodResult$Sims$sSimDens)) {
-                        bins<-likelihoodResult$Sims$sSimBins
-                        dens<-likelihoodResult$Sims$sSimDens
+                      if (!is.null(possibleResult$Sims$sSimDens)) {
+                        bins<-possibleResult$Sims$sSimBins
+                        dens<-possibleResult$Sims$sSimDens
                         hgain<-sum(sDens_r)*diff(rs[c(1,2)])/sum(dens)/diff(bins[c(1,2)])
-                          hgain<-hgain*(1-likelihood$world$populationNullp)
+                          hgain<-hgain*(1-possible$world$populationNullp)
                         dens<-dens*hgain
                         theoryAlpha<-0.25
-                        if (likelihood$cutaway) {
+                        if (possible$cutaway) {
                           waste<-sum(bins<=min(sRho))
                           use_s<-(waste):length(bins)
                           bins<-bins[use_s]
@@ -397,13 +421,13 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         }
                         
                         # now draw theory
-                        gain<-(1-likelihood$source$populationNullp)
+                        gain<-(1-possible$source$populationNullp)
                         if (length(pRho)==2) {
-                          gain<-max(c(1-likelihood$source$populationNullp,likelihood$source$populationNullp))
+                          gain<-max(c(1-possible$source$populationNullp,possible$source$populationNullp))
                         } 
                         gain<-gain*0.75
-                        if (likelihood$likelihoodTheory){
-                          if (is.null(likelihoodResult$Sims$sSims)) {
+                        if (possible$possibleTheory){
+                          if (is.null(possibleResult$Sims$sSims)) {
                             if (length(pRho)==2) {
                               col<-addTransparency(colS,theoryAlpha)
                             } else {
@@ -414,7 +438,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           }
 
                           z_use<-sDens_r[i,]
-                          if (likelihood$cutaway) {
+                          if (possible$cutaway) {
                             z_use[rs<min(sRho)]<-0
                           }
                           z_use[z_use<=draw_lower_limit]<-0
@@ -448,15 +472,21 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                       }
                     },
                     "Populations"={
-                      if (!is.null(likelihoodResult$Sims$pSims)) {
-                        bins<-likelihoodResult$Sims$pSimBins
-                        dens<-likelihoodResult$Sims$pSimDens$counts
+                      if (!is.null(possibleResult$Sims$pSims)) {
+                        if (possible$show!="Power") {
+                        bins<-possibleResult$Sims$pSimBins
+                        dens<-possibleResult$Sims$pSimDens$counts
+                        } else {
+                          bins<-possibleResult$Sims$pSimBinsW
+                          dens<-possibleResult$Sims$pSimDensW$counts
+                        }
                         
                         if (!is.null(dens)){
                           x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
                           
+                          if (possible$show!="Power") {
                           # population wall
-                          densP<-likelihoodResult$Sims$pSimDensP$counts
+                          densP<-possibleResult$Sims$pSimDensP$counts
                           gainSim<-sum(densP)*(bins[2]-bins[1])
                           gainTheory<-sum(rpw_dens)*(rpw[2]-rpw[1])
                           densP<-densP/(gainSim/gainTheory)
@@ -465,17 +495,19 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           polygon(trans3d(x=x,y=x*0+view_lims[2],z=yP*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.35),border=NA)
                           
                           # sample wall
-                          densS<-likelihoodResult$Sims$pSimDensS$counts
+                          densS<-possibleResult$Sims$pSimDensS$counts
                           gainSim<-sum(densS)*(bins[2]-bins[1])
                           gainTheory<-sum(rsw_dens)*(rsw[2]-rsw[1])
                           densS<-densS/(gainSim/gainTheory)
                           if (max(densS)>1.2) {densS<-densS/max(densS)*1.2}
                           yS<-c(0,as.vector(matrix(c(densS,densS),2,byrow=TRUE)),0)
                           polygon(trans3d(x=x*0+view_lims[1],y=x,z=yS*wallHeight,pmat=mapping),col = addTransparency(colSdark,0.25),border=NA)
+                          }
                           
                           #slice of interest
+                          si=1
                           gainSim<-sum(dens)*(bins[2]-bins[1])
-                          gainTheory<-sum(likelihoodResult$Theory$spDens_r)*(likelihoodResult$Theory$rp[2]-likelihoodResult$Theory$rp[1])
+                          gainTheory<-sum(possibleResult$Theory$spDens_r)*(possibleResult$Theory$rp[2]-possibleResult$Theory$rp[1])
                           dens<-dens/(gainSim/gainTheory)
                           dens<-dens/max(dens,na.rm=TRUE)
                           if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
@@ -484,22 +516,24 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                         }
                       }
                       # draw theory main distribution & lines
-                      if (likelihood$likelihoodTheory){
+                      if (possible$possibleTheory){
                         theoryAlpha=0.85
-                        if (!is.na(likelihood$targetSample)) {
+                        if (!is.na(possible$targetSample)) {
                           rd<-spDens_r
                           if (!is.null(spDens_r)){
                             use_si<-order(-sRho)
                             # main distribution
                             for (si in use_si) {
-                              if (is.null(likelihoodResult$Sims$pSims)) {
+                              if (is.null(possibleResult$Sims$pSims)) {
                                 polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
                               } else {
                                 polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,highTransparency), lwd=1)
                               }
                             }
                           }
+                          
                           # vertical lines on main distribution
+                          if (possible$show!="Power") {
                           if (doPeakLine && length(sRho)==1) {
                             if (showNull) {
                               lines(trans3d(x=c(0,0),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],0)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
@@ -510,15 +544,15 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                             lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[1])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
                             lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[2])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
                             }
-                            if (doSampleLine && likelihood$world$populationPDF!="Single"){
+                            if (doSampleLine && possible$world$populationPDF!="Single"){
                               lines(trans3d(x=c(sRho[si],sRho[si]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],sRho[si])$y-0.01)*wallHeight,pmat=mapping),col=colVline,lty=3,lwd=2)
                             }
                           }
                           # text annotations
-                          if (likelihood$textResult || doTextResult) {
+                          if (possible$textResult || doTextResult) {
                             param<-RZ
                             # llr 
-                            if (effect$world$worldOn && likelihood$prior$populationNullp>0) {
+                            if (effect$world$worldOn && possible$prior$populationNullp>0) {
                               text(trans3d(x=view_lims[1],y=mean(view_lims),z=1.05,pmat=mapping),labels=bquote(
                                 llr(italic(.(param))["+"]/italic(.(param))[0])==bold(.(format(-llrNull,digits=3)))),
                                 col=colSdark,adj=c(0.5,-0.5),cex=0.9)
@@ -532,13 +566,14 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                                 llr(italic(.(param))[mle]/italic(.(param))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
                             ),col=colPdark,adj=c(0.5,-0.5),cex=0.9)
                           }
+                          }
                         }
                       }
                     }
             )
 
             # finish off plot box
-            if (likelihood$boxed){
+            if (possible$boxed){
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
                           z=c(1,1,1),pmat=mapping), col=BoxCol, lty=3)        
@@ -549,7 +584,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     par(bg=maincolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,1))
     
     # show the back wall
-    switch (likelihood$type,
+    switch (possible$type,
             "Populations"={
               rw<-rpw
               rw_dens<-rpw_dens
@@ -575,7 +610,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
 
     rw<-c(rw[1],rw,rw[length(rw)])
     rw_dens<-c(0,rw_dens,0)
-    plot(x=rw,y=rw_dens,xlab=xlabel,ylab=ylab,type="n",yaxt="n",font.lab=2, cex.lab=char3D,
+    plot(x=rw,y=rw_dens,xlab=xlabel,ylab=label.z,type="n",yaxt="n",font.lab=2, cex.lab=char3D,
          xlim=view_lims,ylim=c(0,1.25))
     axis(side = 2,  at=0, labels = FALSE, tck=-0.05)
 
@@ -583,22 +618,22 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     rect(u[1], u[3], u[2], u[4], col="#AAAAAA", border=NA)
     lines(u[c(1,2)],c(0,0),col="black")
     # make the back wall
-    if (likelihood$type=="Populations" && likelihood$source$populationNullp>0) {
+    if (possible$type=="Populations" && possible$source$populationNullp>0) {
       polygon(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=col)
     }
     polygon(x=rw,y=rw_dens,col=col)
     lines(x=rw,y=rw_dens,col=colDistS,lwd=2)
-    if (likelihood$type=="Populations" && likelihood$source$populationNullp>0) {
+    if (possible$type=="Populations" && possible$source$populationNullp>0) {
       lines(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=colNullS,lwd=2)
     }
     
     theoryAlpha=0.75
     # simulations
-    switch (likelihood$type,
+    switch (possible$type,
             "Populations"={
-              if (!is.null(likelihoodResult$Sims$pSims)) {
-                bins<-likelihoodResult$Sims$pSimBins
-                dens<-likelihoodResult$Sims$pSimDens
+              if (!is.null(possibleResult$Sims$pSims)) {
+                bins<-possibleResult$Sims$pSimBins
+                dens<-possibleResult$Sims$pSimDens
                 dens<-dens$counts
                 
                 if (!is.null(dens)){
@@ -612,9 +647,9 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
               }
             },
             "Samples"={
-              if (!is.null(likelihoodResult$Sims$sSims)) {
-                bins<-likelihoodResult$Sims$sSimBins
-                dens<-likelihoodResult$Sims$sSimDens
+              if (!is.null(possibleResult$Sims$sSims)) {
+                bins<-possibleResult$Sims$sSimBins
+                dens<-possibleResult$Sims$sSimDens
                 # dens<-dens$counts
                 
                 if (!is.null(dens)){
@@ -631,16 +666,16 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
     )
     lines(x=c(0,0)+sRho[1],y=c(0,yh),col="red", lwd=3)
     
-    if (likelihood$likelihoodTheory){
-      switch (likelihood$type,
+    if (possible$possibleTheory){
+      switch (possible$type,
               "Samples"={
                 if (!all(is.na(sDens_r_total))){
                   # main distributions
                   # total
                   polygon (x = rs[c(1,1:length(rs),length(rs))], y = c(0,sDens_r_total,0), col = addTransparency(colS,theoryAlpha), lwd=1)
                   # null
-                  if (likelihood$world$worldOn) {
-                    if (likelihood$world$populationNullp>0)
+                  if (possible$world$worldOn) {
+                    if (possible$world$populationNullp>0)
                       lines (x = rs, y = sDens_r_null, col = colNullS, lwd=2)
                       # plus
                       lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=2)
@@ -660,12 +695,12 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     
                     lines(x=c(sRho[i],sRho[i]),y=c(0,l_at_sample),col=colVline,lwd=1)
                     points(x=sRho[i],y=l_at_sample,col=colVline,pch=16,cex=1.5)
-                    if (likelihood$world$worldOn) {
+                    if (possible$world$worldOn) {
                     # if (ln_at_sample>ld_at_sample) {
                     #   lines(x=c(sRho[1],sRho[1]),y=c(ld_at_sample,ln_at_sample-0.01),col=colNullS,lwd=2)
                     #   lines(x=c(sRho[1],sRho[1]),y=c(0,ld_at_sample-0.01),col=colDistS,lwd=2)
                     # } else {
-                    #   if (likelihood$world$populationNullp>0)
+                    #   if (possible$world$populationNullp>0)
                     #     lines(x=c(sRho[1],sRho[1]),y=c(ln_at_sample,ld_at_sample-0.01),col=colDistS,lwd=2)
                     #   lines(x=c(sRho[1],sRho[1]),y=c(0,ln_at_sample-0.01),col=colNullS,lwd=2)
                     # }
@@ -686,7 +721,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                           text(s-0.05,l_at_sample+0.05,labels=ltext,col="black",adj=0.6,cex=0.9)
                         } 
                       }
-                      # if (likelihood$world$populationNullp>0) {
+                      # if (possible$world$populationNullp>0) {
                     #   text(0,1.05,labels=bquote(
                     #     phantom(bolditalic(p)[.(RZ)]== bold(.(format(p_at_sample,digits=3)))) ~" "~ atop(bold(.(format(pd_at_sample,digits=3))),phantom(bold(.(format(pn_at_sample,digits=3)))))
                     #   ),col=colDistS,adj=-0.1,cex=0.9)
@@ -695,7 +730,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     #   ),col=colNullS,adj=-0.1,cex=0.9)
                     # }
 
-                    # if (likelihood$world$populationNullp>0) {
+                    # if (possible$world$populationNullp>0) {
                     #   text(0,1.05,labels=bquote(
                     #   phantom(bolditalic(l)[.(RZ)]==bold(.(format(l_at_sample,digits=3)))) ~" "~ atop(phantom(bold(.(format(ld_at_sample,digits=3)))),bold(.(format(ln_at_sample,digits=3))))
                     # ),col=colNullS,adj=1.1,cex=0.9)
@@ -738,7 +773,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                   dens_at_sample<-approx(rp,pDens_r,sRho[1])$y
                   dens_at_ci<-approx(rp,pDens_r,rp_ci)$y
                   lines(x=c(sRho[1],sRho[1]),y=c(0,dens_at_sample-0.01),col="black",lwd=1.5)
-                  if (likelihood$world$populationPDF!="Uniform_r" && !is.null(rp_peak)){
+                  if (possible$world$populationPDF!="Uniform_r" && !is.null(rp_peak)){
                     lines(x=c(rp_peak,rp_peak),y=c(0,dens_at_peak-0.01),col="black",lwd=2.5)
                     lines(x=c(rp_peak,rp_peak),y=c(0,dens_at_peak-0.01),col="white",lwd=2)
                     lines(x=c(rp_peak,rp_peak),y=c(0,dens_at_peak-0.01),col="red",lty=3,lwd=2)
@@ -757,7 +792,7 @@ drawLikelihood <- function(IV,DV,effect,design,likelihood,likelihoodResult){
                     bold(llr)(bolditalic(.(RZ))[mle]/bolditalic(.(RZ))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   
-                  if (effect$world$worldOn && likelihood$prior$populationNullp>0) {
+                  if (effect$world$worldOn && possible$prior$populationNullp>0) {
                     ln_at_sample<-approx(rs,pDens_r_null,sRho[1])$y
                     ld_at_sample<-approx(rs,pDens_r_plus,sRho[1])$y
                     llrNull<-log(ln_at_sample/ld_at_sample)

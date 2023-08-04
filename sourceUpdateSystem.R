@@ -119,9 +119,9 @@ updateEvidence<-function(){
            if (pPlus) evidence$prior$populationNullp<-1-evidence$prior$populationNullp
          },
          "prior"={
-           evidence$prior=list(worldOn=TRUE,populationPDF=input$likelihoodPrior_distr,
-                               populationPDFk=input$likelihoodPrior_distr_k,populationRZ=input$likelihoodPrior_distr_rz,
-                               populationNullp=input$likelihoodPrior_Nullp)
+           evidence$prior=list(worldOn=TRUE,populationPDF=input$possiblePrior_distr,
+                               populationPDFk=input$possiblePrior_distr_k,populationRZ=input$possiblePrior_distr_rz,
+                               populationNullp=input$possiblePrior_Nullp)
            if (pPlus) evidence$prior$populationNullp<-1-evidence$prior$populationNullp
          }
   )

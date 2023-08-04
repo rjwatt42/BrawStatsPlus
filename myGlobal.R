@@ -10,7 +10,7 @@ altKeyOn<-FALSE
 validSample<-FALSE
 validExpected<-FALSE
 validExplore<-FALSE
-validLikelihood<-0
+validPossible<-0
 show<-0
 
 #because numericInput with "0." returns NA

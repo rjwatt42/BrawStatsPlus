@@ -44,7 +44,7 @@ priorPanel<-function(prefix="",asTable=FALSE) {
   } else {
     return(
       wellPanel(
-        style = paste("background: ",subpanelcolours$likelihoodC,";"),
+        style = paste("background: ",subpanelcolours$possibleC,";"),
         priorTable,
         width="100%"
       )

@@ -17,7 +17,7 @@ if (switches$doKeys) {
       updateCheckboxInput(session,"LoadExtras",value=!input$LoadExtras)
     }
     
-    if (input$keypress==ascii("w") && controlKeyOn){
+    if (input$keypress==ascii("w") && controlKeyOn && shiftKeyOn){
       was<-input$WhiteGraphs
       updateCheckboxInput(session,"WhiteGraphs",value=!was)
     }
@@ -37,6 +37,11 @@ if (switches$doKeys) {
       updateSelectInput(session,"Explore_showD",selected="NHSTErrors")
       updateCheckboxInput(session,"Explore_xlog",value=TRUE)
       updateNumericInput(session,"Explore_nRange",value=10000)
+    }
+    
+    if (input$keypress==ascii("w") && controlKeyOn){
+      updateNumericInput(session,"possiblePSampRho",value=0)
+      updateSelectInput(session,"possibleShow",selected="Power")
     }
     
     # toggle LARGE GRAPHS
@@ -104,6 +109,7 @@ if (switches$doKeys) {
       }
       
     }
+    
     # control-l set shortHand to TRUE
     if (input$keypress==ascii("l") && controlKeyOn){
       updateCheckboxInput(session,"shortHand",value=!input$shortHand)
@@ -115,7 +121,7 @@ if (switches$doKeys) {
     # control-t set showTheory to TRUE
     if (input$keypress==ascii("t") && controlKeyOn){
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
-      updateCheckboxInput(session,"likelihoodTheory",value=TRUE)
+      updateCheckboxInput(session,"possibleTheory",value=TRUE)
     }
     
   })

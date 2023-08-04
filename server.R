@@ -47,7 +47,7 @@ source("drawDescription.R")
 source("drawInference.R")
 source("drawMeta.R")
 source("drawExplore.R")
-source("drawLikelihood.R")
+source("drawPossible.R")
 
 source("sampleMake.R")
 source("sampleAnalyse.R")
@@ -64,11 +64,11 @@ source("reportInference.R")
 source("reportExpected.R")
 source("reportMetaAnalysis.R")
 source("reportExplore.R")
-source("reportLikelihood.R")
+source("reportPossible.R")
 
 source("runMetaAnalysis.R")
 source("runExplore.R")
-source("runLikelihood.R")
+source("runPossible.R")
 source("runBatchFiles.R")
 
 source("wsRead.R")
@@ -102,7 +102,6 @@ shinyServer(function(input, output, session) {
   hideElement("extraRep3")
   }
   
-
 ####################################
   if (debug) debugPrint("ServerKeys")
   
@@ -425,7 +424,7 @@ source("sourceUpdateData.R",local=TRUE)
   
   source("sourceExplore.R",local=TRUE)
   
-  source("sourceLikelihood.R",local=TRUE)
+  source("sourcePossible.R",local=TRUE)
   source("sourceFiles.R",local=TRUE)
   # end of everything        
   
