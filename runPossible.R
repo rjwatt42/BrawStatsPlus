@@ -208,6 +208,7 @@ densityFunctionStats<-function(dens_r,rp){
   dens_at_peak<-max(dens_r)
   list(
     peak=peak,
+    mean=sum(rp*dens_r,na.rm=TRUE)/sum(dens_r,na.rm=TRUE),
     sd=sqrt(sum((rp)^2*dens_r,na.rm=TRUE)/sum(dens_r,na.rm=TRUE)),
     ci=ci,
     dens_at_peak=dens_at_peak
@@ -737,7 +738,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               if (prior$populationPDF=="Single") {
                 binWidth<-0.05
               } else {
-                binWidth<-max(0.05,2*IQR(use_effectRP_use)/length(use_effectRP_use)^(1/3))
+                binWidth<-max(0.05,2*IQR(use_effectRP_use,na.rm=TRUE)/length(use_effectRP_use)^(1/3))
               }
               hist_use<-abs(use_effectRP_use)<hist_range
               nbins=max(10,round(2/binWidth))
@@ -816,7 +817,9 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
       use2<-!use & !duplicated(w*!use)
       wn2<-approx(w[use2],zd[use2],wp)$y
       z2<-approx(w[use2],zp[use2],wp)$y
-      spDens_w[i1,]<-(wn1+wn2)/abs(dwdz(z2,nUse))
+      wd<-(wn1+wn2)/abs(dwdz(z2,nUse))
+      wd[is.na(wd)]<-0
+      spDens_w[i1,]<-wd
     }
     spDens_w<-spDens_w/max(spDens_w,na.rm=TRUE)
   }
@@ -850,6 +853,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     pDens_r_null<-pDens_r_null/sum(pDens_r_null)*(prior$populationNullp)
   }
   rp_stats<-densityFunctionStats(pDens_r,zp) 
+  wp_stats<-densityFunctionStats(spDens_w,wp) 
   
   dens_at_peak=1
   if (is.na(sRho[1])) {
@@ -899,6 +903,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                      rp_sd=rp_stats$sd,
                                      rp_ci=rp_stats$ci,
                                      wp=wp,
+                                     wp_peak=wp_stats$peak,
+                                     wp_mean=wp_stats$mean,
                                      spDens_w=spDens_w,
                                      dens_at_peak=dens_at_peak,dens_at_sample=dens_at_sample,
                                      dens_at_population=dens_at_population,dens_at_zero=dens_at_zero

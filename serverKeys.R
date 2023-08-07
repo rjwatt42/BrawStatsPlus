@@ -42,6 +42,7 @@ if (switches$doKeys) {
     if (input$keypress==ascii("w") && controlKeyOn){
       updateNumericInput(session,"possiblePSampRho",value=0)
       updateSelectInput(session,"possibleShow",selected="Power")
+      updateTabsetPanel(session, "PossiblePanel",selected="Populations")
     }
     
     # toggle LARGE GRAPHS

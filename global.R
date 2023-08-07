@@ -245,13 +245,14 @@ shortHandGain=10
 
 z_range<-1.5
 r_range<-0.975
-w_range<-c(0.055,0.99)
+w_range<-c(0.055,0.995)
 fullRange<-3
 nNpoints<-51
 worldNPoints<-51
 varNPoints<-101
 
 allScatter<-"all"
+showMedians<-FALSE
 minN<-10
 maxRandN<-5 # times mean sample size
 

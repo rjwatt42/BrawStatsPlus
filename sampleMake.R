@@ -42,11 +42,15 @@ makeSampleVar<-function(design,n,MV){
             },
             "Stratified"={
               # sampled at specific intervals
-              r<-seq(-design$sR_Strata,design$sR_Strata,length.out=design$sN_Strata)
-              dens<-dnorm(r)
-              dens<-round(dens/sum(dens)*n)
-              ivr1<-rep(r,dens)
-              ivr<-ivr[sample(length(ivr1),length(ivr1))]
+              if (MV$type=="Categorical") {
+                ivr1<-((1:MV$ncats) - ceil(MV$ncats/2))/floor(MV$ncats/2)
+              } else {
+                r<-seq(-design$sR_Strata,design$sR_Strata,length.out=design$sN_Strata)
+                dens<-dnorm(r)
+                dens<-round(dens/sum(dens)*n)
+                ivr1<-rep(r,dens)
+                ivr<-ivr[sample(length(ivr1),length(ivr1))]
+              }
               dvr1_m<-rep(0,n)
               dvr1_s<-rep(1,n)
             },

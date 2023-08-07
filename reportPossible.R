@@ -8,6 +8,8 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
   nc<-3
   outputText<-rep("",nc)
   outputText[1]<-paste("\bPossible:",possible$type)
+  if (possible$show=="Power") outputText[1]<-paste(outputText[1],"(Power)")
+  
   if (!is.na(possible$targetSample)) {
     switch (possible$type,
           "Samples"={
@@ -88,22 +90,31 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
           },
           "Populations"={
             if (!is.na(possible$targetSample)) {
-            outputText<-c(outputText,"Sample ",paste("r=", format(mean(possibleResult$sRho[1]),digits=report_precision)," (n=",format(possibleResult$n[1]),")",sep=""),"")
-            if (length(possibleResult$sRho)>1) {
-            for (ei in 2:length(possibleResult$sRho)) {
-              outputText<-c(outputText," ",paste("r=", format(mean(possibleResult$sRho[ei]),digits=report_precision)," (n=",format(possibleResult$n[ei]),")",sep=""),"")
-            }
-            }
-            outputText<-c(outputText,rep("",nc))
-            outputText<-c(outputText," ","Theory","Simulation")
-            outputText<-c(outputText,"max(populations)",format(possibleResult$Theory$rp_peak,digits=report_precision),
-                          format(possibleResult$Sims$rpSim_peak,digits=report_precision))
-            outputText<-c(outputText,"sd(populations)",format(possibleResult$Theory$rp_sd,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
-            outputText<-c(outputText,"CI(samples)",
-                          paste("<", format(possibleResult$Theory$rp_ci[1],digits=report_precision), ",", format(possibleResult$Theory$rp_ci[2],digits=report_precision), ">"),
-                          paste("<", format(possibleResult$Sims$rpSim_ci[1],digits=report_precision), ",", format(possibleResult$Sims$rpSim_ci[2],digits=report_precision), ">")
-            )
-            outputText<-c(outputText,rep("",nc))
+              outputText<-c(outputText,"Sample ",paste("r=", format(mean(possibleResult$sRho[1]),digits=report_precision)," (n=",format(possibleResult$n[1]),")",sep=""),"")
+              if (length(possibleResult$sRho)>1) {
+                for (ei in 2:length(possibleResult$sRho)) {
+                  outputText<-c(outputText," ",paste("r=", format(mean(possibleResult$sRho[ei]),digits=report_precision)," (n=",format(possibleResult$n[ei]),")",sep=""),"")
+                }
+              }
+              outputText<-c(outputText,rep("",nc))
+              
+              outputText<-c(outputText," ","Theory","Simulation")
+              if (possible$show!="Power") {
+              outputText<-c(outputText,"max(populations)",format(possibleResult$Theory$rp_peak,digits=report_precision),
+                            format(possibleResult$Sims$rpSim_peak,digits=report_precision))
+              outputText<-c(outputText,"sd(populations)",format(possibleResult$Theory$rp_sd,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
+              outputText<-c(outputText,"CI(samples)",
+                            paste("<", format(possibleResult$Theory$rp_ci[1],digits=report_precision), ",", format(possibleResult$Theory$rp_ci[2],digits=report_precision), ">"),
+                            paste("<", format(possibleResult$Sims$rpSim_ci[1],digits=report_precision), ",", format(possibleResult$Sims$rpSim_ci[2],digits=report_precision), ">")
+              )
+              } else {
+                outputText<-c(outputText,"max(power)",format(possibleResult$Theory$wp_peak,digits=report_precision),
+                              format(possibleResult$Sims$rpSim_peak,digits=report_precision))
+                outputText<-c(outputText,"mean(power)",format(possibleResult$Theory$wp_mean,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
+                wr<-max(possibleResult$Theory$spDens_w)/min(possibleResult$Theory$spDens_w)
+                outputText<-c(outputText,"range(power)",format(wr,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
+              }
+              outputText<-c(outputText,rep("",nc))
             if (length(possibleResult$Sims$pSims)==0){
               outputText[seq(9,length(outputText),3)]<-" "
             }

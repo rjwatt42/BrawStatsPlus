@@ -154,8 +154,13 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
   if (graphicSource=="None") {return(possibleResult)}
   
   req(input$changed)
-
-  if (is.element(input$changed,c("PossiblePanel","likelihood_run","likelihoodP_run","possiblePSampRho",
+  
+  if (is.element(input$changed,c("possibleP_run")) && is.na(input$possiblePSampRho)) {
+    hmm("Please set target sample effect size")
+    validPossible<<-validPossible+1
+    return(possibleResult)
+  }
+  if (is.element(input$changed,c("PossiblePanel","possible_run","possibleP_run","possiblePSampRho",
                                  "world_on","world_distr","world_distr_rz","world_distr_k","world_distr_Nullp",
                                  "Prior_distr","Prior_distr_rz","Prior_distr_k","Prior_Nullp",
                                  "possibleTheory",

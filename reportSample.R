@@ -9,7 +9,7 @@ reportSample<-function(IV,IV2,DV,design,result){
   
   nc=7
   outputText<-c("\bVariables","","","","","","")
-  
+
   outputTextI<-c()
   # Interval variables first
   done_interval<-FALSE
@@ -51,7 +51,7 @@ reportSample<-function(IV,IV2,DV,design,result){
   if (done_interval){
     outputText<-c(outputText,"\bInterval","\bmean","\bsd","\bskew","\bkurtosis","\bmedian","\biqr",outputTextI)
   }
-
+  
   # Ordinal variables
   outputTextO=c()
   done_ordinal<-FALSE
@@ -84,7 +84,7 @@ reportSample<-function(IV,IV2,DV,design,result){
   if (done_ordinal){
     outputText<-c(outputText,"\bOrdinal","\bmedian","\biqr","\bmean","\bsd","","",outputTextO)
   }
-  
+
   # Categorical variables
   outputTextC=c()
   done_categorical<-FALSE
@@ -95,8 +95,10 @@ reportSample<-function(IV,IV2,DV,design,result){
       counts<-paste0(counts,sum(s1==IV$cases[i]),",")
     }
     counts<-substr(counts,1,nchar(counts)-1)
-    deviance<-(sum(s1!=Mode(s1))+(length(s1)-sum(s1==Mode(s1))))/length(s1)
-    outputTextC<-c(outputTextC,IV$name,counts,"",Mode(s1),format(deviance,digits=2),"","")
+    mode<-which.max(table(s1))
+    mode<-mode[1]
+    deviance<-(sum(s1!=mode)+(length(s1)-sum(s1==mode)))/length(s1)
+    outputTextC<-c(outputTextC,IV$name,counts,"",levels(s1)[mode],format(deviance,digits=2),"","")
     done_categorical<-TRUE
   }
   if (no_ivs>1){
@@ -135,6 +137,7 @@ reportSample<-function(IV,IV2,DV,design,result){
                 "Method: ",design$sMethod,"","","","","",
                 "Usage: ",design$sIV1Use,"","","","",""
   )
+  
   nr=length(outputText)/nc
   reportPlot(outputText,nc,nr)        
   

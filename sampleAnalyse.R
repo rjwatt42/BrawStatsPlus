@@ -370,6 +370,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
   for (i in 1:n_sims){
     if (showProgress && (n_sims<=50 || (n_sims>50 && i==round(i/25)*25))) {
       off<-length(mainResult$rIV)+1
+      off<-0
       showNotification(paste(progressPrefix,format(i+off),"/",format(n_sims+off)),id="counting",duration=Inf,closeButton=FALSE,type="message")
     } 
     effect$rIV<-rho[i]
