@@ -794,7 +794,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   }
   
   # power calculations
-  wp<-seq(w_range[1],w_range[2],length.out=npoints)
+  wp<-seq(0.05,1,length.out=npoints+1)
   if (design$sReplicationOn && design$sReplPowerOn) {
     if (RZ=="r") {
       nUse<-rw2n(sRho[1],design$sReplPower)
@@ -805,22 +805,28 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   else {
     nUse<-design$sN
   }
+  z_use<-wn2z(wp,42)
   w<-zn2w(zp,nUse)
   spDens_w<-spDens_z
   if (any(!is.na(spDens_z))) {
     for (i1 in 1:nrow(spDens_z)) {
-      zd<-spDens_z[i1,]
-      use<-which(w==min(w))
-      use<-(1:length(w))<=use
-      use1<-use & !duplicated(w*use)
-      wn1<-approx(w[use1],zd[use1],wp)$y
-      use2<-!use & !duplicated(w*!use)
-      wn2<-approx(w[use2],zd[use2],wp)$y
-      z2<-approx(w[use2],zp[use2],wp)$y
-      wd<-(wn1+wn2)/abs(dwdz(z2,nUse))
+      z_use_dens<-approx(zp,spDens_z,z_use)$y
+      wd<-(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
+      z_use_dens<-approx(zp,spDens_z,-z_use)$y
+      wd<-wd+(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
+      # zd<-spDens_z[i1,]
+      # use<-which(w==min(w))
+      # use<-(1:length(w))<=use
+      # use1<-use & !duplicated(w*use)
+      # wn1<-approx(w[use1],zd[use1],wp)$y
+      # use2<-!use & !duplicated(w*!use)
+      # wn2<-approx(w[use2],zd[use2],wp)$y
+      # z2<-approx(w[use2],zp[use2],wp)$y
+      # wd<-(wn1+wn2)/abs(dwdz(z2,nUse))
       wd[is.na(wd)]<-0
       spDens_w[i1,]<-wd
     }
+    wp<-wp[1:npoints]+diff(wp)
     spDens_w<-spDens_w/max(spDens_w,na.rm=TRUE)
   }
   

@@ -33,6 +33,17 @@ rn2w<-function(r,n,t=2){
   zn2w(z,n,t)
 }
 
+wn2z<-function(w,n,t=2){
+  if (t==1) {
+    # one-tailed
+    z<-(qnorm(w)-qnorm(alpha))/sqrt(n-3)
+  } else {
+    # two tailed
+    z<-(qnorm(w)-qnorm(alpha/2))/sqrt(n-3)
+  }
+  z
+}
+
 rw2n<-function(r,w,t=2){
   if (any(abs(r)>1)) {
     print("rw2n exception")
