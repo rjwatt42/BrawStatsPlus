@@ -98,6 +98,7 @@ updatePossible<-function(){
                    view=input$possibleView,show=input$possibleShow,azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
                    textResult=FALSE
               )
+            if (possible$show=="Power") possible$show<-"Normal"
           }
   )
   if (pPlus) possible$prior$populationNullp<-1-possible$prior$populationNullp
@@ -152,7 +153,7 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
                                     input$possibleShow
 ),{
   if (graphicSource=="None") {return(possibleResult)}
-  
+    
   req(input$changed)
   
   if (is.element(input$changed,c("possibleP_run")) && is.na(input$possiblePSampRho)) {
