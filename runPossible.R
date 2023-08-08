@@ -1,7 +1,7 @@
 
 npops=2*3*4*50+1 # 2*3*4*n+1
 npoints=501
-
+wDensMethod=2
 uniformGain=1
 
 
@@ -618,6 +618,10 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   rpSim_sd<-NULL
   rpSim_ci=NULL
   rpSim_peak=NULL
+  rpSimWaste<-NULL
+  wpSim_peak=NULL
+  wpSim_mean<-NULL
+  wpSimWaste<-NULL
   
   # make the samples
   nsims=possible$possibleLength
@@ -698,9 +702,9 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                 n_effects<-res$nval
                 pops<-res$rpIV
               if (possible$appendSim){
-                pr_effectRP<-c(possiblePResultHold$pSims,pops)
-                pr_effectR<-c(possiblePResultHold$sSims,r_effects)
-                pr_effectN<-c(possiblePResultHold$sSims,n_effects)
+                pr_effectRP<-c(possiblePResultHold$RP,pops)
+                pr_effectR<-c(possiblePResultHold$R,r_effects)
+                pr_effectN<-c(possiblePResultHold$N,n_effects)
               } else {
                 pr_effectRP<-pops
                 pr_effectR<-r_effects
@@ -740,19 +744,25 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               } else {
                 binWidth<-max(0.05,2*IQR(use_effectRP_use,na.rm=TRUE)/length(use_effectRP_use)^(1/3))
               }
-              hist_use<-abs(use_effectRP_use)<hist_range
+              keep<-abs(use_effectRP_use)<hist_range
               nbins=max(10,round(2/binWidth))
               pSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              pSimDens<-hist(use_effectRP_use[hist_use],pSimBins,plot=FALSE)
+              pSimDens<-hist(use_effectRP_use[keep],pSimBins,plot=FALSE)
               rpSim_ci=quantile(use_effectRP_use,c(0.025,0.975))
               rpSim_peak=pSimBins[which.max(pSimDens$counts)]+pSimBins[2]-pSimBins[1]
               rpSim_sd<-sd(use_effectRP_use,na.rm=TRUE)
+              rpSimWaste<-sum(!keep)
               
               pSimDensRP<-hist(use_effectRP[abs(use_effectRP)<hist_range],pSimBins,plot=FALSE)
               pSimDensR<-hist(use_effectR[abs(use_effectR)<hist_range],pSimBins,plot=FALSE)
               
               pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              pSimDensW<-hist(pr_effectW_use[pr_effectW_use>=w_range[1] & pr_effectW_use<=w_range[2]],pSimBinsW,plot=FALSE)
+              keep<-pr_effectW_use>=w_range[1] & pr_effectW_use<=w_range[2]
+              print(c(mean(!keep),sum(keep),length(keep)))
+              pSimDensW<-hist(pr_effectW_use[keep],pSimBinsW,plot=FALSE)
+              wpSim_peak<-pSimBinsW[which.max(pSimDensW$counts)]+pSimBinsW[2]-pSimBinsW[1]
+              wpSim_mean<-mean(pr_effectW_use,na.rm=TRUE)
+              wpSimWaste<-sum(!keep)
             }
           }
   )
@@ -794,7 +804,6 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   }
   
   # power calculations
-  wp<-seq(0.05,1,length.out=npoints+1)
   if (design$sReplicationOn && design$sReplPowerOn) {
     if (RZ=="r") {
       nUse<-rw2n(sRho[1],design$sReplPower)
@@ -805,31 +814,48 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   else {
     nUse<-design$sN
   }
-  z_use<-wn2z(wp,42)
-  w<-zn2w(zp,nUse)
+  if (wDensMethod==1) {
+    wp<-seq(w_range[1],w_range[2],length.out=npoints)
+    wp<-c(wp,wp[npoints]+diff(wp[1:2]))
+    z_use<-wn2z(wp,nUse)
+  } else {
+    wp<-seq(w_range[1],w_range[2],length.out=npoints)
+    w<-zn2w(zp,nUse)
+  }
   spDens_w<-spDens_z
   if (any(!is.na(spDens_z))) {
     for (i1 in 1:nrow(spDens_z)) {
-      z_use_dens<-approx(zp,spDens_z,z_use)$y
-      wd<-(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
-      z_use_dens<-approx(zp,spDens_z,-z_use)$y
-      wd<-wd+(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
-      # zd<-spDens_z[i1,]
-      # use<-which(w==min(w))
-      # use<-(1:length(w))<=use
-      # use1<-use & !duplicated(w*use)
-      # wn1<-approx(w[use1],zd[use1],wp)$y
-      # use2<-!use & !duplicated(w*!use)
-      # wn2<-approx(w[use2],zd[use2],wp)$y
-      # z2<-approx(w[use2],zp[use2],wp)$y
-      # wd<-(wn1+wn2)/abs(dwdz(z2,nUse))
-      wd[is.na(wd)]<-0
+      if (wDensMethod==1) {
+        # this way round avoids awkward infinities
+        z_use_dens<-approx(zp,spDens_z,z_use)$y
+        wd<-(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
+        z_use_dens<-approx(zp,spDens_z,-z_use)$y
+        wd<-wd+(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
+      } else {
+        zd<-spDens_z[i1,]
+        useBreak<-which(w==min(w))
+        
+        use<-zp<=0
+        use1<-use & !duplicated(w*use)
+        wd1<-approx(w[use1],zd[use1],wp)$y
+        wd1[wp==1]<-0
+        
+        use<-zp>=0
+        use2<-use & !duplicated(w*use)
+        wd2<-approx(w[use2],zd[use2],wp)$y
+        wd2[wp==1]<-0
+
+        z2<-approx(w[use2],zp[use2],wp)$y
+        wd<-(wd1+wd2)/abs(dwdz(z2,nUse))
+        wd[wp==1]<-0
+      }
       spDens_w[i1,]<-wd
     }
-    wp<-wp[1:npoints]+diff(wp)
     spDens_w<-spDens_w/max(spDens_w,na.rm=TRUE)
   }
-  
+  if (wDensMethod==1) {
+    wp<-wp[1:npoints]+diff(wp)/2
+  }
   pDens_r<-pDens_r/max(pDens_r)
 
   dr_gain<-max(sDens_r,na.rm=TRUE)
@@ -922,7 +948,11 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                      pSimBinsW=pSimBinsW,pSimDensW=pSimDensW,
                                      rpSim_sd=rpSim_sd,
                                      rpSim_ci=rpSim_ci,
-                                     rpSim_peak=rpSim_peak
+                                     rpSim_peak=rpSim_peak,
+                                     rpSimWaste=rpSimWaste,
+                                     wpSim_peak=wpSim_peak,
+                                     wpSim_mean=wpSim_mean,
+                                     wpSimWaste=wpSimWaste
                                    )
             )
           }

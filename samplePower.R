@@ -2,7 +2,7 @@
 dwdz<-function(z,n,t=2) {
   dwdz<-exp(-(z*sqrt(n - 3) + qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
   if (t==2) {
-  dwdz<-dwdz-exp(-(z*sqrt(n - 3) - qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
+  dwdz<-dwdz+exp(-(z*sqrt(n - 3) - qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
   }
   return(dwdz)
 }
@@ -11,14 +11,15 @@ zn2w<-function(z,n,t=2){
   z<-abs(z)
   w<-(z+n)*0 # just in case z and n are different lengths
   # one-tailed
-  if (t==1) {
-    w<-pnorm(qnorm(alpha)+z*sqrt(n-3))
-  } else {
-    # two-tailed
-    pw1<-pnorm(qnorm(alpha/2)+z*sqrt(n-3))
-    pw2<-pnorm(qnorm(alpha/2)-z*sqrt(n-3))
-    w<-pw1+pw2
-  }
+    if (t==1) {
+      w<-pnorm(qnorm(alpha)+z*sqrt(n-3))
+    } else {
+      # two-tailed
+      pw1<-pnorm(qnorm(alpha/2)+z*sqrt(n-3))
+      pw2<-pnorm(qnorm(alpha/2)-z*sqrt(n-3))
+      w<-pw1+pw2
+    }
+  w[z==0]<-alpha
   w[n<3]<-0
   w  
 }

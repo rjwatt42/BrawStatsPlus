@@ -30,7 +30,8 @@ colDistS=darken(plotcolours$infer_sigC,off=-0.4)
 highTransparency=0.25
 
 scale3D<-1.1
-wallHeight<-0.85
+wallHeight<-1
+logZ<-FALSE
 
 doConnecting<-TRUE
 draw_lower_limit=0.01
@@ -139,20 +140,36 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   # graph frame
   switch (possible$view,
           "3D"= {
-            tick_length<-0.05*view_lims[2]
             
             # make the floor
+            longt<-1
             xlim<-view_lims
-            if (possible$show=="Power") xlim<-c(0,1)
+            if (possible$show=="Power") {
+              if (w_range[1]<0.5) {
+                xlim<-c(0,1)
+              } else{
+              xlim<-w_range
+              }
+              longt<-2.5
+            }
             ylim<-view_lims
+            zlim<-c(0,1)
+            if (logZ) {
+              if (possible$type=="Samples") {
+                zlim<-c(-2,0)
+              } else {
+                zlim<-c(-5,0)
+              }
+              draw_lower_limit<-zlim[1]
+            }
             f <- function(x, y) { x*0+y*0 }
-            z <- outer(xlim, xlim, f)
-            z[is.na(z)] <- 0
+            z <- outer(xlim, xlim, f)+zlim[1]
+            z[is.na(z)] <- zlim[1]
             par(bg=maincolours$graphC,mar=c(0,5,0,0),font.lab=2)
             mapping<-persp(xlim,ylim,z, 
-                           xlim=xlim+c(-1,1)*diff(view_lims)*(scale3D-1),
-                           ylim=ylim+c(-1,1)*diff(view_lims)*(scale3D-1),
-                           zlim = range(c(0,1), na.rm = TRUE),
+                           xlim=xlim+c(-1,1)*diff(xlim)*(scale3D-1),
+                           ylim=ylim+c(-1,1)*diff(ylim)*(scale3D-1),
+                           zlim = zlim, 
                            theta = possible$azimuth, phi = possible$elevation, r=possible$range, 
                            ticktype = "simple", 
                            box = FALSE,
@@ -165,59 +182,62 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             if (possible$boxed){
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[1],xlim[1]),
                               y=c(ylim[1], ylim[1], ylim[2],ylim[2]),
-                              z=c(0, 1, 1,0),mapping),
+                              z=zlim[c(1, 2, 2,1)],mapping),
                       col="#aaaaaa",border=NA
               )
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[2],xlim[2]),
                               y=c(ylim[2], ylim[2], ylim[2],ylim[2]),
-                              z=c(0, 1, 1,0),mapping),
+                              z=zlim[c(1, 2, 2,1)],mapping),
                       col="#aaaaaa",border=NA
               )
               BoxCol<-"#666666"
               lines(trans3d(x=c(xlim[1], xlim[1], xlim[2]),
                             y=c(ylim[1],ylim[2],ylim[2]),
-                            z=c(1,1,1),pmat=mapping), col=BoxCol)        
+                            z=c(zlim[2],zlim[2],zlim[2]),pmat=mapping), col=BoxCol)        
               lines(trans3d(x=c(xlim[1],xlim[1]),
                             y=c(ylim[1],ylim[1]),
-                            z=c(0,1),pmat=mapping),col=BoxCol)
+                            z=zlim,pmat=mapping),col=BoxCol)
               lines(trans3d(x=c(xlim[1],xlim[1]),
                             y=c(ylim[2],ylim[2]),
-                            z=c(0,1),pmat=mapping),col=BoxCol)
+                            z=zlim,pmat=mapping),col=BoxCol)
               lines(trans3d(x=c(xlim[2],xlim[2]),
                             y=c(ylim[2],ylim[2]),
-                            z=c(0,1),pmat=mapping),col=BoxCol)
+                            z=zlim,pmat=mapping),col=BoxCol)
             }
             
             tick_grow<-2
+            xtick_length<-0.02*diff(xlim)
+            ytick_length<-0.02*diff(ylim)
             # z-axis
             lines(trans3d(x=c(xlim[1],xlim[1]),
                           y=c(ylim[1],ylim[1]),
-                          z=c(0,1)*wallHeight,pmat=mapping),col="black")
+                          z=zlim*wallHeight,pmat=mapping),col="black")
             # short ticks
             if (possible$boxed) {
-              plot_ticks<-seq(0,1/wallHeight,0.1)*wallHeight
+              plot_ticks<-seq(zlim[1],zlim[2],diff(zlim)/10)*wallHeight
             } else {
-              plot_ticks<-seq(0,1,0.1)*wallHeight
+              plot_ticks<-seq(zlim[1],zlim[2],diff(zlim)/10)*wallHeight
             }
             tick.z.start <- trans3d(xlim[1],ylim[1],plot_ticks, mapping)
-            tick.z.end <- trans3d(xlim[1],ylim[1]-tick_length,plot_ticks, mapping)
+            tick.z.end <- trans3d(xlim[1],ylim[1]-ytick_length,plot_ticks, mapping)
             segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
             # long ticks
-            long_ticks<-seq(0,1,0.5)*wallHeight
+            long_ticks<-seq(zlim[1],zlim[2],diff(zlim)/2)*wallHeight
             tick.z.start <- trans3d(xlim[1],ylim[1],long_ticks, mapping)
-            tick.z.end <- trans3d(xlim[1],ylim[1]-tick_length*tick_grow,long_ticks, mapping)
+            tick.z.end <- trans3d(xlim[1],ylim[1]-ytick_length*tick_grow,long_ticks, mapping)
             segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
             # label
-            pos.z<-trans3d(xlim[1],1.2*ylim[1],0.5*wallHeight,mapping)
+            pos.z<-trans3d(xlim[1],1.2*ylim[1],mean(zlim)*wallHeight,mapping)
             rotate.z=trans3d(x=c(xlim[1],xlim[1]),
                              y=c(ylim[1],ylim[1]),
-                             z=c(0,1),pmat=mapping)
+                             z=zlim,pmat=mapping)
             rotate.z<-180+atan(diff(rotate.z$y)/diff(rotate.z$x))*57.296
             text(pos.z$x,pos.z$y,label.z,srt=rotate.z,font=2,cex=char3D*0.65)
             
             # x and y ticks
-              plot_ticks<-seq(0.1,xlim[2],0.1)
-              long_ticks<-seq(0.5,xlim[2],0.5)
+              
+              plot_ticks<-seq(floor(xlim[1]*10)/10,xlim[2],0.1)
+              long_ticks<-seq(floor(xlim[1]*2)/2,xlim[2],0.5/longt)
               if (possible$show=="Power") {
                 plot_ticks<-c(0,plot_ticks)
                 long_ticks<-c(0,long_ticks)
@@ -226,30 +246,30 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                 long_ticks<-c(-rev(long_ticks),0,long_ticks)
               }
             # short ticks  
-            tick.x.start <- trans3d(plot_ticks, ylim[1], 0.0, mapping)
-            tick.x.end <- trans3d(plot_ticks , ylim[1]-tick_length, 0.0, mapping)
+            tick.x.start <- trans3d(plot_ticks, ylim[1], zlim[1], mapping)
+            tick.x.end <- trans3d(plot_ticks , ylim[1]-ytick_length, zlim[1], mapping)
             segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
             # long ticks
-            tick.x.start <- trans3d(long_ticks, ylim[1], 0.0, mapping)
-            tick.x.end <- trans3d(long_ticks , ylim[1]-tick_length*tick_grow, 0.0, mapping)
+            tick.x.start <- trans3d(long_ticks, ylim[1], zlim[1], mapping)
+            tick.x.end <- trans3d(long_ticks , ylim[1]-ytick_length*tick_grow, zlim[1], mapping)
             segments(tick.x.start$x, tick.x.start$y, tick.x.end$x, tick.x.end$y)
             # tick labels
-            ticks.x<-trans3d(long_ticks+tick_length,ylim[1]- tick_length*char3D-0.1,0,mapping)
+            ticks.x<-trans3d(long_ticks+xtick_length,ylim[1]- ytick_length*tick_grow*char3D*1.2,zlim[1],mapping)
             text(ticks.x$x,ticks.x$y,long_ticks,cex=0.6*char3D,adj=c(1,NA))
             
               plot_ticks<-seq(0.1,xlim[2],0.1)
               long_ticks<-seq(0.5,xlim[2],0.5)
               plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
               long_ticks<-c(-rev(long_ticks),0,long_ticks)
-            tick.y.start <- trans3d(xlim[2], plot_ticks, 0.0, mapping)
-            tick.y.end <- trans3d(xlim[2]+tick_length, plot_ticks , 0.0, mapping)
+            tick.y.start <- trans3d(xlim[2], plot_ticks, zlim[1], mapping)
+            tick.y.end <- trans3d(xlim[2]+xtick_length, plot_ticks , zlim[1], mapping)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
             # long ticks
-            tick.y.start <- trans3d(xlim[2], long_ticks, 0.0, mapping)
-            tick.y.end <- trans3d(xlim[2]+tick_length*tick_grow, long_ticks , 0.0, mapping)
+            tick.y.start <- trans3d(xlim[2], long_ticks, zlim[1], mapping)
+            tick.y.end <- trans3d(xlim[2]+xtick_length*tick_grow, long_ticks , zlim[1], mapping)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
             # tick labels
-            ticks.y<-trans3d(xlim[2]+tick_length*char3D+0.1,long_ticks-0.02,0,mapping)
+            ticks.y<-trans3d(xlim[2]+xtick_length*tick_grow*char3D*1.5,long_ticks-0.02,zlim[1],mapping)
             text(ticks.y$x,ticks.y$y,long_ticks,cex=0.6*char3D,adj=c(0,NA))
             
             if (RZ=="r") {
@@ -261,17 +281,17 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             }
             if (possible$show=="Power") label.x<-bquote(bold(w['s']))
             
-            pos.x<-trans3d(sum(xlim)/2,ylim[1]-tick_length*tick_grow*char3D-0.2,0,mapping)
+            pos.x<-trans3d(sum(xlim)/2,ylim[1]-ytick_length*tick_grow*char3D*2.5,zlim[1],mapping)
             text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D*0.75)
             
-            pos.y<-trans3d(xlim[2]+tick_length*tick_grow*char3D+0.2,sum(ylim)/2,0,mapping)
+            pos.y<-trans3d(xlim[2]+xtick_length*tick_grow*char3D*2.5,sum(ylim)/2,zlim[1],mapping)
             text(pos.y$x,pos.y$y,label.y,adj=c(0,1),font=2,cex=char3D*0.75)
             
             # general lines on the floor
             if (possible$show!="Power") {
             if (doFloorLines) {
-            lines(trans3d(x=view_lims,y=c(0,0),z=c(0,0),pmat=mapping),col="black",lty=3)
-            lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col="black",lty=3)
+            lines(trans3d(x=view_lims,y=c(0,0),z=c(0,0)+zlim[1],pmat=mapping),col="black",lty=3)
+            lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0)+zlim[1],pmat=mapping),col="black",lty=3)
             }
 
             # make the back walls
@@ -279,14 +299,16 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             x<-populationBackwall$rpw
             y<-x*0+view_lims[2]
             z<-populationBackwall$rpw_dens
-            polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,z,0)*wallHeight,pmat=mapping),col=addTransparency(colP,0.95))
+            if (logZ) z<-log10(z)
+            polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col=addTransparency(colP,0.95))
             
             if (showJointLk && !any(is.na(populationBackwall$pDens_r))) {
               # show the joint likelihood function
               x<-populationBackwall$rp
               y<-x*0+view_lims[2]
               z<-populationBackwall$pDens_r
-              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,z,0)*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.5),border=NA)
+              if (logZ) z<-log10(z)
+              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.5),border=NA)
             }
             
             # sample wall
@@ -298,7 +320,11 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                 zgain<-1/max(ztotal,na.rm=TRUE)
                 ztotal<-ztotal*zgain
               }
-              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(0,ztotal,0)*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
+              if (logZ) {
+                ztotal<-log10(ztotal)
+                ztotal[ztotal<zlim[1]]<-zlim[1]
+              }
+              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],ztotal,zlim[1])*wallHeight,pmat=mapping),col=addTransparency(colS,0.95))
               
               if (possible$source$worldOn && possible$source$populationNullp>0){
                 if (!any(is.na(sampleBackwall$rsw_dens_null))) {
@@ -313,7 +339,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                   znull<-znull*zgain
                   zplus<-zplus*zgain
                 }
-                
+                if (logZ) {
+                  znull<-log10(znull)
+                  znull[znull<zlim[1]]<-zlim[1]
+                  zplus<-log10(zplus)
+                  zplus[zplus<zlim[1]]<-zlim[1]
+                }
                 if (possible$source$populationNullp>0 ) {
                   lines(trans3d(x=x,y=y,z=znull*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                 }
@@ -327,7 +358,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           if (!isempty(sRho)){
                             for (si in 1:length(sRho)) {
                               z<-approx(sampleBackwall$rsw,ztotal,sRho[si])$y
-                              lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,z)*wallHeight,pmat=mapping),col=colVline,lwd=2)
+                              if (logZ) z<-log10(z)
+                              lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],z)*wallHeight,pmat=mapping),col=colVline,lwd=2)
                               if (doFloorCILines) {
                                 # lines(trans3d(x=c(sRho[si],sRho[si]),y=view_lims,z=c(0,0),pmat=mapping),col=colSdark)
                                 # lines(trans3d(x=view_lims,y=c(sRho[si],sRho[si]),z=c(0,0),pmat=mapping),col=colSdark)
@@ -337,16 +369,16 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         },
                         "Populations"={
                           if (showNull) {
-                            lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
+                            lines(trans3d(x=c(0,0),y=view_lims,z=c(0,0)+zlim[1],pmat=mapping),col=colVline,lwd=2)
                           }
                           if (!is.na(possible$targetSample)) {
                             # show peak and CIs on floor
                             if (doFloorCILines) {
                               y_ci<-view_lims
-                              lines(trans3d(x=c(rp_peak,rp_peak),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lwd=2)
+                              lines(trans3d(x=c(rp_peak,rp_peak),y=y_ci,z=c(0,0)+zlim[1],pmat=mapping),col=colVline,lwd=2)
                               if (doCILines) {
-                              lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lty=3,lwd=2)
-                              lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=y_ci,z=c(0,0),pmat=mapping),col=colVline,lty=3,lwd=2)
+                              lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=y_ci,z=c(0,0)+zlim[1],pmat=mapping),col=colVline,lty=3,lwd=2)
+                              lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=y_ci,z=c(0,0)+zlim[1],pmat=mapping),col=colVline,lty=3,lwd=2)
                               }
                               
                               # show likelihood on sample back wall
@@ -355,20 +387,29 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                                 za<-approx(y,pDens_r_null,sRho[si])$y
                                 zb<-approx(y,pDens_r_plus,sRho[si])$y
                                 llrNull<-log(za/zb)
+                                if (logZ) {
+                                  za<-log10(za)
+                                  zb<-log10(zb)
+                                  za[za<zlim[1]]<-zlim[1]
+                                  zb[zb<zlim[1]]<-zlim[1]
+                                }
                                 if (za>=zb) {
-                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
-                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
+                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
+                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
                                 } else {
-                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
-                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
+                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
+                                  lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],za)*wallHeight,pmat=mapping),col=colNullS,lwd=2)
                                 }
                               } else  {
                                 zb<-approx(y,ztotal,sRho[si])$y
-                                lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(0,zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
+                                lines(trans3d(x=c(0,0)+view_lims[1],y=c(sRho[si],sRho[si]),z=c(zlim[1],zb)*wallHeight,pmat=mapping),col=colDistS,lwd=2)
                               }
                               # show prob-dens on population back wall
                               dens_rp_peak<-approx(populationBackwall$rpw,populationBackwall$rpw_dens,rp_peak)$y
-                              lines(trans3d(x=c(0,0)+rp_peak,y=c(0,0)+view_lims[2],z=c(0,dens_rp_peak)*wallHeight,pmat=mapping),col=colVline,lwd=2)
+                              if (logZ) {
+                                dens_rp_peak<-log10(dens_rp_peak)
+                              }
+                              lines(trans3d(x=c(0,0)+rp_peak,y=c(0,0)+view_lims[2],z=c(zlim[1],dens_rp_peak)*wallHeight,pmat=mapping),col=colVline,lwd=2)
 
                               # show rp==rs on floor
                               if (possible$world$populationPDF!="Single"){
@@ -384,64 +425,58 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             theoryAlpha=1
             switch (possible$type,
                     "Samples"={
+                      # draw simulations
                       simAlpha<-1
                       if (length(pRho)>1) {
                         theoryAlpha<-0.85
                         simAlpha<-0.95
                       }
+                      pgain<-(1-possible$source$populationNullp)
+                      if (length(pRho)==2) {
+                        pgain<-max(c(1-possible$source$populationNullp,possible$source$populationNullp))
+                      } 
+                      # prepare simulations first
                       if (!is.null(possibleResult$Sims$sSimDens)) {
+                        theoryAlpha<-0.25
+                        
                         bins<-possibleResult$Sims$sSimBins
                         dens<-possibleResult$Sims$sSimDens
-                        hgain<-sum(sDens_r)*diff(rs[c(1,2)])/sum(dens)/diff(bins[c(1,2)])
-                          hgain<-hgain*(1-possible$world$populationNullp)
-                        dens<-dens*hgain
-                        theoryAlpha<-0.25
-                        if (possible$cutaway) {
-                          waste<-sum(bins<=min(sRho))
-                          use_s<-(waste):length(bins)
-                          bins<-bins[use_s]
-                          bins[1]<-min(sRho)
-                          use_s<-use_s[1:(length(use_s)-1)]
-                        } else {
-                          if (!is.matrix(dens)) {
-                            dens<-t(dens)
-                            sDens_r<-t(sDens_r)
-                          } 
-                          use_s<-(1:ncol(dens))
+                        simgain<-mean(sDens_r)/mean(dens) # /(diff(range(bins))-diff(range(rs)))
+                        dens<-dens*simgain*pgain
+                          if (possible$cutaway) {
+                            waste<-sum(bins<=min(sRho))
+                            use_s<-(waste):length(bins)
+                            bins<-bins[use_s]
+                            bins[1]<-min(sRho)
+                            use_s<-use_s[1:(length(use_s)-1)]
+                          } else {
+                            if (!is.matrix(dens)) {
+                              dens<-t(dens)
+                              sDens_r<-t(sDens_r)
+                            } 
+                            use_s<-(1:ncol(dens))
                         }
-                        x1<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
-                      } else {dens<-NULL}
+                      } 
 
-                      # simulations
+                      # we interleave simulations and theory (because no hidden line removal)
                       for (i in 1:length(pRho)) {
                         # draw simulations
-                        if (!is.null(dens)){
-                          y1<-c(0,as.vector(matrix(c(dens[i,use_s],dens[i,use_s]),2,byrow=TRUE)),0)
-                          polygon(trans3d(x=x1*0+pRho[i],y=x1,z=y1,pmat=mapping),col=addTransparency(colSsim,simAlpha))
+                        if (!is.null(possibleResult$Sims$sSimDens)){
+                          x1<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
+                          z1<-as.vector(matrix(c(dens[i,use_s],dens[i,use_s]),2,byrow=TRUE))
+                          if (logZ) z1<-log10(z1)
+                          z1[z1<zlim[1]]<-zlim[1]
+                          polygon(trans3d(x=x1*0+pRho[i],y=x1,z=c(zlim[1],z1,zlim[1]),pmat=mapping),col=addTransparency(colSsim,simAlpha))
                         }
                         
-                        # now draw theory
-                        gain<-(1-possible$source$populationNullp)
-                        if (length(pRho)==2) {
-                          gain<-max(c(1-possible$source$populationNullp,possible$source$populationNullp))
-                        } 
-                        gain<-gain*0.75
+                        # draw theory
                         if (possible$possibleTheory){
-                          if (is.null(possibleResult$Sims$sSims)) {
-                            if (length(pRho)==2) {
-                              col<-addTransparency(colS,theoryAlpha)
-                            } else {
-                              col<-addTransparency(colS,theoryAlpha)
-                            }
-                          } else {
-                            col<-addTransparency(colS,theoryAlpha)
-                          }
+                          col<-addTransparency(colS,theoryAlpha)
 
-                          z_use<-sDens_r[i,]
+                          z_use<-sDens_r[i,]*pgain
                           if (possible$cutaway) {
                             z_use[rs<min(sRho)]<-0
                           }
-                          z_use[z_use<=draw_lower_limit]<-0
                           r_use<-rs
                           while (length(z_use)>0 && any(z_use>0)) {
                             use1<-which(z_use>0)[1]
@@ -449,8 +484,10 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                             r_use<-r_use[use1:length(r_use)]
                             use2<-which(c(z_use,0)==0)[1]-1
                             rs_draw<-r_use[c(1,1:use2,use2)]
-                            z_draw<-c(0,z_use[1:use2],0)
-                            polygon (trans3d(x = rs_draw*0+pRho[i], y = rs_draw, z = z_draw*gain, pmat = mapping), col = col, lwd=1)
+                            z_draw<-z_use[1:use2]
+                            if (logZ) z_draw<-log10(z_draw)
+                            z_draw[z_draw<=draw_lower_limit]<-zlim[1]
+                            polygon (trans3d(x = rs_draw*0+pRho[i], y = rs_draw, z = c(zlim[1],z_draw,zlim[1]), pmat = mapping), col = col, lwd=1)
                             if (use2==length(z_use)) break
                             z_use<-z_use[(use2+1):length(z_use)]
                             r_use<-r_use[(use2+1):length(r_use)]
@@ -460,12 +497,22 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         if (!isempty(sRho)){
                           for (si in 1:length(sRho)) {
                             z<-approx(rs,sDens_r[i,],sRho[si])$y
+                            z<-z*gain
+                            if (logZ) {
+                              z<-log10(z)
+                              z[z<zlim[1]]<-zlim[1]
+                            }
                             # if (length(pRho)==1) {z<-1}
-                            lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(0,z)*gain,pmat=mapping),col=colVline, lwd=1)
+                            lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(zlim[1],z),pmat=mapping),col=colVline, lwd=1)
                             # connecting lines
                             if (doConnecting && length(pRho)>5 && i<length(pRho)) {
                               z1<-approx(rs,sDens_r[i+1,],sRho[si])$y
-                              lines(trans3d(x=c(pRho[i],pRho[i+1]),y=c(sRho[si],sRho[si]),z=c(z,z1)*gain,pmat=mapping),col=colVline, lwd=1)
+                              z1<-z1*gain
+                              if (logZ) {
+                                z1<-log10(z1)
+                                z1[z1<zlim[1]]<-zlim[1]
+                              }
+                              lines(trans3d(x=c(pRho[i],pRho[i+1]),y=c(sRho[si],sRho[si]),z=c(z,z1),pmat=mapping),col=colVline, lwd=1)
                             }
                           }
                         }
@@ -474,8 +521,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                     "Populations"={
                       if (!is.null(possibleResult$Sims$pSims)) {
                         if (possible$show!="Power") {
-                        bins<-possibleResult$Sims$pSimBins
-                        dens<-possibleResult$Sims$pSimDens$counts
+                          bins<-possibleResult$Sims$pSimBins
+                          dens<-possibleResult$Sims$pSimDens$counts
                         } else {
                           bins<-possibleResult$Sims$pSimBinsW
                           dens<-possibleResult$Sims$pSimDensW$counts
@@ -487,11 +534,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           if (possible$show!="Power") {
                           # population wall
                           densP<-possibleResult$Sims$pSimDensP$counts
-                          gainSim<-sum(densP)*(bins[2]-bins[1])
-                          gainTheory<-sum(rpw_dens)*(rpw[2]-rpw[1])
-                          densP<-densP/(gainSim/gainTheory)
+                          gainSim<-sum(densP)*diff(bins[1:2])
+                          gainTheory<-sum(rpw_dens)*diff(rpw[1:2])
+                          densP<-densP/gainSim*gainTheory
                           if (max(densP)>1.2) {densP<-densP/max(densP)*1.2}
                           yP<-c(0,as.vector(matrix(c(densP,densP),2,byrow=TRUE)),0)
+                          if (logZ) yP<-log10(yP)
                           polygon(trans3d(x=x,y=x*0+view_lims[2],z=yP*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.35),border=NA)
                           
                           # sample wall
@@ -501,18 +549,23 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           densS<-densS/(gainSim/gainTheory)
                           if (max(densS)>1.2) {densS<-densS/max(densS)*1.2}
                           yS<-c(0,as.vector(matrix(c(densS,densS),2,byrow=TRUE)),0)
+                          if (logZ) yS<-log10(yS)
                           polygon(trans3d(x=x*0+view_lims[1],y=x,z=yS*wallHeight,pmat=mapping),col = addTransparency(colSdark,0.25),border=NA)
                           }
                           
                           #slice of interest
                           si=1
-                          gainSim<-sum(dens)*(bins[2]-bins[1])
-                          gainTheory<-sum(possibleResult$Theory$spDens_r)*(possibleResult$Theory$rp[2]-possibleResult$Theory$rp[1])
+                          gainSim<-sum(dens)*diff(bins[1:2])
+                          gainTheory<-sum(possibleResult$Theory$spDens_r)*diff(possibleResult$Theory$rp[1:2])
                           dens<-dens/(gainSim/gainTheory)
-                          dens<-dens/max(dens,na.rm=TRUE)
-                          if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
-                          y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
-                          polygon(trans3d(x=x,y=x*0+sRho[si],z=y1*wallHeight,pmat=mapping),col=colPsim,border=NA)
+                          # dens<-dens/max(dens,na.rm=TRUE)
+                          # if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
+                          y1<-as.vector(matrix(c(dens,dens),2,byrow=TRUE))
+                          if (logZ) {
+                            y1<-log10(y1)
+                            y1[y1<zlim[1]]<-zlim[1]
+                          }
+                          polygon(trans3d(x=x,y=x*0+sRho[si],z=c(zlim[1],y1,zlim[1]),pmat=mapping),col=colPsim,border=NA)
                         }
                       }
                       # draw theory main distribution & lines
@@ -520,14 +573,18 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         theoryAlpha=0.85
                         if (!is.na(possible$targetSample)) {
                           rd<-spDens_r
+                          if (logZ) {
+                            rd<-log10(rd)
+                            rd[rd<zlim[1]]<-zlim[1]
+                          }
                           if (!is.null(spDens_r)){
                             use_si<-order(-sRho)
                             # main distribution
                             for (si in use_si) {
                               if (is.null(possibleResult$Sims$pSims)) {
-                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
+                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(zlim[1],rd[si,],zlim[1]), pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
                               } else {
-                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(0,rd[si,],0)*wallHeight, pmat = mapping), col = addTransparency(colP,highTransparency), lwd=1)
+                                polygon (trans3d(x = c(rp[1],rp,rp[length(rp)]), y = c(0,rp*0,0)+sRho[si], z = c(zlim[1],rd[si,],zlim[1]), pmat = mapping), col = addTransparency(colP,highTransparency), lwd=1)
                               }
                             }
                           }
@@ -536,24 +593,24 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           if (possible$show!="Power") {
                           if (doPeakLine && length(sRho)==1) {
                             if (showNull) {
-                              lines(trans3d(x=c(0,0),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],0)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
+                              lines(trans3d(x=c(0,0),y=c(sRho[si],sRho[si]),z=c(zlim[1],approx(rp,rd[si,],0)$y-0.01),pmat=mapping),col=colVline, lwd=2)
                             }
                             si<-1
-                            lines(trans3d(x=c(rp_peak,rp_peak),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_peak)$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2)
+                            lines(trans3d(x=c(rp_peak,rp_peak),y=c(sRho[si],sRho[si]),z=c(zlim[1],approx(rp,rd[si,],rp_peak)$y-0.01),pmat=mapping),col=colVline, lwd=2)
                             if (doCILines) {
-                            lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[1])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
-                            lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],rp_ci[2])$y-0.01)*wallHeight,pmat=mapping),col=colVline, lwd=2,lty=3)
+                            lines(trans3d(x=c(rp_ci[1],rp_ci[1]),y=c(sRho[si],sRho[si]),z=c(zlim[1],approx(rp,rd[si,],rp_ci[1])$y-0.01),pmat=mapping),col=colVline, lwd=2,lty=3)
+                            lines(trans3d(x=c(rp_ci[2],rp_ci[2]),y=c(sRho[si],sRho[si]),z=c(zlim[1],approx(rp,rd[si,],rp_ci[2])$y-0.01),pmat=mapping),col=colVline, lwd=2,lty=3)
                             }
                             if (doSampleLine && possible$world$populationPDF!="Single"){
-                              lines(trans3d(x=c(sRho[si],sRho[si]),y=c(sRho[si],sRho[si]),z=c(0,approx(rp,rd[si,],sRho[si])$y-0.01)*wallHeight,pmat=mapping),col=colVline,lty=3,lwd=2)
+                              lines(trans3d(x=c(sRho[si],sRho[si]),y=c(sRho[si],sRho[si]),z=c(zlim[1],approx(rp,rd[si,],sRho[si])$y-0.01),pmat=mapping),col=colVline,lty=3,lwd=2)
                             }
                           }
                           # text annotations
                           if (possible$textResult || doTextResult) {
                             param<-RZ
                             # llr 
-                            if (effect$world$worldOn && possible$prior$populationNullp>0) {
-                              text(trans3d(x=view_lims[1],y=mean(view_lims),z=1.05,pmat=mapping),labels=bquote(
+                            if (possible$UsePrior!="none") {
+                              text(trans3d(x=view_lims[1],y=mean(view_lims),z=zlim[2]*1.05,pmat=mapping),labels=bquote(
                                 llr(italic(.(param))["+"]/italic(.(param))[0])==bold(.(format(-llrNull,digits=3)))),
                                 col=colSdark,adj=c(0.5,-0.5),cex=0.9)
                             }
@@ -561,7 +618,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                             text(trans3d(x=rp_peak,y=view_lims[2],z=dens_rp_peak*wallHeight+0.05,pmat=mapping),labels=bquote(
                               italic(.(param))[mle]== bold(.(format(rp_peak,digits=3)))
                             ),col=colPdark,adj=-0.02,cex=0.9)
-                            text(trans3d(x=mean(view_lims),y=view_lims[2],z=1.05,pmat=mapping),labels=bquote(
+                            text(trans3d(x=mean(view_lims),y=view_lims[2],z=zlim[2]*1.05,pmat=mapping),labels=bquote(
                               # llr(italic(r)[s]/italic(r)[0])==bold(.(format(log(dens_at_sample/approx(rp,pDens_r,0)$y),digits=3)))~";"~
                                 llr(italic(.(param))[mle]/italic(.(param))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
                             ),col=colPdark,adj=c(0.5,-0.5),cex=0.9)
@@ -576,8 +633,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             if (possible$boxed){
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
-                          z=c(1,1,1),pmat=mapping), col=BoxCol, lty=3)        
-            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=c(0,1),pmat=mapping),col=BoxCol,lty=3)
+                          z=c(1,1,1)*zlim[1],pmat=mapping), col=BoxCol, lty=3)        
+            lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=zlim,pmat=mapping),col=BoxCol,lty=3)
             }
           },
   "2D"={

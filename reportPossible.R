@@ -13,10 +13,14 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
   if (!is.na(possible$targetSample)) {
     switch (possible$type,
           "Samples"={
-            outputText[3]<-paste0("(no sims = ",format(length(possibleResult$Sims$sSims)),")")
+            outputText[2]<-paste0("(no sims = ",format(length(possibleResult$Sims$sSims)),")")
           },
           "Populations"={
-              outputText[3]<-paste("(no sims=",format(length(possibleResult$Sims$pSims)),"; no at target=",format(sum(possibleResult$Sims$pSimDens$counts)),")",sep="")
+            if (possible$show=="Power") {waste<-possibleResult$Sims$wpSimWaste} else {waste<-possibleResult$Sims$rpSimWaste}
+              outputText[2]<-paste("(no sims=",format(length(possibleResult$Sims$pSims)),
+                                   "; no at target=",format(sum(possibleResult$Sims$pSimDens$counts)),
+                                   "; out of bounds at target=",format(waste),
+                                   ")",sep="")
           }
   )
   }
@@ -109,10 +113,9 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
               )
               } else {
                 outputText<-c(outputText,"max(power)",format(possibleResult$Theory$wp_peak,digits=report_precision),
-                              format(possibleResult$Sims$rpSim_peak,digits=report_precision))
-                outputText<-c(outputText,"mean(power)",format(possibleResult$Theory$wp_mean,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
-                wr<-max(possibleResult$Theory$spDens_w)/min(possibleResult$Theory$spDens_w)
-                outputText<-c(outputText,"range(power)",format(wr,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
+                              format(possibleResult$Sims$wpSim_peak,digits=report_precision))
+                outputText<-c(outputText,"mean(power)",format(possibleResult$Theory$wp_mean,digits=report_precision),
+                              format(possibleResult$Sims$wpSim_mean,digits=report_precision))
               }
               outputText<-c(outputText,rep("",nc))
             if (length(possibleResult$Sims$pSims)==0){
