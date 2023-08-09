@@ -218,7 +218,6 @@ densityFunctionStats<-function(dens_r,rp){
 }
 
 get_pRho<-function(world,by="r",viewRZ="r") {
-  
   if (by=="z") {
     if (world$populationPDF=="Single") {
       if (world$populationRZ=="r") {
@@ -475,9 +474,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
             zp<-seq(-1,1,length=npoints)*z_range
           }
   )
-  zs<-seq(-1,1,length=npoints)*z_range
-  zp<-seq(-1,1,length=npoints)*z_range
-  
+
   sRho<-possible$targetSample
   if (RZ=="z") sRho<-tanh(sRho)
   n<-possible$design$sampleN
@@ -519,6 +516,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
          "world"={ prior<-possible$world },
          "prior"={ prior<-possible$prior }
   )
+  if (possible$type=="Populations") source<-prior
+  
   doNullsSingle<-(prior$populationNullp>0 && prior$populationPDF=="Single")
   doNulls<-TRUE
   
@@ -539,14 +538,16 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   pR<-get_pRho(source,"z",RZ)
   pRho<-pR$pRho
   pRhogain<-pR$pRhogain
+  if (RZ=="r")    pRhogain<-pRhogain/(1-tanh(pRho)^2)
   sD<-getZDist(zs,pRho,pRhogain,source,design,possible)
   sDens_z<-sD$sDens_z
   sDens_z_plus<-sD$sDens_z_plus
   sDens_z_null<-sD$sDens_z_null
-
+  
   pR<-get_pRho(prior,"z",RZ)
   pRhoP<-pR$pRho
   pRhogainP<-pR$pRhogain
+  if (RZ=="r")    pRhogainP<-pRhogainP/(1-tanh(pRhoP)^2)
   sD<-getZDist(zs,pRhoP,pRhogainP,prior,design,possible)
   pDens_z<-sD$sDens_z
   pDens_z_plus<-sD$sDens_z_plus
@@ -629,12 +630,6 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   s=1/sqrt(n-3)
   switch (possible$type,
           "Samples"={
-            if ((doSample || (length(possibleSResultHold$sSims)>1)) && length(pRho)>10) {
-              # use<-seq(1,length(pRho),3)
-              # pRho<-pRho[use]
-              # pRhogain<-pRhogain[use]
-              # sDens_z<-sDens_z[use,]
-            }
             if (doSample) {
               r_effects<-c()
               for (i in 1:length(pRho)) {
@@ -674,7 +669,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                 hist_range<-z_range
               } else {
                 use_effects<-sr_effects
-                hist_range<-1
+                hist_range<-r_range
               }
               binWidth<-2*IQR(use_effects)/length(use_effects)^(1/3)
               nbins=round(2/binWidth)
@@ -758,7 +753,6 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               
               pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
               keep<-pr_effectW_use>=w_range[1] & pr_effectW_use<=w_range[2]
-              print(c(mean(!keep),sum(keep),length(keep)))
               pSimDensW<-hist(pr_effectW_use[keep],pSimBinsW,plot=FALSE)
               wpSim_peak<-pSimBinsW[which.max(pSimDensW$counts)]+pSimBinsW[2]-pSimBinsW[1]
               wpSim_mean<-mean(pr_effectW_use,na.rm=TRUE)
@@ -802,7 +796,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     dr_gain<-max(spDens_r,na.rm=TRUE)
     spDens_r<-spDens_r/dr_gain
   }
-  
+
   # power calculations
   if (design$sReplicationOn && design$sReplPowerOn) {
     if (RZ=="r") {
@@ -856,10 +850,10 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   if (wDensMethod==1) {
     wp<-wp[1:npoints]+diff(wp)/2
   }
-  pDens_r<-pDens_r/max(pDens_r)
 
   dr_gain<-max(sDens_r,na.rm=TRUE)
   sDens_r<-sDens_r/dr_gain # *(1-possible$world$populationNullp)
+  
   sDens_r_plus<-sDens_r_plus*(1-source$populationNullp)
   sDens_r_null<-sDens_r_null*(source$populationNullp)
   sDens_r_total<-sDens_r_plus+sDens_r_null
@@ -897,7 +891,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     dens_at_population<-approx(zp,pDens_r,ResultHistory$rp[1])$y
     dens_at_zero<-approx(zp,pDens_r,0)$y
   }
-
+  
     switch (possible$type,
           "Samples"={
             possibleResult<-list(possible=possible,
