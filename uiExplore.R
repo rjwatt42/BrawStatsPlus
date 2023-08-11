@@ -154,13 +154,10 @@ ExploreTab <-
             fluidRow(headerText("Explore design decisions")),
             tabsetPanel(type="tabs",id="ExploreTab",
                         # sampling tab
-                        tabPanel("Explore:",value="Explore",
-                                 style = paste("background: ",subpanelcolours$exploreC)
+                        tabPanel("Explore:",value="Explore"
                         ),
                         tabPanel("Hypothesis",id="ExH",
                                  style = paste("background: ",subpanelcolours$exploreC), 
-                                 wellPanel(id="ExploreHypothesis",
-                                   style = paste("background: ",subpanelcolours$exploreC,";"),
                                    tags$table(width = "100%",class="myTable",
                                               tags$tr(
                                                 tags$td(width = "10%", tags$div(style = localStyle, "Vary:")),
@@ -216,12 +213,10 @@ ExploreTab <-
                                                 tags$td(width = "10%", checkboxInput("ExploreAppendH", label=NULL)),
                                                 tags$td(width = "20%", actionButton("exploreRunH", "Run"))
                                               )
-                                   ))
+                                   )
                         ),
                         tabPanel("Design",id="ExD",
                                  style = paste("background: ",subpanelcolours$exploreC), 
-                                 wellPanel(id="ExploreDesign",
-                                   style = paste("background: ",subpanelcolours$exploreC,";"),
                                    tags$table(width = "100%",class="myTable",
                                               tags$tr(
                                                 tags$td(width = "10%", tags$div(style = localStyle, "Vary:")),
@@ -280,13 +275,11 @@ ExploreTab <-
                                                 tags$td(width = "10%", checkboxInput("ExploreAppendD", label=NULL)),
                                                 tags$td(width = "20%", actionButton("exploreRunD", "Run"))
                                               )
-                                   ))
+                                   )
                         ),                        
                         # exploreMeta(),
                         tabPanel("#",
                                  style = paste("background: ",subpanelcolours$exploreC), 
-                                 wellPanel(
-                                   style = paste("background: ",subpanelcolours$exploreC,";"),
                                    tags$table(width = "100%",class="myTable",
                                               tags$tr(
                                                 tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
@@ -336,13 +329,10 @@ ExploreTab <-
                                               #   tags$td(width="5%",checkboxInput("exploreTheory",label=NULL,value=TRUE))
                                               # )
                                    )
-                                   )
                         )
                         # help tab
                         ,tabPanel(helpChar,value="?",
                                   style = paste("background: ",subpanelcolours$exploreC),
-                                  wellPanel(
-                                    style = paste("background: ",subpanelcolours$exploreC,";"),
                                     tags$table(width = "100%",class="myTable",
                                                tags$tr(
                                                  tags$div(style = helpStyle, 
@@ -359,8 +349,7 @@ ExploreTab <-
                                                )
                                     )
                                   )
-                        )
-                        
+
             )
                                                       
 )

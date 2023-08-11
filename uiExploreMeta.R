@@ -18,8 +18,6 @@ exploreLengthChoices=c("10" = "10",
 exploreMeta<-function(){
     tabPanel("MetaAnalysis",id="ExM",
              style = paste("background: ",subpanelcolours$exploreC),
-             wellPanel(
-               style = paste("background: ",subpanelcolours$exploreC,";"),
                tags$table(width = "100%",class="myTable",
                           tags$tr(
                             tags$td(width = "10%", tags$div(style = localStyle, "Vary:")),
@@ -62,7 +60,7 @@ exploreMeta<-function(){
                             tags$td(width = "10%", checkboxInput("ExploreAppendM", label=NULL)),
                             tags$td(width = "20%", actionButton("exploreRunM", "Run"))
                           )
-               ))
+               )
     ) 
 }
 

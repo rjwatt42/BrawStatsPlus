@@ -2,8 +2,6 @@ if (switches$doBatchFiles)
   {
   batchTab<-tabPanel("Batch",
                      style = paste("background: ",subpanelcolours$filesC), 
-                     wellPanel(
-                       style = paste("background: ",subpanelcolours$filesC,";"),
                        tags$table(width = "100%",class="myTable",
                                   tags$tr(
                                     tags$td(width = "15%", tags$div(style = localStyle, "Files:")),
@@ -27,7 +25,7 @@ if (switches$doBatchFiles)
                                     tags$td(width = "20%",actionButton("batchFileRun", "Make")
                                     )
                                   )
-                       ))
+                       )
   )
 } else {
   batchTab<-c()

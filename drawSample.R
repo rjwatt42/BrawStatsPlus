@@ -6,7 +6,7 @@ drawSample<-function(IV,DV,effect,result){
 
   dotSize<-dotSize<-(plotTheme$axis.title$size)/3
 
-  if (length(x)>100) {
+  if (result$nval>100) {
     dotSize<-dotSize*sqrt(100/length(x))
   }
   x<-result$ivplot

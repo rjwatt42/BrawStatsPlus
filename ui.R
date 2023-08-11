@@ -68,6 +68,7 @@ source("uiInspectDiagram.R")
   graphH1="90vh"
   reportH="30vh"
   reportH1="60vh"
+  popH="30vh"
   graphW=8
 
 shinyUI(fluidPage(
@@ -79,8 +80,8 @@ shinyUI(fluidPage(
     tags$head(tags$style(paste0("#WorldPlot{height:","25vh"," !important;}"))),
     tags$head(tags$style(paste0("#WorldPlot2{height:","25vh"," !important;}"))),
     
-    tags$head(tags$style(paste0("#PopulationPlot{height:",reportH," !important;}"))),
-    tags$head(tags$style(paste0("#PredictionPlot{height:",reportH," !important;}"))),
+    tags$head(tags$style(paste0("#PopulationPlot{height:",popH," !important;}"))),
+    tags$head(tags$style(paste0("#PredictionPlot{height:",popH," !important;}"))),
     
     
     tags$head(tags$style(paste0("#SamplePlot{height:",graphH," !important;}"))),
@@ -205,6 +206,12 @@ shinyUI(fluidPage(
             paste0(".tabbable > .nav > li > a {font-weight: normal; font-size: ",format(8*fontScale) ,"pt; padding:2px; margin:1px; color:#222222; background-color:#dddddd}"),
             ".tabbable > .nav > .active > a {font-weight: bold; color:black;  background-color:white; }",
             paste0(".nav-tabs {font-size: ",format(8*fontScale) ,"pt; padding:0px; margin-bottom:0px;} "),
+        )),
+        tags$style(HTML( # tab panes
+          ".tab-content {margin:0px;padding:0px;}"
+        )),
+        tags$style(HTML( # tab panes
+          ".tab-pane {margin:0px;padding-left:20px; padding-right:5px; padding-bottom:2px; padding-top:2px;}"
         )),
         tags$style(HTML( # well panels
                 ".well {padding:5px; margin:0px;margin-bottom:8px;margin-left:0px;margin-right:0px;} ",

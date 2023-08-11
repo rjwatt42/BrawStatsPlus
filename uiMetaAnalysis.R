@@ -3,8 +3,6 @@
 metaPanel<-function(prefix="") {
   tabPanel("MetaAnalysis",value="MetaAnalysis",
            style = paste("background: ",subpanelcolours$evidenceC),
-           wellPanel(
-             style = paste("background: ",subpanelcolours$simulateC,";"),
              tags$table(width = "100%",class="myTable",
                         tags$tr(
                           tags$td(width = "30%",tags$div(style = localStyle, "Source:")
@@ -94,7 +92,6 @@ metaPanel<-function(prefix="") {
                           tags$td(width = "10%",actionButton(paste0(prefix,"metaRun"), "Run")
                           )
                         )
-             )
            )
   )
 }

@@ -2,6 +2,7 @@
 metaGraphPanel<-function() {
   if (switches$doMetaAnalysis) {
     tabPanel("MetaAnalysis",class="Graphs",
+             style="margin:0px;padding:0px;",
              plotOutput("MetaAnalysisPlot")
     )
   } else {
@@ -12,6 +13,7 @@ metaGraphPanel<-function() {
 metaGraphPanel1<-function() {
   if (switches$doMetaAnalysis) {
     tabPanel("MetaAnalysis",class="Graphs",
+             style="margin:0px;padding:0px;",
              plotOutput("MetaAnalysisPlot1")
     )
   } else {
@@ -22,6 +24,7 @@ metaGraphPanel1<-function() {
   metaReportPanel<-function() {
     if (switches$doMetaAnalysis) {
       tabPanel("MetaAnalysis",class="Graphs",
+               style="margin:0px;padding:0px;",
                plotOutput("MetaAnalysisReport")
       )
   } else {

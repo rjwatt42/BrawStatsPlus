@@ -8,13 +8,10 @@ DesignTab <-
     fluidRow(headerText("Design the sample: size & method")),
     tabsetPanel(id="Design", type="tabs",
                 # sampling tab
-                tabPanel("Design:",value="Design",
-                         style = paste("background: ",subpanelcolours$designC)
+                tabPanel("Design:",value="Design"
                 ),
                 tabPanel("Sampling",value="Sampling",
                          style = paste("background: ",subpanelcolours$designC), 
-                         wellPanel(
-                           style = paste("background: ",subpanelcolours$designC,";"),
                            tags$table(width = "100%",class="myTable",
                                       tags$tr(
                                         tags$td(width = "40%", id="sNLabel", tags$div(style = localStyle, "Sample Size:")),
@@ -65,12 +62,9 @@ DesignTab <-
                                               )
                                       )
                            ),
-                         )
                 ),
                 tabPanel("Anomalies",
                          style = paste("background: ",subpanelcolours$designC), 
-                         wellPanel(
-                           style = paste("background: ",subpanelcolours$designC,";"),
                            tags$table(width = "100%",class="myTable",
                                       tags$tr(
                                         tags$td(width = "30%", tags$div(style = localStyle, "Dependence:")),
@@ -117,7 +111,6 @@ DesignTab <-
                                             )
                            ),
                            uiCheating("")
-                           ),
                 )
                 
                 # replication tab
@@ -125,9 +118,7 @@ DesignTab <-
                 
                 # options tab
                 ,tabPanel("#",id="DesignOptions",
-                          style = paste("background: ",subpanelcolours$designC),
-                          wellPanel(
-                            style = paste("background: ",subpanelcolours$designC,";"),
+                          style = paste("background: ",subpanelcolours$designC,";"),
                             conditionalPanel(condition="input.sMethod == 'Random'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
@@ -211,6 +202,19 @@ DesignTab <-
                                                           tags$td(width = "30%", tags$div(style = localPlainStyle, "spread:")),
                                                           tags$td(width = "50%",numericInput("sRSpread_Snowball",label=NULL,value=design$sRSpread_Snowball)),
                                                         ))),
+                          conditionalPanel(condition="input.LoadExtras",
+                          tags$table(width = "100%",class="myTable", id="extraDesign",
+                                     tags$tr(
+                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Budget:")),
+                                       tags$td(width = "5%",
+                                               checkboxInput("sBudgetOn",label=NULL,value=design$sReplVarAlpha)
+                                       ),
+                                       tags$td(width = "25%"),
+                                       tags$td(width = "20%", tags$div(style = localPlainStyle, "available:")),
+                                       tags$td(width = "25%", numericInput("sNBudget",label=NULL,value=design$sNBudget)
+                                       ),
+                                     )
+                          )
                           ),
                           tags$table(width = "100%",class="myTable", id="extraRep3",
                                      tags$tr(
@@ -223,13 +227,11 @@ DesignTab <-
                                        tags$td(width = "25%", numericInput("sReplAlpha",label=NULL,value=design$sReplAlpha)
                                        ),
                                      )
-                          ),
+                          )
                 )
                 # help tab
                 ,tabPanel(helpChar,value="?",
                           style = paste("background: ",subpanelcolours$designC,";"),
-                          wellPanel(
-                            style = paste("background: ",subpanelcolours$designC,";"),
                             tags$table(width = "100%",class="myTable",
                                        tags$tr(
                                          tags$div(style = helpStyle, 
@@ -249,7 +251,6 @@ DesignTab <-
                                          ),
                                        )
                             )
-                          )
                 )
     )
   )

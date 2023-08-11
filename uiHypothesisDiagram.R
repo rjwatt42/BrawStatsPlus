@@ -2,7 +2,7 @@
 worldDiagram<-function() {
   if (switches$doWorlds) {
     tabPanel("World",
-             style = paste("background: ",maincolours$graphC), 
+             style = paste("background: ",maincolours$graphC,"margin:0px;padding:0px;"), 
              plotOutput("WorldPlot"),
              plotOutput("WorldPlot2")
     )
@@ -18,7 +18,7 @@ worldDiagram<-function() {
       tabsetPanel(type="tabs",
                   id="HypothesisDiagram",
                   tabPanel("Hypothesis",
-                           style = paste("background: ",maincolours$graphC), 
+                           style = paste("background: ",maincolours$graphC,"margin:0px;padding:0px;"), 
                            plotOutput("HypothesisPlot")
                   ),
                   worldDiagram()

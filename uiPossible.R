@@ -39,15 +39,10 @@ PossibleTab <-
   fluidRow(headerText("Likelihood functions based on sample or population")),
   tabsetPanel(type="tabs",id="PossiblePanel",
               # single tab
-              tabPanel("Possible:",
-                       style = paste("background: ",subpanelcolours$possibleC), 
-                       fluidRow(
-                       )
+              tabPanel("Possible:"
               ),
               tabPanel("Samples",
                        style = paste("background: ",subpanelcolours$possibleC), 
-                       wellPanel(
-                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",style=paste("margin:0px;padding:0px;margin-left:-20px;margin-right:-20px;"),
                                     tags$tr(
                                       tags$td(width = "40%", tags$div(style = localStyle, "Target Sample:")),
@@ -79,12 +74,9 @@ PossibleTab <-
                                       tags$td(width = "10%", actionButton("possible_run", "Run"))
                                     )
                          ),
-                       )
               ),
               tabPanel("Populations",
                        style = paste("background: ",subpanelcolours$possibleC), 
-                       wellPanel(
-                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",style=paste("margin:0px;padding:0px;margin-left:-20px;margin-right:-20px;"),
                                     tags$tr(
                                       tags$td(width = "40%", tags$div(style = localStyle, "Target Sample:")),
@@ -108,20 +100,13 @@ PossibleTab <-
                                       tags$td(width = "10%", actionButton("possibleP_run", "Run")),
                                     )
                          ),
-                         width="100%"
-                       )
               ),
               tabPanel("Prior",
                        style = paste("background: ",subpanelcolours$possibleC), 
-                       wellPanel(
-                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          priorPanel("possible",asTable=TRUE),
-                       )
               ),
               tabPanel("#",
                        style = paste("background: ",subpanelcolours$possibleC), 
-                       wellPanel(
-                         style = paste("background: ",subpanelcolours$possibleC,";"),
                          tags$table(width = "100%",class="myTable",
                                     tags$tr(
                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Analysis")),
@@ -204,13 +189,10 @@ PossibleTab <-
                                       tags$td(width = "5%", checkboxInput("possibleTheory", value=possible$possibleTheory, label=NULL))
                                     ),
                          )
-                       )
               )
               # help tab
               ,tabPanel("?",
                         style = paste("background: ",subpanelcolours$possibleC),
-                        wellPanel(
-                          style = paste("background: ",subpanelcolours$possibleC,";"),
                           tags$table(width = "100%",class="myTable",
                                      tags$tr(
                                        tags$div(style = helpStyle, 
@@ -233,8 +215,8 @@ PossibleTab <-
                                        ),
                                      )
                           ),
-                        )
-              )
+
+                                      )
   )
 )
 } else

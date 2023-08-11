@@ -3,9 +3,8 @@ replicationTab<-function(prefix="") {
   replicationTabReserve<-
                      tabPanel("Replicate",
                                   style = paste("background: ",subpanelcolours$designC), 
-                                  wellPanel(
-                                    style = paste("background: ",subpanelcolours$designC,";"),
-                                    tags$table(width = "100%",class="myTable",
+
+                              tags$table(width = "100%",class="myTable",
                                                tags$tr(
                                                  tags$td(width = "20%", tags$div(style = localStyle, "Replication:")),
                                                  tags$td(width = "5%", 
@@ -129,7 +128,6 @@ replicationTab<-function(prefix="") {
                                                  tags$td(width = "25%")
                                                )
                                     )
-                                  )
   )
 
   if (switches$doReplications){

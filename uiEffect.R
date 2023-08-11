@@ -84,11 +84,5 @@ if (full) {
 } else {
   eT<-eT1
 }
-if (!asTable) {
- eT<- wellPanel(
-    style = paste("background: ",subpanelcolours$hypothesisC,";"),
-    eT
-)
-}
 eT
 }
