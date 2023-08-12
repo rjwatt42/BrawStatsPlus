@@ -8,6 +8,13 @@ updateIV<-function(){
 
   IV<-as.list(variables[use,])
   
+  if (IV$type!="Interval" && shortHand) {
+    hmm("Please switch to longhand calculations: IV not Interval")
+  }
+  if (any(c(IV$skew,IV$kurtosis-3)!=0) && shortHand) {
+    hmm("Please switch to longhand calculations: IV skew/kurtosis")
+  }
+  
   if (IV$type=="Categorical") {
     cs<-IV$cases
     cs<-strsplit(cs,",")
@@ -73,6 +80,13 @@ updateDV<-function(){
       hmm("Ordinal DV with more than 1 IV. It will be treated as Interval.")
       warn3Ord<<-TRUE
     }
+  }
+  
+  if (DV$type!="Interval" && shortHand) {
+    hmm("Please switch to longhand calculations: DV not Interval")
+  }
+  if (any(c(DV$skew,DV$kurtosis-3)!=0) && shortHand) {
+    hmm("Please switch to longhand calculations: DV skew/kurtosis")
   }
   
   if (DV$type=="Categorical") {

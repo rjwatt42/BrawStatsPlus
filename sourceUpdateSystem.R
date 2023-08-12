@@ -31,6 +31,13 @@ updateEffect<-function(type=0){
                  world=world
     )
   }
+  if (effect$Heteroscedasticity!=0 && shortHand) {
+    hmm("Please switch to longhand calculations: heteroscedasticity")
+  }
+  if (effect$ResidDistr!="normal" && shortHand) {
+    hmm("Please switch to longhand calculations: heteroscedasticity")
+  }
+  
   if (effect$world$worldOn==FALSE) {
     effect$world$populationPDF<-"Single"
     effect$world$populationRZ<-"r"
@@ -75,7 +82,15 @@ updateDesign<-function(){
   )
   
   if (is.element(design$sCheating,c("Grow","Replace")) && shortHand) {
-    hmm("Please switch to longhand calculations")
+    hmm("Please switch to longhand calculations: cheating")
+  }
+  
+  if (design$sMethod!="Random" && shortHand) {
+    hmm("Please switch to longhand calculations: sampling")
+  }
+  
+  if (any(c(design$sDependence,design$sOutliers)!=0) && shortHand) {
+    hmm("Please switch to longhand calculations: anomalies")
   }
   
   design$sN<-checkNumber(design$sN,c=10)
