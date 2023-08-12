@@ -240,7 +240,7 @@ drawCatInterDescription<-function(IV,IV2,DV,effect,design,result,g=NULL){
     result1$DVs$sd<-sd(Dvals[use],na.rm=TRUE)
     }
     g<-drawPoints(g,IV,DV,result1,i+1,(i-1)/(IV2$ncats-1))
-    g<-drawPrediction(result1$IVs,NULL,result1$DVs,result1,design,2+(i-1)/(IV2$ncats-1),g)
+    g<-drawPrediction(result1$IVs,NULL,result1$DVs,result1,design,2+(i-1)/(IV2$ncats-1),g,theme=plotTheme)
   }
   
   g<-g+scale_fill_manual(name=IV2$name,values=plotDescriptionCols)
@@ -276,7 +276,7 @@ drawParInterDescription<-function(IV,IV2,DV,effect,design,result,g=NULL){
     result1$DVs$vals<-Dvals[use]
     result1$DVs$mu<-mean(result$dv[use],na.rm=TRUE)
     g<-drawPoints(g,result1$IVs,result1$DVs,result1,i+1,(i-1)/(2-1)*0.25)
-    g<-drawPrediction(result1$IVs,NULL,result1$DVs,result1,design,i+1,g)
+    g<-drawPrediction(result1$IVs,NULL,result1$DVs,result1,design,i+1,g,theme=plotTheme)
   }
   
   g<-g+scale_fill_manual(name=IV2$name,values=plotDescriptionCols)
@@ -286,13 +286,13 @@ drawParInterDescription<-function(IV,IV2,DV,effect,design,result,g=NULL){
 drawParDescription<-function(IV,IV2,DV,effect,design,result,g) {
   
   g<-drawPoints(g,IV,DV,result,1)
-  g<-drawPrediction(result$IVs,IV2,result$DVs,result,design,1,g)
+  g<-drawPrediction(result$IVs,IV2,result$DVs,result,design,1,g,theme=plotTheme)
   g
 }
 
 drawCatDescription<-function(IV,IV2,DV,effect,design,result,g) {
 
-  g<-drawPrediction(result$IVs,IV2,result$DVs,result,design,1,g)
+  g<-drawPrediction(result$IVs,IV2,result$DVs,result,design,1,g,theme=plotTheme)
   g<-drawPoints(g,IV,DV,result,1)
   
   if (!doLegendBars && doLegendPoints) {

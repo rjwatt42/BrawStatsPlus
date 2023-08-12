@@ -330,7 +330,7 @@ drawCatCatPrediction<-function(g,IV,DV,rho,n,offset= 1){
 }
 
 
-drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL){
+drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=pplotTheme){
   
   n<-design$sN
   hypothesisType=paste(IV$type,DV$type,sep=" ")
@@ -513,7 +513,7 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL){
   #       
   #     }
   #   }
-  g<-g+labs(x=IV$name,y=DV$name)+pplotTheme
+  g<-g+labs(x=IV$name,y=DV$name)+theme
   
 }
 
