@@ -5,6 +5,10 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
   if (design$sCheating=="None") return(result)
   if (design$sCheatingAmount==0) return(result)
   if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence)) return(result)
+
+  # fix the hypothesis
+  effect$world$worldOn<-FALSE
+  effect$rIV<-result$rpIV
   
   if (is.element(design$sCheating,c("Retry","Add"))) {
     ntrials<-0
@@ -29,9 +33,7 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
     design2$sNRand<-FALSE
     
     effect2<-effect
-    effect2$populationRZ<-NA
-    effect2$rIV<-result$rpIV
-    
+
     sample2<-makeSample(IV,IV2,DV,effect2,design2)
   }
 

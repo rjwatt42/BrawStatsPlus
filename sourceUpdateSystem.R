@@ -56,6 +56,7 @@ updateEffect<-function(type=0){
 updateDesign<-function(){
   if (debug) debugPrint("     updateDesign")
   design<-list(sN=input$sN, sNRand=input$sNRand,sNRandK=input$sNRandK,
+               sBudgetOn=input$sBudgetOn,sNBudget=input$sNBudget,
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
