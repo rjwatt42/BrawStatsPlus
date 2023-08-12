@@ -1026,6 +1026,7 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
     res<-analyseSample(IV,IV2,DV,effect,design,evidence,oldResult)
     return(res)
   }
+  
   if (!shortHand) {
     sample<-makeSample(IV,IV2,DV,effect,design)
     res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)

@@ -107,6 +107,7 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
                pIV=matrix(p_effects[1:nsims],ncol=1)
                )
   }
+  result$participant<-1:length(result$rIV)
   result$showType<-evidence$showType
   result$effect<-effect
   result$design<-design

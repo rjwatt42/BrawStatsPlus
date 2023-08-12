@@ -59,7 +59,7 @@ updateDesign<-function(){
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
-               sCheating=input$sCheating,sCheatingAmount=input$sCheatingAmount,sCheatingBudget=input$sCheatingBudget,
+               sCheating=input$sCheating,sCheatingLimit=input$sCheatingLimit,sCheatingAmount=input$sCheatingAmount,sCheatingBudget=input$sCheatingBudget,
                sReplicationOn=input$sReplicationOn,
                sReplPowerOn=input$sReplPowerOn,sReplPower=input$sReplPower,
                sReplSigOnly=input$sReplSigOnly,
@@ -72,6 +72,11 @@ updateDesign<-function(){
                sNClu_Convenience=input$sNClu_Convenience, sRClu_Convenience=input$sRClu_Convenience, sNCont_Convenience=input$sNCont_Convenience, sRCont_Convenience=input$sRCont_Convenience, sRSpread_Convenience=input$sRSpread_Convenience,
                sNClu_Snowball=input$sNClu_Snowball, sRClu_Snowball=input$sRClu_Snowball, sNCont_Snowball=input$sNCont_Snowball, sRCont_Snowball=input$sRCont_Snowball, sRSpread_Snowball=input$sRSpread_Snowball
   )
+  
+  if (is.element(design$sCheating,c("Grow","Replace")) && shortHand) {
+    hmm("Please switch to longhand calculations")
+  }
+  
   design$sN<-checkNumber(design$sN,c=10)
   if (is.null(oldDesign)) {
     design$sNRandK<-checkNumber(design$sNRandK)

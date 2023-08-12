@@ -201,11 +201,12 @@ DesignTab <-
                                                         tags$tr(
                                                           tags$td(width = "30%", tags$div(style = localPlainStyle, "spread:")),
                                                           tags$td(width = "50%",numericInput("sRSpread_Snowball",label=NULL,value=design$sRSpread_Snowball)),
-                                                        ))),
+                                                        ))
+                                             ),
                           conditionalPanel(condition="input.LoadExtras",
                           tags$table(width = "100%",class="myTable", id="extraDesign",
                                      tags$tr(
-                                       tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Budget:")),
+                                       tags$td(width = "25%", tags$div(style = localStyle, "Budget:")),
                                        tags$td(width = "5%",
                                                checkboxInput("sBudgetOn",label=NULL,value=design$sReplVarAlpha)
                                        ),
@@ -220,7 +221,7 @@ DesignTab <-
                                      tags$tr(
                                        tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Replication:")),
                                        tags$td(width = "25%"),
-                                       tags$td(width = "20%", tags$div(style = localPlainStyle, paste0("Vary ",alphaChar,":"))),
+                                       tags$td(width = "20%", tags$div(style = localStyle, paste0("Vary ",alphaChar,":"))),
                                        tags$td(width = "5%",
                                                checkboxInput("sReplVarAlpha",label=NULL,value=design$sReplVarAlpha)
                                        ),
