@@ -247,22 +247,22 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
       c2=plotcolours$descriptionC
     }
     if (expType=="e1") {
-      c1=plotcolours$infer_hiterr
+      c1=plotcolours$infer_sigErr
       c2=plotcolours$infer_nsigC
     }
     if (expType=="e2") {
       c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_misserr
+      c2=plotcolours$infer_nsigErr
     }
     if (expType=="e1d") {
       c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_misserr
-      c3<-plotcolours$infer_hiterr
+      c2=plotcolours$infer_nsigErr
+      c3<-plotcolours$infer_sigErr
     }
     if (expType=="e2d") {
       c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_misserr
-      c3<-plotcolours$infer_hiterr
+      c2=plotcolours$infer_nsigErr
+      c3<-plotcolours$infer_sigErr
     }
   } else {
     c1=col

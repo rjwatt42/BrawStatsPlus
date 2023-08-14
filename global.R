@@ -71,7 +71,8 @@ darkpanelcolours<-list(hypothesisC=hsv(hypHue,darkSat,darkBright),
 plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF8833",
                   descriptionC1="#FF5533",descriptionC2="#CCBB33",
                   infer_sigC="#11CC00",infer_nsigC="#FF4400",
-                  infer_hiterr="#118800",infer_misserr="#881100",infer_none="#AAAAAA",
+                  infer_sigErr="#118800",infer_nsigErr="#881100",infer_none="#AAAAAA",
+                  infer_isigErr="#FFEE55",infer_insigErr="#EEDD44",
                   psig="#FFAA00",fdr="#227700",fmr="#BB5555")
 
 shapes<-list(data=21,study=22,parameter=21,meta=24)

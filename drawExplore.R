@@ -98,7 +98,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             } else {
               ylabel<-"Type I"
               secondY<-"Type II"
-              g<-g+theme(axis.title.y.left = element_text(color=plotcolours$infer_hiterr),axis.title.y.right = element_text(color=plotcolours$infer_misserr))
+              g<-g+theme(axis.title.y.left = element_text(color=plotcolours$infer_sigErr),axis.title.y.right = element_text(color=plotcolours$infer_nsigErr))
             }
           },
           "FDR;FMR"={
@@ -383,8 +383,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               lines<-c(0.05,0.8)
               if (is.null(IV2)){
                 col<-plotcolours$infer_sigC
-                cole<-plotcolours$infer_hiterr
-                cola<-plotcolours$infer_misserr
+                cole<-plotcolours$infer_sigErr
+                cola<-plotcolours$infer_nsigErr
                 colFill<-col
               } else {
                 col<-all_cols[[explore$Explore_typeShow]]
@@ -392,7 +392,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               
               if (effect$world$worldOn && effect$world$populationNullp>0) {
-                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_hiterr))
+                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_sigErr))
                 col<-"sig"
                 cole<-"sig|Z0"
                 cola<-"sig|Z+"
@@ -507,15 +507,13 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               } else {
                 d<-r2llr(rVals,nVals,df1Vals,STMethod,world=effect$world)
               }
-              y50t<-colSums(sigs & d>0 & !nulls)/nrow(pVals) 
-              y50<-colSums(!sigs &       !nulls)/nrow(pVals) 
-              y50a<-colSums(sigs & d<0 & !nulls)/nrow(pVals) 
-              y50e<-colSums(sigs & d<0 & nulls)/nrow(pVals) 
-              y50b<-colSums(sigs & d>0 & nulls)/nrow(pVals) 
-              y50et<-colSums(!sigs &     nulls)/nrow(pVals) 
-              col<-plotcolours$infer_misserr
-              cole<-plotcolours$infer_hiterr
-              colFill<-col
+              sigNonNulls<- colSums( sigs & d>0 & !nulls)/nrow(pVals) 
+              nsigNonNulls<-colSums(!sigs &       !nulls)/nrow(pVals) 
+              isigNonNulls<-colSums( sigs & d<0 & !nulls)/nrow(pVals) 
+              isigNulls<-   colSums( sigs & d<0 & nulls)/nrow(pVals) 
+              sigNulls<-    colSums( sigs & d>0 & nulls)/nrow(pVals) 
+              nsigNulls<-   colSums(!sigs &       nulls)/nrow(pVals) 
+              
               lines<-c(0.05)
             },
             "FDR;FMR"={
@@ -526,20 +524,22 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               nulls<-rpVals==0
               
               if (STMethod=="NHST") {
-                  y50<-colSums(!sigs & !nulls)/max(colSums(!sigs),1)
-                  y50e<-colSums(sigs & nulls)/max(colSums(sigs),1)
+                d<-sigs+1
               } else {
                 d<-r2llr(rVals,nVals,df1Vals,STMethod,world=effect$world)
-                y50<-colMeans(!sigs,na.rm=TRUE)
-                y50e<-(colSums(sigs & nulls & d>0)+colSums(sigs & !nulls & d<0))/max(colSums(sigs),1)
               }
-              y50a<-y50*0
-              y50b<-y50*0
-              
+              sumsig<-colSums(sigs)
+              sumsig[sumsig==0]<-1
+              sumnsig<-colSums(!sigs)
+              sumnsig[sumnsig==0]<-1
+              sigNonNulls<- 0 
+              nsigNonNulls<-colSums(!sigs &       !nulls)/sumnsig 
+              isigNonNulls<-colSums( sigs & d<0 & !nulls)/sumsig 
+              isigNulls<-   0 
+              sigNulls<-    colSums( sigs & d>0 & nulls)/sumsig
+              nsigNulls<-   colSums(!sigs & abs(d)<alpha  &    nulls)/sumnsig
+
               lines<-c(0.05)
-              cole<-plotcolours$fdr
-              col<-plotcolours$fmr
-              colFill<-col
             },      
             "PDF"={
               showVals<-exploreResult$result$dists
@@ -727,93 +727,116 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     if (explore$Explore_show=="FDR;FMR" || explore$Explore_show=="NHSTErrors") {
       endI<-length(vals)
 
-      cols<-c("#FFEE55","#AA1100","#11CC00","#118800","#880000","#EEDD44")
-      ytop<-1-y50a*0
-      yn<-0.5
-      
-      # error Z+
-      if (any(y50a!=0)) {
-      ybottom<-ytop-y50a
-      ybottom[ybottom<0]<-0
-      pts0<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-      col0<-cols[1]
-      lb0<-nonNullError
-      lb0xy<-data.frame(x=max(vals),y=1-yn/10)
-      yn<-yn+1
-      ytop<-ybottom
-      } else {pts0<-NULL}
-      
-      # false misses
-      if (any(y50!=0)) {
-        ybottom<-ytop-y50
-      ybottom[ybottom<0]<-0
-      pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-      col1<-cols[2]
-      lb1<-nonNullNegative
-      lb1xy<-data.frame(x=max(vals),y=1-yn/10)
-      yn<-yn+1
-      ytop<-ybottom
-    } else {pts1<-NULL}
-    
       if (explore$Explore_show=="NHSTErrors") {
+        ytop<-1-isigNonNulls*0
+        yn<-0.5
+        
+        # error Z+
+        if (any(isigNonNulls!=0)) {
+          ybottom<-ytop-isigNonNulls
+          ybottom[ybottom<0]<-0
+          pts0<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
+          col0<-plotcolours$infer_isigErr
+          lb0<-nonNullError
+          lb0xy<-data.frame(x=max(vals),y=1-yn/10)
+          yn<-yn+1
+          ytop<-ybottom
+        } else {pts0<-NULL}
+        
+        # false misses
+        if (any(nsigNonNulls!=0)) {
+          ybottom<-ytop-nsigNonNulls
+          ybottom[ybottom<0]<-0
+          pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
+          col1<-plotcolours$infer_nsigErr
+          lb1<-nonNullNegative
+          lb1xy<-data.frame(x=max(vals),y=1-yn/10)
+          yn<-yn+1
+          ytop<-ybottom
+        } else {pts1<-NULL}
+        
         # true hits
-        if (any(y50t!=0)) {
-          ybottom<-ytop-y50t
-        ybottom[ybottom<0]<-0
-        pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-        col2<-cols[3]
-        lb2<-nonNullPositive
-        lb2xy<-data.frame(x=max(vals),y=1-yn/10)
-        yn<-yn+1
-        ytop<-ybottom
+        if (any(sigNonNulls!=0)) {
+          ybottom<-ytop-sigNonNulls
+          ybottom[ybottom<0]<-0
+          pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
+          col2<-plotcolours$infer_sigC
+          lb2<-nonNullPositive
+          lb2xy<-data.frame(x=max(vals),y=1-yn/10)
+          yn<-yn+1
+          ytop<-ybottom
         } else {pts2<-NULL}
         
-        yn<-any(y50e!=0)+any(y50et!=0)+any(y50b!=0)-0.5
+        yn<-any(isigNulls!=0)+any(nsigNulls!=0)+any(sigNulls!=0)-0.5
         # true misses
-        if (any(y50e!=0)) {
-          ybottom<-ytop-y50e
-        ybottom[ybottom<0]<-0
-        pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-        col3<-cols[4]
-        lb3<-nullPositive
-        lb3xy<-data.frame(x=max(vals),y=0+yn/10)
-        yn<-yn-1
-        ytop<-ybottom
+        if (any(nsigNulls!=0)) {
+          ybottom<-ytop-nsigNulls
+          ybottom[ybottom<0]<-0
+          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
+          col3<-plotcolours$infer_nsigC
+          lb3<-nullNegative
+          lb3xy<-data.frame(x=max(vals),y=0+yn/10)
+          yn<-yn-1
+          ytop<-ybottom
         } else {pts3<-NULL}
         
-        # false hits  
-        if (any(y50et!=0)) {
-          ybottom<-ytop-y50et
-        ybottom[ybottom<0]<-0
-        pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-        col4<-cols[5]
-        lb4<-nullNegative
-        lb4xy<-data.frame(x=max(vals),y=0+yn/10)
-        yn<-yn-1
-        ytop<-ybottom
+        # false hits
+        if (any(sigNulls!=0)) {
+          ybottom<-ytop-sigNulls
+          ybottom[ybottom<0]<-0
+          pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
+          col4<-plotcolours$infer_sigErr
+          lb4<-nullPositive
+          lb4xy<-data.frame(x=max(vals),y=0+yn/10)
+          yn<-yn-1
+          ytop<-ybottom
         } else {pts4<-NULL}
         
         # error Z0
-        if (any(y50b!=0)) {
-          ybottom<-ytop-y50b
+        if (any(isigNulls!=0)) {
+          ybottom<-ytop-isigNulls
           ybottom[ybottom<0]<-0
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col5<-cols[6]
+          col5<-plotcolours$infer_insigErr
           lb5<-nullError
           lb5xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
           ytop<-ybottom
         } else {pts5<-NULL}
+        
+        
       } 
       
       if (explore$Explore_show=="FDR;FMR") {
+        pts0<-NULL
+        # false misses
+        pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=1-c(nsigNonNulls,rep(0,endI)))
+        col1<-plotcolours$fmr
+        lb1<-nonNullNegative
+        lb1xy<-data.frame(x=max(vals),y=0.9)
+        
+        pts2<-NULL
+        
+        if (any(nsigNulls!=0)) {
+          pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=1-c(nsigNulls+nsigNonNulls,rev(nsigNonNulls)))
+          col3<-plotcolours$infer_nsigC
+          lb3<-nullNegative
+          lb3xy<-data.frame(x=max(vals),y=0.8)
+        } else {pts3<-NULL}
+        
         # false hits
-        pts2<-c()
-        pts3<-c()
-        pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(y50e,rep(0,endI)))
+        pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(sigNulls+isigNonNulls,rev(isigNonNulls)))
         col4<-plotcolours$fdr
         lb4<-nullPositive
-        lb4xy<-data.frame(x=max(vals),y=1-yn/10)
+        lb4xy<-data.frame(x=max(vals),y=0.2)
+        
+        if (any(isigNonNulls!=0)) {
+          # non-null errors
+          pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(isigNonNulls,rep(0,endI)))
+          col5<-plotcolours$infer_insigErr
+          lb5<-nonNullError
+          lb5xy<-data.frame(x=max(vals),y=0.1)
+        } else {pts5<-NULL}
       }
       
       if (doLine) {
