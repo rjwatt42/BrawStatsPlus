@@ -737,7 +737,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom[ybottom<0]<-0
           pts0<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
           col0<-plotcolours$infer_isigErr
-          lb0<-nonNullError
+          lb0<-nonNullNegative
           lb0xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
           ytop<-ybottom
@@ -749,7 +749,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom[ybottom<0]<-0
           pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
           col1<-plotcolours$infer_nsigErr
-          lb1<-nonNullNegative
+          lb1<-nonNullNS
           lb1xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
           ytop<-ybottom
@@ -768,37 +768,37 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         } else {pts2<-NULL}
         
         yn<-any(isigNulls!=0)+any(nsigNulls!=0)+any(sigNulls!=0)-0.5
-        # true misses
-        if (any(nsigNulls!=0)) {
-          ybottom<-ytop-nsigNulls
+        # false hits
+        if (any(isigNulls!=0)) {
+          ybottom<-ytop-isigNulls
           ybottom[ybottom<0]<-0
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col3<-plotcolours$infer_nsigC
+          col3<-plotcolours$infer_sigErr
           lb3<-nullNegative
           lb3xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
           ytop<-ybottom
         } else {pts3<-NULL}
         
-        # false hits
-        if (any(sigNulls!=0)) {
-          ybottom<-ytop-sigNulls
+        # true misses
+        if (any(nsigNulls!=0)) {
+          ybottom<-ytop-nsigNulls
           ybottom[ybottom<0]<-0
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col4<-plotcolours$infer_sigErr
-          lb4<-nullPositive
+          col4<-plotcolours$infer_nsigC
+          lb4<-nullNS
           lb4xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
           ytop<-ybottom
         } else {pts4<-NULL}
         
         # error Z0
-        if (any(isigNulls!=0)) {
-          ybottom<-ytop-isigNulls
+        if (any(sigNulls!=0)) {
+          ybottom<-ytop-sigNulls
           ybottom[ybottom<0]<-0
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col5<-plotcolours$infer_insigErr
-          lb5<-nullError
+          col5<-plotcolours$infer_isigErr
+          lb5<-nullPositive
           lb5xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
           ytop<-ybottom
@@ -812,7 +812,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         # false misses
         pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=1-c(nsigNonNulls,rep(0,endI)))
         col1<-plotcolours$fmr
-        lb1<-nonNullNegative
+        lb1<-nonNullNS
         lb1xy<-data.frame(x=max(vals),y=0.9)
         
         pts2<-NULL
@@ -820,7 +820,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         if (any(nsigNulls!=0)) {
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=1-c(nsigNulls+nsigNonNulls,rev(nsigNonNulls)))
           col3<-plotcolours$infer_nsigC
-          lb3<-nullNegative
+          lb3<-nullNS
           lb3xy<-data.frame(x=max(vals),y=0.8)
         } else {pts3<-NULL}
         
@@ -834,7 +834,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           # non-null errors
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(isigNonNulls,rep(0,endI)))
           col5<-plotcolours$infer_insigErr
-          lb5<-nonNullError
+          lb5<-nonNullNegative
           lb5xy<-data.frame(x=max(vals),y=0.1)
         } else {pts5<-NULL}
       }

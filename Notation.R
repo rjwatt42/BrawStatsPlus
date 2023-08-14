@@ -38,23 +38,23 @@ switch (LabelUD,
           Plabel<<-bquote(bold(.(Pchar)^.(Ptypechar)))
           Llabel<<-bquote(bold(.(Lchar)^.(Ltypechar)))
           
-          nonNullPositive<<-bquote(.(Zchar)^.(posChar)~'sig')  # "Z+ +ve"
-          nonNullNegative<<-bquote(.(Zchar)^.(posChar) ~"ns")  # "Z+ -ve"
-          nonNullError<<-bquote(.(Zchar)^.(posChar) ~"err")  # "Z+ -ve"
-          nullPositive<<-bquote(.(Zchar)^.(nullChar) ~"sig")   # "Z0 +ve"
-          nullNegative<<-bquote(.(Zchar)^.(nullChar) ~"ns")  # "Z0 -ve"
-          nullError<<-bquote(.(Zchar)^.(nullChar) ~"err")  # "Z0 -ve"
+          nonNullPositive<<-bquote(.(Zchar)^.(posChar)~'+sig')  # "Z+ +ve"
+          nonNullNS<<-bquote(.(Zchar)^.(posChar) ~"ns")  # "Z+ -ve"
+          nonNullNegative<<-bquote(.(Zchar)^.(posChar) ~"-sig")  # "Z+ -ve"
+          nullPositive<<-bquote(.(Zchar)^.(nullChar) ~"+sig")   # "Z0 +ve"
+          nullNS<<-bquote(.(Zchar)^.(nullChar) ~"ns")  # "Z0 -ve"
+          nullNegative<<-bquote(.(Zchar)^.(nullChar) ~"-sig")  # "Z0 -ve"
         },
         "D"={
           Plabel<<-bquote(bold(.(Pchar)[.(Ptypechar)]))
           Llabel<<-bquote(bold(.(Lchar)[.(Ltypechar)]))
           
-          nonNullPositive<<-bquote(.(Zchar)[.(posChar)] ~"sig")  # "Z+ +ve"
-          nonNullNegative<<-bquote(.(Zchar)[.(posChar)] ~"ns")  # "Z+ -ve"
-          nonNullError<<-bquote(.(Zchar)[.(posChar)] ~"err")  # "Z+ -ve"
-          nullPositive<<-bquote(.(Zchar)[.(nullChar)] ~"sig")   # "Z0 +ve"
-          nullNegative<<-bquote(.(Zchar)[.(nullChar)] ~"ns")  # "Z0 -ve"
-          nullError<<-bquote(.(Zchar)[.(nullChar)] ~"err")  # "Z0 -ve"
+          nonNullPositive<<-bquote(.(Zchar)[.(posChar)] ~"+sig")  # "Z+ +ve"
+          nonNullNS<<-bquote(.(Zchar)[.(posChar)] ~"ns")  # "Z+ -ve"
+          nonNullNegative<<-bquote(.(Zchar)[.(posChar)] ~"-sig")  # "Z+ -ve"
+          nullPositive<<-bquote(.(Zchar)[.(nullChar)] ~"+sig")   # "Z0 +ve"
+          nullNS<<-bquote(.(Zchar)[.(nullChar)] ~"ns")  # "Z0 -ve"
+          nullNegative<<-bquote(.(Zchar)[.(nullChar)] ~"-sig")  # "Z0 -ve"
         }
 )
 allPositive<<-bquote(.(Zchar) ~"+ve")

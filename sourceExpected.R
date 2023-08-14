@@ -207,12 +207,15 @@ makeExpectedGraph <- function() {
       expectedResult$nullresult$rIV<-expectedResult$result$rIV[nulls]
       expectedResult$nullresult$pIV<-expectedResult$result$pIV[nulls]
       expectedResult$nullresult$nval<-expectedResult$result$nval[nulls]
+      expectedResult$nullresult$df1<-expectedResult$result$df1[nulls]
       
       expectedResult$result$rpIV<-expectedResult$result$rpIV[!nulls]
       expectedResult$result$roIV<-expectedResult$result$roIV[!nulls]
       expectedResult$result$rIV<-expectedResult$result$rIV[!nulls]
       expectedResult$result$pIV<-expectedResult$result$pIV[!nulls]
       expectedResult$result$nval<-expectedResult$result$nval[!nulls]
+      expectedResult$result$df1<-expectedResult$result$df1[!nulls]
+      
       expectedResult$count<-length(expectedResult$result$rIV)
       expectedResult$nullcount<-length(expectedResult$nullresult$rIV)
     }
@@ -239,8 +242,8 @@ makeExpectedGraph <- function() {
     if (is.element(expected$type,c("NHSTErrors","FDR","CILimits","LLRDErrors"))) {
       switch (expected$type,
               "NHSTErrors"={
-                g1<-e1_plot(expectedResult$nullresult,effect=effect,result=expectedResult$result)
-                g2<-e2_plot(expectedResult$result,effect=effect,nullresult=expectedResult$nullresult)
+                g1<-e2_plot(expectedResult$result,effect=effect,nullresult=expectedResult$nullresult)
+                g2<-e1_plot(expectedResult$nullresult,effect=effect,result=expectedResult$result)
               },
               "FDR"={
                 g1<-e1_plot(expectedResult$nullresult,effect=effect)
@@ -314,12 +317,15 @@ makeExpectedReport<-function() {
       expectedResult$nullresult$rIV<-expectedResult$result$rIV[nulls]
       expectedResult$nullresult$pIV<-expectedResult$result$pIV[nulls]
       expectedResult$nullresult$nval<-expectedResult$result$nval[nulls]
+      expectedResult$nullresult$df1<-expectedResult$result$df1[nulls]
       
       expectedResult$result$rpIV<-expectedResult$result$rpIV[!nulls]
       expectedResult$result$roIV<-expectedResult$result$roIV[!nulls]
       expectedResult$result$rIV<-expectedResult$result$rIV[!nulls]
       expectedResult$result$pIV<-expectedResult$result$pIV[!nulls]
       expectedResult$result$nval<-expectedResult$result$nval[!nulls]
+      expectedResult$result$df1<-expectedResult$result$df1[!nulls]
+      
       expectedResult$count<-length(expectedResult$result$rIV)
       expectedResult$nullcount<-length(expectedResult$nullresult$rIV)
     }

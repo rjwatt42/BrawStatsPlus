@@ -97,9 +97,9 @@ fullShowHelp<-FALSE
 mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
                 plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
-SMplotTheme=theme(plot.title=element_text(size=16,face="bold"),axis.title=element_text(size=16,face="bold"),
+SMplotTheme=theme(plot.title=element_text(size=14,face="bold"),axis.title=element_text(size=16,face="bold"),
                   axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
-LGplotTheme=theme(plot.title=element_text(size=24,face="bold"),axis.title=element_text(size=24,face="bold"),
+LGplotTheme=theme(plot.title=element_text(size=21,face="bold"),axis.title=element_text(size=24,face="bold"),
                   axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
 plotTheme=mainTheme+SMplotTheme

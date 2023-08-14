@@ -137,6 +137,10 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
         bins<-c(rev(seq(-target-binStep,low_p-binStep,-binStep)),bins)
       }
     } else {
+      if (high_p==low_p) {
+        high_p<-high_p+high_p/10
+        low_p<-low_p-high_p/10
+      }
       nbs<-ceiling(nb*(high_p-target)/(high_p-low_p))
       binStep<-(high_p-target)/nbs
       bins<-rev(seq(high_p,low_p-binStep,-binStep))
@@ -438,10 +442,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             "r1"={data$sh<-data$ro},
             "p"={data$sh<-data$ps},
             "p1"={data$sh<-data$po},
-            "log(lrs)"={data$sh<-res2llr(result,"sLLR")},
-            "log(lrd)"={data$sh<-res2llr(result,"dLLR")},
-            "e1d"={data$sh<-res2llr(result,"dLLR")},
-            "e2d"={data$sh<-res2llr(result,"dLLR")},
+            "log(lrs)"={data$sh<-cbind(res2llr(result,"sLLR"))},
+            "log(lrd)"={data$sh<-cbind(res2llr(result,"dLLR"))},
+            "e1d"={data$sh<-cbind(res2llr(result,"dLLR"))},
+            "e2d"={data$sh<-cbind(res2llr(result,"dLLR"))},
             "n"={data$sh<-data$ns},
             "w"={data$sh<-rn2w(data$rs,data$ns)},
             "wp"={data$sh<-rn2w(data$rp,data$ns)},
@@ -812,10 +816,10 @@ e2_plot<-function(result,IV,IV2=NULL,DV,effect,nullresult=NULL){
   lambda<-format(effect$world$populationPDFk,digits=3)
   switch (RZ,
           "r"={
-            lab<-bquote("Non-null:  " ~ r["p"] ~ "~" ~ .(distr) (r/.(lambda)))
+            lab<-bquote(bold("Non-null:  " ~ r["p"] ~ "~" ~ .(distr) (r/.(lambda))))
           },
           "z"={
-            lab<-bquote("Non-null:  " ~ z["p"] ~ "~" ~ .(distr) (z/.(lambda)))
+            lab<-bquote(bold("Non-null:  " ~ z["p"] ~ "~" ~ .(distr) (z/.(lambda))))
           }
   )
   switch (STMethod,
@@ -839,10 +843,10 @@ e2_plot<-function(result,IV,IV2=NULL,DV,effect,nullresult=NULL){
 e1_plot<-function(nullresult,IV,IV2=NULL,DV,effect,result=NULL){
   switch (RZ,
           "r"={
-            lab<-bquote("Null:  " ~ r["p"] == 0)
+            lab<-bquote(bold("Null:  " ~ r["p"] == 0))
           },
           "z"={
-            lab<-bquote("Null:  " ~ z["p"] == 0)
+            lab<-bquote(bold("Null:  " ~ z["p"] == 0))
           }
   )
   switch (STMethod,
