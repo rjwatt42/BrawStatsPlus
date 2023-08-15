@@ -293,12 +293,12 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
     }
     if (expType=="e1d") {
       c1=plotcolours$infer_sigNull
-      c2=plotcolours$infer_nsNull
+      c2=plotcolours$infer_nsdNull
       c3<-plotcolours$infer_isigNull
     }
     if (expType=="e2d") {
       c1=plotcolours$infer_sigNonNull
-      c2=plotcolours$infer_nsNonNull
+      c2=plotcolours$infer_nsdNonNull
       c3<-plotcolours$infer_isigNonNull
     }
   } else {

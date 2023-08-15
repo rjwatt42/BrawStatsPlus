@@ -748,7 +748,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-nsigNonNulls
           ybottom[ybottom<0]<-0
           pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col1<-plotcolours$infer_nsNonNull
+          switch (STMethod,
+                  "NHST"={col1<-plotcolours$infer_nsNonNull},
+                  "sLLR"={col1<-plotcolours$infer_nsNonNull},
+                  "dLLR"={col1<-plotcolours$infer_nsdNonNull})
           lb1<-nonNullNS
           lb1xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
@@ -773,7 +776,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-isigNulls
           ybottom[ybottom<0]<-0
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col3<-plotcolours$infer_sigNull
+          col3<-plotcolours$infer_isigNull
           lb3<-nullNegative
           lb3xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
@@ -785,7 +788,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-nsigNulls
           ybottom[ybottom<0]<-0
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col4<-plotcolours$infer_nsNull
+          switch (STMethod,
+                  "NHST"={col4<-plotcolours$infer_nsNull},
+                  "sLLR"={col4<-plotcolours$infer_nsNull},
+                  "dLLR"={col4<-plotcolours$infer_nsdNull})
           lb4<-nullNS
           lb4xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
@@ -797,7 +803,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-sigNulls
           ybottom[ybottom<0]<-0
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col5<-plotcolours$infer_isigNull
+          col5<-plotcolours$infer_sigNull
           lb5<-nullPositive
           lb5xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
