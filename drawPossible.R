@@ -10,6 +10,8 @@ darken <- function(col,gain=1,off=0) {
   rgb(col[1],col[2],col[3])
 }
 
+BoxCol<-"#666666"
+
 colS="#FFCC88"
 colSdark=darken(colS,off=-0.67)
 colSsim=darken(colS,off=0.0)
@@ -182,7 +184,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                            ticktype = "simple", 
                            box = FALSE,
                            axes = FALSE,
-                           expand = 0.5, col = "#aaaaaa",
+                           expand = 0.5, col = maincolours$graphBack,
                            cex.axis=0.6,
                            xlab = "Populations", ylab = "Samples", zlab = label.z
             )
@@ -191,14 +193,13 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[1],xlim[1]),
                               y=c(ylim[1], ylim[1], ylim[2],ylim[2]),
                               z=zlim[c(1, 2, 2,1)],mapping),
-                      col="#aaaaaa",border=NA
+                      col=maincolours$graphBack,border=NA
               )
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[2],xlim[2]),
                               y=c(ylim[2], ylim[2], ylim[2],ylim[2]),
                               z=zlim[c(1, 2, 2,1)],mapping),
-                      col="#aaaaaa",border=NA
+                      col=maincolours$graphBack,border=NA
               )
-              BoxCol<-"#666666"
               lines(trans3d(x=c(xlim[1], xlim[1], xlim[2]),
                             y=c(ylim[1],ylim[2],ylim[2]),
                             z=c(zlim[2],zlim[2],zlim[2]),pmat=mapping), col=BoxCol)        
@@ -640,7 +641,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             if (possible$boxed){
             lines(trans3d(x=c(view_lims[1], view_lims[2], view_lims[2]),
                           y=c(view_lims[1],view_lims[1],view_lims[2]),
-                          z=c(1,1,1)*zlim[1],pmat=mapping), col=BoxCol, lty=3)        
+                          z=c(1,1,1)*zlim[2],pmat=mapping), col=BoxCol, lty=3)        
             lines(trans3d(x=c(view_lims[2],view_lims[2]),y=c(view_lims[1],view_lims[1]),z=zlim,pmat=mapping),col=BoxCol,lty=3)
             }
           },
@@ -679,7 +680,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
 
     # gray background
     u <- par("usr") # The coordinates of the plot area
-    rect(u[1], u[3], u[2], u[4], col="#AAAAAA", border=NA)
+    rect(u[1], u[3], u[2], u[4], col=maincolours$graphBack, border=NA)
     lines(u[c(1,2)],c(0,0),col="black")
     
     # make the back wall

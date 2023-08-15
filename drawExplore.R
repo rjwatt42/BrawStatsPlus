@@ -392,7 +392,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               
               if (effect$world$worldOn && effect$world$populationNullp>0) {
-                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_sigNull))
+                g<-g+scale_fill_manual(name="outcome",values=c(plotcolours$psig,plotcolours$infer_sigC,plotcolours$infer_sigNull))
                 col<-"sig"
                 cole<-"sig|Z0"
                 cola<-"sig|Z+"

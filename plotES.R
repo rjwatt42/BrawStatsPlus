@@ -1,6 +1,5 @@
 
 ESplotMargins<-margin(0.0,-0.2,0,-1,"cm")
-darkYellow<-"#FFCC00"
 
 drawEffectES<-function(r,t=1){
   switch (t,
@@ -9,35 +8,35 @@ drawEffectES<-function(r,t=1){
           len=0.9
           labelpts<-data.frame(x=0.45,y=0.55)
           ends="last"
-          col=darkYellow},
+          col=plotcolours$maineffectES},
           
           {start=c(-0.4,0.75)
           direction=45
           len=sqrt(2)*0.75
           labelpts<-data.frame(x=-0.25,y=0.375)
           ends="last"
-          col=darkYellow},
+          col=plotcolours$maineffectES},
 
           {start=c(0.4,0.75)
           direction=-45
           len=sqrt(2)*0.75
           labelpts<-data.frame(x=0.25,y=0.375)
           ends="last"
-          col=darkYellow},
+          col=plotcolours$maineffectES},
           
           {start=c(0.7,0.5)
           direction=-90
           len=1.4
           labelpts<-data.frame(x=0,y=0.55)
           ends="both"
-          col="red"},
+          col=plotcolours$covariationES},
           
           {start=c(0,0.5)
           direction=0
           len=0.5
           labelpts<-data.frame(x=0,y=0.85)
           ends="join"
-          col="blue"}
+          col=plotcolours$interactionES}
   )
       d=0.08
     dx=d*cos(45/(180/pi)) 

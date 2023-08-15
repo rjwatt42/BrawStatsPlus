@@ -1,8 +1,5 @@
 source("varUtilities.R")
 
-darkYellow<-"#FFCC00"
-
-
 drawVar<-function(pts,var){
   if (is.null(pts)) {
     pts<-data.frame(x=0,y=0.5,t=var$name)

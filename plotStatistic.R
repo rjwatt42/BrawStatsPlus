@@ -4,7 +4,6 @@ min_nw=10
 max_nw=10000
 horiz_scatter=0.5
 
-se_colour="#BBBBBB"
 se_size=0.75
 se_arrow=0.3
 CI=0.95
@@ -761,15 +760,15 @@ rp_plot<-function(result,IV,IV2=NULL,DV,effect){
 llrs_plot<-function(result,IV,IV2=NULL,DV,effect){
   g<-r_plot(result,IV,IV2,DV,effect,"log(lrs)")
   sAlpha<-log(dnorm(0)/dnorm(qnorm(1-alpha/2)))
-  g<-g+geom_hline(yintercept=sAlpha, linetype="dotted", color="#44FF22", linewidth=0.5)
+  g<-g+geom_hline(yintercept=sAlpha, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   g
 }
 
 llrd_plot<-function(result,IV,IV2=NULL,DV,effect,ptype=NULL,otherresult=NULL){
   g<-r_plot(result,IV,IV2,DV,effect,"log(lrd)")
   sAlpha<-log(dnorm(0)/dnorm(qnorm(1-alpha/2)))
-  g<-g+geom_hline(yintercept=sAlpha, linetype="dotted", color="#44FF22", linewidth=0.5)
-  g<-g+geom_hline(yintercept= -sAlpha, linetype="dotted", color="#44FF22", linewidth=0.5)
+  g<-g+geom_hline(yintercept=sAlpha, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
+  g<-g+geom_hline(yintercept= -sAlpha, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   g
 }
 
@@ -779,14 +778,14 @@ p_plot<-function(result,IV,IV2=NULL,DV,effect,ptype="p",otherresult=NULL,PlotSca
   
   if (ptype=="p") {
   if (PlotScale=="log10") {
-    g<-g+geom_hline(yintercept=log10(1), linetype="dotted", color="#FF4422", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.005), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.01), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)+
+    g<-g+geom_hline(yintercept=log10(1), linetype="dotted", color=plotcolours$one, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.005), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.01), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
       scale_y_continuous(breaks=c(-4,-3,-2,-1,0),labels=c(0.0001,0.001,0.01,0.1,1))
   } else
   {
-    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)
+    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
     # g<-g+  scale_y_continuous(breaks=seq(0,1,0.1),labels=seq(0,1,0.1))
   }
   }
@@ -797,14 +796,14 @@ p1_plot<-function(result,IV,IV2=NULL,DV,effect,ptype="p1"){
   g<-r_plot(result,IV,IV2,DV,effect,ptype,pPlotScale=="log10")
   
   if (pPlotScale=="log10") {
-    g<-g+geom_hline(yintercept=log10(1), linetype="dotted", color="#FF4422", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.005), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.01), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)+
+    g<-g+geom_hline(yintercept=log10(1), linetype="dotted", color=plotcolours$one, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.005), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.01), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
       scale_y_continuous(breaks=c(-4,-3,-2,-1,0),labels=c(0.0001,0.001,0.01,0.1,1))
   } else
   {
-    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)+
+    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
       scale_y_continuous(breaks=seq(0,1,0.1),labels=seq(0,1,0.1))
   }
   g
@@ -815,13 +814,13 @@ w_plot<-function(result,IV,IV2=NULL,DV,effect){
   g<-r_plot(result,IV,IV2,DV,effect,"w",wPlotScale=="log10")
   
   if (wPlotScale=="log10") {
-    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.5), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.8), linetype="dotted", color="#44FF22", linewidth=0.5)
+    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.5), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.8), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   } else {
-    g<-g+geom_hline(yintercept=alpha, linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=0.5, linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=0.8, linetype="dotted", color="#44FF22", linewidth=0.5)
+    g<-g+geom_hline(yintercept=alpha, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=0.5, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=0.8, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   }
   g
 }
@@ -830,13 +829,13 @@ wp_plot<-function(result,IV,IV2=NULL,DV,effect){
   g<-r_plot(result,IV,IV2,DV,effect,"wp",wPlotScale=="log10")
   
   if (wPlotScale=="log10") {
-    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.5), linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=log10(0.8), linetype="dotted", color="#44FF22", linewidth=0.5)
+    g<-g+geom_hline(yintercept=log10(alpha), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.5), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=log10(0.8), linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   } else {
-    g<-g+geom_hline(yintercept=alpha, linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=0.5, linetype="dotted", color="#44FF22", linewidth=0.5)+
-      geom_hline(yintercept=0.8, linetype="dotted", color="#44FF22", linewidth=0.5)
+    g<-g+geom_hline(yintercept=alpha, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=0.5, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+      geom_hline(yintercept=0.8, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)
   }
   g
 }
@@ -871,8 +870,8 @@ e2_plot<-function(result,IV,IV2=NULL,DV,effect,nullresult=NULL){
           },
           "dLLR"={
             p_plot(result,IV,IV2,DV,effect,ptype="e2d",otherresult=nullresult,PlotScale="linear")+
-              geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
-              geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
+              geom_hline(yintercept=alphaLLR, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+              geom_hline(yintercept=-alphaLLR, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
               ggtitle(lab)
           }
   )
@@ -898,8 +897,8 @@ e1_plot<-function(nullresult,IV,IV2=NULL,DV,effect,result=NULL){
           },
           "dLLR"={
             p_plot(nullresult,IV,IV2,DV,effect,ptype="e1d",otherresult=result,PlotScale="linear")+
-              geom_hline(yintercept=alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
-              geom_hline(yintercept=-alphaLLR, linetype="dotted", color="#44FF22", linewidth=0.5)+
+              geom_hline(yintercept=alphaLLR, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
+              geom_hline(yintercept=-alphaLLR, linetype="dotted", color=plotcolours$alpha, linewidth=0.5)+
               ggtitle(lab)
           }
   )
