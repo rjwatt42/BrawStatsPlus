@@ -97,34 +97,24 @@ HelpTab <-
                                  style = paste("background: ",panelcolours$helpC),
                                  tags$table(width = "100%",class="myTable",
                                             tags$tr(
-                                              tags$td(width="40%",tags$div(style = localPlainStyle, "Load extras:")),
-                                              tags$td(width="5%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue)),
-                                              tags$td(width="40%"),
-                                              tags$td(width="15%")
+                                              tags$td(width="30%",tags$div(style = localPlainStyle, "Load extras:")),
+                                              tags$td(width="15%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue)),
+                                              tags$td(width="30%",tags$div(style = localPlainStyle, "Large graphs:")),
+                                              tags$td(width="25%",checkboxInput("LargeGraphs", label=NULL,value=FALSE))
                                             ),
-                                            tags$tr(
-                                              tags$td(width="40%",tags$div(style = localPlainStyle, "White graphs:")),
-                                              tags$td(width="5%",checkboxInput("WhiteGraphs", label=NULL,value=FALSE)),
-                                              tags$td(width="40%",tags$div(style = localPlainStyle, "Large graphs:")),
-                                              tags$td(width="15%",checkboxInput("LargeGraphs", label=NULL,value=FALSE))
-                                            )
                                  ),
                                  conditionalPanel(condition="input.LoadExtras",
                                                   tags$table(width = "100%",class="myTable",
                                                              tags$tr(
-                                                               tags$td(width="25%",tags$div(style = localPlainStyle, "Short hand:")),
-                                                               tags$td(width="10%",checkboxInput("shortHand",value=FALSE, label=NULL)),
-                                                               tags$td(width="40%",tags$div(style = localPlainStyle, "Shorthand Gain:")),
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Short hand:")),
+                                                               tags$td(width="15%",checkboxInput("shortHand",value=FALSE, label=NULL)),
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Shorthand x:")),
                                                                tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))
-                                                             )
-                                                  )
-                                 ),
-                                 conditionalPanel(condition="input.LoadExtras",
-                                                  tags$table(width = "100%",class="myTable",
+                                                             ),
                                                              tags$tr(
-                                                               tags$td(width="25%",tags$div(style = localPlainStyle, "")),
-                                                               tags$td(width="10%",tags$div(style = localPlainStyle, "")),
-                                                               tags$td(width="40%",tags$div(style = localPlainStyle, "Display:")),
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "White graphs:")),
+                                                               tags$td(width="15%",checkboxInput("WhiteGraphs", label=NULL,value=FALSE)),
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Display:")),
                                                                tags$td(width="25%",selectInput("RZ",label=NULL, c("r"="r","z"="z"), selected=RZ, selectize=FALSE))
                                                              )
                                                   )
@@ -132,8 +122,8 @@ HelpTab <-
                                  conditionalPanel(condition="input.LoadExtras",
                                                   tags$table(width = "100%",class="myTable",
                                                              tags$tr(
-                                                               tags$td(width="40%",tags$div(style = localPlainStyle, "Notation:")),
-                                                               tags$td(width="20%",selectInput("Notation1",label=NULL, 
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Notation:")),
+                                                               tags$td(width="30%",selectInput("Notation1",label=NULL, 
                                                                                                c("psig"="psig","w"="w"), 
                                                                                                selected="psig", selectize=FALSE)),
                                                                tags$td(width="20%",selectInput("Notation2",label=NULL, 
