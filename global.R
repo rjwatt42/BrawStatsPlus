@@ -19,7 +19,7 @@ char3D=1.3
 
 GraphsOnly<-FALSE
 
-maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#888888")
+maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#999999")
 maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF",graphBack="#888888")
 maincolours<-maincoloursBL
 
@@ -68,14 +68,14 @@ darkpanelcolours<-list(hypothesisC=hsv(hypHue,darkSat,darkBright),
                       filesC=hsv(filHue,darkSat,darkBright*fileBright)
 )
 
-plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF8833",
-                  descriptionC1="#FF5533",descriptionC2="#CCBB33",
-                  infer_sigC="#11CC00",infer_nsigC="#FF4400",infer_none="#AAAAAA",
-                  infer_sigNonNull="#11CC00",infer_nsNonNull="#881100",infer_isigNonNull="#FFEE55",
-                  infer_sigNull="#118800",infer_nsNull="#FF4400",infer_isigNull="#EEDD44",
-                  psig="#FFAA00",fdr="#227700",fmr="#BB5555")
+# plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF9955",
+#                   descriptionC1="#FF5533",descriptionC2="#CCBB33",
+#                   infer_sigC="#11CC00",infer_nsigC="#FF4400",infer_none="#AAAAAA",
+#                   infer_sigNonNull="#11CC00",infer_nsNonNull="#881100",infer_isigNonNull="#FFEE55",
+#                   infer_sigNull="#118800",infer_nsNull="#FF4400",infer_isigNull="#EEDD44",
+#                   psig="#FFAA00",fdr="#227700",fmr="#BB5555")
 
-plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF8833",
+plotcolours<-list(sampleC="#FFCC00",descriptionC="#FF9955",
                   descriptionC1="#FF5533",descriptionC2="#CCBB33",
                   infer_sigC="#11CC00",infer_nsigC="#FF4400",infer_none="#AAAAAA",
                   infer_sigNonNull="#11CC00",infer_isigNonNull="#881100",infer_nsNonNull="#AAAAAA",

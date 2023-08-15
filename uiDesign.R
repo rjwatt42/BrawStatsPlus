@@ -122,85 +122,102 @@ DesignTab <-
                             conditionalPanel(condition="input.sMethod == 'Random'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
-                                                          tags$td(width = "20%", tags$div(style = paste(localStyle,"text-align: left"), "Random:")),
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "no options")),
-                                                          tags$td(width = "50%")
+                                                          tags$td(width = "25%", tags$div(style = localStyle, "Random:")),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "no options")),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "10%")
                                                         ))),
                             conditionalPanel(condition="input.sMethod == 'Stratified'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = paste(localStyle,"text-align: left"), "Stratified:")),
+                                                          tags$td(width = "25%", tags$div(style = localStyle, "Stratified:")),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "number:")),
+                                                          tags$td(width = "25%",numericInput("sN_Strata",label=NULL,value=design$sN_Strata)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "number:")),
-                                                          tags$td(width = "50%",numericInput("sN_Strata",label=NULL,value=design$sN_Strata)),
-                                                        ),
-                                                        tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "range:")),
-                                                          tags$td(width = "50%",numericInput("sR_Strata",label=NULL,value=design$sR_Strata)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "range:")),
+                                                          tags$td(width = "25%",numericInput("sR_Strata",label=NULL,value=design$sR_Strata)),
+                                                          tags$td(width = "10%")
                                                         ))),
                             conditionalPanel(condition="input.sMethod == 'Cluster'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = paste(localStyle,"text-align: left"), "Cluster:")),
+                                                          tags$td(width = "25%", tags$div(style = localStyle, "Cluster:")),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "clusters number:")),
+                                                          tags$td(width = "25%",numericInput("sNClu_Cluster",label=NULL,value=design$sNClu_Cluster)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "clusters number:")),
-                                                          tags$td(width = "50%",numericInput("sNClu_Cluster",label=NULL,value=design$sNClu_Cluster)),
-                                                        ),
-                                                        tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "cluster range:")),
-                                                          tags$td(width = "50%",numericInput("sRClu_Cluster",label=NULL,value=design$sRClu_Cluster)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "cluster range:")),
+                                                          tags$td(width = "25%",numericInput("sRClu_Cluster",label=NULL,value=design$sRClu_Cluster)),
+                                                          tags$td(width = "10%")
                                                         ))),
                             conditionalPanel(condition="input.sMethod == 'Convenience'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = paste(localStyle,"text-align: left"), "Convenience:")),
+                                                          tags$td(width = "25%", tags$div(style = localStyle, "Convenience:")),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "clusters number:")),
+                                                          tags$td(width = "25%",numericInput("sNClu_Convenience",label=NULL,value=design$sNClu_Convenience)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "clusters number:")),
-                                                          tags$td(width = "50%",numericInput("sNClu_Convenience",label=NULL,value=design$sNClu_Convenience)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "cluster range:")),
+                                                          tags$td(width = "25%",numericInput("sRClu_Convenience",label=NULL,value=design$sRClu_Convenience)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "cluster range:")),
-                                                          tags$td(width = "50%",numericInput("sRClu_Convenience",label=NULL,value=design$sRClu_Convenience)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "contacts number:")),
+                                                          tags$td(width = "25%",numericInput("sNCont_Convenience",label=NULL,value=design$sNCont_Convenience)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "contacts number:")),
-                                                          tags$td(width = "50%",numericInput("sNCont_Convenience",label=NULL,value=design$sNCont_Convenience)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "contact range:")),
+                                                          tags$td(width = "25%",numericInput("sRCont_Convenience",label=NULL,value=design$sRCont_Convenience)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "contact range:")),
-                                                          tags$td(width = "50%",numericInput("sRCont_Convenience",label=NULL,value=design$sRCont_Convenience)),
-                                                        ),
-                                                        tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "spread range:")),
-                                                          tags$td(width = "50%",numericInput("sRSpread_Convenience",label=NULL,value=design$sRSpread_Convenience)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "spread range:")),
+                                                          tags$td(width = "25%",numericInput("sRSpread_Convenience",label=NULL,value=design$sRSpread_Convenience)),
+                                                          tags$td(width = "10%")
                                                         ))),
                             conditionalPanel(condition="input.sMethod == 'Snowball'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = paste(localStyle,"text-align: left"), "Snowball:")),
+                                                          tags$td(width = "25%", tags$div(style = localStyle, "Snowball:")),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "clusters number:")),
+                                                          tags$td(width = "25%",numericInput("sNClu_Snowball",label=NULL,value=design$sNClu_Snowball)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "clusters number:")),
-                                                          tags$td(width = "50%",numericInput("sNClu_Snowball",label=NULL,value=design$sNClu_Snowball)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "20%", tags$div(style = localPlainStyle, "cluster range:")),
+                                                          tags$td(width = "25%",numericInput("sRClu_Snowball",label=NULL,value=design$sRClu_Snowball)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "cluster range:")),
-                                                          tags$td(width = "50%",numericInput("sRClu_Snowball",label=NULL,value=design$sRClu_Snowball)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "contacts number:")),
+                                                          tags$td(width = "25%",numericInput("sNCont_Snowball",label=NULL,value=design$sNCont_Snowball)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "contacts number:")),
-                                                          tags$td(width = "50%",numericInput("sNCont_Snowball",label=NULL,value=design$sNCont_Snowball)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "contact range:")),
+                                                          tags$td(width = "25%",numericInput("sRCont_Snowball",label=NULL,value=design$sRCont_Snowball)),
+                                                          tags$td(width = "10%")
                                                         ),
                                                         tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "contact range:")),
-                                                          tags$td(width = "50%",numericInput("sRCont_Snowball",label=NULL,value=design$sRCont_Snowball)),
-                                                        ),
-                                                        tags$tr(
-                                                          tags$td(width = "30%", tags$div(style = localPlainStyle, "spread:")),
-                                                          tags$td(width = "50%",numericInput("sRSpread_Snowball",label=NULL,value=design$sRSpread_Snowball)),
+                                                          tags$td(width = "25%"),
+                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "spread:")),
+                                                          tags$td(width = "25%",numericInput("sRSpread_Snowball",label=NULL,value=design$sRSpread_Snowball)),
+                                                          tags$td(width = "10%")
                                                         ))
                                              ),
                           conditionalPanel(condition="input.LoadExtras",
@@ -210,24 +227,22 @@ DesignTab <-
                                        tags$td(width = "5%",
                                                checkboxInput("sBudgetOn",label=NULL,value=design$sReplVarAlpha)
                                        ),
-                                       tags$td(width = "25%"),
-                                       tags$td(width = "20%", tags$div(style = localPlainStyle, "available:")),
-                                       tags$td(width = "25%", numericInput("sNBudget",label=NULL,value=design$sNBudget)
+                                       tags$td(width = "35%", tags$div(style = localPlainStyle, "available:")),
+                                       tags$td(width = "5%"),
+                                       tags$td(width = "30%", numericInput("sNBudget",label=NULL,value=design$sNBudget),
                                        ),
-                                     )
-                          )
-                          ),
-                          tags$table(width = "100%",class="myTable", id="extraRep3",
+                                     ),
                                      tags$tr(
                                        tags$td(width = "25%", tags$div(style = paste(localStyle,"text-align: left"), "Replication:")),
-                                       tags$td(width = "25%"),
-                                       tags$td(width = "20%", tags$div(style = localStyle, paste0("Vary ",alphaChar,":"))),
+                                       tags$td(width = "5%"),
+                                       tags$td(width = "35%", tags$div(style = localPlainStyle, paste0("Vary ",alphaChar,":"))),
                                        tags$td(width = "5%",
                                                checkboxInput("sReplVarAlpha",label=NULL,value=design$sReplVarAlpha)
                                        ),
-                                       tags$td(width = "25%", numericInput("sReplAlpha",label=NULL,value=design$sReplAlpha)
+                                       tags$td(width = "30%", numericInput("sReplAlpha",label=NULL,value=design$sReplAlpha),
                                        ),
                                      )
+                          )
                           )
                 )
                 # help tab
