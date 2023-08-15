@@ -109,44 +109,77 @@ get_lowerEdge<-function(allvals,svals) {
 getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
   nv=max(length(nsvals),length(vals))
   nb<-round(sqrt(nv)*0.75)
-  if (min(vals,na.rm=TRUE)==max(vals,na.rm=TRUE)) {nb<-3}
-  # nb<-51
   
+  if (min(vals,na.rm=TRUE)==max(vals,na.rm=TRUE)) {nb<-3}
+
   high_p<-max(vals,na.rm=TRUE)+0.2
   low_p<-min(vals,na.rm=TRUE)-0.2
   if (!is.null(minVal)) {
-    low_p<-min(max(minVal,low_p,na.rm=TRUE),target)
+    low_p<-max(minVal,low_p,na.rm=TRUE)
   }
   if (!is.null(maxVal)) {
     high_p<-min(maxVal,high_p,na.rm=TRUE)
   }
+
   if ((length(nsvals)==0) || (length(nsvals)==length(vals))){
     bins<-seq(low_p,high_p,length.out=nb)
+    return(bins)
+  }
+
+  if (fixed) {
+    target_low<-max(-target,low_p)
+    target_high<-min(target,high_p)
+    targetRange<-target_high-target_low
+    nbs<-ceiling(nb*targetRange/(high_p-low_p))
+    binStep<-targetRange/nbs
+    bins<-seq(target_low,target_high,binStep)
+    if (target<high_p) {
+      bins<-c(bins,seq(target+binStep,high_p+binStep,binStep))
+    }
+    if (-target>low_p) {                                
+      bins<-c(rev(seq(-target-binStep,low_p-binStep,-binStep)),bins)
+    }
+    return(bins)
+  } 
+  
+  # make sure it goes through target
+  if (length(target)>1) {
+    if (high_p>target[2] && low_p< target[1]) {
+      nbs<-ceiling(nb*(target[2]-0)/(high_p-low_p))
+      binStep<-target[2]/nbs
+      bins<-c(rev(seq(0,low_p-binStep,-binStep)),seq(binStep,high_p,binStep))
+      return(bins)
+    }
+    if (high_p>target[2]) {
+      nbs<-ceiling(nb*(high_p-target[2])/(high_p-low_p))
+      binStep<-(high_p-target[2])/nbs
+      bins<-rev(seq(high_p,low_p-binStep,-binStep))
+      return(bins)
+    } 
+    if (low_p<target[1]) {
+      nbs<-ceiling(nb*(target[1]-low_p)/(high_p-low_p))
+      binStep<-(target[1]-low_p)/nbs
+      bins<-seq(low_p-binStep,high_p,binStep)
+      return(bins)
+    } 
   } else {
-    if (fixed) {
-      target_low<-max(-target,low_p)
-      target_high<-min(target,high_p)
-      targetRange<-target_high-target_low
-      nbs<-ceiling(nb*targetRange/(high_p-low_p))
-      binStep<-targetRange/nbs
-      bins<-seq(target_low,target_high,binStep)
-      if (target<high_p) {
-        bins<-c(bins,seq(target+binStep,high_p+binStep,binStep))
-      }
-      if (-target>low_p) {                                
-        bins<-c(rev(seq(-target-binStep,low_p-binStep,-binStep)),bins)
-      }
-    } else {
-      if (high_p==low_p) {
-        high_p<-high_p+high_p/10
-        low_p<-low_p-high_p/10
-      }
+    if (high_p>target) {
       nbs<-ceiling(nb*(high_p-target)/(high_p-low_p))
       binStep<-(high_p-target)/nbs
       bins<-rev(seq(high_p,low_p-binStep,-binStep))
-    }
+      return(bins)
+    } 
+    if (low_p<target) {
+      nbs<-ceiling(nb*(target-low_p)/(high_p-low_p))
+      binStep<-(target-low_p)/nbs
+      bins<-seq(low_p-binStep,high_p,binStep)
+      return(bins)
+    } 
   }
-  bins
+  # if all else fails
+  binStep<-(high_p-low_p)/nb
+  bins<-seq(low_p-binStep,high_p,binStep)
+  return(bins)
 }
 
 expected_hist<-function(vals,svals,valType){
@@ -159,13 +192,13 @@ expected_hist<-function(vals,svals,valType){
   switch (valType,
           "r"=  { # ns is small
             target<-get_upperEdge(abs(vals),abs(svals))
-            bins<-getBins(vals,svals,target,NULL,NULL,TRUE)
+            bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
           },
           
           "p"=  { # ns is large
             if (pPlotScale=="log10") {
-            target<-log10(alpha)
-            bins<-getBins(vals,svals,target,log10(min_p),log10(1))
+              target<-log10(alpha)
+              bins<-getBins(vals,svals,target,log10(min_p),log10(1))
             } else {
               target<-alpha
               bins<-getBins(vals,svals,target,0,1)
@@ -175,22 +208,22 @@ expected_hist<-function(vals,svals,valType){
             
           "log(lrs)"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,0,lrRange)
+            bins<-getBins(vals,svals,target*c(-1,1),0,lrRange)
           },
           
           "e1d"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,-lrRange,lrRange)
+            bins<-getBins(vals,svals,target*c(-1,1),-lrRange,lrRange)
           },
           
           "log(lrd)"={
             target<-alphaLLR
-            bins<-getBins(vals,svals,target,-lrRange,lrRange)
+            bins<-getBins(vals,svals,target*c(-1,1),-lrRange,lrRange)
           },
           
           "e2d"={
-            target<-3
-            bins<-getBins(vals,svals,target,-lrRange,lrRange)
+            target<-alphaLLR
+            bins<-getBins(vals,svals,target*c(-1,1),-lrRange,lrRange)
           },
           
           "w"=  { # ns is small
@@ -200,12 +233,12 @@ expected_hist<-function(vals,svals,valType){
           
           "n"= { # ns is small
             target<-get_lowerEdge(vals,svals)
-            bins<-getBins(vals,svals,target,NULL,10000,FALSE)
+            bins<-getBins(vals,svals,target,NULL,10000)
           },
           
           "nw"= { # ns is large
             target<-get_lowerEdge(vals,svals)
-            bins<-getBins(vals,svals,target,NULL,max_nw,FALSE)
+            bins<-getBins(vals,svals,target,NULL,max_nw)
           }
   )
   use<-vals>=bins[1] & vals<bins[length(bins)]
@@ -251,22 +284,22 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
       c2=plotcolours$descriptionC
     }
     if (expType=="e1") {
-      c1=plotcolours$infer_sigErr
-      c2=plotcolours$infer_nsigC
+      c1=plotcolours$infer_sigNull
+      c2=plotcolours$infer_nsNull
     }
     if (expType=="e2") {
-      c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_nsigErr
+      c1=plotcolours$infer_sigNonNull
+      c2=plotcolours$infer_nsNonNull
     }
     if (expType=="e1d") {
-      c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_nsigErr
-      c3<-plotcolours$infer_sigErr
+      c1=plotcolours$infer_sigNull
+      c2=plotcolours$infer_nsNull
+      c3<-plotcolours$infer_isigNull
     }
     if (expType=="e2d") {
-      c1=plotcolours$infer_sigC
-      c2=plotcolours$infer_nsigErr
-      c3<-plotcolours$infer_sigErr
+      c1=plotcolours$infer_sigNonNull
+      c2=plotcolours$infer_nsNonNull
+      c3<-plotcolours$infer_isigNonNull
     }
   } else {
     c1=col
@@ -301,6 +334,11 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
     g<-g+geom_point(data=pts1,aes(x=x, y=y1),shape=shapes$study, colour = co2, fill = c2, size = dotSize)
     pts2=pts[pts$y2,]
     g<-g+geom_point(data=pts2,aes(x=x, y=y1),shape=shapes$study, colour = co1, fill = c1, size = dotSize)
+    if (!is.null(expType))
+      if (is.element(expType,c("e1d","e2d"))) {
+        pts3=pts[pts$y3,]
+        g<-g+geom_point(data=pts3,aes(x=x, y=y1),shape=shapes$study, colour = co1, fill = c3, size = dotSize)
+      }
     
   } else {
     if (is.logical(pts$y2)) {
@@ -313,13 +351,13 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
       geom_polygon(data=pts1,aes(y=x,x=y1*scale*scale+xoff),colour=NA, fill = c2)+
       geom_polygon(data=pts1,aes(y=x,x=y2*scale*scale+xoff),colour=NA, fill = c1)
     if (!is.null(expType))
-    if (is.element(expType,c("e1d","e2d"))) {
-      if (is.logical(pts$y3)) {
-        pts1<-expected_hist(pts$y1,pts$y1[pts$y3],expType)
-      }
+      if (is.element(expType,c("e1d","e2d"))) {
+        if (is.logical(pts$y3)) {
+          pts1<-expected_hist(pts$y1,pts$y1[pts$y3],expType)
+        }
         g<-g+
-      geom_polygon(data=pts1,aes(y=x,x=y2+xoff),colour=NA, fill = c3)
-    }
+          geom_polygon(data=pts1,aes(y=x,x=y2+xoff),colour=NA, fill = c3)
+      }
   }
   g
 }

@@ -98,7 +98,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             } else {
               ylabel<-"Type I"
               secondY<-"Type II"
-              g<-g+theme(axis.title.y.left = element_text(color=plotcolours$infer_sigErr),axis.title.y.right = element_text(color=plotcolours$infer_nsigErr))
+              g<-g+theme(axis.title.y.left = element_text(color=plotcolours$infer_sigNull),axis.title.y.right = element_text(color=plotcolours$infer_nsNonNull))
             }
           },
           "FDR;FMR"={
@@ -383,8 +383,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               lines<-c(0.05,0.8)
               if (is.null(IV2)){
                 col<-plotcolours$infer_sigC
-                cole<-plotcolours$infer_sigErr
-                cola<-plotcolours$infer_nsigErr
+                cole<-plotcolours$infer_sigNull
+                cola<-plotcolours$infer_nsNonNull
                 colFill<-col
               } else {
                 col<-all_cols[[explore$Explore_typeShow]]
@@ -392,7 +392,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               
               if (effect$world$worldOn && effect$world$populationNullp>0) {
-                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_sigErr))
+                g<-g+scale_fill_manual(name="outcome",values=c("#FFCC88",plotcolours$infer_sigC,plotcolours$infer_sigNull))
                 col<-"sig"
                 cole<-"sig|Z0"
                 cola<-"sig|Z+"
@@ -736,7 +736,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-isigNonNulls
           ybottom[ybottom<0]<-0
           pts0<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col0<-plotcolours$infer_isigErr
+          col0<-plotcolours$infer_isigNonNull
           lb0<-nonNullNegative
           lb0xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
@@ -748,7 +748,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-nsigNonNulls
           ybottom[ybottom<0]<-0
           pts1<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col1<-plotcolours$infer_nsigErr
+          col1<-plotcolours$infer_nsNonNull
           lb1<-nonNullNS
           lb1xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
@@ -760,7 +760,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-sigNonNulls
           ybottom[ybottom<0]<-0
           pts2<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col2<-plotcolours$infer_sigC
+          col2<-plotcolours$infer_sigNonNull
           lb2<-nonNullPositive
           lb2xy<-data.frame(x=max(vals),y=1-yn/10)
           yn<-yn+1
@@ -773,7 +773,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-isigNulls
           ybottom[ybottom<0]<-0
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col3<-plotcolours$infer_sigErr
+          col3<-plotcolours$infer_sigNull
           lb3<-nullNegative
           lb3xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
@@ -785,7 +785,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-nsigNulls
           ybottom[ybottom<0]<-0
           pts4<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col4<-plotcolours$infer_nsigC
+          col4<-plotcolours$infer_nsNull
           lb4<-nullNS
           lb4xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
@@ -797,7 +797,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           ybottom<-ytop-sigNulls
           ybottom[ybottom<0]<-0
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(ybottom,rev(ytop)))
-          col5<-plotcolours$infer_isigErr
+          col5<-plotcolours$infer_isigNull
           lb5<-nullPositive
           lb5xy<-data.frame(x=max(vals),y=0+yn/10)
           yn<-yn-1
@@ -819,7 +819,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         
         if (any(nsigNulls!=0)) {
           pts3<-data.frame(x=c(vals,rev(vals))+vals_offset,y=1-c(nsigNulls+nsigNonNulls,rev(nsigNonNulls)))
-          col3<-plotcolours$infer_nsigC
+          col3<-plotcolours$infer_nsNUll
           lb3<-nullNS
           lb3xy<-data.frame(x=max(vals),y=0.8)
         } else {pts3<-NULL}
@@ -833,7 +833,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         if (any(isigNonNulls!=0)) {
           # non-null errors
           pts5<-data.frame(x=c(vals,rev(vals))+vals_offset,y=c(isigNonNulls,rep(0,endI)))
-          col5<-plotcolours$infer_insigErr
+          col5<-plotcolours$infer_isigNonNull
           lb5<-nonNullNegative
           lb5xy<-data.frame(x=max(vals),y=0.1)
         } else {pts5<-NULL}
