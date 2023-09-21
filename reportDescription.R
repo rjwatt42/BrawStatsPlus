@@ -183,28 +183,42 @@ reportDescription<-function(IV,IV2,DV,evidence,result){
   
   switch (no_ivs,
           { result$rIVse<-r2se(result$rIV,result$nval)
-          outputText<-c(outputText,paste0("\b",IV$name,":"),
+          outputText<-c(outputText,paste0("\b!j",IV$name,":"),
                                    paste(format(result$rIV,digits=report_precision),
                                                              " +/- ",format(result$rIVse,digits=report_precision),
-                                                             sep=""),rep("",nc-2))
+                                                             sep=""),
+                        paste0("CI = (",format(result$rFullCI[1],digits=report_precision),
+                               ",",format(result$rFullCI[2],digits=report_precision),
+                               ")"),
+                        rep("",nc-3)
+          )
           },{
-            outputText<-c(outputText,"\bVariable","\bdirect","\bunique","\btotal",rep("",nc-4))
-            outputText<-c(outputText,IV$name,
+            outputText<-c(outputText,"\b!jVariable","\bdirect","\bunique","\btotal",rep("",nc-4))
+            outputText<-c(outputText,paste0("!j",IV$name,":"),
                           format(result$r$direct[1],digits=report_precision),format(result$r$unique[1],digits=report_precision),format(result$r$total[1],digits=report_precision),
                           rep("",nc-4))
-            outputText<-c(outputText,IV2$name,
+            outputText<-c(outputText,paste0("!j",IV2$name,":"),
                           format(result$r$direct[2],digits=report_precision),format(result$r$unique[2],digits=report_precision),format(result$r$total[2],digits=report_precision),
                           rep("",nc-4))
-            outputText<-c(outputText,paste(IV$name,":",IV2$name,sep=""),
+            outputText<-c(outputText,paste0("!j",IV$name,"*",IV2$name,":"),
                           format(result$r$direct[3],digits=report_precision),format(result$r$unique[3],digits=report_precision),format(result$r$total[3],digits=report_precision),
                           rep("",nc-4))
+  
+  
+            outputText<-c(outputText,rep("",nc))
+            
+            an_rt<-format(result$rFull,digits=report_precision) 
+            an_rset<-format(result$rFullse,digits=report_precision)
+            outputText<-c(outputText,
+                          "\b!jFull model:",
+                          paste(an_rt,"+/-",an_rset),
+                          paste0("CI = (",format(result$rFullCI[1],digits=report_precision),
+                                 ",",format(result$rFullCI[2],digits=report_precision),
+                                 ")"),
+                          rep("",nc-3)
+            )
           }
   )
-  
-  
-  an_rt<-format(result$rFull,digits=report_precision) 
-  an_rset<-format(result$rFullse,digits=report_precision)
-  outputText<-c(outputText,"\bFull model:",paste(an_rt,"+/-",an_rset),rep("",nc-2))
   
   switch (no_ivs,
           {

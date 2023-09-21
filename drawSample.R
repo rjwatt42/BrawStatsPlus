@@ -5,7 +5,6 @@ drawSample<-function(IV,DV,effect,result){
   g<-drawPopulation(IV,DV,result,alpha=0.75)
 
   dotSize<-dotSize<-(plotTheme$axis.title$size)/3
-
   if (result$nval>100) {
     dotSize<-dotSize*sqrt(100/length(x))
   }

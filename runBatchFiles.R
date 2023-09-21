@@ -13,12 +13,13 @@ vvals<-c()
 rvals<-c()    
 pvals<-c()
 anvals<-c()
+fvals<-c()    
+wvals<-c()
 
 files<-c()
 
 nfiles<-input$batchFile_length
 for (i in 1:nfiles) {
-  print(paste("OK : ",format(i)))
   IVtype<-ceil(runif(1)*4)
   switch (IVtype,
           {IV$type<-"Interval"},
@@ -62,7 +63,7 @@ for (i in 1:nfiles) {
             )
             
           },
-          "both"={
+          "either"={
             if (runif(1)<0.5) {
               IV2<-c()
             } else {
@@ -124,7 +125,9 @@ for (i in 1:nfiles) {
     rvals<-rbind(rvals,c(result$rIV,result$rIV2,result$rIVIV2DV,result$r$unique,result$r$total))
     pvals<-rbind(pvals,c(result$pIV,result$pIV2,result$pIVIV2DV,result$p$unique,result$p$total))
   }
-  anvals<-rbind(c(result$an_name,result$test_name,result$test_val,result$df))
+  fvals<-rbind(fvals,c(result$rFull,result$rFullse,result$rFullCI))
+  wvals<-rbind(wvals,c(result$wFull,result$wFulln80))
+  anvals<-rbind(anvals,c(result$an_name,result$test_name,result$test_val,result$df))
   # print("OK3")
 
   if (!is.null(data)) 
@@ -133,19 +136,24 @@ for (i in 1:nfiles) {
   files<-rbind(files,filename)
   }
 # print("OK4")
-
+  showNotification(paste0("Batch files: ",i,"/",nfiles),id="counting",duration=Inf,closeButton=FALSE,type="message")
 }
+showNotification(paste0("Batch files: Done"),id="counting",duration=Inf,closeButton=FALSE,type="message")
 
-  filename<-paste0(subDir,"/","Results.xlsx")
-  data<-data.frame(file=files,v=vvals,r=rvals,p=pvals,an=anvals)
-  colnames(data)<-c("files",
-                    "IVtype","IV2type","DVtype",
-                    "rIV","rIV2","rIVxIV2","rUniqueIV","rUniqueIV2","rUniqueIVxIV2","rTotalIV","rTotalIV2","rTotalIVxIV2",
-                    "pIV","pIV2","pIVxIV2","pUniqueIV","pUniqueIV2","pUniqueIVxIV2","pTotalIV","pTotalIV2","pTotalIVxIV2",
-                    "analysis","test statistic","test value","df")
-  
-  write_xlsx(data, path = filename)
+filename<-paste0(subDir,"/","Results.xlsx")
+data<-data.frame(file=files,v=vvals,r=rvals,p=pvals,f=fvals,w=wvals,an=anvals)
+colnames(data)<-c("files",
+                  "IVtype","IV2type","DVtype",
+                  "rIV","rIV2","rIVxIV2","rUniqueIV","rUniqueIV2","rUniqueIVxIV2","rTotalIV","rTotalIV2","rTotalIVxIV2",
+                  "pIV","pIV2","pIVxIV2","pUniqueIV","pUniqueIV2","pUniqueIVxIV2","pTotalIV","pTotalIV2","pTotalIVxIV2",
+                  "rFull","rFullse","rFullCI(1)","rFullCI(2)",
+                  "wFull","wFullN80",
+                  "analysis","test statistic","test value","df")
 
+write_xlsx(data, path = filename)
+
+Sys.sleep(2)
+removeNotification(id = "counting")
 
 }
 

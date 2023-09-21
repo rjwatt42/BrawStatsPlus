@@ -14,11 +14,12 @@ if (switches$doBatchFiles)
                                                         selected = "10",
                                                         selectize=FALSE)
                                     ),
+                                    tags$td(width = "15%", tags$div(style = localStyle, "vars:")),
                                     tags$td(width = "20%", 
                                             selectInput("batchFile_nVars",label=NULL,
                                                         c("2" = "2",
                                                           "3" = "3",
-                                                          "both"="both"),
+                                                          "either"="either"),
                                                         selected = "2",
                                                         selectize=FALSE)
                                     ),

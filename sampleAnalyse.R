@@ -687,6 +687,9 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
             # overall model effect-size
             result$rFull<-result$rIV
             result$rFullse<-r2se(result$rFull,n)
+            result$rFullCI<-r2ci(result$rFull,n)
+            result$wFull<-rn2w(result$rFull,n)
+            result$wFulln80<-rw2n(result$rFull,0.8)
           },
           # 2 ivs
           { if (doingWithin) {
@@ -697,6 +700,9 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
               result$rFull<-r.squaredGLMM(lmNormC)[[1]]
             }
             result$rFullse<-r2se(result$rFull,n)
+            result$rFullCI<-r2ci(result$rFull,n)
+            result$wFull<-rn2w(result$rFull,n)
+            result$wFulln80<-rw2n(result$rFull,0.8)
             
             directEffects<-model2directeffect(lmNormC)
             result$rIV<-directEffects[1]
@@ -722,6 +728,9 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
             # overall model effect-size
             result$rFull<-sqrt(sum(anU$`Sum Sq`[is.element(rownames(anU),c("iv1","iv2","iv1:iv2"))])/sum(anU$`Sum Sq`))
             result$rFullse<-r2se(result$rFull,n)
+            result$rFullCI<-r2ci(result$rFull,n)
+            result$wFull<-rn2w(result$rFull,n)
+            result$wFulln80<-rw2n(result$rFull,0.8)
             
             # 1. direct effect sizes for individual IVs
             #  IV first
