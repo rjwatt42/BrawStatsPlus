@@ -1,13 +1,5 @@
-list.of.packages<-c("shiny","shinyWidgets","shinyjs","shinyBS",
-                    "ggplot2","tidyr","tools",
-                    "mnormt","lme4","MuMIn",
-                    "readxl","writexl","car","stringi","stringr","clipr","SuppDists","e1071","pracma",
-                    "htmlwidgets","NlcOptim"
-)
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)>0) install.packages(new.packages)
+source("packages.R")
 
-library(ggplot2)
 ################################
 
 switches<-list(doKeys=TRUE,doClipboard=FALSE,
@@ -348,6 +340,7 @@ cycleCount<-0
 is_local <- (Sys.getenv('SHINY_PORT') == "") && (Sys.getenv("USERNAME")=="rjwatt42" || Sys.info()["user"]=="rogerwatt")
 if (is_local) {
   switches$doPossiblePower<-TRUE
+  switches$doBatchFiles<-TRUE
   # switches$doWorlds<-TRUE
     # switches$loadExtrasValue<-TRUE
 }

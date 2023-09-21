@@ -2,20 +2,23 @@ source("sampleMake.R")
 source("sampleAnalyse.R")
 source("myGlobal.R")
 
-runBatchFiles<-function(IV,IV2,DV,effect,design,evidence,input){
+runBatchFiles<-function(IV,IV2,DV,effect,design,evidence,input,useWorld=TRUE){
 
   subDir<-"DataFiles"
   if (!file.exists(subDir)){
     dir.create(file.path(pwd(), subDir))
   }
 
+vvals<-c()
 rvals<-c()    
 pvals<-c()
+anvals<-c()
+
 files<-c()
 
 nfiles<-input$batchFile_length
 for (i in 1:nfiles) {
-  print(paste("OK0 : ",format(i)))
+  print(paste("OK : ",format(i)))
   IVtype<-ceil(runif(1)*4)
   switch (IVtype,
           {IV$type<-"Interval"},
@@ -83,6 +86,7 @@ for (i in 1:nfiles) {
   )
 
   exponent<-0.1
+  if (!useWorld) {
   effect$rIV<-tanh(rexp(1,1/exponent))
   if (!is.null(IV2)) {
     effect$rIV2<-tanh(rexp(1,1/exponent))
@@ -95,6 +99,7 @@ for (i in 1:nfiles) {
     }
   }
   design$sN<-round(runif(1,50,200))
+  }
 # print("OK1")
 
   sample<-makeSample(IV,IV2,DV,effect,design)
@@ -106,18 +111,21 @@ for (i in 1:nfiles) {
   iv<-sample$iv
   dv<-sample$dv
   if (is.null(IV2)){
+    vvals<-rbind(vvals,c(IV$type," ",DV$type))
     data<-data.frame(participant=result$participant,iv=iv,dv=dv)
     colnames(data)<-c("Participant",IV$name,DV$name)
     rvals<-rbind(rvals,c(result$rIV,0,0,0,0,0,0,0,0))
     pvals<-rbind(pvals,c(result$pIV,0,0,0,0,0,0,0,0))
   } else {
     iv2<-sample$iv2
+    vvals<-rbind(vvals,c(iv$type,iv2$type,dv$type))
     data<-data.frame(participant=result$participant,iv=iv,iv=iv2,dv=dv)
     colnames(data)<-c("Participant",IV$name,IV2$name,DV$name)
     rvals<-rbind(rvals,c(result$rIV,result$rIV2,result$rIVIV2DV,result$r$unique,result$r$total))
     pvals<-rbind(pvals,c(result$pIV,result$pIV2,result$pIVIV2DV,result$p$unique,result$p$total))
   }
-# print("OK3")
+  anvals<-rbind(c(result$an_name,result$test_name,result$test_val,result$df))
+  # print("OK3")
 
   if (!is.null(data)) 
   {filename<-paste0(subDir,"/","Data",format(i),".xlsx")
@@ -129,10 +137,12 @@ for (i in 1:nfiles) {
 }
 
   filename<-paste0(subDir,"/","Results.xlsx")
-  data<-data.frame(file=files,r=rvals,p=pvals)
+  data<-data.frame(file=files,v=vvals,r=rvals,p=pvals,an=anvals)
   colnames(data)<-c("files",
+                    "IVtype","IV2type","DVtype",
                     "rIV","rIV2","rIVxIV2","rUniqueIV","rUniqueIV2","rUniqueIVxIV2","rTotalIV","rTotalIV2","rTotalIVxIV2",
-                    "pIV","pIV2","pIVxIV2","pUniqueIV","pUniqueIV2","pUniqueIVxIV2","pTotalIV","pTotalIV2","pTotalIVxIV2")
+                    "pIV","pIV2","pIVxIV2","pUniqueIV","pUniqueIV2","pUniqueIVxIV2","pTotalIV","pTotalIV2","pTotalIVxIV2",
+                    "analysis","test statistic","test value","df")
   
   write_xlsx(data, path = filename)
 
