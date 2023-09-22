@@ -2,6 +2,14 @@ graphInference<-function(IV,IV2,DV,effect,design,evidence,result,graphType="Effe
   
 
   switch (graphType,
+          "r"={
+            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"r")
+            return(joinPlots(g1))
+          },
+          "p"={
+            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
+            return(joinPlots(g1))
+          },
           "EffectSize"={
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"r")
             g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
