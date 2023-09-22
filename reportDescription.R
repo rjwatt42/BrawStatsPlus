@@ -1,10 +1,8 @@
-reportGroupMeans<-TRUE
 
 makeFormula<-function(IV,IV2,DV,evidence,result,an_vars){
 
   assign_string = "<<"  
   when_string = "="
-  times_string = HTML("&times;")
   times_string = "x"
   
   switch (evidence$dataType,
@@ -114,6 +112,8 @@ makeFormula<-function(IV,IV2,DV,evidence,result,an_vars){
 
 
 reportDescription<-function(IV,IV2,DV,evidence,result){
+  
+  if (is.null(IV2)) no_ivs<-1 else no_ivs<-2
   
   if (IV$type=="Categorical" && is.null(IV2)) {
     nc<-max(4,IV$ncats+1)
@@ -282,8 +282,7 @@ reportDescription<-function(IV,IV2,DV,evidence,result){
   
   
   nr=length(outputText)/nc
+  list(outputText=outputText,nc=nc,nr=nr)
   
-  reportPlot(outputText,nc,nr)        
-  
-  
+
 }

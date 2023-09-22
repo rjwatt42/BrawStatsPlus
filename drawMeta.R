@@ -312,7 +312,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
              if (metaResult$metaAnalysis$sig_only) {
-               zcrit<-qnorm(1-alpha/2,0,sigma[i])
+               zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                z1[atanh(abs(x))<zcrit]<-0
              }
               z<-rbind(z,zdens2rdens(z1,x)*gain[i])
@@ -323,7 +323,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$sig_only) {
-                zcrit<-qnorm(1-alpha/2,0,sigma[i])
+                zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
               }
               z<-rbind(z,zdens2rdens(z1,x)*gain[i])
@@ -334,7 +334,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$sig_only) {
-                zcrit<-qnorm(1-alpha/2,0,sigma[i])
+                zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
               }
               z<-rbind(z,zdens2rdens(z1,x)*gain[i])
@@ -354,7 +354,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-SingleSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
-                zcrit<-qnorm(1-alpha/2,0,sigma[i])
+                zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
               }
               
@@ -366,7 +366,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-GaussSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
-                zcrit<-qnorm(1-alpha/2,0,sigma[i])
+                zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
               }
               z<-rbind(z,zdens2rdens(z1,x)*gain[i])
@@ -377,7 +377,7 @@ drawWorld<-function(design,effect,metaResult,g,colour="white",showTheory=FALSE) 
               z1<-ExpSamplingPDF(atanh(x),lambda,sigma[i])$pdf*(1-nullP)+
                 SingleSamplingPDF(atanh(x),0,sigma[i])$pdf*nullP
               if (metaResult$metaAnalysis$meta_psigAnal) {
-                zcrit<-qnorm(1-alpha/2,0,sigma[i])
+                zcrit<-qnorm(1-alphaSig/2,0,sigma[i])
                 z1[atanh(abs(x))<zcrit]<-0
               }
               z<-rbind(z,zdens2rdens(z1,x)*gain[i])

@@ -1,11 +1,10 @@
-source("varUtilities.R")
 
 drawVar<-function(pts,var){
   if (is.null(pts)) {
     pts<-data.frame(x=0,y=0.5,t=var$name)
     ggplot()+geom_label(data=pts,aes(x=x,y=y,label=t),hjust=0.5, vjust=0.5, size=11, fontface="bold",label.size = NA)+
       labs(x="",y="")+
-      pplotTheme+
+      diagramTheme+
       theme(axis.text.y=element_blank(),
             axis.ticks.y=element_blank(),
             axis.text.x=element_blank(),
@@ -18,7 +17,7 @@ drawVar<-function(pts,var){
     geom_line(lwd=0.25,color="black")+
       # geom_line(aes(x=r,y=dens*0),color="black",lwd=0.5)+
       labs(x=var$name,y="")+
-      pplotTheme+
+      diagramTheme+
       theme(axis.text.y=element_blank(),axis.ticks.y=element_blank())+
       theme(plot.margin=margin(0.0,-0.2,0,-1,"cm"))
     

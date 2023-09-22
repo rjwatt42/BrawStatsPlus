@@ -1,4 +1,7 @@
 source("packages.R")
+source("joinPlots.R")
+
+usingShiny<-TRUE
 
 ################################
 
@@ -18,8 +21,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
 
 fontScale=1.0
 char3D=1.3
-
-GraphsOnly<-FALSE
+labelSize=4
 
 maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#999999")
 maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF",graphBack="#999999")
@@ -89,10 +91,7 @@ plotcolours<-list(maineffectES="#FFCC00",covariationES="#FF1100",interactionES="
 shapes<-list(data=21,study=22,parameter=21,meta=24)
 
 #useful character codes
-expandLabel<-HTML("&#9974")
-emdash="\u2014"
 helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
-labelSize=4
 
 # ui styles
 labelStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: left;")
@@ -102,7 +101,6 @@ helpStyle=paste("font-size:",format(7*fontScale) ,"pt;line-height:75%;margin:0px
 
 report_precision<-3
 graph_precision<-2
-fullShowHelp<-FALSE
 
 # graph themes
 mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
@@ -113,8 +111,9 @@ SMplotTheme=theme(plot.title=element_text(size=14,face="bold"),axis.title=elemen
 LGplotTheme=theme(plot.title=element_text(size=21,face="bold"),axis.title=element_text(size=24,face="bold"),
                   axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
-plotTheme=mainTheme+SMplotTheme
-pplotTheme=mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
+plotTheme<-mainTheme+SMplotTheme+theme(plot.margin=margin(1.0,1.5,0.5,0.5,"cm"))
+reportTheme<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
+diagramTheme=mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
 
 plotBlankTheme=theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
                      panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
@@ -243,8 +242,8 @@ oldWorld_distr_k<-0.2
 
 ##########################
 # NHST constants
-alpha<-0.05
-alphaLLR<-0.5*qnorm(1-alpha/2)^2
+alphaSig<-0.05
+alphaLLR<-0.5*qnorm(1-alphaSig/2)^2
 STMethod<-"NHST"
 lrRange<-10
 
@@ -269,6 +268,10 @@ allScatter<-"all"
 showMedians<-FALSE
 minN<-10
 maxRandN<-5 # times mean sample size
+reportGroupMeans<-TRUE
+plotDescriptionCols<-c()
+CatCatcols=c()
+doLegendBars=TRUE
 
 points_threshold=50 # for displaying expected results
 wPlotScale="log10"

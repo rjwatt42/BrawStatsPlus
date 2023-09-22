@@ -116,12 +116,12 @@ cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
 }
 
 replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
-  oldalpha<-alpha
+  oldalpha<-alphaSig
   res1<-res
   ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
   
   if (!isempty(design$sReplicationOn) && !is.na(design$sReplicationOn) && design$sReplicationOn) {
-    if (design$sReplVarAlpha) alpha<<-oldalpha*design$sReplAlpha
+    if (design$sReplVarAlpha) alphaSig<<-oldalpha*design$sReplAlpha
     while (design$sReplSigOnly=="Yes" && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
       if (!shortHand) {
         sample<-makeSample(IV,IV2,DV,effect,design)
@@ -131,7 +131,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
       }
       ResultHistory<-list(n=res$nval,df1=res$df1,r=res$rIV,rp=res$rpIV,p=res$pIV)
     }
-    if (design$sReplVarAlpha) alpha<<-oldalpha/design$sReplAlpha
+    if (design$sReplVarAlpha) alphaSig<<-oldalpha/design$sReplAlpha
     
     res1<-res
     resHold<-res
@@ -220,7 +220,7 @@ replicateSample<-function(IV,IV2,DV,effect,design,evidence,sample,res) {
     }
     
   }
-  alpha<<-oldalpha
+  alphaSig<<-oldalpha
   
   res$ResultHistory<-ResultHistory
   res$roIV<-res1$rIV

@@ -226,17 +226,11 @@ makeExpectedGraph <- function() {
       if (showProgress) {removeNotification(id = "counting")}
     }
 
-  # if (expectedResult$count==0) { return(ggplot()+plotBlankTheme) }
-  
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))
-  g<-g+scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  
   if (expected$type=="2D") {
     if (expectedResult$count==0) {
       g<-ggplot()+plotBlankTheme
     } else {
-      g1<-draw2Inference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,expected$Expected_par2)
-      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=1,xmax=9,ymin=0,ymax=10)
+      g<-joinPlots(draw2Inference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,expected$Expected_par2))
     }
   } else {
     if (is.element(expected$type,c("NHSTErrors","FDR","CILimits","LLRDErrors"))) {
@@ -258,8 +252,7 @@ makeExpectedGraph <- function() {
       g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1)
       g2<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par2)
     }
-    g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0,xmax=4.5,ymin=0,ymax=10)
-    g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=5,xmax=10,ymin=0,ymax=10)
+    g<-joinPlots(g1,g2)
   }
   
   if (!stopRunning) {

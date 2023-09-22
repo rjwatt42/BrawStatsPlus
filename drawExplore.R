@@ -26,7 +26,7 @@ drawNHSTLabel<-function(lb1,lb1xy,xoff,col1) {
 }
 
 drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
-  oldAlpha<-alpha
+  oldAlpha<-alphaSig
   
   vals<-exploreResult$result$vals
   if (is.character(vals[1]) || is.element(explore$Explore_type,c("IVcats","IVlevels","DVcats","DVlevels","Repeats","sig_only"))){
@@ -366,10 +366,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             
             "p(sig)"={
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
               getStat<-function(x,n) {colMeans(x)}
-              ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+              ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               ps_mn<-getStat(ps,nVals)
               ps1<-colMeans(ps)
               p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
@@ -418,10 +418,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "FDR"={
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
               
-              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               nulls<-exploreResult$result$rpIVs==0
               if (STMethod=="NHST") {
                 p1<-colSums(sigs & nulls)/max(colSums(sigs),1)
@@ -445,9 +445,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               ns<-exploreResult$result$nvals
               df1<-exploreResult$result$df1
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
-              p<-mean(isSignificant("sLLR",pvals,rvals,nvals,df1Vals,exploreResult$evidence,alpha),na.rm=TRUE)
+              p<-mean(isSignificant("sLLR",pvals,rvals,nvals,df1Vals,exploreResult$evidence,alphaSig),na.rm=TRUE)
               p_se<-sqrt(p*(1-p)/nrow(pVals))
               y50<-p
               y75<-p+p_se*qnorm(0.75)
@@ -467,9 +467,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               ns<-exploreResult$result$nvals
               df1<-exploreResult$result$df1
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
-              p<-mean(isSignificant("dLLR",pvals,rvals,nvals,df1Vals,exploreResult$evidence,alpha),na.rm=TRUE)
+              p<-mean(isSignificant("dLLR",pvals,rvals,nvals,df1Vals,exploreResult$evidence,alphaSig),na.rm=TRUE)
               p_se<-sqrt(p*(1-p)/nrow(pVals))
               y50<-p
               y75<-p+p_se*qnorm(0.75)
@@ -491,7 +491,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             
             "NHSTErrors"={
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
               if (!effect$world$worldOn) {
                 pVals<-rbind(pVals,exploreResult$nullresult$pIVs)
@@ -500,7 +500,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 df1Vals<-rbind(df1Vals,exploreResult$nullresult$df1)
                 rpVals<-rbind(rpVals,exploreResult$nullresult$rpIVs)
               }
-              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               nulls<-rpVals==0
               if (STMethod=="NHST") {
                 d<-sigs+1
@@ -518,9 +518,9 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             },
             "FDR;FMR"={
               if (explore$Explore_type=="Alpha") {
-                alpha<-exploreResult$result$vals
+                alphaSig<-exploreResult$result$vals
               }
-              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+              sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               nulls<-rpVals==0
               
               if (STMethod=="NHST") {
@@ -537,7 +537,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               isigNonNulls<-colSums( sigs & d<0 & !nulls)/sumsig 
               isigNulls<-   0 
               sigNulls<-    colSums( sigs & d>0 & nulls)/sumsig
-              nsigNulls<-   colSums(!sigs & abs(d)<alpha  &    nulls)/sumnsig
+              nsigNulls<-   colSums(!sigs & abs(d)<alphaSig  &    nulls)/sumnsig
 
               lines<-c(0.05)
             },      
@@ -609,7 +609,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                expType=NULL
                )
         if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize"))){
-          sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+          sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
           col<-"white"
         } else {
           sigVals<-!is.na(showVals)
@@ -1056,7 +1056,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "Alpha"={g<-g+xlab(alphaChar)},
           g<-g+xlab(exploreResult$Explore_type)
   )
-  alpha<<-oldAlpha
+  alphaSig<<-oldAlpha
 
   g+plotTheme
 }

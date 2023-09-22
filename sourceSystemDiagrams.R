@@ -29,7 +29,6 @@ output$HypothesisPlot<-renderPlot({
   switch (no_ivs,
           {
             g<-PlotNULL+
-              # annotation_custom(grob=ggplotGrob(PlotIV()),xmin=3,xmax=7,ymin=6,ymax=10)+
               annotation_custom(grob=ggplotGrob(drawVariable(IV)),xmin=xmin,xmax=xmax,ymin=6,ymax=10)+
               annotation_custom(grob=ggplotGrob(drawVariable(DV)),xmin=xmin,xmax=xmax,ymin=0,ymax=4)
             
@@ -102,11 +101,11 @@ output$WorldPlot<-renderPlot({
   g1<-ggplot(pts,aes(x=x,y=y))
   g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-  g1<-g1+labs(x=bquote(r[population]),y="Density")+pplotTheme
+  g1<-g1+labs(x=bquote(r[population]),y="Density")+diagramTheme
   
   if (debug) debugPrint("WorldPlot - exit")
 
-  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g1), xmin=0,  xmax=10,  ymin=0, ymax=10)
+  g<-g1
 
   g
 }
@@ -136,12 +135,10 @@ output$WorldPlot2<-renderPlot({
   g2<-ggplot(pts,aes(x=x,y=y))
   g2<-g2+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   g2<-g2+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-  g2<-g2+labs(x="n",y="Density")+pplotTheme
+  g2<-g2+labs(x="n",y="Density")+diagramTheme
   
-  PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
-    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  g<-PlotNULL+annotation_custom(grob=ggplotGrob(g2), xmin=0,  xmax=10,  ymin=0, ymax=10)
-
+  g<-g2
+  
     if (debug) debugPrint("WorldPlot2 - exit")
   
   g
@@ -171,12 +168,11 @@ output$PopulationPlot <- renderPlot({
             effect3<-effect1
             effect3$rIV<-effect3$rIVIV2
             
-            g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-              scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
-              
-              annotation_custom(grob=ggplotGrob(drawPopulation(IV,DV,effect1,alpha=1)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
-              annotation_custom(grob=ggplotGrob(drawPopulation(IV2,DV,effect2,alpha=1)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)+
-              annotation_custom(grob=ggplotGrob(drawPopulation(IV,IV2,effect3,alpha=1)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
+            g<-joinPlots(
+              drawPopulation(IV,DV,effect1,alpha=1),
+              drawPopulation(IV2,DV,effect2,alpha=1),
+              drawPopulation(IV,IV2,effect3,alpha=1)
+            )
           }
   )
   if (debug) debugPrint("PopulationPlot - exit")
@@ -199,10 +195,7 @@ output$PredictionPlot <- renderPlot({
   
   switch (no_ivs,
           { if(effect$world$worldOn) {
-            g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-              scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
-              annotation_custom(grob=ggplotGrob(drawWorldSampling(effect,design,sigOnly=evidence$sigOnly)+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9)
-            
+            g<-drawWorldSampling(effect,design,sigOnly=evidence$sigOnly)
           } else {
             g<-drawPrediction(IV,IV2,DV,effect,design)
             }
@@ -213,11 +206,10 @@ output$PredictionPlot <- renderPlot({
               effect2<-effect
               effect2$rIV<-effect2$rIV2
               
-              g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-                scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
-                
-                annotation_custom(grob=ggplotGrob(drawPrediction(IV,NULL,DV,effect1,design)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
-                annotation_custom(grob=ggplotGrob(drawPrediction(IV2,NULL,DV,effect2,design)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)
+              g<-joinPlots(
+                drawPrediction(IV,NULL,DV,effect1,design),
+                drawPrediction(IV2,NULL,DV,effect2,design)
+              )
             } else{
               if (showInteractionOnly){
                 g<-drawPrediction(IV,IV2,DV,effect,design)
@@ -226,12 +218,11 @@ output$PredictionPlot <- renderPlot({
                 effect2<-effect
                 effect2$rIV<-effect2$rIV2
                 
-                g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-                  scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+
-                  
-                  annotation_custom(grob=ggplotGrob(drawPrediction(IV,NULL,DV,effect1,design)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
-                  annotation_custom(grob=ggplotGrob(drawPrediction(IV2,NULL,DV,effect2,design)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)+
-                  annotation_custom(grob=ggplotGrob(drawPrediction(IV,IV2,DV,effect,design)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
+                g<-joinPlots(
+                  drawPrediction(IV,NULL,DV,effect1,design),
+                  drawPrediction(IV2,NULL,DV,effect2,design),
+                  drawPrediction(IV,IV2,DV,effect,design)
+                )
               }
             }
           }

@@ -113,30 +113,8 @@ makeSampleGraph <- function () {
   oldResult<<-result
   
   # draw the sample
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  
-  switch (no_ivs,{
-    g<-g+annotation_custom(grob=ggplotGrob(drawSample(IV,DV,effect,result)+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
-  },
-  { 
-    effect1<-effect
-    effect2<-effect
-    effect2$rIV<-effect2$rIV2
-    effect3<-effect
-    effect3$rIV<-effect3$rIVIV2
-    
-    result1<-result
-    result2<-list(IVs=result$IV2s, DVs=result$DVs, rIV=result$rIV2, ivplot=result$iv2plot,dvplot=result$dvplot,nval=result$nval)
-    result3<-list(IVs=result$IVs, DVs=result$IV2s, rIV=result$rIVIV2, ivplot=result$ivplot,dvplot=result$iv2plot,nval=result$nval)
-    
-    g<-g+
-      annotation_custom(grob=ggplotGrob(drawSample(IV,DV,effect1,result1)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
-      annotation_custom(grob=ggplotGrob(drawSample(IV2,DV,effect2,result2)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)+
-      annotation_custom(grob=ggplotGrob(drawSample(IV,IV2,effect3,result3)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
-  }
-  )
-  g
+  g<-graphSample(IV,IV2,DV,effect,design,evidence,result)
+  return(g)
 }
 
 # single descriptive graph
@@ -161,93 +139,8 @@ makeDescriptiveGraph <- function(){
   }
   
   # draw the description
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  
-  switch (no_ivs, 
-          {
-            g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect,design,result)+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
-          },
-          { 
-            if (evidence$rInteractionOn==FALSE){
-              effect2<-effect
-              effect2$rIV<-effect2$rIV2
-              
-              result2<-list(IVs=result$IV2s, DVs=result$DVs, rIV=result$rIV2, ivplot=result$iv2plot,dvplot=result$dvplot)
-              
-              g<-g+
-                annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect,design,result)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)+
-                annotation_custom(grob=ggplotGrob(drawDescription(IV2,NULL,DV,effect2,design,result2)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)
-            }
-            else{
-              if (showInteractionOnly){
-                if (DV$type=="Categorical") {
-                  if (IV2$type=="Interval") {
-                    effect1<-effect
-                    result1<-result
-                    use<-result1$iv2<median(result$iv2)
-                    result1$iv<-result$iv[use]
-                    result1$dv<-result$dv[use]
-                    result1$IVs$vals<-result$iv[use]
-                    result1$DVs$vals<-result$dv[use]
-                    
-                    effect2<-effect
-                    result2<-result
-                    result2$iv<-result$iv[!use]
-                    result2$dv<-result$dv[!use]
-                    result2$IVs$vals<-result$iv[!use]
-                    result2$DVs$vals<-result$dv[!use]
-                    
-                    g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect1,design,result1)+gridTheme+ggtitle(paste0(IV2$name,">",format(median(result$iv2),digits=3)))),xmin=0.5,xmax=4.5,ymin=0,ymax=5)
-                    g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect2,design,result2)+gridTheme+ggtitle(paste0(IV2$name,"<",format(median(result$iv2),digits=3)))),xmin=5.5,xmax=9.5,ymin=0,ymax=5)
-                  } else {
-                    switch (IV2$ncats,
-                            {},
-                            {xmin<-c(0.5,5.5)
-                            xmax<-c(4.5,9.5)
-                            ymin<-c(0,0)
-                            ymax<-c(5,5)},
-                            {xmin<-c(0.5,5.5,3)
-                            xmax<-c(4.5,9.5,7)
-                            ymin<-c(0,0,5)
-                            ymax<-c(4.25,4.25,9.25)},
-                            {xmin<-c(0.5,5.5,0.5,5.5)
-                            xmax<-c(4.5,9.5,4.5,9.5)
-                            ymin<-c(0,0,5,5)
-                            ymax<-c(4.25,4.25,9.25,9.25)},
-                            {}
-                    )
-                    for (i in 1:IV2$ncats) {
-                      effect1<-effect
-                      result1<-result
-                      use<-result1$iv2<-as.numeric(result$iv2)==i
-                      result1$iv<-result$iv[use]
-                      result1$dv<-result$dv[use]
-                      result1$IVs$vals<-result$iv[use]
-                      result1$DVs$vals<-result$dv[use]
-                      
-                      g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect1,design,result1)+gridTheme+ggtitle(paste0(IV2$name,"==",IV2$cases[i]))),xmin=xmin[i],xmax=xmax[i],ymin=ymin[i],ymax=ymax[i])
-                    }
-                  }
-                  # effect2<-effect
-                  # result2<-list(IVs=result$IV2s, DVs=result$DVs, rIV=result$rIV2, ivplot=result$iv2plot,dvplot=result$dvplot)
-                } else {
-                  g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,IV2,DV,effect,design,result)+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
-                }
-              } else{
-                effect2<-effect
-                effect2$rIV<-effect2$rIV2
-                
-                result2<-list(IVs=result$IV2s, DVs=result$DVs, rIV=result$rIV2, iv=result$iv, dv=result$dv, ivplot=result$iv2plot,dvplot=result$dvplot)
-                
-                g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,NULL,DV,effect,design,result)+gridTheme),xmin=0.5,xmax=4.5,ymin=0,ymax=5)
-                g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV2,NULL,DV,effect2,design,result2)+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=5)
-                g<-g+annotation_custom(grob=ggplotGrob(drawDescription(IV,IV2,DV,effect,design,result)+gridTheme),xmin=3,xmax=7,ymin=5,ymax=10)
-              }
-            }
-          }
-  )
-  g
+  g<-graphDescription(IV,IV2,DV,effect,design,evidence,result)
+  return(g)
 }
 
 # single inferential graph
@@ -281,33 +174,7 @@ makeInferentialGraph <- function() {
   result$showType<-evidence$showType
   result$evidence$showTheory<-input$evidenceTheory
   
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  
-    switch (input$EvidenceInfer_type,
-          "EffectSize"={
-            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"r")
-            g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
-          },
-          "Power"= {
-            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"w")
-            g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"nw")
-          },
-          "2D"= {
-            g1<-draw2Inference(IV,IV2,DV,effect,design,evidence,result,"r","p")
-            return(g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=1,xmax=9,ymin=0,ymax=10))
-          },
-          "log(lrs)"={
-            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"log(lrs)")
-            g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
-          },
-          "log(lrd)"={
-            g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"log(lrd)")
-            g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
-          }
-  )
-  g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0,xmax=4.5,ymin=0,ymax=10)
-  g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=5,xmax=10,ymin=0,ymax=10)
+  g<-graphInference(IV,IV2,DV,effect,design,evidence,result,input$EvidenceInfer_type)
   return(g)
 }
 
@@ -376,7 +243,8 @@ makeSampleReport <- function()  {
   result<-sampleAnalysis()        
   if (is.null(result) ||  !validSample)  {return(ggplot()+plotBlankTheme)}
   
-  reportSample(IV,IV2,DV,design,result)
+  rpt<-reportSample(IV,IV2,DV,design,result)
+  reportPlot(rpt$outputText,rpt$nc,rpt$nr)        
 }
 
 # single descriptive report
@@ -400,8 +268,9 @@ makeDescriptiveReport <- function()  {
   }
   result$showType<-evidence$showType
   
-  reportDescription(IV,IV2,DV,evidence,result)
-
+  rpt<-reportDescription(IV,IV2,DV,evidence,result)
+  reportPlot(rpt$outputText,rpt$nc,rpt$nr)        
+  
 }
 
 # single inferential report
@@ -427,7 +296,9 @@ makeInferentialReport <- function()  {
   }
   
   result$showType<-evidence$showType
-  reportInference(IV,IV2,DV,effect,evidence,result)        
+  rpt<-reportInference(IV,IV2,DV,effect,evidence,result)        
+  reportPlot(rpt$outputText,rpt$nc,rpt$nr)        
+  
 }
 
 output$SampleReport <- renderPlot({

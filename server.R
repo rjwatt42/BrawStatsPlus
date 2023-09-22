@@ -58,6 +58,10 @@ source("sampleCheck.R")
 source("Johnson_M.R")
 source("sampleShortCut.R")
 
+source("graphSample.R")
+source("graphDescription.R")
+source("graphInference.R")
+
 source("reportSample.R")
 source("reportDescription.R")
 source("reportInference.R")
@@ -76,6 +80,10 @@ source("typeCombinations.R")
 
 source("drawInspect.R")
 source("isSignificant.R")
+
+source("varUtilities.R")
+source("getLogisticR.R")
+
 
 graphicSource="Main"
 
@@ -165,7 +173,7 @@ shinyServer(function(input, output, session) {
       hideElement("HypothesisPopulation")
     } else {
       plotTheme<<-mainTheme+SMplotTheme
-      pplotTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
+      diagramTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
       labelSize<<-4
       char3D<<-1.3
       
@@ -268,7 +276,7 @@ shinyServer(function(input, output, session) {
     STMethod<<-input$STMethod
     switch (STMethod,
             "NHST"={
-              updateNumericInput(session,"alpha",value=alpha)
+              updateNumericInput(session,"alpha",value=alphaSig)
               shinyjs::hideElement("evidencePrior")
               shinyjs::hideElement("STPrior")
               shinyjs::hideElement("evidenceLLR1")
@@ -295,8 +303,8 @@ shinyServer(function(input, output, session) {
     )
   })
   observeEvent(input$alpha, {
-    alpha<<-input$alpha
-    alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+    alphaSig<<-input$alpha
+    alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
   })
   
   observeEvent(input$evidenceInteractionOnly,{

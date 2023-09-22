@@ -221,10 +221,10 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
     }
     outputText<-c(outputText,ot1,ot2,rep("  ",nc),ot4,ot5,ot6)
     if (expected$Expected_par1=="p") {
-      outputText<-c(outputText,rep("  ",nc),"p(sig)",paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-2))
+      outputText<-c(outputText,rep("  ",nc),"p(sig)",paste0(format(mean(p<alphaSig)*100,digits=report_precision),"%"),rep(" ",nc-2))
     }
     if (expected$Expected_par2=="p") {
-      outputText<-c(outputText,rep("  ",nc),"p(sig)"," ",paste0(format(mean(p<alpha)*100,digits=report_precision),"%"),rep(" ",nc-3))
+      outputText<-c(outputText,rep("  ",nc),"p(sig)"," ",paste0(format(mean(p<alphaSig)*100,digits=report_precision),"%"),rep(" ",nc-3))
     }
   }
   nr<-length(outputText)/nc

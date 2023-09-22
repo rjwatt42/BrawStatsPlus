@@ -377,7 +377,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "r"={
                   addition<-rSamplingDistr(vals,pR$pRho[ei],n[ni])
                   if (sigOnly) {
-                    critR<-tanh(qnorm(1-alpha/2,0,1/sqrt(n[ni]-3)))
+                    critR<-tanh(qnorm(1-alphaSig/2,0,1/sqrt(n[ni]-3)))
                     addition[abs(vals)<critR]<-0
                   }
                   if (logScale) addition<-addition*vals
@@ -414,10 +414,10 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "w"={
                   rp<-seq(0,1,length.out=101)
                   zp<-atanh(rp)
-                  wp<-pnorm(qnorm(alpha/2)+zp*sqrt(n[ni]-3)) + pnorm(qnorm(alpha/2)-zp*sqrt(n[ni]-3))
+                  wp<-pnorm(qnorm(alphaSig/2)+zp*sqrt(n[ni]-3)) + pnorm(qnorm(alphaSig/2)-zp*sqrt(n[ni]-3))
                   addition<-rSamplingDistr(rp,pR$pRho[ei],n[ni])+rSamplingDistr(-rp,pR$pRho[ei],n[ni])
-                  dwz<-dnorm(zp,qnorm(alpha/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3)) -
-                    dnorm(zp,-qnorm(alpha/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3))
+                  dwz<-dnorm(zp,qnorm(alphaSig/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3)) -
+                    dnorm(zp,-qnorm(alphaSig/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3))
                   a<-addition[1]
                   addition<-addition/dwz*(1-rp^2)
                   addition[1]<-a
@@ -426,7 +426,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                   if (logScale) addition<-addition*vals
                 },
                 "nw"={ 
-                  zp<-(qnorm(0.8)-qnorm(alpha))/sqrt(vals-3)
+                  zp<-(qnorm(0.8)-qnorm(alphaSig))/sqrt(vals-3)
                   rp<-tanh(zp)
                   addition<-rSamplingDistr(rp,pR$pRho[ei],n[ni])+rSamplingDistr(-rp,pR$pRho[ei],n[ni])
                   dznw<- -zp/(vals-3)/2
@@ -436,10 +436,10 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "wp"={
                   rp<-seq(0,1,length.out=101)
                   zp<-atanh(rp)
-                  wp<-pnorm(qnorm(alpha/2)+zp*sqrt(n[ni]-3)) + pnorm(qnorm(alpha/2)-zp*sqrt(n[ni]-3))
+                  wp<-pnorm(qnorm(alphaSig/2)+zp*sqrt(n[ni]-3)) + pnorm(qnorm(alphaSig/2)-zp*sqrt(n[ni]-3))
                   addition<-fullRPopulationDist(rp,world)
-                  dwz<-dnorm(zp,qnorm(alpha/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3)) -
-                    dnorm(zp,-qnorm(alpha/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3))
+                  dwz<-dnorm(zp,qnorm(alphaSig/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3)) -
+                    dnorm(zp,-qnorm(alphaSig/2)/sqrt(n[ni]-3),1/sqrt(n[ni]-3))
                   a<-addition[1]
                   addition<-addition/dwz*(1-rp^2)
                   addition[1]<-a

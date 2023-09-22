@@ -202,6 +202,11 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             ylim<-rlim
           }
   )
+  if (disp1=="r" && disp2=="p") {
+    show_line<-TRUE
+  } else {
+    show_line<-FALSE
+  }
   
   if (xsc==1) {
     d1<-log10(d1)
@@ -220,6 +225,13 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
   pts<-data.frame(x=d1,y=d2)
   
   g<-ggplot(pts,aes(x=x, y=y))
+  
+  if (show_line) {
+    rs<-seq(-r_range,r_range,length.out=51)
+    ps<-r2p(rs,result$nval[1])
+    if (pPlotScale=="log10")  ps<-log10(ps)
+    g<-g+geom_line(data=data.frame(x=rs,y=ps),aes(x=x,y=y),col="white")
+  }
   
   dotSize=min(8,max(3.5,sqrt(400/length(d1))))
   dotSize<-dotSize<-(plotTheme$axis.title$size)/3

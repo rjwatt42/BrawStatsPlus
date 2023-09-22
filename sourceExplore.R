@@ -268,11 +268,8 @@ makeExploreGraph <- function() {
     if (showProgress) {removeNotification(id = "counting")}
   }
   
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-1.2,0,0,"cm"))
-  g<-g+scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  g1<-drawExplore(IV,IV2,DV,effect,design,explore,exploreResult)
-  g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.0,xmax=10,ymin=0.0,ymax=9.5)
-  
+  g<-drawExplore(IV,IV2,DV,effect,design,explore,exploreResult)
+
   time2<<-Sys.time()
   if (!stopRunning) {
     if (doStop) {
@@ -293,22 +290,16 @@ makeExploreGraph <- function() {
 output$ExplorePlot <- renderPlot( {
   doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
   startExplore<<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
-  g1<-makeExploreGraph()
+  g<-joinPlots(makeExploreGraph())
   
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0,xmax=10,ymin=0,ymax=10)
   g  
 })
 
 output$ExplorePlot1 <- renderPlot( {
   doIt<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
   startExplore<<-c(input$exploreRunH,input$exploreRunD,input$exploreRunM)
-  g1<-makeExploreGraph()
+  g<-joinPlots(makeExploreGraph())
   
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))+
-    scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0,xmax=10,ymin=0,ymax=10)
   g  
 })
 

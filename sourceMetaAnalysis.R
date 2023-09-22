@@ -147,13 +147,8 @@ makeMetaGraph <- function() {
     if (showProgress) {removeNotification(id = "counting")}
   }
   
-  g<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.2,0,0,"cm"))
-  g<-g+scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
-  
   if (metaAnalysis$nsims==1) {
-    g1<-drawMeta(metaAnalysis,metaResult,"Plain")
-    g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
-    
+    g<-drawMeta(metaAnalysis,metaResult,"Plain")
   } else {
     switch (metaAnalysis$meta_showAnal,
             "All"={
@@ -161,32 +156,25 @@ makeMetaGraph <- function() {
                 g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
                 g2<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=FALSE)
                 g3<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=FALSE)
-                g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=4,ymin=0,ymax=10)+
-                  annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=4,xmax=7,ymin=0,ymax=10)+
-                  annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=7,xmax=10,ymin=0,ymax=10)
+                g<-joinPlots(g1,g2,g3,layout="linear")
               } else {
                 if (metaAnalysis$meta_showParams=="S-S") {
-                  g2<-drawMeta(metaAnalysis,metaResult,"S-S",yaxis=TRUE)
-                  g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=0.5,xmax=9.5,ymin=0,ymax=10)
+                  g<-drawMeta(metaAnalysis,metaResult,"S-S",yaxis=TRUE)
                 } else {
                   g2<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=TRUE)
                   g3<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=FALSE)
-                  g<-g+annotation_custom(grob=ggplotGrob(g2+gridTheme),xmin=0.5,xmax=5.5,ymin=0,ymax=10)+
-                    annotation_custom(grob=ggplotGrob(g3+gridTheme),xmin=5.5,xmax=9.5,ymin=0,ymax=10)
+                  g<-joinPlots(g2,g3)
                 }
               }  
             },
     "Single"={
-      g1<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
-      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+      g<-drawMeta(metaAnalysis,metaResult,"Single",yaxis=TRUE)
     },
     "Gauss"={
-      g1<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=TRUE)
-      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+      g<-drawMeta(metaAnalysis,metaResult,"Gauss",yaxis=TRUE)
     },
     "Exp"={
-      g1<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=TRUE)
-      g<-g+annotation_custom(grob=ggplotGrob(g1+gridTheme),xmin=0.5,xmax=9.5,ymin=0.5,ymax=9.5)
+      g<-drawMeta(metaAnalysis,metaResult,"Exp",yaxis=TRUE)
     }
     )
   }

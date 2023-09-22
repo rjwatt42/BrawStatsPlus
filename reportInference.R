@@ -106,6 +106,6 @@ reportInference<-function(IV,IV2,DV,effect,evidence,result){
     
     nr=length(outputText)/nc
 
-  reportPlot(outputText,nc,nr)        
+    list(outputText=outputText,nc=nc,nr=nr)
 
 }

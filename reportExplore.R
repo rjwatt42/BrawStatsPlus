@@ -1,5 +1,5 @@
 reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
-  oldAlpha<-alpha
+  oldAlpha<-alphaSig
   max_cols<-8
   
   vals<-exploreResult$result$vals
@@ -57,9 +57,9 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
           },
           "p(sig)"={
             if (explore$Explore_type=="Alpha") {
-              alpha<-exploreResult$result$vals
+              alphaSig<-exploreResult$result$vals
             }
-            ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alpha)
+            ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
             ps<-colMeans(ps)
             y25<-ps-sqrt(ps*(1-ps)/nrow(pVals))
             y50<-ps
@@ -76,8 +76,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             if (effect$world$worldOn) {
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                 nulls<-exploreResult$result$rpIVs[,i]==0
@@ -117,8 +117,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             if (effect$world$worldOn) {
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                 nulls<-exploreResult$result$rpIVs[,i]==0
@@ -130,8 +130,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             } else {
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50[i]<-p
@@ -150,8 +150,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             if (effect$world$worldOn) {
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 sigs<-isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence)
                 nulls<-exploreResult$result$rpIVs[,i]==0
@@ -167,8 +167,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             } else {
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 p<-mean(isSignificant(STMethod,pVals[,i],rVals[,i],nVals[,i],df1Vals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50[i]<-p
@@ -182,8 +182,8 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
               df1eVals<-exploreResult$nullresult$df1
               for (i in 1:length(exploreResult$result$vals)){
                 if (explore$Explore_type=="Alpha") {
-                  alpha<<-exploreResult$result$vals[i]
-                  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+                  alphaSig<<-exploreResult$result$vals[i]
+                  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
                 }
                 p<-mean(isSignificant(STMethod,peVals[,i],reVals[,i],neVals[,i],df1eVals[,i],exploreResult$evidence),na.rm=TRUE)
                 y50e[i]<-p
@@ -341,7 +341,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   
   nc=nc+1
   nr=length(outputText)/nc
-  alpha<<-oldAlpha
+  alphaSig<<-oldAlpha
   
   reportPlot(outputText,nc,nr)        
 

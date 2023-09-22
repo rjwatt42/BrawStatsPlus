@@ -4,6 +4,7 @@ iqr<-function(s) {
 
 reportSample<-function(IV,IV2,DV,design,result){
   
+  if (is.null(IV2)) no_ivs<-1 else no_ivs<-2
   s1<-result$iv
   s2<-result$dv
   
@@ -139,6 +140,6 @@ reportSample<-function(IV,IV2,DV,design,result){
   )
   
   nr=length(outputText)/nc
-  reportPlot(outputText,nc,nr)        
+  list(outputText=outputText,nc=nc,nr=nr)
   
 }

@@ -78,7 +78,7 @@ reportPlot<-function(outputText,nc,nr){
                                          label.size=NA,label.padding=unit(0,"lines"))
   }
   
-  g<-g+labs(x="  ",y="  ")+plotTheme+theme(legend.position = "none")
+  g<-g+labs(x="  ",y="  ")+reportTheme+theme(legend.position = "none")
   g<-g+theme(axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank(),

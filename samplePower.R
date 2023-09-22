@@ -1,8 +1,8 @@
 
 dwdz<-function(z,n,t=2) {
-  dwdz<-exp(-(z*sqrt(n - 3) + qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
+  dwdz<-exp(-(z*sqrt(n - 3) + qnorm(alphaSig/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
   if (t==2) {
-  dwdz<-dwdz+exp(-(z*sqrt(n - 3) - qnorm(alpha/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
+  dwdz<-dwdz+exp(-(z*sqrt(n - 3) - qnorm(alphaSig/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
   }
   return(dwdz)
 }
@@ -12,14 +12,14 @@ zn2w<-function(z,n,t=2){
   w<-(z+n)*0 # just in case z and n are different lengths
   # one-tailed
     if (t==1) {
-      w<-pnorm(qnorm(alpha)+z*sqrt(n-3))
+      w<-pnorm(qnorm(alphaSig)+z*sqrt(n-3))
     } else {
       # two-tailed
-      pw1<-pnorm(qnorm(alpha/2)+z*sqrt(n-3))
-      pw2<-pnorm(qnorm(alpha/2)-z*sqrt(n-3))
+      pw1<-pnorm(qnorm(alphaSig/2)+z*sqrt(n-3))
+      pw2<-pnorm(qnorm(alphaSig/2)-z*sqrt(n-3))
       w<-pw1+pw2
     }
-  w[z==0]<-alpha
+  w[z==0]<-alphaSig
   w[n<3]<-0
   w  
 }
@@ -37,10 +37,10 @@ rn2w<-function(r,n,t=2){
 wn2z<-function(w,n,t=2){
   if (t==1) {
     # one-tailed
-    z<-(qnorm(w)-qnorm(alpha))/sqrt(n-3)
+    z<-(qnorm(w)-qnorm(alphaSig))/sqrt(n-3)
   } else {
     # two tailed
-    z<-(qnorm(w)-qnorm(alpha/2))/sqrt(n-3)
+    z<-(qnorm(w)-qnorm(alphaSig/2))/sqrt(n-3)
   }
   z
 }
@@ -55,10 +55,10 @@ rw2n<-function(r,w,t=2){
   z<-atanh(r)
   if (t==1) {
     # one-tailed
-    nnear<-((qnorm(w)-qnorm(alpha))/z)^2+3
+    nnear<-((qnorm(w)-qnorm(alphaSig))/z)^2+3
   } else {
     # two tailed
-    nnear<-((qnorm(w)-qnorm(alpha/2))/z)^2+3
+    nnear<-((qnorm(w)-qnorm(alphaSig/2))/z)^2+3
   }
   nnear<-round(nnear)  
   nnear[nnear>1000000]<-1000000

@@ -1,4 +1,3 @@
-source("varUtilities.R")
 
 mv2dens<-function(x,rho,break1,break2){
   mu=c(0,0)
@@ -352,7 +351,7 @@ drawOrdOrdPopulation<-function(IV,DV,rho,Heteroscedasticity,alpha){
   g+scale_x_continuous(breaks=b1)+scale_y_continuous(breaks=b2)+scale_alpha_continuous(range = c(0, 1))
 }
 
-drawPopulation<-function(IV,DV,effect,alpha=1){
+drawPopulation<-function(IV,DV,effect,alpha=1,theme=diagramTheme){
   rho<-effect$rIV
   if (is.na(rho)) {rho<-0}
   
@@ -429,6 +428,6 @@ drawPopulation<-function(IV,DV,effect,alpha=1){
           }
   )
 }
-  g+labs(x=IV$name,y=DV$name)+pplotTheme
+  g+labs(x=IV$name,y=DV$name)+theme
   
 }

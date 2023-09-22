@@ -1,4 +1,4 @@
-isSignificant<-function(method="NHST",p,r,n,df1,evidence,alphaLocal=alpha) {
+isSignificant<-function(method="NHST",p,r,n,df1,evidence,alphaLocal=alphaSig) {
   if (length(alphaLocal)>1) {
     alphaLocal<-rep(alphaLocal,each=nrow(p))
     alphaLLR<-0.5*qnorm(1-alphaLocal/2)^2

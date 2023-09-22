@@ -1,12 +1,6 @@
-plotDescriptionCols = c()
-CatCatcols=c()
 
-doLegendBars=TRUE
 drawBars<-TRUE
 drawBaseline<-TRUE
-
-source("varUtilities.R")
-source("getLogisticR.R")
 
 
 drawParParPrediction<-function(g,IV,DV,rho,n,offset=1){
@@ -330,7 +324,7 @@ drawCatCatPrediction<-function(g,IV,DV,rho,n,offset= 1){
 }
 
 
-drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=pplotTheme){
+drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=diagramTheme){
   
   n<-design$sN
   hypothesisType=paste(IV$type,DV$type,sep=" ")
@@ -540,5 +534,5 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   pts=data.frame(x=x,y=y)
   g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
   
-  g<-g+labs(x=bquote(r[sample]),y="Frequency")+pplotTheme
+  g<-g+labs(x=bquote(r[sample]),y="Frequency")+diagramTheme
 }

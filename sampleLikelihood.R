@@ -4,7 +4,7 @@ d_max=4
 SingleSamplingPDF<-function(z,lambda,sigma,shape,remove_nonsig=FALSE,df1=1) {
   d1<-exp(-0.5*((z-lambda)^2/sigma^2))/sqrt(2*pi*sigma^2)
   if (remove_nonsig) {
-    zcrit<-atanh(p2r(alpha,1/sigma^2+3,df1))
+    zcrit<-atanh(p2r(alphaSig,1/sigma^2+3,df1))
     d0<-1-(pnorm(zcrit,lambda,sigma)-pnorm(-zcrit,lambda,sigma))
   } else {
     d0<-1
@@ -18,7 +18,7 @@ GaussSamplingPDF<-function(z,lambda,sigma,shape=NA,remove_nonsig=FALSE,df1=1) {
   d1<-exp(-0.5*z^2/sigma2^2)/sqrt(2*pi*sigma2^2)
   
   if (remove_nonsig) {
-    zcrit<-atanh(p2r(alpha,1/sigma^2+3,df1))
+    zcrit<-atanh(p2r(alphaSig,1/sigma^2+3,df1))
     d0<-GaussSamplingCDF(zcrit,lambda,sigma)
   } else {
     d0<-1
@@ -37,7 +37,7 @@ ExpSamplingPDF<-function(z,lambda,sigma,shape=NA,remove_nonsig=FALSE,df1=1) {
               lambda1*exp(-lambda1*(-z-sigma^2*lambda1/2))*(1+erf((-z-sigma^2*lambda1)/sqrt(2)/sigma)))
   
   if (remove_nonsig) {
-    zcrit<-atanh(p2r(alpha,1/sigma^2+3,df1))
+    zcrit<-atanh(p2r(alphaSig,1/sigma^2+3,df1))
     d0<-ExpSamplingCDF(zcrit,lambda,sigma)
   } else {
     d0<-1
@@ -72,7 +72,7 @@ convolveWith<-function(zi,zpd,z,sigma) {
 }
 
 removeNonSig<-function(zi,zpd,sigma,df1) {
-  zcrit<-atanh(p2r(alpha,1/sigma^2+3,df1))
+  zcrit<-atanh(p2r(alphaSig,1/sigma^2+3,df1))
   # d2<-GammaSamplingCDF(zcrit,lambda,sigma,gamma_shape)
   d2<-zcrit*0
   zcritUnique<-unique(zcrit)
@@ -139,7 +139,7 @@ GenExpSamplingPDF<-function(z,lambda,sigma,genexp_shape=1,remove_nonsig=FALSE,df
 
 getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove_nonsig=FALSE,doSeparate=FALSE) {
   sigma<-1/sqrt(n-3)
-  zcrit<-atanh(p2r(alpha,n,df1))
+  zcrit<-atanh(p2r(alphaSig,n,df1))
   
   # get nulls ready first
   if (any(worldDistNullP>0)) {
@@ -199,7 +199,7 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
       # likelihoods[is.infinite(likelihoods)]<-NA
       res<-log(likelihoods)
     } else {
-      res<-array(0,c(size(z),length(worldDistNullP)))
+      res<-array(0,c(nrow(z),ncol(z),length(worldDistNullP)))
       for (j in 1:length(worldDistNullP)) {
         nullP<-worldDistNullP[j]
         # make the whole source first

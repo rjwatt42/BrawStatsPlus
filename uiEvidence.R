@@ -149,7 +149,7 @@ EvidenceTab <-
                                                                ),
                                                                tags$td(width = "15%",tags$div(style = localPlainStyle, paste0(alphaChar,":"))),
                                                                tags$td(width = "15%",
-                                                                       numericInput("alpha",label=NULL,value=alpha,step=0.01)
+                                                                       numericInput("alpha",label=NULL,value=alphaSig,step=0.01)
                                                                ),
                                                                tags$td(width = "15%",id="evidencePrior",tags$div(style = localPlainStyle, "prior:")),
                                                                tags$td(width = "30%",

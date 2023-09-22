@@ -9,7 +9,7 @@ quants=0.25
 
 exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult,nsim,doingNull=FALSE,showProgress=FALSE){
   
-  oldAlpha<-alpha
+  oldAlpha<-alphaSig
   npoints<-explore$Explore_npoints
   quants<-explore$Explore_quants
   max_n<-explore$Explore_nRange
@@ -405,8 +405,8 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
               design$sNRandK<-vals[i]
               },
             "Alpha"={
-              alpha<<-vals[i]
-              alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+              alphaSig<<-vals[i]
+              alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
             },
             "Dependence"={design$sDependence<-vals[i]},
             "Outliers"={design$sOutliers<-vals[i]},
@@ -560,8 +560,8 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
     }
   # removeNotification(id = "counting")
   
-  alpha<<-oldAlpha
-  alphaLLR<<-0.5*qnorm(1-alpha/2)^2
+  alphaSig<<-oldAlpha
+  alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
 
   exploreResult$vals<-vals
   exploreResult$Explore_type<-explore$Explore_type
