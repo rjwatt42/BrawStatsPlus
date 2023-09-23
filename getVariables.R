@@ -1,26 +1,3 @@
-################################
-# some global values for general running
-
-mergeVariables<-FALSE # when reading data - add to existing data?
-
-shiftKeyOn<-FALSE
-controlKeyOn<-FALSE
-altKeyOn<-FALSE
-
-validSample<-FALSE
-validExpected<-FALSE
-validExplore<-FALSE
-validPossible<-0
-show<-0
-
-#because numericInput with "0." returns NA
-checkNumber<-function(a,b=a,c=0) {
-  if (!isempty(a)) {
-    if (is.na(a) || is.null(a)) {a<-c}
-  }
-  a
-}
-
 ###########################
 # variables
 
@@ -80,6 +57,8 @@ makeVar<-function(name,type="Interval",
   var
 }
 
+getVariables<-function() {
+  
 defaultVars<-list(
   makeVar(name="IV",type="Interval",mu=0,sd=1,ncats=2,cases="C1,C2"),
   makeVar(name="IV2",type="Interval",mu=0,sd=1,ncats=2,cases="D1,D2"),
@@ -103,40 +82,26 @@ defaultVars<-list(
   makeVar(name="BirthOrder",type="Categorical",ncats=4,cases="first,middle,last,only",proportions="1,0.4,0.6,0.2")
 )
 
-variables<-data.frame(defaultVars[[1]])
+variablesLocal<-data.frame(defaultVars[[1]])
 for (i in 2:length(defaultVars)){
-  variables<-rbind(variables,defaultVars[[i]])
+  variablesLocal<-rbind(variablesLocal,defaultVars[[i]])
 }
-
-defaultVariables<-variables
-variablesHeld<-"Simulations"
-
 if (switches$startBlank) {
-  variables[1,]$type="empty"
-  variables[3,]$type="empty"
+  variablesLocal[1,]$type="empty"
+  variablesLocal[3,]$type="empty"
 }
+variables<<-variablesLocal
 
-emptyVariable<-makeVar(name="none")
+defaultVariables<<-variables
+variablesHeld<<-"Simulations"
+
+
+emptyVariable<<-makeVar(name="none")
 
 # make basic variables    
-IV<-variables[1,]
-IV2<-emptyVariable
-DV<-variables[3,]
-MV<-IV
-
-no_ivs<-1
-simData<-TRUE
-
-getCases<-function(var) {
-  cs<-strsplit(var$cases,",")
-  cs<-cs[[1]]
-  if (length(cs)<var$ncats){
-    cs<-c(cs,paste("C",(length(cs)+1):var$ncats,sep=""))
-  }
+IV<<-variables[1,]
+IV2<<-emptyVariable
+DV<<-variables[3,]
+MV<<-IV
 }
-
-varTypes<- c("Interval" = "Interval",
-             "Ordinal" = "Ordinal",
-             "Categorical" = "Categorical"
-)
 

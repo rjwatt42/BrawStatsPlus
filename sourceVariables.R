@@ -293,12 +293,10 @@ setIV2anyway<-function(newMV=NULL){
   newName<-FALSE
   if (is.null(newMV)) {
     if (input$IV2choice=="none") {
-      no_ivs<<-1
       shinyjs::disable("editIV2")
       return(NULL)
     }
     else {
-      no_ivs<<-2
       shinyjs::enable("editIV2")
     }
     

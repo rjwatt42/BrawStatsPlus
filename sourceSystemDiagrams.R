@@ -19,6 +19,8 @@ output$HypothesisPlot<-renderPlot({
       hmm(paste0("Warning: ", DV$name," is a within-participants IV and cannot be used as a DV"))
     }
   }
+  if (is.null(IV2)) no_ivs<-1 else no_ivs<-2
+  
   effect<-updateEffect()
   
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
@@ -31,7 +33,7 @@ output$HypothesisPlot<-renderPlot({
             g<-PlotNULL+
               annotation_custom(grob=ggplotGrob(drawVariable(IV)),xmin=xmin,xmax=xmax,ymin=6,ymax=10)+
               annotation_custom(grob=ggplotGrob(drawVariable(DV)),xmin=xmin,xmax=xmax,ymin=0,ymax=4)
-            
+            # arrow
             g<-g+annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV,1)),xmin=xmin,xmax=xmax,ymin=3.5,ymax=6)
           },
           {
@@ -39,7 +41,7 @@ output$HypothesisPlot<-renderPlot({
               annotation_custom(grob=ggplotGrob(drawVariable(IV)), xmin=0,  xmax=4,  ymin=6, ymax=9)+
               annotation_custom(grob=ggplotGrob(drawVariable(IV2)),xmin=6,  xmax=10, ymin=6, ymax=9)+
               annotation_custom(grob=ggplotGrob(drawVariable(DV)), xmin=3,  xmax=7,  ymin=0.5, ymax=3.5)
-            
+            # arrows
             g<-g+annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV,2)),xmin=1.5,xmax=5.5,ymin=3, ymax=7)+
               annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIV2,3)),xmin=4.5,xmax=8.5,ymin=3, ymax=7)+
               annotation_custom(grob=ggplotGrob(drawEffectES(effect$rIVIV2,4)),xmin=3,  xmax=7,  ymin=6, ymax=9)+
@@ -154,6 +156,7 @@ output$PopulationPlot <- renderPlot({
   IV2<-updateIV2()
   DV<-updateDV()
   if (is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
+  if (is.null(IV2)) no_ivs<-1 else no_ivs<-2
   
   effect<-updateEffect()
   
@@ -188,6 +191,7 @@ output$PredictionPlot <- renderPlot({
   IV2<-updateIV2()
   DV<-updateDV()
   if (is.null(IV) || is.null(DV)) {return(ggplot()+plotBlankTheme)}
+  if (is.null(IV2)) no_ivs<-1 else no_ivs<-2
   
   design<-updateDesign()
   effect<-updateEffect()

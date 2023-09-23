@@ -32,8 +32,20 @@ debugPrint<-function(s) {
   }
   }
 
+#because numericInput with "0." returns NA
+checkNumber<-function(a,b=a,c=0) {
+  if (!isempty(a)) {
+    if (is.na(a) || is.null(a)) {a<-c}
+  }
+  a
+}
+
 if (debug) debugPrint("Opens")
 
+source("getGlobals.R")
+source("getVariables.R")
+
+source("joinPlots.R")
 source("plotStatistic.R")
 source("plotES.R")
 source("plotReport.R")
@@ -84,7 +96,6 @@ source("isSignificant.R")
 source("varUtilities.R")
 source("getLogisticR.R")
 
-
 graphicSource="Main"
 
 ####################################
@@ -92,8 +103,9 @@ graphicSource="Main"
 shinyServer(function(input, output, session) {
   if (debug) debugPrint("Start")
   
-  source("myGlobal.R")
-  source("runDebug.R")
+  getGlobals()
+  getVariables()
+  # source("runDebug.R")
   
 ####################################
 # BASIC SET UP that cannot be done inside ui.R  

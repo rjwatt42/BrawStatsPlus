@@ -1,4 +1,8 @@
 
+worldsList<-list("pdf"="PDF","k"="k","pNull"="pNull")
+names(worldsList)[3]<-pPlusLabel
+names(worldsList)[2]<-Lchar
+
 metaChoices=list("meta"=list("NoStudies"="NoStudies",
                              "Sample Size"="SampleSize",
                              "SampleGamma"="SampleGamma",

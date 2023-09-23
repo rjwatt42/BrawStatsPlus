@@ -1,6 +1,3 @@
-source("sampleMake.R")
-source("sampleAnalyse.R")
-source("myGlobal.R")
 
 runBatchFiles<-function(IV,IV2,DV,effect,design,evidence,input,useWorld=TRUE){
 

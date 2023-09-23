@@ -37,11 +37,9 @@ updateIV<-function(){
 updateIV2<-function(){
   if (debug) debugPrint("     updateIV2")
   if (input$IV2choice=="none"){
-    no_ivs<<-1
     if (debug) debugPrint("     updateIV2 - exit unused")
     return(NULL)
   } else {
-    no_ivs<<-2
   }
   
   use<-match(input$IV2choice,variables$name)

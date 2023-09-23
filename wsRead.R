@@ -67,7 +67,6 @@ readWS<-function(session,filename,sheetname){
       variables<<-rbind(variables,IV2)
     }
     variables[useIV2,]<<-IV2
-    no_ivs<<-2
   }
   
   useDV<-match(DV$name,variables$name)
