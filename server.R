@@ -250,14 +250,14 @@ shinyServer(function(input, output, session) {
   }
   )
   
-  observeEvent(c(input$Notation1,input$Notation2,input$Notation3), {
-    oldPlus<-pPlus
-    setNotation(list(psig=input$Notation1,
-                     UD=input$Notation2,
-                     P=input$Notation3))
-    if (pPlus!=oldPlus)
-      updateNumericInput(session,"world_distr_Nullp",value=1-input$world_distr_Nullp)
-  })
+  # observeEvent(c(input$Notation1,input$Notation2,input$Notation3), {
+  #   oldPlus<-pPlus
+  #   setNotation(list(psig=input$Notation1,
+  #                    UD=input$Notation2,
+  #                    P=input$Notation3))
+  #   if (pPlus!=oldPlus)
+  #     updateNumericInput(session,"world_distr_Nullp",value=1-input$world_distr_Nullp)
+  # })
   
   observeEvent(input$Hypothesis,{
     if (input$Hypothesis=="World") {

@@ -1,5 +1,4 @@
 setNotation<-function(useLabels) {
-  useLabels<-list(psig="psig",UD="D",P="0")
   
   switch(useLabels$psig,
          "psig"={pSigLabel<<-bquote(bold(p[.('sig')]))},

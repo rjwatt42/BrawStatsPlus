@@ -119,22 +119,22 @@ HelpTab <-
                                                              )
                                                   )
                                  ),
-                                 conditionalPanel(condition="input.LoadExtras",
-                                                  tags$table(width = "100%",class="myTable",
-                                                             tags$tr(
-                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Notation:")),
-                                                               tags$td(width="30%",selectInput("Notation1",label=NULL, 
-                                                                                               c("psig"="psig","w"="w"), 
-                                                                                               selected="psig", selectize=FALSE)),
-                                                               tags$td(width="20%",selectInput("Notation2",label=NULL, 
-                                                                                               c("U"="U","D"="D"), 
-                                                                                               selected="D", selectize=FALSE)),
-                                                               tags$td(width="20%",selectInput("Notation3",label=NULL, 
-                                                                                               c("+"="+","0"="0","-"="-"), 
-                                                                                               selected="0", selectize=FALSE)),
-                                                             )
-                                                  )
-                                 )
+                                 # conditionalPanel(condition="input.LoadExtras",
+                                 #                  tags$table(width = "100%",class="myTable",
+                                 #                             tags$tr(
+                                 #                               tags$td(width="30%",tags$div(style = localPlainStyle, "Notation:")),
+                                 #                               tags$td(width="30%",selectInput("Notation1",label=NULL, 
+                                 #                                                               c("psig"="psig","w"="w"), 
+                                 #                                                               selected="psig", selectize=FALSE)),
+                                 #                               tags$td(width="20%",selectInput("Notation2",label=NULL, 
+                                 #                                                               c("U"="U","D"="D"), 
+                                 #                                                               selected="D", selectize=FALSE)),
+                                 #                               tags$td(width="20%",selectInput("Notation3",label=NULL, 
+                                 #                                                               c("+"="+","0"="0","-"="-"), 
+                                 #                                                               selected="0", selectize=FALSE)),
+                                 #                             )
+                                 #                  )
+                                 # )
                         )
             )
   )
