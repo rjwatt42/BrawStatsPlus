@@ -260,7 +260,7 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
       use<-d2<=maxnPlot
       pts<-data.frame(x=d1[use],y=d2[use])
       nbins<-diff(ylim)/(2*IQR(d2[use])*length(d2[use])^(-0.33))
-      g<-g+stat_bin2d(data=pts,aes(x=x,y=y),bins=nbins)+scale_fill_gradientn(colours=c(maincolours$graphBack,plotcolours$descriptionC))
+      g<-g+stat_bin2d(data=pts,aes(x=x,y=y),bins=nbins)+scale_fill_gradientn(colours=c(graphcolours$graphBack,plotcolours$descriptionC))
     }
   }
   g<-g+theme(legend.position = "none")+plotTheme

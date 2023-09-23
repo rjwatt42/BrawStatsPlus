@@ -175,7 +175,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             f <- function(x, y) { x*0+y*0 }
             z <- outer(xlim, xlim, f)+zlim[1]
             z[is.na(z)] <- zlim[1]
-            par(bg=maincolours$graphC,mar=c(0,5,0,0),font.lab=2)
+            par(bg=graphcolours$graphC,mar=c(0,5,0,0),font.lab=2)
             mapping<-persp(xlim,ylim,z, 
                            xlim=xlim+c(-1,1)*diff(xlim)*(scale3D-1),
                            ylim=ylim+c(-1,1)*diff(ylim)*(scale3D-1),
@@ -184,7 +184,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                            ticktype = "simple", 
                            box = FALSE,
                            axes = FALSE,
-                           expand = 0.5, col = maincolours$graphBack,
+                           expand = 0.5, col = graphcolours$graphBack,
                            cex.axis=0.6,
                            xlab = "Populations", ylab = "Samples", zlab = label.z
             )
@@ -193,12 +193,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[1],xlim[1]),
                               y=c(ylim[1], ylim[1], ylim[2],ylim[2]),
                               z=zlim[c(1, 2, 2,1)],mapping),
-                      col=maincolours$graphBack,border=NA
+                      col=graphcolours$graphBack,border=NA
               )
               polygon(trans3d(x=c(xlim[1], xlim[1], xlim[2],xlim[2]),
                               y=c(ylim[2], ylim[2], ylim[2],ylim[2]),
                               z=zlim[c(1, 2, 2,1)],mapping),
-                      col=maincolours$graphBack,border=NA
+                      col=graphcolours$graphBack,border=NA
               )
               lines(trans3d(x=c(xlim[1], xlim[1], xlim[2]),
                             y=c(ylim[1],ylim[2],ylim[2]),
@@ -646,7 +646,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             }
           },
   "2D"={
-    par(bg=maincolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,1))
+    par(bg=graphcolours$graphC,pin=c(1.33,1)*3,mar=c(5,5,1,1))
     
     # show the back wall
     switch (possible$type,
@@ -680,7 +680,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
 
     # gray background
     u <- par("usr") # The coordinates of the plot area
-    rect(u[1], u[3], u[2], u[4], col=maincolours$graphBack, border=NA)
+    rect(u[1], u[3], u[2], u[4], col=graphcolours$graphBack, border=NA)
     lines(u[c(1,2)],c(0,0),col="black")
     
     # make the back wall

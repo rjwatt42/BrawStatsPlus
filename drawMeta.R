@@ -43,7 +43,7 @@ drawMeta<-function(metaAnalysis,metaResult,metaWhich,yaxis=TRUE) {
     if (length(d1)>=1200) {
       nbins<-diff(ylim)/(2*IQR(d2[use])*length(d2[use])^(-0.33))*2
       nbins<-min(nbins,101)
-      g<-g+stat_bin2d(data=pts,aes(x=x,y=y),bins=nbins)+scale_fill_gradientn(colours=c(maincolours$graphBack,plotcolours$descriptionC))
+      g<-g+stat_bin2d(data=pts,aes(x=x,y=y),bins=nbins)+scale_fill_gradientn(colours=c(graphcolours$graphBack,plotcolours$descriptionC))
     }
     
     g<-drawWorld(metaResult$design,metaResult$effect,metaResult,g,plotcolours$descriptionC,metaAnalysis$showTheory)

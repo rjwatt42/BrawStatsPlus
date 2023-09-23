@@ -16,6 +16,8 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
 ################################
 # ui design
 
+fontScale<-1.0
+
 mainHue=0.55
 
 hypHue=0.986667
@@ -60,6 +62,11 @@ darkpanelcolours<-list(hypothesisC=hsv(hypHue,darkSat,darkBright),
                       possibleC=hsv(posHue,darkSat,darkBright*likeBright),
                       filesC=hsv(filHue,darkSat,darkBright*fileBright)
 )
+
+
+maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF")
+maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
+maincolours<-maincoloursBL
 
 #useful character codes
 helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
@@ -123,6 +130,11 @@ stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 cycleCount<-0
+
+source("getGlobals.R")
+getGlobals()
+source("getVariables.R")
+getVariables()
 
 ###########################################
 # fine tuning

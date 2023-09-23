@@ -5,13 +5,12 @@ getGlobals<-function() {
 ################################
 # graph design
 
-fontScale<<-1.0
 char3D<<-1.3
 labelSize<<-4
 
-maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF",graphBack="#999999")
-maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF",graphBack="#999999")
-maincolours<<-maincoloursBL
+graphcoloursBL<<-list(graphC="#BFECFF",graphBack="#999999")
+graphcoloursBW<<-list(graphC="#FFFFFF",graphBack="#999999")
+graphcolours<<-graphcoloursBL
 
 plotcolours<<-list(maineffectES="#FFCC00",covariationES="#FF1100",interactionES="#0011FF",
                   sampleC="#FFCC00",descriptionC="#FF9955",
@@ -28,21 +27,21 @@ report_precision<<-3
 graph_precision<<-2
 
 # graph themes
-mainTheme=theme(panel.background = element_rect(fill=maincolours$graphBack, colour="black"),
+mainTheme=theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
                 panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC))
-SMplotTheme=theme(plot.title=element_text(size=14,face="bold"),axis.title=element_text(size=16,face="bold"),
+                plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
+SMplotTheme<<-theme(plot.title=element_text(size=14,face="bold"),axis.title=element_text(size=16,face="bold"),
                   axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
-LGplotTheme=theme(plot.title=element_text(size=21,face="bold"),axis.title=element_text(size=24,face="bold"),
+LGplotTheme<<-theme(plot.title=element_text(size=21,face="bold"),axis.title=element_text(size=24,face="bold"),
                   axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
 
 plotTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(1.0,1.5,0.5,0.5,"cm"))
 reportTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
 diagramTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
 
-plotBlankTheme<<-theme(panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
                      panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                     plot.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC),
+                     plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
                      axis.title=element_text(size=16,face="bold")
 )
 

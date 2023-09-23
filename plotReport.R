@@ -1,7 +1,7 @@
 
 reportPlot<-function(outputText,nc,nr){
 
-  bg<-maincolours$graphC
+  bg<-graphcolours$graphC
   margin=0.5
   colSpace=2.5
   
@@ -85,7 +85,7 @@ reportPlot<-function(outputText,nc,nr){
           axis.title.y=element_blank(),
           axis.text.y=element_blank(),
           axis.ticks.y=element_blank(),
-          panel.background = element_rect(fill=maincolours$graphC, colour=maincolours$graphC)
+          panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC)
     )
   g+coord_cartesian(xlim = c(1-margin,edge+margin), ylim = c(1-margin,top+margin))
 }
