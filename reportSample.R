@@ -111,7 +111,9 @@ reportSample<-function(IV,IV2,DV,design,result){
         counts<-paste0(counts,sum(s1a==IV2$cases[i]),",")
       }
       counts<-substr(counts,1,nchar(counts)-1)
-      deviance<-(sum(s1a!=Mode(s1a))+(length(s1a)-sum(s1a==Mode(s1a))))/length(s1a)
+      mode<-which.max(table(s1a))
+      mode<-mode[1]
+      deviance<-(sum(s1a!=mode)+(length(s1a)-sum(s1a==mode)))/length(s1a)
       outputTextC<-c(outputTextC,IV2$name,counts,"",Mode(s1a),format(deviance,digits=2),"","")
       done_categorical<-TRUE
     }
@@ -123,7 +125,9 @@ reportSample<-function(IV,IV2,DV,design,result){
       counts<-paste0(counts,sum(s2==DV$cases[i]),",")
     }
     counts<-substr(counts,1,nchar(counts)-1)
-    deviance<-(sum(s2!=Mode(s2))+(length(s2)-sum(s2==Mode(s2))))/length(s2)
+    mode<-which.max(table(s2))
+    mode<-mode[1]
+    deviance<-(sum(s2!=mode)+(length(s2)-sum(s2==mode)))/length(s2)
     outputTextC<-c(outputTextC,DV$name,counts,"",Mode(s2),format(deviance,digits=2),"","")
     done_categorical<-TRUE
   }

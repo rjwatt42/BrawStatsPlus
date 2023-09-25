@@ -937,7 +937,13 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
 
               chiResult<-chisq.test(iv1,dv,correct = FALSE)
               df<-paste("(",format(chiResult$parameter),",","n=",format(length(result$participant)),")",sep="")
-              result$rIV<-sqrt(unname(chiResult$statistic/n))*sign(result$rIV)
+              
+              nhold<-c()
+              for (ini in 1:DV$ncats) {
+                nhold<-c(nhold,sum(as.numeric(result$dv)==ini))
+              }
+              ncorrection<-(max(nhold)/min(nhold))
+              result$rIV<-sqrt(unname(chiResult$statistic/n/ncorrection))*sign(result$rIV)
               result$pIV<-chiResult$p.value
               result$rFull<-result$rIV
               result$rFullse<-r2se(result$rFull,n)
