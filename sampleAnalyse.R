@@ -934,7 +934,8 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
             "Categorical Categorical"={
               an_name<-"Chi-square test of independence"
               t_name<-"chi2"
-
+              print(c(lmRaw$null.deviance,lmRaw$deviance))
+              
               chiResult<-chisq.test(iv1,dv,correct = FALSE)
               df<-paste("(",format(chiResult$parameter),",","n=",format(length(result$participant)),")",sep="")
               
