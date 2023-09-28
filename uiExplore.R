@@ -322,13 +322,23 @@ ExploreTab <-
                                                 tags$td(width = "25%", checkboxInput("ExploreAny_ylim", label=NULL,value=explore$ExploreAny_ylim)),
                                                 tags$td(width = "5%")
                                               ),
+                                   ),
+                                 tags$table(width = "100%",class="myTable",
+                                            tags$tr(
+                                              tags$td(width = "25%", tags$div(style = localPlainStyle, "NHST content:")),
+                                              tags$td(width = "45%", 
+                                                        selectInput("Explore_graphStyle", label=NULL,
+                                                                    choices<-list("relevant"="relevant","all"="all"),selected=explore$Explore_graphStyle, selectize=FALSE)
+                                                ),
+                                                tags$td(width = "30%")
+                                              )
+                                 )
                                               # tags$tr(
                                               #   tags$td(width = "45%", tags$div(style = localPlainStyle, "long hand:")),
                                               #   tags$td(width = "5%"),
                                               #   tags$td(width = "45%", tags$div(style = localPlainStyle, "show theory:")),
                                               #   tags$td(width="5%",checkboxInput("exploreTheory",label=NULL,value=TRUE))
                                               # )
-                                   )
                         )
                         # help tab
                         ,tabPanel(helpChar,value="?",

@@ -145,6 +145,7 @@ updateExplore<-function(){
             }
     )
     explore<-c(l,list(Explore_npoints=input$Explore_npoints,
+                      Explore_graphStyle=input$Explore_graphStyle,
                       Explore_quants=input$Explore_quants,
                       Explore_esRange=input$Explore_esRange,Explore_nRange=input$Explore_nRange,
                       Explore_metaRange=input$Explore_metaRange,Explore_Mxlog = input$Explore_Mxlog,Explore_nrRange=input$Explore_nRange,

@@ -16,8 +16,8 @@ plotcolours<<-list(maineffectES="#FFCC00",covariationES="#FF1100",interactionES=
                   sampleC="#FFCC00",descriptionC="#FF9955",
                   descriptionC1="#FF5533",descriptionC2="#CCBB33",
                   infer_sigC="#11CC00",infer_nsigC="#FF4400",infer_none="#AAAAAA",
-                  infer_sigNonNull="#11CC00",infer_isigNonNull="#881100",infer_nsNonNull="#881100",infer_nsdNonNull="#CCCCCC",
-                  infer_sigNull="#118800",infer_isigNull="#FF4400",infer_nsNull="#FF4400",infer_nsdNull="#CCCCCC",
+                  infer_sigNonNull="#11CC00",infer_isigNonNull="#881100",infer_nsNonNull="#881100",infer_nsdNonNull="#DDCCCC",
+                  infer_sigNull="#118800",infer_isigNull="#FF4400",infer_nsNull="#FF4400",infer_nsdNull="#CCDDCC",
                   psig="#FFAA00",alpha="#44FF22",one="#FF4422",
                   fdr="#227700",fmr="#BB5555")
 
@@ -118,6 +118,7 @@ explore<<-list(Explore_type="IV",
               Append=FALSE,
               Explore_npoints=13,Explore_xlog = FALSE,
               Explore_quants=0.95,
+              Explore_graphStyle="relevant",
               Explore_esRange=0.8,Explore_nRange=250,
               Explore_metaRange=10000,Explore_Mxlog = TRUE,Explore_nrRange=250,
               ExploreFull_ylim=FALSE,
