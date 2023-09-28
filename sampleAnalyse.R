@@ -920,6 +920,7 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
     } else {
       res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
     }
+    res1<-res
     if (design$sBudgetOn) {
       if (res$pIV<p_min) {
         p_min<-res$pIV

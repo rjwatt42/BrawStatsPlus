@@ -45,6 +45,10 @@ readWS<-function(session,filename,sheetname){
           done<-TRUE
         }
         if (is.element(objectID,c("sRangeOn","rInteractionOn","worldOn","worldAbs","Welch","sNRand","sBudgetOn","sReplicationOn","sReplPowerOn","sReplVarAlpha"))){
+          switch(val,
+                 "FALSE"={val<-FALSE},
+                 "TRUE"={val<-TRUE}
+          )
           updateCheckboxInput(session,objectID,value=val)
           done<-TRUE
         }
