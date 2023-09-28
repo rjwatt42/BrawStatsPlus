@@ -323,11 +323,12 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,i=1,scale
              )
       if (expType=="r" && !is.null(rCI)){
         pts1se<-data.frame(x=pts$x,y=rCI)
+        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
       }
       if (expType=="p" && !is.null(result$pIVCI)){
         pts1se<-data.frame(x=pts$x,y=log10(pCI))
+        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
       }
-      g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
     }
       
     xr<-makeFiddle(pts$y1,2/40)*scale*scale

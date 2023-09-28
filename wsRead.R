@@ -17,7 +17,7 @@ readWS<-function(session,filename,sheetname){
   IV2changed<-FALSE
   
   for (i in 1:nrow(raw_data)){
-    val<-raw_data[[i,3]]
+    val<-raw_data[[i,4]]
     if (!is.na(val)){
       if (!grepl("[^0-9.]",val)) {val<-as.numeric(val)}
       if (is.element(raw_data[[i,1]],c("IV","IV2","DV")))
@@ -37,16 +37,26 @@ readWS<-function(session,filename,sheetname){
       }
       else {
         objectID<-raw_data[[i,2]] 
+        if (!is.na(raw_data[[i,3]])) objectID<-raw_data[[i,3]]
         done<-FALSE
-        if (is.element(objectID,c("sMethod","sIV1Use","sIV2Use"))){
+        if (is.element(objectID,c("sMethod","sIV1Use","sIV2Use","ResidDistr","sCheating","sCheatingLimit",
+                                  "sReplSigOnly","sReplType","sReplCorrection","sReplKeep","populationRZ","populationPDF"))){
           updateSelectInput(session,objectID,selected=val)
           done<-TRUE
         }
-        if (is.element(objectID,c("sRangeOn","rInteractionOn"))){
+        if (is.element(objectID,c("sRangeOn","rInteractionOn","worldOn","worldAbs","Welch","sNRand","sBudgetOn","sReplicationOn","sReplPowerOn","sReplVarAlpha"))){
           updateCheckboxInput(session,objectID,value=val)
           done<-TRUE
         }
+        if (is.element(objectID,c("sDVRange","sIVRange"))){
+          val<-as.numeric(strsplit(val,",")[[1]])
+          updateSliderInput(session,objectID,value=val)
+          done<-TRUE
+        }
         if (!done){
+          if (grepl("[^0-9.]",val)) {
+            val<-as.numeric(val)
+            }
           updateNumericInput(session,objectID,value=as.numeric(val))
         }
       }

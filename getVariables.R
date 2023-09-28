@@ -74,6 +74,7 @@ defaultVars<-list(
   makeVar(name="RiskTaking",type="Interval",mu=30,sd=6),
   makeVar(name="Interesting",type="Interval",mu=10,sd=2),
   
+  makeVar(name="Coffee?",type="Categorical",ncats=2,cases="no,yes",proportions="1,1"),
   makeVar(name="Smoker?",type="Categorical",ncats=2,cases="no,yes",proportions="2,1"),
   makeVar(name="RiskTaker?",type="Categorical",ncats=2,cases="no,yes"),
   makeVar(name="Musician?",type="Categorical",ncats=2,cases="no,yes"),

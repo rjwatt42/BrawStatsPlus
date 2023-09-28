@@ -182,19 +182,32 @@ addList<-function(L,name) {
   addFields<-names(L)
   header<-name
   fields<-""
+  subfields<-""
   vals<-""
+  
   for (i in 1:length(addFields)){
     v<-L[[addFields[i]]]
-    if (!is.null(v) && length(v)==1){
-      if (is.logical(v)){
-        if (v){v<-"TRUE"} else {v<-"FALSE"}
+    if (class(v)!="list") {
+      if (length(v)>1) v<-paste(v,collapse=",")
+      if (!is.na(v) && !is.null(v) && length(v)==1){
+        if (is.logical(v)){
+          if (v){v<-"TRUE"} else {v<-"FALSE"}
+        }
+        header<-c(header,name)
+        fields<-c(fields,addFields[i])
+        subfields<-c(subfields,"")
+        vals<-c(vals,v)
       }
-      fields<-c(fields,addFields[i])
-      vals<-c(vals,v)
-      header<-c(header,name)
+    } else {
+      newList<-addList(v,addFields[i])
+      newList<-data.frame(top=name,newList)
+      header<-c(header,newList$top)
+      fields<-c(fields,newList$header)
+      subfields<-c(subfields,newList$field)
+      vals<-c(vals,newList$value)
     }
   }
-  data.frame(header=header,field=fields,value=vals)
+  data.frame(header=header,field=fields,subfield=subfields,value=vals)
 }
 
 exportWSFile<-observeEvent(input$WSOutputFileSave, {
@@ -206,12 +219,13 @@ exportWSFile<-observeEvent(input$WSOutputFileSave, {
   design<-updateDesign()
   
   data1<-addList(IV,"IV")
-  data2<-addList(IV2,"IV2")
+  if (!is.null(IV2))  data2<-addList(IV2,"IV2")
+  else data2<-c()
   data3<-addList(DV,"DV")
   data4<-addList(effect,"effect")
   data5<-addList(design,"design")
   data<-rbind(data1,data2,data3,data4,data5)
-  
+
   filename<-input$wsOutputFile
   ext<-file_ext(filename)
   if (ext!="xlsx" && ext!="xls") {filename=paste(filename,".xlsx",sep="")}
