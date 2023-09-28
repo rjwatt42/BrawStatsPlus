@@ -111,7 +111,8 @@ doExpectedAnalysis<-function(IV,IV2,DV,effect,design,evidence,expected,result,ns
 # Expected outputs
 # show expected result    
 makeExpectedGraph <- function() {
-  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
+  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
+          input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$evidenceTheory,
           input$STMethod,input$alpha,
           input$world_distr,input$world_distr_rz,input$world_distr_k,input$world_distr_Nullp,
@@ -140,11 +141,11 @@ makeExpectedGraph <- function() {
   
   expected<-updateExpected()
   
-  expectedResult$result$showType<<-input$EvidenceEffect_type
+  expectedResult$result$showType<<-evidence$showType
   expectedResult$result$effect<<-effect
   expectedResult$result$design<<-design
   expectedResult$result$evidence<<-evidence
-  expectedResult$nullresult$showType<<-input$EvidenceEffect_type
+  expectedResult$nullresult$showType<<-evidence$showType
   expectedResult$nullresult$effect<<-nulleffect
   expectedResult$nullresult$design<<-design
   expectedResult$nullresult$evidence<<-evidence
@@ -271,7 +272,8 @@ makeExpectedGraph <- function() {
 
 output$ExpectedPlot <- renderPlot({
   if (debug) {debugPrint("ExpectedPlot")}
-  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
+  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
+          input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$EvidenceExpectedRun)
   g<-makeExpectedGraph()
   if (debug) {debugPrint("ExpectedPlot - exit")}
@@ -280,7 +282,8 @@ output$ExpectedPlot <- renderPlot({
 
 output$ExpectedPlot1 <- renderPlot({
   if (debug) {debugPrint("ExpectedPlot")}
-  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,input$EvidenceEffect_type,
+  doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
+          input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$EvidenceExpectedRun)
   g<-makeExpectedGraph()
   if (debug) {debugPrint("ExpectedPlot - exit")}
@@ -299,7 +302,7 @@ makeExpectedReport<-function() {
   evidence<-updateEvidence()
   
   expected<-updateExpected()
-  expectedResult$result$showType<-input$EvidenceEffect_type
+  expectedResult$result$showType<-evidence$showType
   
   if (expectedResult$count>1) {
     

@@ -12,7 +12,7 @@ graphSample<-function(IV,IV2,DV,effect,design,evidence,result) {
     effect2$rIV<-effect2$rIV2
     effect3<-effect
     effect3$rIV<-effect3$rIVIV2
-    
+
     result1<-result
     result2<-list(IVs=result$IV2s, DVs=result$DVs, rIV=result$rIV2, ivplot=result$iv2plot,dvplot=result$dvplot,nval=result$nval)
     result3<-list(IVs=result$IVs, DVs=result$IV2s, rIV=result$rIVIV2, ivplot=result$ivplot,dvplot=result$iv2plot,nval=result$nval)

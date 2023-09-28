@@ -298,11 +298,11 @@ ExploreTab <-
                                               tags$tr(
                                                 tags$td(width = "25%", id="Explore_esRangeLabel", tags$div(style = localPlainStyle, "r-range:")),
                                                 tags$td(width = "15%", 
-                                                        numericInput("Explore_esRange", label=NULL,value=0.8)
+                                                        numericInput("Explore_esRange", label=NULL,value=0.8,step=0.1)
                                                 ),
                                                 tags$td(width = "30%", tags$div(style = localPlainStyle, "anom-range:")),
                                                 tags$td(width = "25%", 
-                                                        numericInput("Explore_anomRange", label=NULL,value=0.9)
+                                                        numericInput("Explore_anomRange", label=NULL,value=0.9,step=0.1)
                                                 ),
                                                 tags$td(width="5%")
                                                 ),

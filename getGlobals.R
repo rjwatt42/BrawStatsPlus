@@ -77,7 +77,7 @@ design<<-list(sN=42, sNRand=FALSE,sNRandK=2,
 
 evidence<<-list(rInteractionOn=TRUE,
                rInteractionOnly=TRUE,
-               showType="EffectSize",
+               showType="direct",
                showTheory=FALSE,
                sigOnly=FALSE,
                shortHand=FALSE,

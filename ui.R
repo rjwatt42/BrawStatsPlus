@@ -199,7 +199,7 @@ shinyUI(fluidPage(
     ),
     tags$head(
       tags$style(
-        HTML(paste0(".shiny-notification {background-color:", maincolours$panelC,";color:#FFFFFF;position:fixed;top: calc(4.5%);left: calc(51%);}"
+        HTML(paste0(".shiny-notification {background-color:", maincolours$panelC,";color:#FFFFFF;position:fixed;top: calc(24.5%);left: calc(51%);}"
         ))
       )
     ),

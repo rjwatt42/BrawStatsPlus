@@ -49,6 +49,21 @@ EvidenceTab <-
                                               # tags$td(width = "10%", tags$div(style = localStyle, "")),
                                               tags$td(width = "25%", actionButton("EvidenceHypothesisApply", "Analyze")),
                                               tags$td(width = "25%", actionButton("EvidencenewSample", "New Sample"))
+                                            ),
+                                            tags$tr(
+                                              tags$td(width = "10%", tags$div(style = localStyle, "")),
+                                              tags$td(width = "40%", 
+                                                      conditionalPanel(condition="input.IV2choice != 'none'",
+                                                                       selectInput("EvidenceEffect_type1",label=NULL,
+                                                                                   c("direct" = "direct",
+                                                                                     "unique" = "unique",
+                                                                                     "total" = "total",
+                                                                                     "coefficients" = "coefficients"),
+                                                                                   selectize=FALSE)
+                                                      )
+                                              ),
+                                              tags$td(width = "25%", tags$div(style = localStyle, "")),
+                                              tags$td(width = "25%", tags$div(style = localStyle, ""))
                                             )
                                  )
                         ),
@@ -87,7 +102,6 @@ EvidenceTab <-
                                                                                    c("direct" = "direct",
                                                                                      "unique" = "unique",
                                                                                      "total" = "total",
-                                                                                     "all" = "all",
                                                                                      "coefficients" = "coefficients"),
                                                                                    selectize=FALSE)
                                                       )

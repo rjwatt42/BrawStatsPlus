@@ -2,8 +2,6 @@ npoints=10
 min_n=10
 max_n=250
 min_prop=0.2
-effectSizeRange=0.8
-maxESrange<-0.95
 absRange<-FALSE
 quants=0.25
 
@@ -14,6 +12,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   quants<-explore$Explore_quants
   max_n<-explore$Explore_nRange
   effectSizeRange<-explore$Explore_esRange
+  maxESrange<-explore$Explore_esRange
   anomaliesRange<-explore$Explore_anomRange
   kurtRange<-10^5
   
@@ -40,14 +39,14 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "EffectSize1"={
             # fullES<-effect$rIV^2+effect$rIV2^2+2*effect$rIV*effect$rIV2*effect$rIVIV2+
             b<-2*effect$rIV2*effect$rIVIV2
-            c<-effect$rIVIV2DV^2-maxESrange
+            c<-effect$rIV2^2+effect$rIVIV2DV^2-maxESrange
             r1<- (-b-sqrt(b^2-4*c))/2
             r2<-(-b+sqrt(b^2-4*c))/2
             vals<-seq(r1,r2,length.out=npoints)
             },
           "EffectSize2"={
             b<-2*effect$rIV*effect$rIVIV2
-            c<-effect$rIVIV2DV^2-maxESrange
+            c<-effect$rIV^2+effect$rIVIV2DV^2-maxESrange
             r1<- (-b-sqrt(b^2-4*c))/2
             r2<-(-b+sqrt(b^2-4*c))/2
             vals<-seq(r1,r2,length.out=npoints)

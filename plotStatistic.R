@@ -271,7 +271,7 @@ start_plot<-function() {
           axis.ticks.x=element_blank())
 }
 
-expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,col="white"){
+expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,i=1,scale=1,col="white"){
   dotSize<-(plotTheme$axis.title$size)/3*scale
   
   if (!is.null(expType)) {
@@ -306,17 +306,28 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,scale=1,c
   }
   
   if (length(pts$y1)<=points_threshold) {
-    if (!is.null(result)) {
-      if (expType=="r" && length(pts$y1)==1 && !is.null(result$rCI)){
-        pts1se<-data.frame(x=pts$x,y=result$rCI)
-        if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
-        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
+    if (!is.null(result) && is.element(expType,c("r","p")) && length(pts$y1)==1) {
+      switch(i,
+             {rCI<-result$rIVCI
+             pCI<-result$pIVCI
+             if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
+             },
+             {rCI<-result$rIV2CI
+             pCI<-result$pIV2CI
+             if (isSignificant(STMethod,result$pIV2,result$rIV2,result$nval,result$df2,result$evidence)) {c<-c1} else (c<-c2)
+             },
+             {rCI<-result$rIVIV2CI
+             pCI<-result$pIVIV2CI
+             if (isSignificant(STMethod,result$pIVIV2DV,result$rIVIV2DV,result$nval,result$df12,result$evidence)) {c<-c1} else (c<-c2)
+             }
+             )
+      if (expType=="r" && !is.null(rCI)){
+        pts1se<-data.frame(x=pts$x,y=rCI)
       }
-      if (expType=="p" && length(pts$y1)==1 && !is.null(result$pCI)){
-        pts1se<-data.frame(x=pts$x,y=log10(result$pCI))
-        if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,result$evidence)) {c<-c1} else (c<-c2)
-        g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
+      if (expType=="p" && !is.null(result$pIVCI)){
+        pts1se<-data.frame(x=pts$x,y=log10(pCI))
       }
+      g<-g+geom_line(data=pts1se,aes(x=x,y=y),arrow=arrow(length=unit(se_arrow,"cm"),ends="both"),colour=c,linewidth=se_size)
     }
       
     xr<-makeFiddle(pts$y1,2/40)*scale*scale
@@ -608,7 +619,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       } else {
         pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,n<-data$ns)
       }
-      g<-expected_plot(g,pts,expType,result,IV,DV)
+      g<-expected_plot(g,pts,expType,result,IV,DV,i)
     
     if (is.element(expType,c("p","e1","e2","e1d","e2d"))) {
       if (effect$world$worldOn && is.element(expType,c("e1","e2","e1d","e2d"))) {

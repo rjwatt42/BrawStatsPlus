@@ -126,7 +126,10 @@ updateEvidence<-function(){
                             populationNullp=0)
   )
 
-  
+  if (input$Evidence=="Single") {
+    evidence$showType<-input$EvidenceEffect_type1
+  }
+    
   switch(input$STPrior,
          "none"={
            evidence$prior=list(worldOn=FALSE,populationPDF="Uniform",
