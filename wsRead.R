@@ -58,10 +58,10 @@ readWS<-function(session,filename,sheetname){
           done<-TRUE
         }
         if (!done){
-          if (grepl("[^0-9.]",val)) {
+          if (!grepl("[^0-9.]",val)) {
             val<-as.numeric(val)
             }
-          updateNumericInput(session,objectID,value=as.numeric(val))
+          updateNumericInput(session,objectID,value=val)
         }
       }
     }
