@@ -99,7 +99,7 @@ reportSample<-function(IV,IV2,DV,design,result){
     mode<-which.max(table(s1))
     mode<-mode[1]
     deviance<-(sum(s1!=mode)+(length(s1)-sum(s1==mode)))/length(s1)
-    outputTextC<-c(outputTextC,IV$name,counts,"",levels(s1)[mode],format(deviance,digits=2),"","")
+    outputTextC<-c(outputTextC,IV$name,counts,"",IV$cases[mode],format(deviance,digits=2),"","")
     done_categorical<-TRUE
   }
   if (no_ivs>1){
@@ -114,7 +114,7 @@ reportSample<-function(IV,IV2,DV,design,result){
       mode<-which.max(table(s1a))
       mode<-mode[1]
       deviance<-(sum(s1a!=mode)+(length(s1a)-sum(s1a==mode)))/length(s1a)
-      outputTextC<-c(outputTextC,IV2$name,counts,"",Mode(s1a),format(deviance,digits=2),"","")
+      outputTextC<-c(outputTextC,IV2$name,counts,"",IV2$cases[mode],format(deviance,digits=2),"","")
       done_categorical<-TRUE
     }
   }
@@ -128,7 +128,7 @@ reportSample<-function(IV,IV2,DV,design,result){
     mode<-which.max(table(s2))
     mode<-mode[1]
     deviance<-(sum(s2!=mode)+(length(s2)-sum(s2==mode)))/length(s2)
-    outputTextC<-c(outputTextC,DV$name,counts,"",Mode(s2),format(deviance,digits=2),"","")
+    outputTextC<-c(outputTextC,DV$name,counts,"",DV$cases[mode],format(deviance,digits=2),"","")
     done_categorical<-TRUE
   }
   if (done_categorical){

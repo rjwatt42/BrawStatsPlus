@@ -200,10 +200,11 @@ reportDescription<-function(IV,IV2,DV,evidence,result){
             outputText<-c(outputText,paste0("!j",IV2$name,":"),
                           format(result$r$direct[2],digits=report_precision),format(result$r$unique[2],digits=report_precision),format(result$r$total[2],digits=report_precision),
                           rep("",nc-4))
-            outputText<-c(outputText,paste0("!j",IV$name,"*",IV2$name,":"),
+            if (evidence$rInteractionOn) {
+              outputText<-c(outputText,paste0("!j",IV$name,"*",IV2$name,":"),
                           format(result$r$direct[3],digits=report_precision),format(result$r$unique[3],digits=report_precision),format(result$r$total[3],digits=report_precision),
                           rep("",nc-4))
-  
+            }
   
             outputText<-c(outputText,rep("",nc))
             

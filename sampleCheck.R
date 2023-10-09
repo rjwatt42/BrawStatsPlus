@@ -1,7 +1,7 @@
 changeAmount<-1
 
 cheatSample<-function(IV,IV2,DV,effect,design,evidence,sample,result) {
-  
+
   if (design$sCheating=="None") return(result)
   if (design$sCheatingAmount==0) return(result)
   if (isSignificant(STMethod,result$pIV,result$rIV,result$nval,result$df1,evidence)) return(result)

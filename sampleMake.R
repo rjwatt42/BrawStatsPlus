@@ -443,7 +443,8 @@ makeSample<-function(IV,IV2,DV,effect,design){
                  if (IV2$source=="discrete") {
                    ng<-IV2$ncats
                    pp<-IV2$proportions
-                   # pp<-as.numeric(unlist(strsplit(IV2$proportions,",")))
+                   if (is.character(pp))
+                   pp<-as.numeric(unlist(strsplit(IV2$proportions,",")))
                    if (length(pp)<ng) {pp<-c(pp,rep(pp[length(pp)],ng-length(pp)))}
                    proportions<-c(0,pp)
                    breaks<-qnorm(cumsum(proportions)/sum(proportions))

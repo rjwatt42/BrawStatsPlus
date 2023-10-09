@@ -63,7 +63,7 @@ design<<-list(sN=42, sNRand=FALSE,sNRandK=2,
              sMethod="Random" ,sIV1Use="Between",sIV2Use="Between", 
              sRangeOn=FALSE, sIVRange=c(-3,3), sDVRange=c(-3,3), 
              sDependence=0, sOutliers=0, sClustering=0,
-             sCheating=FALSE,sCheatingLimit="Budget",sCheatingAmount=5,sCheatingBudget=1000,
+             sCheating="None",sCheatingLimit="Budget",sCheatingAmount=5,sCheatingBudget=1000,
              sBudgetOn=FALSE,sNBudget=1000,
              sReplicationOn=FALSE,sReplPowerOn=TRUE,sReplPower=0.8,sReplTails=2,sReplType="Fixed",
              sReplSigOnly="No",sReplRepeats=1,sReplKeep="last",sReplBudget=1000,
@@ -203,6 +203,18 @@ showInteractionOnly<<-TRUE
 includeSingle<<-FALSE  # in "All" meta-analysis
 
 alphaChar<<-'\u03B1'
+
+
+brawFormat<<-function(numbers,digits=3) {
+  pad<-function(x) if(x>=0) paste0(" ",x) else x
+  if (all(numbers==round(numbers))) {
+    r<-sprintf(numbers,fmt="%d")
+  } else {
+    r<-sprintf(numbers,fmt=paste0("%0.",digits,"f"))
+  }
+  r<-unname(sapply(r,pad))
+  r
+}
 
 ##################################
 # notation for worlds

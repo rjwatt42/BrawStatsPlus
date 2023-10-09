@@ -266,7 +266,7 @@ model2fulleffect<-function(mF,anU) {
     }
   } else {
     if (grepl("Intercept",rownames(anU)[[1]])) {n1<-2} else {n1<-1}
-    n2<-nrow(anU)
+    n2<-nrow(anU)-1
     r.full<-sqrt(sum(anU$`Sum Sq`[n1:n2])/sum(anU$`Sum Sq`))
   }
   return(r.full)
@@ -421,7 +421,7 @@ generalAnalysis<-function(allData,InteractionOn,withins) {
     # get Categorical cases sorted
     if (is.factor(allData[,i])) {
       switch (evidence$evidenceCaseOrder,
-              "Alphabetic"={ref=1},
+              "Alphabetic"={ref=sort(levels(allData[,i]))[1]},
               "AsFound"={ref=as.numeric(allData[1,i])},
               "Frequency"={ref=which.max(tabulate(match(allData[,i], levels(allData[,i]))))}
       )
@@ -583,7 +583,7 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
   allData<-data.frame(result$participant,result$dv)
   if (!all(result$iv==result$iv[1])) 
     allData<-cbind(allData,result$iv)
-  if (!all(result$iv2==result$iv2[1]))
+  if (!is.null(IV2) && !all(result$iv2==result$iv2[1]))
     allData<-cbind(allData,result$iv2)
   no_ivs<-ncol(allData)-2
   n<-nrow(allData)
@@ -677,15 +677,24 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
     anResult$anRaw<-anRaw
   }
   
-  # simulate the single IV analyses
+  lmRaw<-anResult$lmRaw
+  lmNorm<-anResult$lmNorm
+  lmRawC<-anResult$lmRawC
+  lmNormC<-anResult$lmNormC
+  
   anRaw<-anResult$anRaw
+  anNorm<-anResult$anNorm
+  anRawC<-anResult$anRawC
+  anNormC<-anResult$anNormC
+  
+  # simulate the single IV analyses
   if (is.null(IV2)) {
     hypothesisType=paste(IV$type,DV$type,sep=" ")
     switch (hypothesisType,
             "Interval Interval"={
               an_name<-"Pearson Correlation"
               t_name<-"r"
-              df<-paste("(",format(anResult$anRaw$Df[nrow(anRaw)]),")",sep="")
+              df<-paste("(",format(anRaw$Df[nrow(anRaw)]),")",sep="")
               tval<-result$rIV
             },
             "Ordinal Interval"={
@@ -915,8 +924,9 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
   p_min<-1
   while (1==1) {
     if (!shortHand) {
-      sample<-makeSample(IV,IV2,DV,effect,design)
-      res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+      # sample<-makeSample(IV,IV2,DV,effect,design)
+      # res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+      res<-getSample(IV,IV2,DV,effect,design)
     } else {
       res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
     }
@@ -940,14 +950,15 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
   # sig only
   while (sig_only && !isSignificant(STMethod,res$pIV,res$rIV,res$nval,res$df1,evidence)) {
     if (!shortHand) {
-      sample<-makeSample(IV,IV2,DV,effect,design)
-      res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+      # sample<-makeSample(IV,IV2,DV,effect,design)
+      # res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+      res<-getSample(IV,IV2,DV,effect,design)
     } else {
       res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
     }
   }
-  # Cheating ?
-  res<-cheatSample(IV,IV2,DV,effect,design,evidence,sample,res)
+  # # Cheating ?
+  # res<-cheatSample(IV,IV2,DV,effect,design,evidence,sample,res)
   # Replication?
   res<-replicateSample(IV,IV2,DV,effect,design,evidence,sample,res)
   
@@ -955,3 +966,14 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
   
 }
 
+getSample<-function(IV,IV2,DV,effect,design) {
+  if (!shortHand) {
+    sample<-makeSample(IV,IV2,DV,effect,design)
+    res<-analyseSample(IV,IV2,DV,effect,design,evidence,sample)
+  } else {
+    res<-sampleShortCut(IV,IV2,DV,effect,design,evidence,1,FALSE)
+  }
+  # Cheating ?
+  res<-cheatSample(IV,IV2,DV,effect,design,evidence,sample,res)
+  res
+}
