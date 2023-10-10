@@ -21,7 +21,7 @@ reportSample<-function(IV,IV2,DV,design,result){
     IV$sample_kurtosis<-0
     outputTextI<-c(outputTextI,IV$name,
                    format(mean(s1,na.rm=TRUE),digits=report_precision),format(sd(s1,na.rm=TRUE),digits=report_precision),
-                   format(skewness(s1,na.rm=TRUE),digits=report_precision),format(kurtosis(s1,na.rm=TRUE),digits=report_precision),
+                   format(skewness(s1,na.rm=TRUE),digits=report_precision),format(kurtosis(s1,na.rm=TRUE)+3,digits=report_precision),
                    format(median(s1),digits=report_precision),format(iqr(s1),digits=report_precision)
     )
     done_interval<-TRUE
@@ -33,7 +33,7 @@ reportSample<-function(IV,IV2,DV,design,result){
       IV2$sample_sd<-sd(s1a,na.rm=TRUE)
       outputTextI<-c(outputTextI,IV2$name,
                      format(mean(s1a),digits=report_precision),  format(sd(s1a),digits=report_precision),
-                     format(skewness(s1a,na.rm=TRUE),digits=report_precision),format(kurtosis(s1a,na.rm=TRUE),digits=report_precision),
+                     format(skewness(s1a,na.rm=TRUE),digits=report_precision),format(kurtosis(s1a,na.rm=TRUE)+3,digits=report_precision),
                      format(median(s1a),digits=report_precision),format(iqr(s1a),digits=report_precision)
       )
       done_interval<-TRUE
@@ -44,7 +44,7 @@ reportSample<-function(IV,IV2,DV,design,result){
     DV$sample_sd<-sd(s2,na.rm=TRUE)
     outputTextI<-c(outputTextI,DV$name,
                    format(mean(s2),digits=report_precision),  format(sd(s2),digits=report_precision),
-                   format(skewness(s2,na.rm=TRUE),digits=report_precision),format(kurtosis(s2,na.rm=TRUE),digits=report_precision),
+                   format(skewness(s2,na.rm=TRUE),digits=report_precision),format(kurtosis(s2,na.rm=TRUE)+3,digits=report_precision),
                    format(median(s2),digits=report_precision),format(iqr(s2),digits=report_precision)
     )
     done_interval<-TRUE
