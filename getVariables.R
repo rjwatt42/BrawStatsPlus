@@ -3,9 +3,11 @@
 
 makeVar<-function(name,type="Interval",
                   mu=0,sd=1,skew=0,kurtosis=3,
-                  nlevs=7,iqr=3,median=4,discrete="discrete",ordProportions=NA,
+                  nlevs=7,iqr=3,median=NULL,discrete="discrete",ordProportions=NA,
                   ncats=2,cases="C1,C2",proportions="1,1",source="discrete",
                   deploy="Between",targetDeploys="",process="sim"){
+  
+  if (is.null(median)) median<-((1+nlevs)/2)
   
   var<-list(name=name,type=type,
        mu=mu,sd=sd,skew=skew,kurtosis=kurtosis,
