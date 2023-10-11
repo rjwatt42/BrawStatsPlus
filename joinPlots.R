@@ -5,7 +5,10 @@ joinPlots<-function(g1,g2=NULL,g3=NULL,layout="triangle") {
        scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   
   if (!usingShiny) {
-    return(g1)    
+    g<-list(g1)
+    if (!is.null(g2)) g<-c(g,list(g2))
+    if (!is.null(g3)) g<-c(g,list(g3))
+    return(g)    
   }
   
   if (is.null(g2)) {

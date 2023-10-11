@@ -853,6 +853,12 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
               # df<-anResult$anRaw$Df
               tval<-anResult$anRaw$`F value`
             },
+            "Ordinal"={
+              an_name<-"General Linear Model"
+              t_name<-"F"
+              # df<-anResult$anRaw$Df
+              tval<-anResult$anRaw$`F value`
+            },
             "Categorical"={
               an_name<-"Generalized Linear Model"
               t_name<-"chi2"
