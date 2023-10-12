@@ -27,7 +27,7 @@ library(writexl)     # x excel
 library(car)         # Anova type 3 correct
 library(stringr)     # for str_* functions
 library(clipr)       # for clipboard functions
-library(SuppDists)   # for Johnson distributions
+# library(SuppDists)   # for Johnson distributions
 library(e1071)       # for skewness and kurtosis
 library(pracma)      # for meshgrid & fmincon
 library(NlcOptim)    # for fmincon

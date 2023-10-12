@@ -97,7 +97,7 @@ drawInterval<-function(var){
   r<-seq(-fullRange,fullRange,length.out=varNPoints)*var$sd+var$mu
   if (var$skew!=0 || var$kurtosis!=0) {
     a<-f_johnson_M(var$mu,var$sd,var$skew,var$kurtosis)
-    dens<-dJohnson(r,parms=a)
+    dens<-f_Johnson_pdf(r,a$coef,a$type)
     dens[is.na(dens)]<-0
   } else {
     dens<-dnorm(r,var$mu,var$sd) # exp(-0.5*((r-var$mu)/var$sd)^2)

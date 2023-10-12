@@ -11,8 +11,13 @@ makeSampleVals<-function(n,mn,sdv,MV,distr="normal"){
   switch (distr,
           "normal"= {
             if (MV$type=="Interval" && (MV$skew!=0 || MV$kurtosis!=3)){
+              if (MV$kurtosis<1.05) MV$kurtosis<-1.05
+              change<-MV$skew!=0 & (MV$kurtosis-3)>MV$skew^2
+              MV$kurtosis[change]<-MV$skew[change]^2 + 3
+              
               a<-f_johnson_M(0,sdv,MV$skew,MV$kurtosis)
-              ivr<-rJohnson(n,parms=a)
+              ivr<-f_johnson_z2y(ivr,a$coef,a$type)
+              # ivr<-rJohnson(n,parms=a)
             } else {
               ivr<-rnorm(n,0,sdv)
             }
