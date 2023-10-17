@@ -190,6 +190,7 @@ reportGroupMeans<<-TRUE
 plotDescriptionCols<<-c()
 CatCatcols<<-c()
 doLegendBars<<-TRUE
+doLegendPoints<<-FALSE
 simData<<-TRUE
 
 points_threshold<<-50 # for displaying expected results

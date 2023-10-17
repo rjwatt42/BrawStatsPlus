@@ -339,7 +339,9 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
                     nval=res$nval,df1=res$df1,
                     r=list(direct=res$r$direct,unique=res$r$unique,total=res$r$total,coefficients=res$r$coefficients),
                     p=list(direct=res$p$direct,unique=res$p$unique,total=res$p$total),
-                    showType=design$showType)
+                    ResultHistory=res$ResultHistory,
+                    showType=design$showType
+                    )
     
 
    if (any(class(res$rawModel)[1]==c("lmerMod","glmerMod"))) {
@@ -404,7 +406,7 @@ convert2Interval<-function(var) {
   var$sd<-var$iqr*qnorm(0.75)
 }
 
-generalAnalysis<-function(allData,InteractionOn,withins) {
+generalAnalysis<-function(allData,InteractionOn,withins,ssqType="Type3",caseOrder="Alphabetic") {
   
   if (ncol(allData)<3) {
     result$rIV<-NA
@@ -420,7 +422,7 @@ generalAnalysis<-function(allData,InteractionOn,withins) {
   for (i in 2:ncol(allData)) {
     # get Categorical cases sorted
     if (is.factor(allData[,i])) {
-      switch (evidence$evidenceCaseOrder,
+      switch (caseOrder,
               "Alphabetic"={ref=sort(levels(allData[,i]))[1]},
               "AsFound"={ref=as.numeric(allData[1,i])},
               "Frequency"={ref=which.max(tabulate(match(allData[,i], levels(allData[,i]))))}
@@ -513,7 +515,7 @@ generalAnalysis<-function(allData,InteractionOn,withins) {
   }
   
   #ANOVAS
-  switch (evidence$ssqType,
+  switch (ssqType,
           "Type1"={
             anRaw<-Anova(lmRaw,test=testMethod)
             anRawC<-Anova(lmRawC,test=testMethod)
@@ -590,8 +592,8 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
 
   withins<-c(design$sIV1Use=="Within",design$sIV2Use=="Within")
   
-  anResult<-generalAnalysis(allData,evidence$rInteractionOn,withins)
-
+  anResult<-generalAnalysis(allData,evidence$rInteractionOn,withins,evidence$ssqType,evidence$evidenceCaseOrder)
+  
 # MOVE RESULTS OUT TO BRAWSTATS  
   r_use<-anResult$r.direct
   p_use<-anResult$p.direct

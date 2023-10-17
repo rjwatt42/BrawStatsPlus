@@ -104,7 +104,7 @@ HypothesisTab <-
                                                                tags$td(width = "45%", tags$div(style = localPlainStyle, "Residuals:")),
                                                                tags$td(width = "30%", 
                                                                        selectInput("ResidDistr",label=NULL,
-                                                                                   choices=list("normal"="normal","Cauchy"="Cauchy","uniform"="uniform"),selected=effect$ResidDistr,selectize=FALSE),
+                                                                                   choices=list("normal"="normal","uniform"="uniform","Cauchy"="Cauchy","t(3)"="t(3)"),selected=effect$ResidDistr,selectize=FALSE),
                                                                ),
                                                                tags$td(width = "25%")
                                                              )

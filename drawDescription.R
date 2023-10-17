@@ -1,5 +1,3 @@
-doLegendPoints=FALSE
-
 drawPoints<-function(g,IV,DV,result,colindex=1,off=0){
 
   showRawData<-(allScatter=="all")

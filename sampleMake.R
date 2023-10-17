@@ -29,6 +29,10 @@ makeSampleVals<-function(n,mn,sdv,MV,distr="normal"){
           "Cauchy"={
             ivr=rcauchy(n,location=0,scale=1)*qnorm(0.75)
             ivr=ivr*sdv+mn
+          },
+          "t(3)"={
+            ivr<-rt(n,3,0)/sqrt(3/(3-2))
+            ivr<-ivr*sdv+mn
           }
   )
 }
