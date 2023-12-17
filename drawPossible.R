@@ -51,6 +51,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   switch(possible$type,
          "Samples"={
            switch (possible$UseSource,
+                   "hypothesis"={possible$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=effect$rIV,populationRZ="r",populationNullp=0)},
                    "world"={possible$source<-possible$world},
                    "prior"={possible$source<-possible$prior},
                    "null"={possible$source<-list(worldOn=TRUE,populationPDF="Single",populationPDFk=0,populationRZ="r",populationNullp=0)}
@@ -103,8 +104,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   pDens_r_null<-possibleResult$Theory$pDens_r_null
   pDens_r_plus<-possibleResult$Theory$pDens_r_plus
   if (possible$show=="Power") {
-    spDens_r<-possibleResult$Theory$spDens_w
     rp<-possibleResult$Theory$wp
+    pDens_r<-possibleResult$Theory$spDens_w
+    spDens_r<-possibleResult$Theory$spDens_w
+    rs<-possibleResult$Theory$wp
+    sDens_r<-possibleResult$Theory$spDens_w
+    sDens_r_total<-possibleResult$Theory$spDens_w
   }
 
   # make the back wall population distributions
@@ -116,7 +121,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   }
 
   # make the back wall sample distributions
-  rsw<-possibleResult$Theory$rs
+  rsw<-rs
   rsw_dens_plus<-possibleResult$Theory$sDens_r_plus
   rsw_dens_null<-possibleResult$Theory$sDens_r_null
   rsw_dens<-rsw_dens_plus+rsw_dens_null
@@ -126,15 +131,21 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     view_lims<-c(-1,1)*z_range
   }
   xlim<-view_lims
-  if (possible$show=="Power") {
-    if (w_range[1]<0.5) {
-      xlim<-c(0,1)
-    } else{
-      xlim<-w_range
-    }
-  }
   ylim<-view_lims
   zlim<-c(0,1)
+  if (possible$show=="Power") {
+    if (w_range[1]<0.5) {
+      wlim<-c(0,1)
+    } else{
+      wlim<-w_range
+    }
+    switch(possible$type,
+           "Samples"={ylim<-wlim},
+           "Populations"={xlim<-wlim}
+    )
+  }
+  
+  
   draw_lower_limit=0.01
   if (logZ) {
     if (possible$type=="Samples") {
@@ -167,11 +178,6 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
           "3D"= {
             
             # make the floor
-            longt<-1
-            if (possible$show=="Power") {
-              longt<-2.5
-            }
-            
             f <- function(x, y) { x*0+y*0 }
             z <- outer(xlim, xlim, f)+zlim[1]
             z[is.na(z)] <- zlim[1]
@@ -236,7 +242,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             tick.z.end <- trans3d(xlim[1],ylim[1]-ytick_length*tick_grow,long_ticks, mapping)
             segments(tick.z.start$x, tick.z.start$y, tick.z.end$x, tick.z.end$y)
             # label
-            pos.z<-trans3d(xlim[1],1.2*ylim[1],mean(zlim)*wallHeight,mapping)
+            pos.z<-trans3d(xlim[1],ylim[1]-diff(ylim)*0.08,mean(zlim)*wallHeight,mapping)
             rotate.z=trans3d(x=c(xlim[1],xlim[1]),
                              y=c(ylim[1],ylim[1]),
                              z=zlim,pmat=mapping)
@@ -246,11 +252,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             # x and y ticks
               
               plot_ticks<-seq(floor(xlim[1]*10)/10,xlim[2],0.1)
-              long_ticks<-seq(floor(xlim[1]*2)/2,xlim[2],0.5/longt)
-              if (possible$show=="Power") {
+              if (possible$show=="Power" && possible$type=="Populations") {
+                long_ticks<-seq(floor(xlim[1]*2)/2,xlim[2],0.5/2.5)
                 plot_ticks<-c(0,plot_ticks)
                 long_ticks<-c(0,long_ticks)
               } else {
+                long_ticks<-seq(floor(xlim[1]*2)/2,xlim[2],0.5/1)
                 plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
                 long_ticks<-c(-rev(long_ticks),0,long_ticks)
               }
@@ -268,8 +275,15 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             
               plot_ticks<-seq(0.1,xlim[2],0.1)
               long_ticks<-seq(0.5,xlim[2],0.5)
-              plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
-              long_ticks<-c(-rev(long_ticks),0,long_ticks)
+              if (possible$show=="Power" && possible$type=="Samples") {
+                long_ticks<-seq(floor(ylim[1]*2)/2,ylim[2],0.5/2.5)
+                plot_ticks<-c(0,plot_ticks)
+                long_ticks<-c(0,long_ticks)
+              } else {
+                long_ticks<-seq(floor(ylim[1]*2)/2,ylim[2],0.5/1)
+                plot_ticks<-c(-rev(plot_ticks),0,plot_ticks)
+                long_ticks<-c(-rev(long_ticks),0,long_ticks)
+              }
             tick.y.start <- trans3d(xlim[2], plot_ticks, zlim[1], mapping)
             tick.y.end <- trans3d(xlim[2]+xtick_length, plot_ticks , zlim[1], mapping)
             segments(tick.y.start$x, tick.y.start$y, tick.y.end$x, tick.y.end$y)
@@ -288,7 +302,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               label.x<-bquote(bold(z['p']))
               label.y<-bquote(bold(z['s']))
             }
-            if (possible$show=="Power") label.x<-bquote(bold(w['s']))
+            if (possible$show=="Power") {
+              switch(possible$type,
+                     "Samples"={label.y<-bquote(bold(w['p']))},
+                     "Populations"={label.x<-bquote(bold(w['s']))},
+              )
+            }
             
             pos.x<-trans3d(sum(xlim)/2,ylim[1]-ytick_length*tick_grow*char3D*2.5,zlim[1],mapping)
             text(pos.x$x,pos.x$y,label.x,adj=c(1,1),font=2,cex=char3D*0.75)
@@ -654,9 +673,9 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               rw<-rpw
               rw_dens<-rpw_dens
               if (RZ=="z") {
-                xlabel<-bquote(bold(z['p']))
+                if (possible$show=="Power") {xlabel<-bquote(bold(w['p']))} else {xlabel<-bquote(bold(z['p']))}
               } else {
-                xlabel<-bquote(bold(r['p']))
+                if (possible$show=="Power") {xlabel<-bquote(bold(w['p']))} else {xlabel<-bquote(bold(r['p']))}
               }
               col<-colP
               },
@@ -664,9 +683,9 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               rw<-rsw
               rw_dens<-rsw_dens
               if (RZ=="z") {
-                xlabel<-bquote(bold(z['s']))
+                if (possible$show=="Power") {xlabel<-bquote(bold(w['s']))} else {xlabel<-bquote(bold(z['s']))}
               } else {
-                xlabel<-bquote(bold(r['s']))
+                if (possible$show=="Power") {xlabel<-bquote(bold(w['s']))} else {xlabel<-bquote(bold(r['p']))}
               }
               col<-colS
             }
@@ -674,15 +693,17 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     
     rwd<-c(rw[1],rw,rw[length(rw)])
     rwd_dens<-c(0,rw_dens,0)
+    if (possible$type=="Samples") xlim<-ylim
     plot(x=rwd,y=rwd_dens,xlab=xlabel,ylab=label.z,type="n",yaxt="n",font.lab=2, cex.lab=char3D,
          xlim=xlim,ylim=zlim)
     axis(side = 2,  at=0, labels = FALSE, tck=-0.05)
-
+    
     # gray background
     u <- par("usr") # The coordinates of the plot area
     rect(u[1], u[3], u[2], u[4], col=graphcolours$graphBack, border=NA)
-    lines(u[c(1,2)],c(0,0),col="black")
+    lines(xlim,c(0,0),col="black")
     
+    if (possible$show!="Power") {
     # make the back wall
     polygon(x=rwd,y=rwd_dens,col=addTransparency(col,0.2))
     lines(x=rw,y=rw_dens,col=colDistS,lwd=2)
@@ -690,23 +711,28 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
       lines(x=c(-1,-1,1,1)*0.02,y=c(0,1,1,0),col=addTransparency(colNullS,0.2),lwd=2)
     }
     
+    zpSample<-approx(rw,rw_dens,sRho[1])$y
+    lines(x=c(0,0)+sRho[1],y=c(0,zpSample),col="red", lwd=3)
+    }
+    
     theoryAlpha=1
     # simulations
     switch (possible$type,
             "Populations"={
-              if (!is.null(possibleResult$Sims$pSims)) {
+              if (possible$show!="Power") {
                 bins<-possibleResult$Sims$pSimBins
-                dens<-possibleResult$Sims$pSimDens
-                dens<-dens$counts
-                
-                if (!is.null(dens)){
+                dens<-possibleResult$Sims$pSimDens$counts
+              } else {
+                bins<-possibleResult$Sims$pSimBinsW
+                dens<-possibleResult$Sims$pSimDensW$counts
+              }
+              if (!is.null(dens)) {
                   dens<-dens/max(dens)
                   x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
                   y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
                   
                   polygon(x=x,y=y1,col=colP)
                   theoryAlpha=0.25
-                }
               }
             },
             "Samples"={
@@ -727,8 +753,6 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               }
             }
     )
-    zpSample<-approx(rw,rw_dens,sRho[1])$y
-    lines(x=c(0,0)+sRho[1],y=c(0,zpSample),col="red", lwd=3)
     
     if (possible$possibleTheory){
       switch (possible$type,
@@ -807,8 +831,9 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               "Populations"={
                 if (!all(is.na(pDens_r))){
                   # main distribution
-                  polygon (x = rp, y = pDens_r, col = addTransparency(colP,theoryAlpha), lwd=1)
+                  polygon (x = c(rp[1],rp,rp[length(rp)]), y = c(0,pDens_r,0), col = addTransparency(colP,theoryAlpha), lwd=1)
                   # vertical lines
+                  if (possible$show!="Power") {
                   dens_at_peak<-max(pDens_r)
                   dens_at_sample<-approx(rp,pDens_r,sRho[1])$y
                   dens_at_ci<-approx(rp,pDens_r,rp_ci)$y
@@ -840,7 +865,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       bold(llr)(bolditalic(.(RZ))["+"]/bolditalic(.(RZ))[0])==bold(.(format(-llrNull,digits=3)))),
                       col=colPdark,adj=c(0),cex=0.9)
                   }
-                  
+                  }
                 }
               }
       )

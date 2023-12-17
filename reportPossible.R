@@ -8,23 +8,25 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
   nc<-3
   outputText<-rep("",nc)
   outputText[1]<-paste("\bPossible:",possible$type)
-  if (possible$show=="Power") outputText[1]<-paste(outputText[1],"(Power)")
+  if (possible$show=="Power") outputText[1]<-paste(outputText[1],"Power(w))")
   
   if (!is.na(possible$targetSample)) {
     switch (possible$type,
           "Samples"={
-            outputText[2]<-paste0("(no sims = ",format(length(possibleResult$Sims$sSims)),")")
+            progress<-paste0("(no sims = ",format(length(possibleResult$Sims$sSims)),")")
           },
           "Populations"={
             if (possible$show=="Power") {waste<-possibleResult$Sims$wpSimWaste} else {waste<-possibleResult$Sims$rpSimWaste}
-              outputText[2]<-paste("(no sims=",format(length(possibleResult$Sims$pSims)),
+              progress<-paste("(no sims=",format(length(possibleResult$Sims$pSims)),
                                    "; no at target=",format(sum(possibleResult$Sims$pSimDens$counts)),
                                    "; out of bounds at target=",format(waste),
                                    ")",sep="")
           }
   )
+    outputText<-c(outputText,progress,rep("",nc-1))
   }
-
+  outputText<-c(outputText,rep("",nc))
+  
   switch(possible$UseSource,
          "null"={
            text0<-paste0("Hypothesis","(",format(0,digits=3),")")
@@ -112,14 +114,14 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
                             paste("<", format(possibleResult$Sims$rpSim_ci[1],digits=report_precision), ",", format(possibleResult$Sims$rpSim_ci[2],digits=report_precision), ">")
               )
               } else {
-                outputText<-c(outputText,"max(power)",format(possibleResult$Theory$wp_peak,digits=report_precision),
+                outputText<-c(outputText,"max(w)",format(possibleResult$Theory$wp_peak,digits=report_precision),
                               format(possibleResult$Sims$wpSim_peak,digits=report_precision))
-                outputText<-c(outputText,"mean(power)",format(possibleResult$Theory$wp_mean,digits=report_precision),
+                outputText<-c(outputText,"mean(w)",format(possibleResult$Theory$wp_mean,digits=report_precision),
                               format(possibleResult$Sims$wpSim_mean,digits=report_precision))
               }
               outputText<-c(outputText,rep("",nc))
             if (length(possibleResult$Sims$pSims)==0){
-              outputText[seq(9,length(outputText),3)]<-" "
+              outputText[seq(12,length(outputText),3)]<-" "
             }
             S<-log(possibleResult$Theory$dens_at_sample)
             S1<-log(possibleResult$Theory$dens_at_zero)

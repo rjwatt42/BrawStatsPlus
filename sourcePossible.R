@@ -98,7 +98,7 @@ updatePossible<-function(){
                    view=input$possibleView,show=input$possibleShow,azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
                    textResult=FALSE
               )
-            if (possible$show=="Power") possible$show<-"Normal"
+            # if (possible$show=="Power") possible$show<-"Normal"
           }
   )
   if (pPlus) possible$prior$populationNullp<-1-possible$prior$populationNullp

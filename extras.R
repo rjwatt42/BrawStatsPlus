@@ -9,7 +9,7 @@ loadExtras<-function(session,addingExtras=TRUE){
     switches$doWorlds<<-FALSE
     removeTab("Hypothesis","World",session)
     removeTab("HypothesisDiagram","World",session)
-    updateSelectInput(session,"possibleUseSource",choices=c("null","prior"))
+    updateSelectInput(session,"possibleUseSource",choices=c("null","hypothesis","prior"))
     updateSelectInput(session,"possibleUsePrior",choices=c("none","prior"))
     
     switches$doCheating<<-FALSE

@@ -60,7 +60,9 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
               alphaSig<-exploreResult$result$vals
             }
             ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
-            ps<-colMeans(ps)
+            if (ncol(ps)>1) {
+              ps<-colMeans(ps)
+            }
             y25<-ps-sqrt(ps*(1-ps)/nrow(pVals))
             y50<-ps
             y75<-ps+sqrt(ps*(1-ps)/nrow(pVals))

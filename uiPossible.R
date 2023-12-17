@@ -172,7 +172,7 @@ PossibleTab <-
                                                            step = 5,
                                                            value = possible$elevation)
                                       ),
-                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "r:")),
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "range:")),
                                       tags$td(width = "15%", 
                                               numericInput("possibleRange",label=NULL,
                                                            min = 0,

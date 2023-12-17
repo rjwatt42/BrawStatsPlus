@@ -496,7 +496,12 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                               populationRZ="r",
                               populationNullp=0
          )},
-         "hypothesis"={source<-possible$world},
+         "hypothesis"={source<-list(worldOn=FALSE,
+                                    populationPDF="Single",
+                                    populationPDFk=effect$rIV,
+                                    populationRZ="r",
+                                    populationNullp=0
+         )},
          "world"={source<-possible$world},
          "prior"={source<-possible$prior}
   )
@@ -816,17 +821,24 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     wp<-seq(w_range[1],w_range[2],length.out=npoints)
     w<-zn2w(zp,nUse)
   }
-  spDens_w<-spDens_z
-  if (any(!is.na(spDens_z))) {
-    for (i1 in 1:nrow(spDens_z)) {
+  switch (possible$type,
+          "Samples"={
+            spDens_w<-sDens_z
+          },
+          "Populations"={
+            spDens_w<-spDens_z
+          }
+  )
+  if (any(!is.na(spDens_w))) {
+    for (i1 in 1:nrow(spDens_w)) {
       if (wDensMethod==1) {
         # this way round avoids awkward infinities
-        z_use_dens<-approx(zp,spDens_z,z_use)$y
+        z_use_dens<-approx(zp,spDens_w,z_use)$y
         wd<-(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
-        z_use_dens<-approx(zp,spDens_z,-z_use)$y
+        z_use_dens<-approx(zp,spDens_w,-z_use)$y
         wd<-wd+(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
       } else {
-        zd<-spDens_z[i1,]
+        zd<-spDens_w[i1,]
         useBreak<-which(w==min(w))
         
         use<-zp<=0
@@ -850,7 +862,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   if (wDensMethod==1) {
     wp<-wp[1:npoints]+diff(wp)/2
   }
-
+  
   dr_gain<-max(sDens_r,na.rm=TRUE)
   sDens_r<-sDens_r/dr_gain # *(1-possible$world$populationNullp)
   
