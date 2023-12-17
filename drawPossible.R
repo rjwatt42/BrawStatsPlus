@@ -466,8 +466,13 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       if (!is.null(possibleResult$Sims$sSimDens)) {
                         theoryAlpha<-0.25
                         
-                        bins<-possibleResult$Sims$sSimBins
-                        dens<-possibleResult$Sims$sSimDens
+                        if (possible$show!="Power") {
+                          bins<-possibleResult$Sims$sSimBins
+                          dens<-possibleResult$Sims$sSimDens
+                        } else {
+                          bins<-possibleResult$Sims$sSimBinsW
+                          dens<-possibleResult$Sims$sSimDensW
+                        }
                         simgain<-mean(sDens_r)/mean(dens)
                         dens<-dens*simgain*pgain
                           if (possible$cutaway) {
@@ -736,20 +741,20 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               }
             },
             "Samples"={
-              if (!is.null(possibleResult$Sims$sSims)) {
+              if (possible$show!="Power") {
                 bins<-possibleResult$Sims$sSimBins
                 dens<-possibleResult$Sims$sSimDens
-                # dens<-dens$counts
-                
-                if (!is.null(dens)){
+              } else {
+                bins<-possibleResult$Sims$sSimBinsW
+                dens<-possibleResult$Sims$sSimDensW
+              }
+              if (!is.null(dens)) {
                   dens<-dens/max(dens)
                   x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
                   y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
                   
                   polygon(x=x,y=y1,col=colS)
                   theoryAlpha=0.25
-
-                }
               }
             }
     )

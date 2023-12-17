@@ -608,6 +608,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   sr_effects<-NULL
   sSimBins<-NULL
   sSimDens<-NULL
+  sSimBinsW<-NULL
+  sSimDensW<-NULL
   rsSim_sd<-NULL
   rsSim_ci=NULL
   rsSim_peak=NULL
@@ -680,10 +682,14 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               nbins=round(2/binWidth)
               sSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
               sSimDens<-c()
+              sSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
+              sSimDensW<-c()
               for (i in 1:length(pRho)) {
                 use_data<-abs(use_effects[i,])<=hist_range
                 h<-hist(use_effects[i,use_data],sSimBins,plot=FALSE)$counts
                 sSimDens<-rbind(sSimDens,h*pRhogain[i]/(1-tanh(pRho[i])^2))
+                h<-hist(zn2w(atanh(sr_effects[i,]),42),sSimBinsW,plot=FALSE)$counts
+                sSimDensW<-rbind(sSimDensW,h*pRhogain[i]/(1-tanh(pRho[i])^2))
               }
               possibleSResultHold<<-list(sSims=sr_effects,sSimBins=sSimBins,sSimDens=sSimDens)
               rsSim_ci=quantile(sr_effects,c(0.025,0.975))
@@ -922,6 +928,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    ),
                                    Sims=list(
                                      sSims=sr_effects,sSimBins=sSimBins,sSimDens=sSimDens,
+                                     sSimBinsW=sSimBinsW,sSimDensW=sSimDensW,
                                      rsSim_sd=rsSim_sd,
                                      rsSim_ci=rsSim_ci,
                                      rsSim_peak=rsSim_peak
