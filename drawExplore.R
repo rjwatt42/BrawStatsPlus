@@ -1,6 +1,7 @@
 no_se_multiple<-TRUE
 multiOverlap<-FALSE
 valsGap<-1.4
+doBudget<-1
 ErrorsWorld<-"1scale"
 # ErrorsWorld<-"2scale"
 all_cols<-c()
@@ -76,12 +77,19 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             }
           },
           "p(sig)"={
+            doBudget<-FALSE
             ylabel<-pSigLabel
             if (explore$Explore_ylog) {
               ylim<-c(0.001,1)
             } else {
               ylim<-c(0,1)
             }
+          },
+          "n(sig)"={
+            doBudget<-1
+            ylabel<-bquote(bold(n[.('sig')]))
+            explore$Explore_show<-"p(sig)"
+            ylim<-c(0,100)
           },
           "FDR"={
             if (explore$Explore_ylog) {
@@ -368,7 +376,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               if (explore$Explore_type=="Alpha") {
                 alphaSig<-exploreResult$result$vals
               }
-              getStat<-function(x,n) {colMeans(x)}
+              if (doBudget) {
+                getStat<-function(x,n) {colMeans(x)*max(n)/colMeans(n)}
+              } else {
+                getStat<-function(x,n) {colMeans(x)}
+              }
               ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               ps_mn<-getStat(ps,nVals)
               ps1<-colMeans(ps)
@@ -424,7 +436,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               sigs<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
               nulls<-exploreResult$result$rpIVs==0
               if (STMethod=="NHST") {
-                p1<-colSums(sigs & nulls)/max(colSums(sigs),1)
+                p1<-colSums(sigs & nulls)/colSums(sigs)
               } else {
                 d<-r2llr(rVals,nVals,df1Vals,STMethod,world=effect$world)
                 p1<-(colSums(sigs & nulls & d>0)+colSums(sigs & !nulls & d<0))/max(colSums(sigs),1)

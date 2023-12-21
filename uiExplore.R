@@ -96,6 +96,7 @@ effectChoices=list("IV1-DV"="MainEffectIV",
 
 showInfer<-list("p-value" = "p",
                 "p(sig)" = "p(sig)",
+                "n(sig)" = "n(sig)",
                 "Power" = "w",
                 "NHST errors" = "NHSTErrors"
                 )

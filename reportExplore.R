@@ -67,6 +67,21 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
             y50<-ps
             y75<-ps+sqrt(ps*(1-ps)/nrow(pVals))
           },
+          "n(sig)"={
+            if (explore$Explore_type=="Alpha") {
+              alphaSig<-exploreResult$result$vals
+            }
+            ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
+            if (ncol(ps)>1) {
+              ps<-colMeans(ps)
+            }
+            y25<-ps-sqrt(ps*(1-ps)/nrow(pVals))
+            y50<-ps
+            y75<-ps+sqrt(ps*(1-ps)/nrow(pVals))
+            y25<-y25*max(nVals)/colMeans(nVals)
+            y50<-y50*max(nVals)/colMeans(nVals)
+            y75<-y75*max(nVals)/colMeans(nVals)
+          },
           "NHSTErrors"={
             extra_y_label<-"Type II errors"
             y50<-c()

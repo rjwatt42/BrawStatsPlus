@@ -820,8 +820,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     nUse<-design$sN
   }
   if (wDensMethod==1) {
-    wp<-seq(w_range[1],w_range[2],length.out=npoints)
-    wp<-c(wp,wp[npoints]+diff(wp[1:2]))
+    wp<-seq(w_range[1],w_range[2],length.out=npoints+1)
+    # wp<-c(wp,wp[npoints]+diff(wp[1:2]))
     z_use<-wn2z(wp,nUse)
   } else {
     wp<-seq(w_range[1],w_range[2],length.out=npoints)
@@ -839,6 +839,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     for (i1 in 1:nrow(spDens_w)) {
       if (wDensMethod==1) {
         # this way round avoids awkward infinities
+        # by using numerical differentiation
         z_use_dens<-approx(zp,spDens_w,z_use)$y
         wd<-(z_use_dens[1:(length(z_use)-1)]+z_use_dens[2:(length(z_use))])/2 * diff(z_use)
         z_use_dens<-approx(zp,spDens_w,-z_use)$y

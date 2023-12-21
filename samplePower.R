@@ -1,8 +1,13 @@
 
 dwdz<-function(z,n,t=2) {
-  dwdz<-exp(-(z*sqrt(n - 3) + qnorm(alphaSig/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
-  if (t==2) {
-  dwdz<-dwdz+exp(-(z*sqrt(n - 3) - qnorm(alphaSig/2))^2/2)*sqrt(n - 3)/sqrt(2*pi)
+  if (t==1) {
+    dwdz<-dnorm(z,-qnorm(alphaSig)/sqrt(n-3),1/sqrt(n-3))
+    # dwdz<-exp(-(z*sqrt(n-3) + qnorm(alphaSig))^2/2)*sqrt(n-3)/sqrt(2*pi)
+  } else {
+    dwdz<-dnorm(z,-qnorm(alphaSig/2)/sqrt(n-3),1/sqrt(n-3))
+    dwdz<-dwdz+dnorm(z,+qnorm(alphaSig/2)/sqrt(n-3),1/sqrt(n-3))
+    # dwdz<-     exp(-(z*sqrt(n-3) + qnorm(alphaSig/2))^2/2)*sqrt(n-3)/sqrt(2*pi)
+    # dwdz<-dwdz+exp(-(z*sqrt(n-3) - qnorm(alphaSig/2))^2/2)*sqrt(n-3)/sqrt(2*pi)
   }
   return(dwdz)
 }
@@ -40,6 +45,10 @@ wn2z<-function(w,n,t=2){
     z<-(qnorm(w)-qnorm(alphaSig))/sqrt(n-3)
   } else {
     # two tailed
+    if (any(w>1)) {
+      print("w error")
+      w[w>1]<-1
+    }
     z<-(qnorm(w)-qnorm(alphaSig/2))/sqrt(n-3)
   }
   z
