@@ -637,8 +637,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                     nstr<-""
                     sstr<-""
                   }
-                  labelPt1<-paste0("p(True ns) = ",format(ns/n*100,digits=2),"% ",nstr)
-                  labelPt1a<-paste0("p(False sig) = ",format(s/n*100,digits=2),"% ",sstr)
+                  labelPt1<-paste0("p(ns correct) = ",format(ns/n*100,digits=2),"% ",nstr)
+                  labelPt1a<-paste0("p(sig error) = ",format(s/n*100,digits=2),"% ",sstr)
                 },
                 "e2"={
                   ns<-sum(!resSig,na.rm=TRUE)
@@ -650,8 +650,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                     nstr<-""
                     sstr<-""
                   }
-                  labelPt1<-paste0("p(False ns) = ",format(ns/n*100,digits=2),"% ",nstr)
-                  labelPt1a<-paste0("p(True sig) = ",format(s/n*100,digits=2),"% ",sstr)
+                  labelPt1<-paste0("p(ns miss) = ",format(ns/n*100,digits=2),"% ",nstr)
+                  labelPt1a<-paste0("p(sig correct) = ",format(s/n*100,digits=2),"% ",sstr)
                 },
                 "e1d"={
                   ns<-sum(!resSig,na.rm=TRUE)
@@ -667,11 +667,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                     s1str<-""
                   }
                   labelPt1b<-paste0("p(ns) = ",format(ns/n*100,digits=2),"% ",nstr)
-                  labelPt1a<-paste0("p(True sig) = ",format(s2/n*100,digits=2),"% ",s1str)
-                  labelPt1<-paste0("p(False sig) = ",format(s1/n*100,digits=2),"% ",s1str)
+                  labelPt1a<-paste0("p(sig correct) = ",format(s2/n*100,digits=2),"% ",s1str)
+                  labelPt1<-paste0("p(sig error) = ",format(s1/n*100,digits=2),"% ",s1str)
                   labelPt1b<-paste0("p(ns) = ",format(ns/n*100,digits=2),"%")
-                  labelPt1a<-paste0("p(True sig) = ",format(s2/n*100,digits=2),"%")
-                  labelPt1<-paste0("p(False sig) = ",format(s1/n*100,digits=2),"%")
+                  labelPt1a<-paste0("p(sig correct) = ",format(s2/n*100,digits=2),"%")
+                  labelPt1<-paste0("p(sig error) = ",format(s1/n*100,digits=2),"%")
                 },
                 "e2d"={
                   ns<-sum(!resSig,na.rm=TRUE)
@@ -687,11 +687,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                     s1str<-""
                   }
                   labelPt1b<-paste0("p(ns) = ",format(ns/n*100,digits=2),"% ",nstr)
-                  labelPt1a<-paste0("p(False sig) = ",format(s2/n*100,digits=2),"% ",s2str)
-                  labelPt1<-paste0("p(True sig) = ",format(s1/n*100,digits=2),"% ",s1str)
+                  labelPt1a<-paste0("p(sig error) = ",format(s2/n*100,digits=2),"% ",s2str)
+                  labelPt1<-paste0("p(sig correct) = ",format(s1/n*100,digits=2),"% ",s1str)
                   labelPt1b<-paste0("p(ns) = ",format(ns/n*100,digits=2),"%")
-                  labelPt1a<-paste0("p(False sig) = ",format(s2/n*100,digits=2),"%")
-                  labelPt1<-paste0("p(True sig) = ",format(s1/n*100,digits=2),"%")
+                  labelPt1a<-paste0("p(sig error) = ",format(s2/n*100,digits=2),"%")
+                  labelPt1<-paste0("p(sig correct) = ",format(s1/n*100,digits=2),"%")
                 }
         )
         lpts1<-data.frame(x = xoff[i]-0.98, y = ylim[2]+diff(ylim)/25,label = labelPt1)

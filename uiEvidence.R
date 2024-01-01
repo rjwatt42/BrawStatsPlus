@@ -120,7 +120,9 @@ EvidenceTab <-
                                                                     "100" = "100",
                                                                     "250" = "250",
                                                                     "500" = "500",
-                                                                    "1000" = "1000"),
+                                                                    "1000" = "1000",
+                                                                    "10000" = "10000",
+                                                                    "100000" = "100000"),
                                                                   selected = "10",
                                                                   selectize=FALSE)
                                               ),
@@ -147,8 +149,15 @@ EvidenceTab <-
                                               tags$td(width = "25%", 
                                                       checkboxInput("Welch",label=NULL,value=evidence$Welch),
                                               ),
-                                              tags$td(width = "25%"),
-                                              tags$td(width = "25%"),
+                                              tags$td(width = "10%"),
+                                              tags$td(width = "15%", tags$div(style = localPlainStyle, "Transform")),
+                                              tags$td(width = "25%", 
+                                                      selectInput("Transform",label=NULL,
+                                                                  choices=c("None","Log","Exp"),
+                                                                  selected=evidence$Transform,
+                                                                  selectize=FALSE
+                                                                  ),
+                                              )
                                             )
                                  ),
                                  conditionalPanel(condition="input.LoadExtras",

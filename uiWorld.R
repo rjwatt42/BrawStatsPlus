@@ -19,7 +19,9 @@ worldPanel<-function(prefix="",asTable=FALSE,doAnyway=FALSE) {
                                      c("Single" = "Single",
                                        "Uniform" = "Uniform",
                                        "Gauss"="Gauss",
-                                       "Exp" = "Exp"),width="100%",
+                                       "Exp" = "Exp",
+                                       ">"=">",
+                                       "<"="<"),width="100%",
                                      selected=effect$world$populationPDF,
                                      selectize=FALSE)
                  ),

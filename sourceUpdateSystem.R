@@ -117,7 +117,7 @@ updateEvidence<-function(){
                  allScatter=input$allScatter,
                  ssqType=input$ssqType,
                  llr=list(e1=input$llr1,e2=input$llr2),
-                 evidenceCaseOrder=input$evidenceCaseOrder,Welch=input$Welch,
+                 evidenceCaseOrder=input$evidenceCaseOrder,Welch=input$Welch,Transform=input$Transform,
                  dataType=input$dataType,analysisType=input$analysisType,
                  pScale=input$pScale,wScale=input$wScale,nScale=input$nScale,
                  usePrior=input$STPrior,

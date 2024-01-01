@@ -9,7 +9,7 @@ applyingAnalysis<-FALSE
 
 oldResult<-NULL
 onlyAnalysis<-FALSE
-observeEvent(c(input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
+observeEvent(c(input$Welch,input$Transform,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
   onlyAnalysis<<-TRUE
 },priority=100)
 observeEvent(c(input$EvidencenewSample),{
@@ -62,7 +62,7 @@ doSampleAnalysis<-function(IV,IV2,DV,effect,design,evidence){
 
 # eventReactive wrapper
 sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewSample,
-                                input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
+                                input$Welch,input$Transform,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn),{
   if (any(input$EvidenceHypothesisApply,input$EvidencenewSample)>0){
     validSample<<-TRUE
     IV<-updateIV()
@@ -146,7 +146,7 @@ makeDescriptiveGraph <- function(){
 # single inferential graph
 makeInferentialGraph <- function() {
   doit<-c(input$EvidenceInfer_type,input$evidenceTheory,
-          input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
+          input$Welch,input$Transform,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
   doIt<-editVar$data
   llrConsts<-c(input$llr1,input$llr2)
   
@@ -275,7 +275,7 @@ makeDescriptiveReport <- function()  {
 
 # single inferential report
 makeInferentialReport <- function()  {
-  doIt<-c(editVar$data,input$Welch,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
+  doIt<-c(editVar$data,input$Welch,input$Transform,input$evidenceCaseOrder,input$analysisType,input$dataType,input$rInteractionOn)
   llrConsts<-c(input$llr1,input$llr2)
   
   # doIt<-input$MVok

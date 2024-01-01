@@ -83,7 +83,7 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
           e1=paste0(format(mean(nullSig)*100,digits=report_precision),"%")
           e2=paste0(format(mean(!resSig)*100,digits=report_precision),"%")
           outputText<-c(outputText,"!jr=0",e1," "," ")
-          outputText<-c(outputText,"!jr>0"," ",e2," ")
+          outputText<-c(outputText,paste0("!jr","\u2260","0")," ",e2," ")
           
           e1b=paste0("\b",format((sum(nullSig)+sum(!resSig))/nr*100,digits=report_precision),"%")
           e2b=paste0(format((sum(!nullSig)+sum(resSig))/nr*100,digits=report_precision),"%")
@@ -102,7 +102,7 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
           e1=paste0(format(sum(nullSigW)/length(nullSig)*100,digits=report_precision),"%")
           e2=paste0(format(sum(resSigW)/length(resSig)*100,digits=report_precision),"%")
           outputText<-c(outputText,"!jr=0",e1," "," ")
-          outputText<-c(outputText,"!jr>0"," ",e2," ")
+          outputText<-c(outputText,paste0("!jr","\u2260","0")," ",e2," ")
 
           e1b=paste0("\b",format((sum(nullSigW)+sum(resSigW))/nr*100,digits=report_precision),"%")
           e2b=paste0(format((sum(nullSigC)+sum(resSigC))/nr*100,digits=report_precision),"%")

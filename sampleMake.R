@@ -10,18 +10,25 @@ make_debug=FALSE
 makeSampleVals<-function(n,mn,sdv,MV,distr="normal"){
   switch (distr,
           "normal"= {
+            ivr<-rnorm(n,0,1)
             if (MV$type=="Interval" && (MV$skew!=0 || MV$kurtosis!=3)){
               if (MV$kurtosis<1.05) MV$kurtosis<-1.05
               change<-MV$skew!=0 & (MV$kurtosis-3)>MV$skew^2
               MV$kurtosis[change]<-MV$skew[change]^2 + 3
               
-              a<-f_johnson_M(0,sdv,MV$skew,MV$kurtosis)
+              a<-f_johnson_M(0,1,MV$skew,MV$kurtosis)
               ivr<-f_johnson_z2y(ivr,a$coef,a$type)
               # ivr<-rJohnson(n,parms=a)
-            } else {
-              ivr<-rnorm(n,0,sdv)
             }
-            ivr+mn
+            ivr*sdv+mn
+          },
+          "skewed"={
+            skew<-2
+            kurtosis<-3
+            ivr<-rnorm(n,0,1)
+            a<-f_johnson_M(0,sdv,skew,kurtosis)
+            ivr<-f_johnson_z2y(ivr,a$coef,a$type)
+            ivr*sdv+mn
           },
           "uniform"={
             ivr=runif(n,min=-1,max=1)*sdv*sqrt(3)+mn
@@ -191,7 +198,9 @@ makeSample<-function(IV,IV2,DV,effect,design){
                         "Single"={rho<-effect$world$populationPDFk},
                         "Uniform"={rho<-runif(1,min=-1,max=1)},
                         "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
-                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
+                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))},
+                        ">"={rho<-runif(1,min=effect$world$populationPDFk,max=1)*sign(runif(1,min=-1,max=1))},
+                        "<"={rho<-runif(1,min=-1,max=1)*effect$world$populationPDFk}
                 )
               },
               "z"={
@@ -199,7 +208,9 @@ makeSample<-function(IV,IV2,DV,effect,design){
                         "Single"={rho<-effect$world$populationPDFk},
                         "Uniform"={rho<-runif(1,min=-10,max=10)},
                         "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
-                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))}
+                        "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))},
+                        ">"={rho<-runif(1,min=effect$world$populationPDFk,max=10)*sign(runif(1,min=-1,max=1))},
+                        "<"={rho<-runif(1,min=-1,max=1)*effect$world$populationPDFk}
                 )
                 rho<-tanh(rho)
               }

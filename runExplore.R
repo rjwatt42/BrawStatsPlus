@@ -61,7 +61,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             vals<-vals*effectSizeRange
             },
           
-          "PDF"={vals<-c("Single","Uniform","Gauss","Exp")},
+          "PDF"={vals<-c("Single","Uniform","Gauss","Exp",">","<")},
           "k"={vals<-10^seq(-1,-0.1,length.out=npoints)},
           "pNull"={vals<-seq(0,1,length.out=npoints)},
           
@@ -85,6 +85,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "Dependence"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Outliers"={vals<-seq(0,anomaliesRange,length.out=npoints)},
           "Heteroscedasticity"={vals<-seq(0,1,length.out=npoints)},
+          "Transform"={vals<-c("None","Log","Exp")},
           "IVRange"={vals<-seq(3,0.5,length.out=npoints)},
           "DVRange"={vals<-seq(3,0.5,length.out=npoints)},
           "Cheating"={vals<-c("None","Grow","Prune","Replace","Retry","Add")},
@@ -396,6 +397,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
                      },
             
             "Heteroscedasticity"={effect$Heteroscedasticity<-vals[i]},
+            "Transform"={evidence$Transform<-vals[i]},
             "SampleSize"={design$sN<-round(vals[i])},
             "Method"={design$sMethod<-vals[i]},
             "Usage"={design$sIV1Use<-vals[i]},

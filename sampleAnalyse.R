@@ -581,8 +581,11 @@ generalAnalysis<-function(allData,InteractionOn,withins,ssqType="Type3",caseOrde
 
 analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
 
-
-  allData<-data.frame(result$participant,result$dv)
+  switch (evidence$Transform,
+          "Log"={allData<-data.frame(result$participant,log(result$dv))},
+          "Exp"={allData<-data.frame(result$participant,exp(result$dv))},
+          "None"={allData<-data.frame(result$participant,result$dv)}
+  )
   if (!all(result$iv==result$iv[1])) 
     allData<-cbind(allData,result$iv)
   if (!is.null(IV2) && !all(result$iv2==result$iv2[1]))

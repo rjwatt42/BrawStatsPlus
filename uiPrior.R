@@ -9,7 +9,9 @@ priorPanel<-function(prefix="",asTable=FALSE) {
                                      c("Single" = "Single",
                                        "Uniform" = "Uniform",
                                        "Gauss"="Gauss",
-                                       "Exp" = "Exp"),
+                                       "Exp" = "Exp",
+                                       ">"=">",
+                                       "<"="<"),
                                      selected="Uniform",
                                      width="100%",selectize=FALSE)
                  ),

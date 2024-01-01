@@ -14,7 +14,8 @@ hypothesisChoicesV3=list("Variables"=list("IV" = "IV",
                                        "Effect Size2" = "EffectSize2",
                                        "Interaction" = "Interaction",
                                        "Covariation" = "Covariation",
-                                       "Heteroscedasticity" = "Heteroscedasticity"
+                                       "Heteroscedasticity" = "Heteroscedasticity",
+                                       "Transform"="Transform"
                         )
 )
 
@@ -27,7 +28,9 @@ hypothesisChoicesV2=list("Variables"=list("IV" = "IV",
                                           "DV" = "DV",
                                           "IV/DV Types" = "IVDVType"),
                          "Effects"=list("Effect Size" = "EffectSize",
-                                        "Heteroscedasticity" = "Heteroscedasticity")
+                                        "Heteroscedasticity" = "Heteroscedasticity",
+                                        "Transform"="Transform"
+                                        )
 )
 
 if (switches$doWorlds) {
@@ -40,7 +43,9 @@ hypothesisChoicesV2Extra=list("Variables"=list("IV" = "IV",
                                           "DV" = "DV",
                                           "IV/DV Types" = "IVDVType"),
                          "Effects"=list("Effect Size" = "EffectSize",
-                                        "Heteroscedasticity" = "Heteroscedasticity"),
+                                        "Heteroscedasticity" = "Heteroscedasticity",
+                                        "Transform"="Transform"
+                                        ),
                          "Worlds"=worldsList
 )
 

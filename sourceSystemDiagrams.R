@@ -84,6 +84,12 @@ output$WorldPlot<-renderPlot({
           "Gauss"={
             y<-exp(-0.5*abs(r/effect$world$populationPDFk)^2)
           },
+          ">"={
+            y<-(abs(r)>effect$world$populationPDFk)*0.5
+          },
+          "<"={
+            y<-(abs(r)<effect$world$populationPDFk)*0.5
+          },
   )
   if (effect$world$populationRZ=="z") {
     y<-y/(1-x^2)
