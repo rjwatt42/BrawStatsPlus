@@ -133,6 +133,10 @@ EvidenceTab <-
                                  )
                         ),
                         metaAnalysisPanel,
+                        tabPanel("Prior",
+                                 style = paste("background: ",subpanelcolours$possibleC), 
+                                 priorPanel("",asTable=TRUE),
+                        ),
                         tabPanel("#",id="EvidenceOptions",
                                  style = paste("background: ",subpanelcolours$simulateC),
                                  tags$table(width = "100%",class="myTable",
@@ -165,7 +169,7 @@ EvidenceTab <-
                                                              tags$tr(
                                                                tags$td(width="25%", 
                                                                        selectInput("STMethod",label=NULL,
-                                                                                   choices=c("NHST","sLLR","dLLR"),
+                                                                                   choices=c("NHST","NHST+","sLLR","dLLR"),
                                                                                    selected="NHST",
                                                                                    selectize=FALSE
                                                                        )

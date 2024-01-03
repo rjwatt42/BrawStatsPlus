@@ -382,8 +382,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 getStat<-function(x,n) {colMeans(x)}
               }
               ps<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
-              ps_mn<-getStat(ps,nVals)
-              ps1<-colMeans(ps)
+              ps_mn<-getStat(abs(ps),nVals)
+              ps1<-colMeans(abs(ps))
               p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
               y50<-ps_mn
               y25<-ps_mn+p_se*qnorm(0.25)
@@ -409,7 +409,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 cole<-"sig|Z0"
                 cola<-"sig|Z+"
                 nulls<-rpVals==0
-                ps_mn<-getStat(ps & nulls,nVals)
+                ps_mn<-getStat((ps>0 & nulls)|(ps<0 & !nulls),nVals)
                 ps1<-colMeans(ps)
                 p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
                 y50e<-ps_mn
@@ -418,7 +418,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                 y62e<-ps_mn+p_se*qnorm(0.625)
                 y75e<-ps_mn+p_se*qnorm(0.75)
                 
-                ps_mn<-getStat(ps & !nulls,nVals)
+                ps_mn<-getStat((ps<0 & nulls)|(ps>0 & !nulls) & !nulls,nVals)
                 ps1<-colMeans(ps)
                 p_se<-sqrt(ps1*(1-ps1)/nrow(pVals))*(ps_mn/ps1)
                 y50a<-ps_mn
@@ -438,8 +438,8 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               if (STMethod=="NHST") {
                 p1<-colSums(sigs & nulls)/colSums(sigs)
               } else {
-                d<-r2llr(rVals,nVals,df1Vals,STMethod,world=effect$world)
-                p1<-(colSums(sigs & nulls & d>0)+colSums(sigs & !nulls & d<0))/max(colSums(sigs),1)
+                # d<-r2llr(rVals,nVals,df1Vals,STMethod,world=effect$world)
+                p1<-(colSums(sigs & nulls & sigs>0)+colSums(sigs & !nulls & sigs<0))/max(colSums(abs(sigs)),1)
               }
               y50<-p1
               p_se<-sqrt(p1*(1-p1)/nrow(pVals))

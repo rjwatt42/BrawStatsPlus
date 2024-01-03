@@ -14,7 +14,7 @@ loadExtras<-function(session,addingExtras=TRUE){
     
     switches$doCheating<<-FALSE
     switches$doLikelihoodInfer<<-FALSE
-    
+
     updateSelectInput(session,"Explore_typeH",choices=hypothesisChoicesV2)
     updateSelectInput(session,"Explore_typeD",choices=designChoices)
 

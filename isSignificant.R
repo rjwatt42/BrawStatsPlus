@@ -14,7 +14,7 @@ isSignificant<-function(method="NHST",p,r,n,df1,evidence,alphaLocal=alphaSig) {
           "dLLR"={
             r[abs(r)>1]<-1
             d<-r2llr(abs(r),n,df1,"dLLR",evidence$llr,evidence$prior)
-            sig<-abs(d)>alphaLLR
+            sig<-(abs(d)>alphaLLR)*sign(d)
           }
   )
   return(sig)

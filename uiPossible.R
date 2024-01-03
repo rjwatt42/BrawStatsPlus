@@ -101,10 +101,6 @@ PossibleTab <-
                                     )
                          ),
               ),
-              tabPanel("Prior",
-                       style = paste("background: ",subpanelcolours$possibleC), 
-                         priorPanel("possible",asTable=TRUE),
-              ),
               tabPanel("#",
                        style = paste("background: ",subpanelcolours$possibleC), 
                          tags$table(width = "100%",class="myTable",

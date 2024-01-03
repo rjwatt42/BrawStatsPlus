@@ -62,9 +62,9 @@ updatePossible<-function(){
               list(type=showPossible,
                    UsePrior=input$possibleUsePrior,
                    UseSource=input$possibleUseSource,
-                   prior=list(worldOn=TRUE,populationPDF=input$possiblePrior_distr,populationRZ=input$possiblePrior_distr_rz, 
-                              populationPDFk=input$possiblePrior_distr_k,
-                              populationNullp=input$possiblePrior_Nullp
+                   prior=list(worldOn=TRUE,populationPDF=input$Prior_distr,populationRZ=input$Prior_distr_rz, 
+                              populationPDFk=input$Prior_distr_k,
+                              populationNullp=input$Prior_Nullp
                    ),
                    world=world,
                    design=list(sampleN=input$sN,sampleNRand=input$sNRand,sampleNRandK=input$sNRandK),
@@ -84,8 +84,8 @@ updatePossible<-function(){
               list(type=showPossible,
                    UsePrior=input$possibleUsePrior,
                    UseSource=input$possibleUseSource,
-                   prior=list(worldOn=TRUE,populationPDF=input$possiblePrior_distr,populationRZ=input$possiblePrior_distr_rz, populationPDFk=input$possiblePrior_distr_k,
-                              populationNullp=input$possiblePrior_Nullp),
+                   prior=list(worldOn=TRUE,populationPDF=input$Prior_distr,populationRZ=input$Prior_distr_rz, populationPDFk=input$Prior_distr_k,
+                              populationNullp=input$Prior_Nullp),
                    world=world,
                    design=list(sampleN=input$sN,sampleNRand=input$sNRand,sampleNRandK=input$sNRandK),
                    targetSample=input$possibleSampRho,targetPopulation=effect$world$populationPDFk,
@@ -129,8 +129,8 @@ updatePossible<-function(){
 }
 
 # main likelihood calcuations    
-possibleReset<-observeEvent(c(input$possiblePrior_Nullp,
-                                input$possiblePrior_distr,input$possiblePrior_distr_rz,input$possiblePrior_distr_k,
+possibleReset<-observeEvent(c(input$Prior_Nullp,
+                                input$Prior_distr,input$Prior_distr_rz,input$Prior_distr_k,
                                 input$possibleUsePrior,
                                 input$sN
 ),{
@@ -142,7 +142,7 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
                                     input$possible_run,input$possibleP_run,
                                     input$possiblePSampRho,
                                     input$possibleUsePrior,input$possibleUseSource,
-                                    input$possiblePrior_distr,input$possiblePrior_distr_rz,input$possiblePrior_distr_k,input$possiblePrior_Nullp,
+                                    input$Prior_distr,input$Prior_distr_rz,input$Prior_distr_k,input$Prior_Nullp,
                                     input$rIV,
                                     input$world_on,input$world_distr,input$world_distr_rz,input$world_distr_k,input$world_distr_Nullp,
                                     input$sN,input$sNRand,input$sNRandK,input$sReplicationOn,input$sReplPowerOn,input$sReplPower,

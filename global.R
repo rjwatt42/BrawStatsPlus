@@ -23,8 +23,9 @@ mainHue=0.55
 hypHue=0.986667
 desHue=0.1
 eviHue=0.33333
-posHue=0.583
 expHue=0.65
+posHue=0.583
+metHue=0.05
 filHue=0.0833
 
 mainSat=0.25
@@ -45,6 +46,7 @@ panelcolours<-list(hypothesisC=hsv(hypHue,mainSat,mainBright),
                    simulateC=hsv(eviHue,mainSat,mainBright),
                    exploreC=hsv(expHue,mainSat*exploreSat,mainBright),
                    possibleC=hsv(posHue,mainSat,mainBright*likeBright),
+                   metaAnalC=hsv(metHue,mainSat,mainBright*likeBright),
                    filesC=hsv(filHue,mainSat,mainBright*fileBright),
                    helpC=hsv(mainHue,mainSat,mainBright)
 )
