@@ -360,26 +360,29 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
    pR<-list(pRho=0,pRhogain=1) 
   } else {
   pR<-get_pRho(world)
+  if (world$populationNullp>0) {
+    pR$pRho<-c(pR$pRho,0)
+    pR$pRhogain<-c(pR$pRhogain,sum(pR$pRhogain)*world$populationNullp/(1-world$populationNullp))
+  }
   }
   # distribution of sample sizes
   n<-design$sN
   ng<-1
   if (design$sNRand) {
-    n<-5+seq(0,5*n,length.out=nNpoints)
+    if (!sigOnly) n<-round(5+seq(0,4*n,length.out=nNpoints))
+    else          n<-round(5+seq(0,8*n,length.out=8*n+1))
     ng<-dgamma(n-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
   }
   
   sDens_r<-c()
   for (ei in 1:length(pR$pRho)){
       d<-0
+      d1<-0
       for (ni in 1:length(n)) {
         switch (doStat,
                 "r"={
+                  rp<-vals
                   addition<-rSamplingDistr(vals,pR$pRho[ei],n[ni])
-                  if (sigOnly) {
-                    critR<-tanh(qnorm(1-alphaSig/2,0,1/sqrt(n[ni]-3)))
-                    addition[abs(vals)<critR]<-0
-                  }
                   if (logScale) addition<-addition*vals
                 },
                 "p"={
@@ -448,13 +451,18 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                   if (logScale) addition<-addition*vals
                 }
         )
+        d1<-d1+addition*ng[ni]
+        if (sigOnly) {
+          critR<-tanh(qnorm(1-alphaSig/2,0,1/sqrt(n[ni]-3)))
+          addition[abs(rp)<critR]<-0
+        }
         d<-d+addition*ng[ni]
       }
-    d<-d/sum(d,na.rm=TRUE)
+    d<-d/sum(d1,na.rm=TRUE)
     sDens_r<-rbind(sDens_r,d*pR$pRhogain[ei])
   }
-  dr_gain<-max(sDens_r,na.rm=TRUE)
-  sDens_r<-sDens_r/dr_gain
+  # dr_gain<-max(sDens_r,na.rm=TRUE)
+  # sDens_r<-sDens_r/dr_gain
   sDens_r_plus<-colMeans(sDens_r)
   sDens_r_plus
 }

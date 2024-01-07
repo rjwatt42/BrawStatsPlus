@@ -1,6 +1,6 @@
 # meta-analysis panel
 
-metaPanel<-function(prefix=""){
+metaAnalysisPanel<-function(prefix=""){
   MetAnalPanel<-tabPanel("MetaAnal",value="MetaAnalysis",
                          style = paste("background: ",subpanelcolours$evidenceC),
                          tags$table(width = "100%",class="myTable",

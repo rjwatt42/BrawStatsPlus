@@ -1,31 +1,31 @@
 nscaleLog=FALSE
 maxnPlot=200
 
-drawInference<-function(IV,IV2,DV,effect,design,evidence,result,disp){
+drawInference<-function(IV,IV2,DV,effect,design,evidence,result,disp,orientation="vert"){
   
   switch (disp,
-          "p"={g<-p_plot(result,IV,IV2,DV,effect)},
-          "r"={g<-r_plot(result,IV,IV2,DV,effect)},
-          "r1"={g<-r1_plot(result,IV,IV2,DV,effect)},
-          "p1"={g<-p1_plot(result,IV,IV2,DV,effect)},
-          "log(lrs)"={g<-llrs_plot(result,IV,IV2,DV,effect)},
-          "log(lrd)"={g<-llrd_plot(result,IV,IV2,DV,effect)},
-          "w"={g<-w_plot(result,IV,IV2,DV,effect)},
-          "wp"={g<-wp_plot(result,IV,IV2,DV,effect)},
-          "nw"={g<-nw_plot(result,IV,IV2,DV,effect)},
-          "rp"={g<-rp_plot(result,IV,IV2,DV,effect)},
-          "n"={g<-n_plot(result,IV,IV2,DV,effect)},
-          "e1"={g<-e1_plot(result,IV,IV2,DV,effect)},
-          "e2"={g<-e2_plot(result,IV,IV2,DV,effect)},
-          "ci1"={g<-ci1_plot(result,IV,IV2,DV,effect)},
-          "ci2"={g<-ci2_plot(result,IV,IV2,DV,effect)}
+          "p"={g<-p_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "r"={g<-r_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "r1"={g<-r1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "p1"={g<-p1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "log(lrs)"={g<-llrs_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "log(lrd)"={g<-llrd_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "w"={g<-w_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "wp"={g<-wp_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "nw"={g<-nw_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "rp"={g<-rp_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "n"={g<-n_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "e1"={g<-e1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "e2"={g<-e2_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "ci1"={g<-ci1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "ci2"={g<-ci2_plot(result,IV,IV2,DV,effect,orientation=orientation)}
   )
   g+ggtitle(result$an_name)
 }
 
 
 draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,metaPlot=FALSE){
-  
+    
   r<-effect$rIV
   if (!is.null(IV2)){
     r<-c(r,effect$rIV2,effect$rIVIV2DV)

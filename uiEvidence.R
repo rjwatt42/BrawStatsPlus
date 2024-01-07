@@ -1,5 +1,5 @@
 source("uiMetaAnalysis.R")
-
+source("uiPrior.R")
 
 
 basicType<-list("r"="r","p"="p")
@@ -23,7 +23,7 @@ singleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","2D"="2D")
 singleTypeChoicesExtra<-c(singleTypeChoices,list("Likelihood"=likeType))
 if (switches$doLikelihoodInfer) singleTypeChoices<-singleTypeChoicesExtra
 
-multipleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D")
+multipleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D","Simple"="Simple")
 
 
 EvidenceTab <-
@@ -80,18 +80,18 @@ EvidenceTab <-
                                                                   selectize=FALSE)
                                               ),
                                               tags$td(width = "25%",
-                                                      # conditionalPanel(condition="input.EvidenceExpected_type=='2D'",
+                                                      conditionalPanel(condition="input.EvidenceExpected_type=='2D' | input.EvidenceExpected_type=='Simple'",
                                                       selectInput("EvidenceExpected_par1", label=NULL, 
                                                                   inferTypeChoices,
                                                                   selected="r", selectize=FALSE)
-                                                      # ),
+                                                      ),
                                               ),
                                               tags$td(width = "25%",
-                                                      # conditionalPanel(condition="input.EvidenceExpected_type=='2D'",
+                                                      conditionalPanel(condition="input.EvidenceExpected_type=='2D'",
                                                       selectInput("EvidenceExpected_par2", label=NULL, 
                                                                   inferTypeChoices,
                                                                   selected="p", selectize=FALSE)
-                                                      # ),
+                                                      ),
                                               )
                                             ),
                                             tags$tr(
@@ -132,9 +132,9 @@ EvidenceTab <-
                                             )
                                  )
                         ),
-                        metaAnalysisPanel,
+                        metaAnalysisPanel(),
                         tabPanel("Prior",
-                                 style = paste("background: ",subpanelcolours$possibleC), 
+                                 style = paste("background: ",subpanelcolours$evidenceC), 
                                  priorPanel("",asTable=TRUE),
                         ),
                         tabPanel("#",id="EvidenceOptions",
@@ -227,8 +227,8 @@ EvidenceTab <-
                                             tags$tr(
                                               tags$td(width = "25%", tags$div(style = localPlainStyle, "case order:")),
                                               tags$td(width = "25%", selectInput("evidenceCaseOrder", choices = c("Alphabetic"="Alphabetic","As Found"="AsFound","Frequency"="Frequency"),selected=evidence$evidenceCaseOrder, label=NULL, selectize=FALSE)),
-                                              tags$td(width = "25%", tags$div(style = localPlainStyle, "scatter plots:")),
-                                              tags$td(width = "25%", selectInput("allScatter", label=NULL, c("none"="none","all"="all","corr only"="corr"), selected=evidence$allScatter, selectize=FALSE)),
+                                              tags$td(width = "25%", tags$div(style = localPlainStyle, "scatter:")),
+                                              tags$td(width = "25%", selectInput("allScatter", label=NULL, c("none"="none","all"="all","corr"="corr"), selected=evidence$allScatter, selectize=FALSE)),
                                             )),
                                  conditionalPanel(condition="input.LoadExtras",
                                                   tags$table(width = "100%",class="myTable",

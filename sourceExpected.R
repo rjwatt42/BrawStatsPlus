@@ -58,7 +58,7 @@ expectedUpdate<-observeEvent(input$EvidenceExpectedRun,{
 )
 
 observeEvent(input$EvidenceExpected_type,{
-  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D"))) {
+  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D","Single"))) {
     switch(input$EvidenceExpected_type,
            "EffectSize"={
              updateSelectInput(session,"EvidenceExpected_par1",selected="r")
@@ -153,8 +153,9 @@ makeExpectedGraph <- function() {
   if (debug) {print("ExpectedPlot1 - start")}
   stopRunning<-TRUE
   
-  if (!validExpected) {return(ggplot()+plotBlankTheme)}
-
+  # if (!validExpected) {return(ggplot()+plotBlankTheme)}
+  if (validExpected) {
+  
   if (switches$showAnimation) {
     min_ns<-floor(log10(expectedResult$nsims/100))
     ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
@@ -227,35 +228,43 @@ makeExpectedGraph <- function() {
       if (showProgress) {removeNotification(id = "counting")}
     }
 
-  if (expected$type=="2D") {
-    if (expectedResult$count==0) {
-      g<-ggplot()+plotBlankTheme
-    } else {
-      g<-joinPlots(draw2Inference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,expected$Expected_par2))
-    }
-  } else {
-    if (is.element(expected$type,c("NHSTErrors","FDR","CILimits","LLRDErrors"))) {
-      switch (expected$type,
-              "NHSTErrors"={
-                g1<-e2_plot(expectedResult$result,effect=effect,nullresult=expectedResult$nullresult)
-                g2<-e1_plot(expectedResult$nullresult,effect=effect,result=expectedResult$result)
-              },
-              "FDR"={
-                g1<-e1_plot(expectedResult$nullresult,effect=effect)
-                g2<-e2_plot(expectedResult$result,effect=effect)
-              },
-              "CILimits"=  {
-                g1<-ci1_plot(expectedResult$result,effect=effect)
-                g2<-ci2_plot(expectedResult$result,effect=effect)
-              }
-      )
-    } else {
-      g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1)
-      g2<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par2)
-    }
-    g<-joinPlots(g1,g2)
   }
-  
+    switch(expected$type,
+           "2D"={
+             if (expectedResult$count==0) {
+               g1<-ggplot()+plotBlankTheme
+             } else {
+               g1<-draw2Inference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,expected$Expected_par2)
+             }
+             g2<-NULL
+           },
+           "Simple"={
+             g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,orientation="horz")
+             g2<-NULL
+           },
+           "NHSTErrors"={
+             g1<-e2_plot(expectedResult$result,effect=effect,nullresult=expectedResult$nullresult)
+             g2<-e1_plot(expectedResult$nullresult,effect=effect,result=expectedResult$result)
+           },
+           "FDR"={
+             g1<-e1_plot(expectedResult$nullresult,effect=effect)
+             g2<-e2_plot(expectedResult$result,effect=effect)
+           },
+           "CILimits"=  {
+             g1<-ci1_plot(expectedResult$result,effect=effect)
+             g2<-ci2_plot(expectedResult$result,effect=effect)
+           },
+           {
+             g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1)
+             g2<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par2)
+           }
+           )
+    if (!is.null(g2)) {
+      g<-joinPlots(g1,g2)
+    } else {
+      g<-joinPlots(g1)
+    }
+    
   if (!stopRunning) {
     time2<<-Sys.time()
     if (doStop) {

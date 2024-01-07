@@ -46,7 +46,7 @@ priorPanel<-function(prefix="",asTable=FALSE) {
   } else {
     return(
       wellPanel(
-        style = paste("background: ",subpanelcolours$possibleC,";"),
+        style = paste("background: ",subpanelcolours$evidenceC,";"),
         priorTable,
         width="100%"
       )
