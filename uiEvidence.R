@@ -227,7 +227,7 @@ EvidenceTab <-
                                             tags$tr(
                                               tags$td(width = "25%", tags$div(style = localPlainStyle, "case order:")),
                                               tags$td(width = "25%", selectInput("evidenceCaseOrder", choices = c("Alphabetic"="Alphabetic","As Found"="AsFound","Frequency"="Frequency"),selected=evidence$evidenceCaseOrder, label=NULL, selectize=FALSE)),
-                                              tags$td(width = "25%", tags$div(style = localPlainStyle, "scatter:")),
+                                              tags$td(width = "25%", tags$div(style = localPlainStyle, "scatter plot:")),
                                               tags$td(width = "25%", selectInput("allScatter", label=NULL, c("none"="none","all"="all","corr"="corr"), selected=evidence$allScatter, selectize=FALSE)),
                                             )),
                                  conditionalPanel(condition="input.LoadExtras",

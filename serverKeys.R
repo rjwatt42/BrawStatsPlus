@@ -82,14 +82,14 @@ if (switches$doKeys) {
       updateCheckboxInput(session,"world_on",value=TRUE)
       updateSelectInput(session,"world_distr",selected="Exp")
       updateSelectInput(session,"world_distr_rz",selected="z")
-      updateNumericInput(session,"world_distr_k",value=0.325)
+      updateNumericInput(session,"world_distr_k",value=0.332)
       updateNumericInput(session,"world_distr_Nullp",value=v)
       updateTabsetPanel(session,"HypothesisDiagram",selected="World")
       
       if (shiftKeyOn) {
       updateCheckboxInput(session,"sNRand",value=TRUE)
-      updateNumericInput(session,"sNRandK",value=1.2)
-      updateNumericInput(session,"sN",value=72)
+      updateNumericInput(session,"sNRandK",value=1.56)
+      updateNumericInput(session,"sN",value=47+5)
       }
       
     }
