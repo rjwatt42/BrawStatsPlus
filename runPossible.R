@@ -218,6 +218,10 @@ densityFunctionStats<-function(dens_r,rp){
 }
 
 get_pRho<-function(world,by="r",viewRZ="r") {
+  if (!world$worldOn) {
+    world$populationPDF="Single"
+    world$populationRZ="r"
+  }
   if (by=="z") {
     if (world$populationPDF=="Single") {
       if (world$populationRZ=="r") {
@@ -244,11 +248,6 @@ get_pRho<-function(world,by="r",viewRZ="r") {
     }
 
   } else {
-    if (!world$worldOn) {
-      world$populationPDF="Single"
-      world$populationRZ="r"
-    }
-    
     if (world$populationPDF=="Single") {
       if (world$populationRZ=="r") {
         pRho<-world$populationPDFk
@@ -262,7 +261,8 @@ get_pRho<-function(world,by="r",viewRZ="r") {
       }
     } else {
       pRho<-seq(-1,1,length.out=npops)*r_range
-      pRhogain<-zdens2rdens(zpriorDistr(atanh(pRho),world$populationPDF,world$populationRZ,world$populationPDFk),pRho)
+      pRhogain<-zpriorDistr(atanh(pRho),world$populationPDF,world$populationRZ,world$populationPDFk)
+      # pRhogain<-zdens2rdens(pRhogain,pRho)
     }
   }
   list(pRho=pRho,pRhogain=pRhogain)  

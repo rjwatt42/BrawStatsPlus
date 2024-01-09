@@ -94,6 +94,17 @@ dataLine<-function(data,arrow=NULL,colour,linewidth,orientation) {
          }
   )
 }
+dataPath<-function(data,arrow=NULL,colour,linewidth,orientation) {
+  switch(orientation,
+         "vert"={
+           geom_path(data=data,aes(x=x,y=y),arrow=arrow,colour=colour,linewidth=linewidth)
+         },
+         "horz"={
+           use<-data$x>=0
+           geom_path(data=data[use,],aes(x=y,y=x),arrow=arrow,colour=colour,linewidth=linewidth)
+         }
+  )
+}
 dataPoint<-function(data,shape,colour,fill,size,orientation) {
   switch(orientation,
          "vert"={
@@ -111,7 +122,7 @@ dataPolygon<-function(data,colour,fill,alpha=1, orientation) {
          },
          "horz"={
            data$x[data$x<0]<-0
-           geom_polygon(data=data,aes(x=y,y=x),colour = colour, fill = fill,alpha=alpha)
+           geom_polygon(data=data,aes(x=y,y=x),colour = fill, fill = fill,alpha=alpha)
          }
   )
 }
@@ -497,7 +508,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
     rlims<-c(-1,1)*z_range
     rlab<-"z"
   }
-    rActual<-r
+  rActual<-r
   rActual[is.na(r)]<-0
 
   if (all(is.na(result$rIVIV2DV)) && is.null(IV2)){
@@ -689,8 +700,14 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"nw",logScale=logScale,sigOnly=sigOnly)
              },
              "rp"={
-               yv<-seq(-1,1,length.out=npt)*0.99
-               xd<-fullRPopulationDist(yv,result$effect$world)
+               if (RZ=="z") {
+                 yv<-seq(-1,1,length.out=npt)*z_range
+                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
+                 xd<-rdens2zdens(xd,tanh(yv))
+               } else {
+                 yv<-seq(-1,1,length.out=npt)*0.99
+                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
+               }
              },
              "n"={
                if (logScale) {
@@ -711,8 +728,9 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       xd[is.na(xd)]<-0
       xd<-xd/max(xd)*distMax
       histGain<<-sum(xd)*(yv[2]-yv[1])
-      ptsp<-data.frame(y=c(yv,rev(yv)),x=c(xd,-rev(xd))+xoff[i])
-      g<-g+dataPolygon(data=ptsp,colour="black",fill="white",alpha=1, orientation=orientation)
+      ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
+      g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
+      g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
     } else {
       histGain<-NA
     }
@@ -743,6 +761,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       } else {
         pts<-data.frame(x=rvals*0+xoff[i],y1=shvals,y2=resSig,n<-nvals)
       }
+      
+      # if (RZ=="z" && is.element(expType,c("r","rp"))) {
+      #   pts1$y1<-atanh(pts1$y1)
+      # }
       g<-expected_plot(g,pts,expType,result,IV,DV,i,orientation=orientation)
     
     if (is.element(expType,c("p","e1","e2","e1d","e2d"))) {

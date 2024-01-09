@@ -5,7 +5,7 @@
 # prediction diagram
 
 output$HypothesisPlot<-renderPlot({
-  doIt<-editVar$data
+  doIt<-c(editVar$data,input$WhiteGraphs,input$RZ)
   if (debug) debugPrint("HypothesisPlot")
   
   IV<-updateIV()
@@ -56,60 +56,72 @@ output$HypothesisPlot<-renderPlot({
 
 # world diagram
 output$WorldPlot<-renderPlot({
-  doIt<-editVar$data
+  doIt<-c(editVar$data,input$WhiteGraphs,input$RZ)
+  if (debug) debugPrint("WorldPlot")
+  
   effect<-updateEffect()
 
   PlotNULL<-ggplot()+plotBlankTheme+theme(plot.margin=margin(0,-0.1,0,0,"cm"))+
     scale_x_continuous(limits = c(0,10),labels=NULL,breaks=NULL)+scale_y_continuous(limits = c(0,10),labels=NULL,breaks=NULL)
   
-  if (debug) debugPrint("WorldPlot")
+  switch(RZ,
+         "r"={range<-r_range},
+         "z"={range<-tanh(z_range)}
+  )
   if (effect$world$worldAbs) {
-    x<-seq(0,1,length.out=worldNPoints)*r_range
+    x<-seq(0,1,length.out=worldNPoints)*range
   } else {
-    x<-seq(-1,1,length.out=worldNPoints)*r_range
+    x<-seq(-1,1,length.out=worldNPoints)*range
   }
   if (effect$world$populationRZ=="z") {r<-atanh(x)} else {r<-x}
   switch (effect$world$populationPDF,
           "Single"={
-            y<-r*0
+            dens<-r*0
             use=which.min(abs(x-effect$world$populationPDFk))
-            y[use]=1
+            dens[use]=1
           },
           "Uniform"={
-            y<-r*0+0.5
+            dens<-r*0+0.5
           },
           "Exp"={
-            y<-exp(-abs(r/effect$world$populationPDFk))
+            dens<-exp(-abs(r/effect$world$populationPDFk))
           },
           "Gauss"={
-            y<-exp(-0.5*abs(r/effect$world$populationPDFk)^2)
+            dens<-exp(-0.5*abs(r/effect$world$populationPDFk)^2)
           },
           ">"={
-            y<-(abs(r)>effect$world$populationPDFk)*0.5
+            dens<-(abs(r)>effect$world$populationPDFk)*0.5
           },
           "<"={
-            y<-(abs(r)<effect$world$populationPDFk)*0.5
+            dens<-(abs(r)<effect$world$populationPDFk)*0.5
           },
   )
   if (effect$world$populationRZ=="z") {
-    y<-y/(1-x^2)
-    y<-y/max(y)
+    dens<-dens/(1-x^2)
+    dens<-dens/max(dens)
   }
-  y<-y*(1-effect$world$populationNullp)
+  dens<-dens*(1-effect$world$populationNullp)
   
   if (effect$world$populationPDF=="Single" && effect$world$populationNullp>0) {
     use<-which.min(abs(x-0))
-    y[use]<-effect$world$populationNullp
+    dens[use]<-effect$world$populationNullp
   }
   
-  x<-c(x[1],x,1)
-  y[y==0]<-0.01
-  y<-c(0,y,0)
-  pts=data.frame(x=x,y=y)
+  x<-c(x[1],x,x[length(x)])
+  dens<-c(0,dens,0)
+  pts=data.frame(x=x,y=dens)
   g1<-ggplot(pts,aes(x=x,y=y))
-  g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
-  g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-  g1<-g1+labs(x=bquote(r[population]),y="Density")+diagramTheme
+  switch(RZ,
+         "r"={
+           g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+           g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
+           g1<-g1+labs(x=bquote(r[population]),y="Density")+diagramTheme
+         },
+         "z"={
+           g1<-g1+geom_polygon(data=pts,aes(x=atanh(x),y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+           g1<-g1+geom_line(data=pts,aes(x=atanh(x),y=y),color="black",lwd=0.25)
+           g1<-g1+labs(x=bquote(z[population]),y="Density")+diagramTheme
+         })
   
   if (debug) debugPrint("WorldPlot - exit")
 
@@ -121,7 +133,7 @@ output$WorldPlot<-renderPlot({
 
 
 output$WorldPlot2<-renderPlot({
-  doIt<-editVar$data
+  doIt<-c(editVar$data,input$WhiteGraphs)
   design<-updateDesign()
   if (debug) debugPrint("WorldPlot2")
   
@@ -155,7 +167,7 @@ output$WorldPlot2<-renderPlot({
 
 # population diagram
 output$PopulationPlot <- renderPlot({
-  doIt<-editVar$data
+  doIt<-c(editVar$data,input$WhiteGraphs,input$RZ)
   if (debug) debugPrint("PopulationPlot")
 
   IV<-updateIV()
@@ -190,7 +202,7 @@ output$PopulationPlot <- renderPlot({
 
 # prediction diagram
 output$PredictionPlot <- renderPlot({
-  doIt<-editVar$data
+  doIt<-c(editVar$data,input$WhiteGraphs,input$RZ)
   if (debug) debugPrint("PredictionPlot")
 
   IV<-updateIV()

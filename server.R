@@ -145,25 +145,27 @@ shinyServer(function(input, output, session) {
     if (input$WhiteGraphs) {
       maincolours<<-maincoloursBW
       graphcolours<<-graphcoloursBW
-      mainTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
-                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                        plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
-      plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
-                             panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                             plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
-                             axis.title=element_text(size=16,face="bold")
-      )
+      updateThemes()
+      # mainTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
+      #                   panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+      #                   plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
+      # plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+      #                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+      #                        plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+      #                        axis.title=element_text(size=16,face="bold")
+      # )
     } else {
       maincolours<<-maincoloursBL
       graphcolours<<-graphcoloursBL
-      mainTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
-                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                        plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
-      plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
-                             panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
-                             plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
-                             axis.title=element_text(size=16,face="bold")
-      )
+      updateThemes()
+      # mainTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
+      #                   panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+      #                   plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
+      # plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+      #                        panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+      #                        plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+      #                        axis.title=element_text(size=16,face="bold")
+      # )
     }
     
     if (input$LargeGraphs) {

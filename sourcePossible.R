@@ -6,6 +6,8 @@
 # outputs
 #    
 
+showPossible<-"None"
+
 possibleResult<-list(samples=c(),populations=c())
 # UI changes
 # if the tabs are selected

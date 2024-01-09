@@ -114,7 +114,7 @@ makeExpectedGraph <- function() {
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
           input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$evidenceTheory,
-          input$STMethod,input$alpha,
+          input$STMethod,input$alpha,input$RZ,
           input$world_distr,input$world_distr_rz,input$world_distr_k,input$world_distr_Nullp,
           input$EvidenceExpectedRun)
   

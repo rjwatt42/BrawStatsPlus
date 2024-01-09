@@ -513,9 +513,14 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=diagramTh
 
 drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   g<-ggplot()
-
+  
+  switch(RZ,
+         "r"={range<-r_range},
+         "z"={range<-tanh(z_range)}
+  )
+  
   if (effect$world$worldAbs) {
-    vals<-seq(-1,1,length=worldNPoints*2+1)*r_range
+    vals<-seq(-1,1,length=worldNPoints*2+1)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
     if (effect$world$populationNullp>0) {
       dens<-dens*(1-effect$world$populationNullp) +
@@ -524,15 +529,26 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
     vals<-vals[worldNPoints+(1:worldNPoints)]
     dens<-dens[worldNPoints+(1:worldNPoints)]
   } else {
-    vals<-seq(-1,1,length=worldNPoints)*r_range
+    vals<-seq(-1,1,length=worldNPoints)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
   }
+  
+  if (RZ=="z") dens<-rdens2zdens(dens,vals)
   dens<-dens/max(dens)
   
-  x<-c(vals[1],vals,1)
+  x<-c(vals[1],vals,vals[length(vals)])
   y<-c(0,dens,0)
   pts=data.frame(x=x,y=y)
-  g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
-  
-  g<-g+labs(x=bquote(r[sample]),y="Frequency")+diagramTheme
+  switch(RZ,
+         "r"={
+           g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+           g<-g+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
+           g<-g+labs(x=bquote(r[sample]),y="Frequency")+diagramTheme
+         },
+         "z"={
+           g<-g+geom_polygon(data=pts,aes(x=atanh(x),y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+           g<-g+geom_line(data=pts,aes(x=atanh(x),y=y),color="black",lwd=0.25)
+           g<-g+labs(x=bquote(z[sample]),y="Frequency")+diagramTheme
+         }
+         )
 }

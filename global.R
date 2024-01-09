@@ -70,6 +70,29 @@ maincoloursBL<-list(windowC="#002D40",panelC="#005E86",graphC="#BFECFF")
 maincoloursBW<-list(windowC="#002D40",panelC="#005E86",graphC="#FFFFFF")
 maincolours<-maincoloursBL
 
+updateThemes<-function() {
+  mainTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphBack, colour="black"),
+                  panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                  plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC))
+  SMplotTheme<<-theme(plot.title=element_text(size=14,face="bold"),axis.title=element_text(size=16,face="bold"),
+                      axis.text.x=element_text(size=12),axis.text.y=element_text(size=12))
+  LGplotTheme<<-theme(plot.title=element_text(size=21,face="bold"),axis.title=element_text(size=24,face="bold"),
+                      axis.text.x=element_text(size=18),axis.text.y=element_text(size=18))
+  
+  plotTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(1.0,1.5,0.5,0.5,"cm"))
+  reportTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
+  diagramTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
+  
+  plotBlankTheme<<-theme(panel.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+                         panel.grid.major = element_line(linetype="blank"),panel.grid.minor = element_line(linetype="blank"),
+                         plot.background = element_rect(fill=graphcolours$graphC, colour=graphcolours$graphC),
+                         axis.title=element_text(size=16,face="bold")
+  )
+  
+  gridTheme<<-theme(plot.margin=margin(0,0,0,0,"cm"))
+}
+
+
 #useful character codes
 helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
 
