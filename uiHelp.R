@@ -106,7 +106,7 @@ HelpTab <-
                                  conditionalPanel(condition="input.LoadExtras",
                                                   tags$table(width = "100%",class="myTable",
                                                              tags$tr(
-                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Short hand:")),
+                                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Shorthand:")),
                                                                tags$td(width="15%",checkboxInput("shortHand",value=FALSE, label=NULL)),
                                                                tags$td(width="30%",tags$div(style = localPlainStyle, "Shorthand x:")),
                                                                tags$td(width="25%",numericInput("shortHandGain",value=10, label=NULL))

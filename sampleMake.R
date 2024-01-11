@@ -196,6 +196,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
               "r"={
                 switch (effect$world$populationPDF,
                         "Single"={rho<-effect$world$populationPDFk},
+                        "Double"={rho<-effect$world$populationPDFk*sign(runif(1,-1,1))},
                         "Uniform"={rho<-runif(1,min=-1,max=1)},
                         "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
                         "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))},
@@ -206,6 +207,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
               "z"={
                 switch (effect$world$populationPDF,
                         "Single"={rho<-effect$world$populationPDFk},
+                        "Double"={rho<-effect$world$populationPDFk*sign(runif(1,-1,1))},
                         "Uniform"={rho<-runif(1,min=-10,max=10)},
                         "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
                         "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))},
@@ -234,7 +236,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
   }
   if (design$sNRand) {
     n<-minN+rgamma(1,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
-    while (n>100000) {n<-rgamma(1,shape=design$sNRandK,scale=design$sN/design$sNRandK)}
+    while (n>100000) {n<-minN+rgamma(1,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)}
   }
   n<-round(n)
 

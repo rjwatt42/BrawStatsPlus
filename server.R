@@ -126,8 +126,9 @@ shinyServer(function(input, output, session) {
   source("serverKeys.R",local=TRUE)
   
   observeEvent(input$LoadExtras, {
-                 loadExtras(session,input$LoadExtras)
+                 loadExtras(session,input,input$LoadExtras)
                })
+  if (is_local) updateCheckboxInput(session,"LoadExtras",value=TRUE)
   
   observeEvent(input$shortHandGain, {
     shortHandGain<<-input$shortHandGain

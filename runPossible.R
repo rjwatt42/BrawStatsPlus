@@ -230,19 +230,15 @@ get_pRho<-function(world,by="r",viewRZ="r") {
         pRho<-world$populationPDFk
       }
       pRhogain<-1
-      if (world$populationNullp>0) {
-        pRho<-c(0,pRho)
-        pRhogain<-c(world$populationNullp,1-world$populationNullp)
-      }
     } else {
+      pRho<-seq(-1,1,length=npops)*z_range
+      pRhogain<-zpriorDistr(pRho,world$populationPDF,world$populationRZ,world$populationPDFk)
       switch (viewRZ,
               "r" ={
-                pRho<-atanh(seq(-1,1,length=npops)*r_range*0.9)
-                pRhogain<-zpriorDistr(pRho,world$populationPDF,world$populationRZ,world$populationPDFk)
+                pRho<-tanh(pRho)
+                pRhogain<-zdens2rdens(pRhogain,pRho)
               },
               "z" ={
-                pRho<-seq(-1,1,length=npops)*z_range*1.5
-                pRhogain<-zpriorDistr(pRho,world$populationPDF,world$populationRZ,world$populationPDFk)
               }
       )
     }
@@ -255,16 +251,23 @@ get_pRho<-function(world,by="r",viewRZ="r") {
         pRho<-tanh(world$populationPDFk)
       }
       pRhogain<-1
-      if (world$populationNullp) {
-        pRho<-c(0,pRho)
-        pRhogain<-c(world$populationNullp,1-world$populationNullp)
-      }
     } else {
-      pRho<-seq(-1,1,length.out=npops)*r_range
+      pRho<-seq(-1,1,length=npops)*r_range
       pRhogain<-zpriorDistr(atanh(pRho),world$populationPDF,world$populationRZ,world$populationPDFk)
-      # pRhogain<-zdens2rdens(pRhogain,pRho)
+      switch (viewRZ,
+              "r" ={
+                pRhogain<-zdens2rdens(pRhogain,pRho)
+              },
+              "z" ={
+              }
+      )
     }
   }
+  if (world$populationNullp>0) {
+    pRho<-c(0,pRho)
+    pRhogain<-c(world$populationNullp,pRhogain/sum(pRhogain)*(1-world$populationNullp))
+  }
+  
   list(pRho=pRho,pRhogain=pRhogain)  
 }
 
@@ -313,7 +316,7 @@ getZDist<-function(rs,pRho,pRhogain,source,design,possible) {
     dnull<-0
     g<-0
     for (ni in 1:(length(nis)-1)) {
-      g0<-dgamma(nis[ni]-minN,shape=design$sNRandK,scale=(n-minN)/design$sNRandK)
+      g0<-dgamma(nis[ni]-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
       d0<-zSamplingDistr(rs,0,nis[ni])
       if (possible$sigOnly) {
         crit_z<-qnorm(0.975,0,1/sqrt(nis[ni]-3))
@@ -351,7 +354,7 @@ fullRPopulationDist<-function(rvals,world) {
   rpopDistr(rvals,world$populationPDF,world$populationRZ,world$populationPDFk)
 }
 
-fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=FALSE) {
+fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=FALSE,HQ=FALSE) {
   # sampling distribution from specified populations (pRho)
   if (is.null(vals)) {
     vals<-seq(-1,1,length=npoints)*r_range
@@ -359,19 +362,19 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   if (is.null(world)) {
    pR<-list(pRho=0,pRhogain=1) 
   } else {
-  pR<-get_pRho(world)
-  if (world$populationNullp>0) {
-    pR$pRho<-c(pR$pRho,0)
-    pR$pRhogain<-c(pR$pRhogain,sum(pR$pRhogain)*world$populationNullp/(1-world$populationNullp))
-  }
+    if (doStat=="r")   pR<-get_pRho(world,by=RZ,viewRZ=RZ)
+    else pR<-get_pRho(world,by="r",viewRZ="r")
   }
   # distribution of sample sizes
-  n<-design$sN
-  ng<-1
+  
   if (design$sNRand) {
-    if (!sigOnly) n<-round(5+seq(0,4*n,length.out=nNpoints))
-    else          n<-round(5+seq(0,8*n,length.out=8*n+1))
+    if (HQ) mult<-5 else mult=1
+    if (!sigOnly) n<-round(minN+seq(0,4*design$sN,length.out=nNpoints*mult))
+    else          n<-round(minN+seq(0,8*design$sN*mult,length.out=8*design$sN*mult+1))
     ng<-dgamma(n-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
+  } else {
+    n<-design$sN
+    ng<-1
   }
   
   sDens_r<-c()
@@ -594,7 +597,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
         d<-0
         for (ni in seq(minN,maxRandN*design$sN,length.out=nNpoints)) {
           # for (ni in 5+seq(0,maxRandN,1/n[ei])*n[ei]) {
-          g<-dgamma(ni-minN,shape=design$sNRandK,scale=(n[ei]-minN)/design$sNRandK)
+          g<-dgamma(ni-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
           d<-d+zSamplingDistr(zp,sRho[ei]+correction[ci],ni)*g
         }
         d<-d/sum(d)
@@ -753,7 +756,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                 hist_range<-1
               }
 
-              if (prior$populationPDF=="Single") {
+              if (prior$populationPDF=="Single" || prior$populationPDF=="Double") {
                 binWidth<-0.05
               } else {
                 binWidth<-max(0.05,2*IQR(use_effectRP_use,na.rm=TRUE)/length(use_effectRP_use)^(1/3))

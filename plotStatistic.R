@@ -100,7 +100,7 @@ dataPath<-function(data,arrow=NULL,colour,linewidth,orientation) {
            geom_path(data=data,aes(x=x,y=y),arrow=arrow,colour=colour,linewidth=linewidth)
          },
          "horz"={
-           use<-data$x>=0
+           use<-data$x>=0 & c(diff(data$y),0)>=0
            geom_path(data=data[use,],aes(x=y,y=x),arrow=arrow,colour=colour,linewidth=linewidth)
          }
   )
@@ -301,13 +301,18 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
 expected_hist<-function(vals,svals,valType){
 
   if (is.null(valType)) valType<-"r"
-  if (is.element(valType,c("r1","rp","ci1","ci2"))) valType<-"r"
+  if (is.element(valType,c("r1","ci1","ci2"))) valType<-"r"
   if (is.element(valType,c("e1","e2","p1"))) valType<-"p"
   if (is.element(valType,c("wp"))) valType<-"w"
   
   switch (valType,
           "r"=  { # ns is small
             target<-get_upperEdge(abs(vals),abs(svals))
+            bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
+          },
+          
+          "rp"=  { # ns is small
+            target<-0.3
             bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
           },
           
@@ -350,6 +355,13 @@ expected_hist<-function(vals,svals,valType){
           "n"= { # ns is small
             target<-get_lowerEdge(vals,svals)
             bins<-getBins(vals,svals,target,NULL,10000)
+            print(bins[2]-bins[1])
+            if (is.integer(vals)) {
+              bins<-unique(floor(bins))
+              binStep<-max(floor(median(diff(bins))),1)
+              bins<-seq(bins[1],bins[length(bins)],binStep)
+              print(binStep)
+            }
           },
           
           "nw"= { # ns is large
@@ -386,7 +398,7 @@ start_plot<-function(orientation) {
   g<-g+densLab(NULL,orientation)
 }
 
-expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,i=1,scale=1,col="white",orientation=orientation){
+expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,i=1,scale=1,col="white",orientation="vert"){
   dotSize<-(plotTheme$axis.title$size)/3*scale
   
   if (!is.null(expType)) {
@@ -476,7 +488,7 @@ expected_plot<-function(g,pts,expType=NULL,result=NULL,IV=NULL,DV=NULL,i=1,scale
     if (orientation=="vert") {
       simAlpha<-1
     } else {
-      simAlpha<-0.8
+      simAlpha<-0.7
     }
     g<-g+
       dataPolygon(data=data.frame(y=pts1$x,x=pts1$y1*scale*scale+xoff),colour=NA, fill = c2,alpha=simAlpha, orientation=orientation)+
@@ -647,18 +659,17 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
           yv<-seq(0,1,length.out=51)
           yvUse<-yv
         }
-        xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=sigOnly)
+        xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
       } else {
         npt<-101
       switch(expType,
              "r"={
                if (RZ=="z") {
                  yv<-seq(-1,1,length.out=npt)*z_range
-                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
-                 xd<-rdens2zdens(xd,tanh(yv))
+                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
                } else {
                  yv<-seq(-1,1,length.out=npt)*0.99
-                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
+                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
                }
              },
              "ci1"={
@@ -702,11 +713,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
              "rp"={
                if (RZ=="z") {
                  yv<-seq(-1,1,length.out=npt)*z_range
-                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
+                 xd<-fullRPopulationDist(tanh(yv),result$effect$world)
                  xd<-rdens2zdens(xd,tanh(yv))
                } else {
                  yv<-seq(-1,1,length.out=npt)*0.99
-                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly)
+                 xd<-fullRPopulationDist(yv,result$effect$world)
                }
              },
              "n"={

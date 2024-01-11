@@ -61,7 +61,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             vals<-vals*effectSizeRange
             },
           
-          "PDF"={vals<-c("Single","Uniform","Gauss","Exp",">","<")},
+          "PDF"={vals<-c("Single","Double","Uniform","Gauss","Exp",">","<")},
           "k"={vals<-10^seq(-1,-0.1,length.out=npoints)},
           "pNull"={vals<-seq(0,1,length.out=npoints)},
           

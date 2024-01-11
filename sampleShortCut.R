@@ -71,7 +71,7 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
       ns<-rep(design$sN,sample_increase)
       if (design$sNRand) {
         ns<-minN+rgamma(sample_increase,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
-        ns<-round(ns)
+        ns<-as.integer(round(ns))
       }
     }
     

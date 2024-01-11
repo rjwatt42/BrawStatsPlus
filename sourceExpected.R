@@ -58,7 +58,7 @@ expectedUpdate<-observeEvent(input$EvidenceExpectedRun,{
 )
 
 observeEvent(input$EvidenceExpected_type,{
-  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D","Single"))) {
+  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D","Simple"))) {
     switch(input$EvidenceExpected_type,
            "EffectSize"={
              updateSelectInput(session,"EvidenceExpected_par1",selected="r")

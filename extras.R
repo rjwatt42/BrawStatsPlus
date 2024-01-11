@@ -1,6 +1,6 @@
 
 
-loadExtras<-function(session,addingExtras=TRUE){
+loadExtras<-function(session,input=NULL,addingExtras=TRUE){
   
   if (!addingExtras) {
     switches$doReplications<<-FALSE
@@ -22,8 +22,8 @@ loadExtras<-function(session,addingExtras=TRUE){
     updateSelectInput(session,"Explore_showD",choices=showChoices)
 
     updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoices)
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected="r")
-    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected="p")
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected=input$EvidenceExpected_par1)
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected=input$EvidenceExpected_par2)
   } else {
     
     # replications

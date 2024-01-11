@@ -113,6 +113,7 @@ updateEvidence<-function(){
                  rInteractionOnly=input$rInteractionOnly,
                  showType=input$EvidenceEffect_type,
                  showTheory=input$evidenceTheory,
+                 HQ=input$evidenceHQ,
                  sigOnly=input$evidenceSigOnly,
                  allScatter=input$allScatter,
                  ssqType=input$ssqType,

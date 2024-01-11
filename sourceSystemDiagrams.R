@@ -80,6 +80,13 @@ output$WorldPlot<-renderPlot({
             use=which.min(abs(x-effect$world$populationPDFk))
             dens[use]=1
           },
+          "Double"={
+            dens<-r*0
+            use=which.min(abs(x-effect$world$populationPDFk))
+            dens[use]=0.5
+            use=which.min(abs(x+effect$world$populationPDFk))
+            dens[use]=0.5
+          },
           "Uniform"={
             dens<-r*0+0.5
           },
@@ -139,7 +146,7 @@ output$WorldPlot2<-renderPlot({
   
   if (design$sNRand) {
     nbin<-seq(minN,maxRandN*design$sN,length.out=worldNPoints)
-    # nbin<-5+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-5)/design$sNRandK),length.out=101)
+    # nbin<-minN+seq(0,qgamma(0.99,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK),length.out=101)
     ndens<-dgamma(nbin-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     ndens<-ndens/max(ndens)
   } else {

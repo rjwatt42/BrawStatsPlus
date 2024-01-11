@@ -7,6 +7,7 @@ priorPanel<-function(prefix="",asTable=FALSE) {
                  tags$td(width = "30%",
                          selectInput(paste0(prefix, "Prior_distr"), label=NULL,
                                      c("Single" = "Single",
+                                       "Double" = "Double",
                                        "Uniform" = "Uniform",
                                        "Gauss"="Gauss",
                                        "Exp" = "Exp",

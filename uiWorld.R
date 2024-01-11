@@ -17,6 +17,7 @@ worldPanel<-function(prefix="",asTable=FALSE,doAnyway=FALSE) {
                  tags$td(width = "30%",
                          selectInput(paste0(prefix, "world_distr"), label=NULL,
                                      c("Single" = "Single",
+                                       "Double" = "Double",
                                        "Uniform" = "Uniform",
                                        "Gauss"="Gauss",
                                        "Exp" = "Exp",

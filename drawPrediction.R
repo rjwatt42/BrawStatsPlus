@@ -522,18 +522,12 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   if (effect$world$worldAbs) {
     vals<-seq(-1,1,length=worldNPoints*2+1)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
-    if (effect$world$populationNullp>0) {
-      dens<-dens*(1-effect$world$populationNullp) +
-        fullRSamplingDist(vals,NULL,design,sigOnly=sigOnly)
-    }
     vals<-vals[worldNPoints+(1:worldNPoints)]
     dens<-dens[worldNPoints+(1:worldNPoints)]
   } else {
     vals<-seq(-1,1,length=worldNPoints)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
   }
-  
-  if (RZ=="z") dens<-rdens2zdens(dens,vals)
   dens<-dens/max(dens)
   
   x<-c(vals[1],vals,vals[length(vals)])

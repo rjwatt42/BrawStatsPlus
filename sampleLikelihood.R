@@ -12,6 +12,18 @@ SingleSamplingPDF<-function(z,lambda,sigma,shape,remove_nonsig=FALSE,df1=1) {
   return(list(pdf=d1,sig_pdf=d0))
 }
 
+DoubleSamplingPDF<-function(z,lambda,sigma,shape,remove_nonsig=FALSE,df1=1) {
+  d1<-(exp(-0.5*((z-lambda)^2/sigma^2))/sqrt(2*pi*sigma^2) + 
+       exp(-0.5*((z+lambda)^2/sigma^2))/sqrt(2*pi*sigma^2))/2
+  if (remove_nonsig) {
+    zcrit<-atanh(p2r(alphaSig,1/sigma^2+3,df1))
+    d0<-1-(pnorm(zcrit,lambda,sigma)-pnorm(-zcrit,lambda,sigma))
+  } else {
+    d0<-1
+  }
+  return(list(pdf=d1,sig_pdf=d0))
+}
+
 
 GaussSamplingPDF<-function(z,lambda,sigma,shape=NA,remove_nonsig=FALSE,df1=1) {
   sigma2<-sqrt(lambda^2+sigma^2)
@@ -153,6 +165,9 @@ getLogLikelihood<-function(z,n,df1,worldDistr,worldDistK,worldDistNullP=0,remove
   switch(worldDistr,
          "Single"={
            PDF<-SingleSamplingPDF
+         },
+         "Double"={
+           PDF<-DoubleSamplingPDF
          },
          "Gauss"={
            PDF<-GaussSamplingPDF
