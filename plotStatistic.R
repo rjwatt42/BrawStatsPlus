@@ -122,7 +122,7 @@ dataPolygon<-function(data,colour,fill,alpha=1, orientation) {
          },
          "horz"={
            data$x[data$x<0]<-0
-           geom_polygon(data=data,aes(x=y,y=x),colour = fill, fill = fill,alpha=alpha)
+           geom_polygon(data=data,aes(x=y,y=x),colour = colour, fill = fill,alpha=alpha)
          }
   )
 }
@@ -747,10 +747,13 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       histGain<<-sum(xd)*(yv[2]-yv[1])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
       g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
-      g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
       if (is.element(expType,c("r","n"))) {
+        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_nsigC,alpha=0.4, orientation=orientation)
+        g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
         ptsp<-data.frame(x=c(xdsig,-rev(xdsig))*theoryGain+xoff[i],y=c(yv,rev(yv)))
-        g<-g+dataPolygon(data=ptsp,colour=NA,fill="green",alpha=0.2, orientation=orientation)
+        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_sigC,alpha=0.4, orientation=orientation)
+        g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
+      } else {
         g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
       }
     } else {
