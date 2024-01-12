@@ -536,7 +536,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   switch (expType,
           "r"={
             ylim<-rlims
-            ylabel<-bquote(.(rlab))
+            if (RZ=="z") ylabel<-bquote(z[s]) 
+            else ylabel<-bquote(r[s]) 
             },
           "p"={
             ylim<-c(min_p, 1)
@@ -576,7 +577,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
           },
           "rp"={
             ylim<-rlims
-            ylabel<-"R"
+            if (RZ=="z") ylabel<-bquote(z[p]) 
+            else ylabel<-bquote(r[p]) 
           },
           "r1"={
             ylim<-rlims
@@ -642,7 +644,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   }    
   g<-start_plot(orientation=orientation)
   sigOnly<-result$evidence$sigOnly
-  
+
   # make theory
   for (i in 1:length(xoff)){
     if (result$evidence$showTheory) {
@@ -666,10 +668,12 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
              "r"={
                if (RZ=="z") {
                  yv<-seq(-1,1,length.out=npt)*z_range
-                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
+                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
                } else {
                  yv<-seq(-1,1,length.out=npt)*0.99
-                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
+                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
                }
              },
              "ci1"={
@@ -728,7 +732,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                  yv<-5+seq(0,5*result$design$sN,length.out=npt)
                  yvUse<-yv
                }
-               xd<-getNDist(yv,result$design,logScale=logScale)
+               xd<-getNDist(yv,result$effect,result$design,logScale=logScale)
+               xdsig<-getNDist(yv,result$effect,result$design,logScale=logScale,sigOnly=TRUE)
              },
              "wp"={
                yv<-seq(alphaSig*1.01,1/1.01,length.out=npt)
@@ -737,11 +742,17 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       )
       }
       xd[is.na(xd)]<-0
-      xd<-xd/max(xd)*distMax
+      theoryGain<-1/max(xd)*distMax
+      xd<-xd*theoryGain
       histGain<<-sum(xd)*(yv[2]-yv[1])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
       g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
       g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
+      if (is.element(expType,c("r","n"))) {
+        ptsp<-data.frame(x=c(xdsig,-rev(xdsig))*theoryGain+xoff[i],y=c(yv,rev(yv)))
+        g<-g+dataPolygon(data=ptsp,colour=NA,fill="green",alpha=0.2, orientation=orientation)
+        g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
+      }
     } else {
       histGain<-NA
     }

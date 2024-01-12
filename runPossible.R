@@ -337,7 +337,7 @@ getZDist<-function(rs,pRho,pRhogain,source,design,possible) {
   list(sDens_z=sDens_z,sDens_z_plus=sDens_z_plus,sDens_z_null=sDens_z_null)
 }
 
-getNDist<-function(nvals,design,logScale) {
+getNDist<-function(nvals,effect,design,logScale,sigOnly=FALSE) {
   n<-design$sN
   if (design$sNRand) {
     ng<-dgamma(nvals-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
@@ -345,6 +345,18 @@ getNDist<-function(nvals,design,logScale) {
     ng<-nvals*0
     use<-which.min(abs(nvals-design$sN))
     ng[use]<-1
+  }
+  if (sigOnly) {
+    world<-effect$world
+    if (is.null(world)) {
+      pR<-list(pRho=0,pRhogain=1) 
+    } else {
+      pR<-get_pRho(world,by=RZ,viewRZ="r")
+    }
+    for (ni in 1:length(nvals)) {
+      psig<-sum(rn2w(pR$pRho,nvals[ni])*pR$pRhogain)
+      ng[ni]<-ng[ni]*psig
+    }
   }
   if (logScale) ng<-ng*nvals
   ng
