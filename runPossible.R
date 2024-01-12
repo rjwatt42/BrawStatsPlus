@@ -362,7 +362,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   if (is.null(world)) {
    pR<-list(pRho=0,pRhogain=1) 
   } else {
-    if (doStat=="r")   pR<-get_pRho(world,by=RZ,viewRZ=RZ)
+    if (doStat=="r")   pR<-get_pRho(world,by=RZ,viewRZ="r")
     else pR<-get_pRho(world,by="r",viewRZ="r")
   }
   # distribution of sample sizes
