@@ -537,12 +537,12 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
          "r"={
            g<-g+geom_polygon(data=pts,aes(x=x,y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
            g<-g+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-           g<-g+labs(x=bquote(r[sample]),y="Frequency")+diagramTheme
+           g<-g+labs(x=rsLabel,y="Frequency")+diagramTheme
          },
          "z"={
            g<-g+geom_polygon(data=pts,aes(x=atanh(x),y=y),fill="yellow")+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
            g<-g+geom_line(data=pts,aes(x=atanh(x),y=y),color="black",lwd=0.25)
-           g<-g+labs(x=bquote(z[sample]),y="Frequency")+diagramTheme
+           g<-g+labs(x=zsLabel,y="Frequency")+diagramTheme
          }
          )
 }

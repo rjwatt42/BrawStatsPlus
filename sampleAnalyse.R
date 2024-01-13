@@ -336,6 +336,8 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     }
     newResult<-list(rpIV=res$rpIV,roIV=res$roIV,rIV=res$rIV,pIV=res$pIV,poIV=res$poIV,
                     rIV2=res$rIV2,pIV2=res$pIV2,rIVIV2DV=res$rIVIV2DV,pIVIV2DV=res$pIVIV2DV,
+                    dvMean=mean(res$dv,na.rm=TRUE),dvSD=sd(res$dv,na.rm=TRUE),
+                    dvSkew=skewness(res$dv,na.rm=TRUE),dvKurtosis=kurtosis(res$dv,na.rm=TRUE)+3,
                     nval=res$nval,df1=res$df1,
                     r=list(direct=res$r$direct,unique=res$r$unique,total=res$r$total,coefficients=res$r$coefficients),
                     p=list(direct=res$p$direct,unique=res$p$unique,total=res$p$total),
@@ -359,6 +361,11 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     mainResult$poIV<-rbind(mainResult$poIV,newResult$poIV)
     mainResult$nval<-rbind(mainResult$nval,newResult$nval)
     mainResult$df1<-rbind(mainResult$df1,newResult$df1)
+    mainResult$dvMean<-rbind(mainResult$dvMean,newResult$dvMean)
+    mainResult$dvSD<-rbind(mainResult$dvSD,newResult$dvSD)
+    mainResult$dvSkew<-rbind(mainResult$dvSkew,newResult$dvSkew)
+    mainResult$dvKurtosis<-rbind(mainResult$dvKurtosis,newResult$dvKurtosis)
+    
     if (!is.null(IV2)){
       mainResult$rIV2<-rbind(mainResult$rIV2,newResult$rIV2)
       mainResult$pIV2<-rbind(mainResult$pIV2,newResult$pIV2)

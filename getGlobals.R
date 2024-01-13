@@ -156,7 +156,7 @@ lrRange<<-10
 RZ<<-"r"
 
 z_range<<-1.5
-r_range<<-0.975
+r_range<<-0.99
 w_range<<-c(0.05,0.99)
 w_range<<-c(0.05,1)
 fullRange<<-3
@@ -201,6 +201,11 @@ brawFormat<<-function(numbers,digits=3) {
 
 ##################################
 # notation for worlds
+
+rpLabel<<-bquote(bold(r[p]))
+rsLabel<<-bquote(bold(r[s]))
+zpLabel<<-bquote(bold(z[p]))
+zsLabel<<-bquote(bold(z[s]))
 
 source("Notation.R")
 

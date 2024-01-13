@@ -12,6 +12,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   quants<-explore$Explore_quants
   max_n<-explore$Explore_nRange
   effectSizeRange<-explore$Explore_esRange
+  if (RZ=="z") {effectSizeRange<-effectSizeRange*z_range}
   maxESrange<-explore$Explore_esRange
   anomaliesRange<-explore$Explore_anomRange
   kurtRange<-10^5
@@ -35,7 +36,10 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           "DVprop"={vals<-seq(min_prop,1,length.out=npoints)},
           "DVskew"={vals<-vals},
           "DVkurtosis"={vals<-seq(0,log10(kurtRange),length.out=npoints)},
-          "EffectSize"={vals<-vals*effectSizeRange},
+          "EffectSize"={
+            vals<-vals*effectSizeRange
+            if (RZ=="z") vals<-tanh(vals)
+            },
           "EffectSize1"={
             # fullES<-effect$rIV^2+effect$rIV2^2+2*effect$rIV*effect$rIV2*effect$rIVIV2+
             b<-2*effect$rIV2*effect$rIVIV2
@@ -481,7 +485,12 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         main_res$pval<-cbind(main_res$pval,res$pIV)
         main_res$nval<-cbind(main_res$nval,res$nval)
         main_res$df1<-cbind(main_res$df1,res$df1)
-
+        
+        main_res$dvMean<-cbind(main_res$dvMean,res$dvMean)
+        main_res$dvSD<-cbind(main_res$dvSD,res$dvSD)
+        main_res$dvSkew<-cbind(main_res$dvSkew,res$dvSkew)
+        main_res$dvKurtosis<-cbind(main_res$dvKurtosis,res$dvKurtosis)
+        
         if (!is.null(IV2)){
           main_res$r1$direct<-cbind(main_res$r1$direct,res$r$direct[,1])
           main_res$r1$unique<-cbind(main_res$r1$unique,res$r$unique[,1])
@@ -525,6 +534,12 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       exploreResult$pIVs<-rbind(exploreResult$pIVs,main_res$pval)
       exploreResult$nvals<-rbind(exploreResult$nvals,main_res$nval)
       exploreResult$df1vals<-rbind(exploreResult$df1vals,main_res$df1)
+      
+      exploreResult$dvMean<-rbind(exploreResult$dvMean,main_res$dvMean)
+      exploreResult$dvSD<-rbind(exploreResult$dvSD,main_res$dvSD)
+      exploreResult$dvSkew<-rbind(exploreResult$dvSkew,main_res$dvSkew)
+      exploreResult$dvKurtosis<-rbind(exploreResult$dvKurtosis,main_res$dvKurtosis)
+      
       
         exploreResult$r1$direct<-rbind(exploreResult$r1$direct,main_res$r1$direct)
         exploreResult$r1$unique<-rbind(exploreResult$r1$unique,main_res$r1$unique)

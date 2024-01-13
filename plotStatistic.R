@@ -536,8 +536,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   switch (expType,
           "r"={
             ylim<-rlims
-            if (RZ=="z") ylabel<-bquote(z[s]) 
-            else ylabel<-bquote(r[s]) 
+            if (RZ=="z") ylabel<-zsLabel
+            else ylabel<-rsLabel 
             },
           "p"={
             ylim<-c(min_p, 1)
@@ -577,8 +577,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
           },
           "rp"={
             ylim<-rlims
-            if (RZ=="z") ylabel<-bquote(z[p]) 
-            else ylabel<-bquote(r[p]) 
+            if (RZ=="z") ylabel<-zpLabel
+            else ylabel<-rpLabel 
           },
           "r1"={
             ylim<-rlims

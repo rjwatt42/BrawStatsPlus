@@ -41,14 +41,15 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   ybreaks=c()
   ylabels=c()
   secondY<-NULL
+  ylim<-c()
   switch (explore$Explore_show,
           "EffectSize"={
             ylim<-c(-1,1)
-            if (RZ=="z") {
-              ylim<-c(-1,1*z_range)
-            }
             ylabel<-bquote(bold(r['s']))
-            if (RZ=="z") {ylabel<-bquote(bold(z['s']))}
+            if (RZ=="z") {
+              ylim<-c(-1,1)*z_range
+              ylabel<-bquote(bold(z['s']))
+            }
           },
           "p"={
             if (pPlotScale=="log10") {
@@ -362,14 +363,35 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               col<-"white"
               colFill<-col
             },
-            "mean(IV)"={
-              showVals<-rVals
+            "mean(DV)"={
+              showVals<-exploreResult$result$dvMean
               
               lines<-c()
               col<-"yellow"
               colFill<-col
             },
-
+            "sd(DV)"={
+              showVals<-exploreResult$result$dvSD
+              
+              lines<-c()
+              col<-"yellow"
+              colFill<-col
+            },
+            "skew(DV)"={
+              showVals<-exploreResult$result$dvSkew
+              
+              lines<-c()
+              col<-"yellow"
+              colFill<-col
+            },
+            "kurtosis(DV)"={
+              showVals<-exploreResult$result$dvKurtosis
+              
+              lines<-c()
+              col<-"yellow"
+              colFill<-col
+            },
+            
             
             
             "p(sig)"={
@@ -582,8 +604,17 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     xscale<-FALSE
     xmargin<-1
     
+    if (exploreResult$Explore_type=="EffectSize") {
+      if (RZ=="z") {
+        vals<-atanh(vals)
+        xLabel<-zpLabel
+      } else {
+        xLabel<-rpLabel
+      }
+    }
+    
     # draw the basic line and point data
-    if (is.element(explore$Explore_show,c("EffectSize","p","w","likelihood","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(IV)"))) {
+    if (is.element(explore$Explore_show,c("EffectSize","p","w","likelihood","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
       quants<-explore$Explore_quants/2
       y75<-apply( showVals , 2 , quantile , probs = 0.50+quants , na.rm = TRUE ,names<-FALSE)
       y62<-apply( showVals , 2 , quantile , probs = 0.50+quants/2 , na.rm = TRUE ,names<-FALSE)
@@ -1104,11 +1135,11 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   
   g<-g+ylab(ylabel)
   switch (exploreResult$Explore_type,
-          "EffectSize"={g<-g+xlab(bquote(r[population]))},
-          "EffectSize1"={g<-g+xlab(bquote(MainEffect1:r[population]))},
-          "EffectSize2"={g<-g+xlab(bquote(MainEffect2:r[population]))},
-          "Covariation"={g<-g+xlab(bquote(covariation:r[population]))},
-          "Interaction"={g<-g+xlab(bquote(interaction:r[population]))},
+          "EffectSize"={g<-g+xlab(xLabel)},
+          "EffectSize1"={g<-g+xlab(bquote(MainEffect1:r[p]))},
+          "EffectSize2"={g<-g+xlab(bquote(MainEffect2:r[p]))},
+          "Covariation"={g<-g+xlab(bquote(covariation:r[p]))},
+          "Interaction"={g<-g+xlab(bquote(interaction:r[p]))},
           "pNull"={g<-g+xlab(Plabel)},
           "k"={g<-g+xlab(Llabel)},
           "Alpha"={g<-g+xlab(alphaChar)},

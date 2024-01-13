@@ -241,10 +241,35 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
           },
           "S"={
             showVals<-exploreResult$result$Ss
+            y50<-c()
+            y25<-c()
+            y75<-c()
+          },
+          "mean(DV)"={
+            showVals<-exploreResult$result$dvMean
+            y50<-c()
+            y25<-c()
+            y75<-c()
+          },
+          "sd(DV)"={
+            showVals<-exploreResult$result$dvSD
+            y50<-c()
+            y25<-c()
+            y75<-c()
+          },
+          "skew(DV)"={
+            showVals<-exploreResult$result$dvSkew
+            y50<-c()
+            y25<-c()
+            y75<-c()
+          },
+          "kurtosis(DV)"={
+            showVals<-exploreResult$result$dvKurtosis
           }
+          
   )
 
-  if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","pNull","S"))) {
+  if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize","log(lrs)","log(lrd)","k","pNull","S","mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
     y75<-c()
     y50<-c()
     y25<-c()
@@ -258,7 +283,7 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
       ysd[i]<-sd(showVals[,i],na.rm=TRUE)
     }
   }
-  
+
   outputText<-rep("",nc+1)
   outputText[1]<-"\bExplore:"
   outputText[2]<-explore$Explore_type

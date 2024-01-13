@@ -116,23 +116,19 @@ showLike<-list("log(lrs)" = "log(lrs)",
                "likelihood" = "likelihood"
 )
 
+showVariables<-list("mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"
+                    )
+
 showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize"),
                  "Infer" = showInfer,
                  "Worlds" = showWorlds,
-                 "Lk" = showLike
+                 "Lk" = showLike,
+                 "Var"=showVariables
 )
 use<-c("Describe","Infer")
 if (switches$doWorlds) use<-c(use,"Worlds")
 if (switches$doLikelihoodInfer) use<-c(use,"Lk")
 showChoices<-showChoicesExtra[use]
-
-if (switches$doVariablesExplore) {
-  showChoices<-c(showChoices,
-                 list("Variables"=list("mean(IV)","sd(IV)","skew(IV)","kurtosis(IV)",
-                                       "mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)")
-                 )
-  )
-} 
 
 
 extraShowChoices=c("direct"="direct",

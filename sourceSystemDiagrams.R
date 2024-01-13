@@ -122,12 +122,12 @@ output$WorldPlot<-renderPlot({
          "r"={
            g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
            g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-           g1<-g1+labs(x=bquote(r[population]),y="Density")+diagramTheme
+           g1<-g1+labs(x=rpLabel,y="Density")+diagramTheme
          },
          "z"={
            g1<-g1+geom_polygon(data=pts,aes(x=atanh(x),y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
            g1<-g1+geom_line(data=pts,aes(x=atanh(x),y=y),color="black",lwd=0.25)
-           g1<-g1+labs(x=bquote(z[population]),y="Density")+diagramTheme
+           g1<-g1+labs(x=zpLabel,y="Density")+diagramTheme
          })
   
   if (debug) debugPrint("WorldPlot - exit")
