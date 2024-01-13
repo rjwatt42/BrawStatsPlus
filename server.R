@@ -211,6 +211,23 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, "Reports",selected = currentReport)
   })
   
+  observeEvent(input$RZ,{
+    RZ<<-input$RZ
+    switch (RZ,
+            "r"={
+              names(inferTypeChoicesExtra$Basic)[1]<-"z"
+              names(inferTypeChoicesExtra$World)[1]<-"zp"
+              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
+            },
+            "z"={
+              names(inferTypeChoicesExtra$Basic)[1]<-"z"
+              names(inferTypeChoicesExtra$World)[1]<-"zp"
+              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
+            })
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra)
+  })
+  
+  
   if (is_local) {
     updateCheckboxInput(session,"LoadExtras",value=TRUE)
   }
@@ -346,22 +363,6 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$nScale,{
     nPlotScale<<-input$nScale
-  })
-  
-  observeEvent(input$RZ,{
-    RZ<<-input$RZ
-    switch (RZ,
-            "r"={
-              names(inferTypeChoicesExtra$Basic)[1]<-"z"
-              names(inferTypeChoicesExtra$World)[1]<-"zp"
-              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
-            },
-            "z"={
-              names(inferTypeChoicesExtra$Basic)[1]<-"z"
-              names(inferTypeChoicesExtra$World)[1]<-"zp"
-              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
-            })
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra)
   })
   
   observeEvent(input$EvidenceExpected_type,{
