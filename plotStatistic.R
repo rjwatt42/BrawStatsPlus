@@ -133,6 +133,7 @@ collectData<-function(result) {
   rp<-cbind(result$rpIV)
   ro<-cbind(result$roIV)
   po<-cbind(result$poIV)
+  ra<-cbind(result$rIVa)
 
   if (all(is.na(result$rIV2))){
     rs<-cbind(result$rIV)
@@ -171,7 +172,7 @@ collectData<-function(result) {
     ps[ps<min_p]<-min_p
     po[po<min_p]<-min_p
   }
-  out<-list(rs=rs,ps=ps,ns=ns,df1=df1,rp=rp,ro=ro,po=po)
+  out<-list(rs=rs,ps=ps,ns=ns,df1=df1,rp=rp,ro=ro,po=po,ra=ra)
 }
 
 makeFiddle<-function(y,yd,orientation){
@@ -580,6 +581,11 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             if (RZ=="z") ylabel<-zpLabel
             else ylabel<-rpLabel 
           },
+          "ra"={
+            ylim<-rlims
+            if (RZ=="z") ylabel<-zsLabel
+            else ylabel<-rpLabel 
+          },
           "r1"={
             ylim<-rlims
             ylabel<-bquote(r[1])
@@ -617,11 +623,13 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
     if (RZ=="z") {
       data$rs<-atanh(data$rs)
       data$rp<-atanh(data$rp)
+      data$ra<-atanh(data$ra)
       data$ro<-atanh(data$ro)
     }
     switch (expType,
             "r"={data$sh<-data$rs},
             "rp"={data$sh<-data$rp},
+            "ra"={data$sh<-data$ra},
             "r1"={data$sh<-data$ro},
             "p"={data$sh<-data$ps},
             "p1"={data$sh<-data$po},
@@ -930,6 +938,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   g
 }
 
+
+ra_plot<-function(result,IV,IV2=NULL,DV,effect,orientation="vert"){
+  r_plot(result,IV,IV2,DV,effect,"ra",orientation=orientation)
+}
 
 r1_plot<-function(result,IV,IV2=NULL,DV,effect,orientation="vert"){
   r_plot(result,IV,IV2,DV,effect,"r1",orientation=orientation)

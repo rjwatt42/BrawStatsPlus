@@ -499,14 +499,6 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=diagramTh
             }
     )
   }
-  # } else {
-  #     if (DV$type=="Categorical") {
-  #       g<-g+coord_cartesian(ylim = c(-0.1,1.1))
-  #       g<-g+scale_y_continuous(breaks=seq(0,1,0.2))
-  #     } else {
-  #       
-  #     }
-  #   }
   g<-g+labs(x=IV$name,y=DV$name)+theme
   
 }

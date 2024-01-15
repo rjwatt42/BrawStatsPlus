@@ -58,8 +58,8 @@ loadExtras<-function(session,input=NULL,addingExtras=TRUE){
     updateSelectInput(session,"Explore_showD",choices=showChoicesExtra)
 
     updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoicesExtra)
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra,selected="r")
-    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra,selected="p")
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra)
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra)
   }
 }
 

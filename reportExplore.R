@@ -302,6 +302,9 @@ reportExplore<-function(Iv,IV2,DV,effect,design,explore,exploreResult){
   }
   
   outputText<-c(outputText," ")
+  if (explore$Explore_type=="EffectSize" && RZ=="z") {
+    vals<-atanh(vals)
+  }
   for (i in 1:nc) {
     outputText<-c(outputText,paste("\b",format(vals[use[i]],digits=report_precision),sep=""))
   }

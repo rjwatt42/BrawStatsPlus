@@ -310,7 +310,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     if (appendData) {
     mainResult<-earlierResult
   } else {
-    mainResult<-list(rpIV=c(),roIV=c(),rIV=c(),pIV=c(),
+    mainResult<-list(rpIV=c(),roIV=c(),rIV=c(),pIV=c(),rIVa=c(),
                    rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),
                    nval=c(),df1=c(),
                    r=list(direct=c(),unique=c(),total=c(),coefficients=c()),
@@ -328,13 +328,12 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     if (!is.null(IV2)) {effect$rIV2<-rho2[i]}
     
     res<-runSimulation(IV,IV2,DV,effect,design,evidence,sigOnly)
-      
     if (is.na(res$rIV)) {
       res$rIV<-0
       res$pIV<-1
       res$nval<-0
     }
-    newResult<-list(rpIV=res$rpIV,roIV=res$roIV,rIV=res$rIV,pIV=res$pIV,poIV=res$poIV,
+    newResult<-list(rpIV=res$rpIV,roIV=res$roIV,rIV=res$rIV,pIV=res$pIV,poIV=res$poIV,rIVa=res$rIVa,
                     rIV2=res$rIV2,pIV2=res$pIV2,rIVIV2DV=res$rIVIV2DV,pIVIV2DV=res$pIVIV2DV,
                     dvMean=mean(res$dv,na.rm=TRUE),dvSD=sd(res$dv,na.rm=TRUE),
                     dvSkew=skewness(res$dv,na.rm=TRUE),dvKurtosis=kurtosis(res$dv,na.rm=TRUE)+3,
@@ -357,6 +356,7 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
     mainResult$rpIV<-rbind(mainResult$rpIV,newResult$rpIV)
     mainResult$rIV<-rbind(mainResult$rIV,newResult$rIV)
     mainResult$roIV<-rbind(mainResult$roIV,newResult$roIV)
+    mainResult$rIVa<-rbind(mainResult$rIVa,newResult$rIVa)
     mainResult$pIV<-rbind(mainResult$pIV,newResult$pIV)
     mainResult$poIV<-rbind(mainResult$poIV,newResult$poIV)
     mainResult$nval<-rbind(mainResult$nval,newResult$nval)
@@ -933,7 +933,7 @@ analyseSample<-function(IV,IV2,DV,effect,design,evidence,result){
 }
 
 runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnalysis=FALSE,oldResult=NULL) {
-  if (onlyAnalysis && !is.null(oldResult)) {
+    if (onlyAnalysis && !is.null(oldResult)) {
     res<-analyseSample(IV,IV2,DV,effect,design,evidence,oldResult)
     return(res)
   }
@@ -979,6 +979,10 @@ runSimulation<-function(IV,IV2,DV,effect,design,evidence,sig_only=FALSE,onlyAnal
   # res<-cheatSample(IV,IV2,DV,effect,design,evidence,sample,res)
   # Replication?
   res<-replicateSample(IV,IV2,DV,effect,design,evidence,sample,res)
+  
+  F<-res$rawAnova$F[[2]]
+  df2<-res$rawAnova$Df[[3]]
+  res$rIVa<-sqrt(F/(F+df2))*sign(res$rIV)
   
   res
   

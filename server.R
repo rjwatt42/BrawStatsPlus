@@ -215,16 +215,19 @@ shinyServer(function(input, output, session) {
     RZ<<-input$RZ
     switch (RZ,
             "r"={
-              names(inferTypeChoicesExtra$Basic)[1]<-"z"
-              names(inferTypeChoicesExtra$World)[1]<-"zp"
-              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
+              names(inferTypeChoicesExtra$Basic)[1]<<-"r"
+              names(inferTypeChoicesExtra$World)[1]<<-"rp"
+              names(inferTypeChoicesExtra$World)[4]<<-"ra"
+              names(inferTypeChoicesExtra$Replication)[1]<<-"r1"
             },
             "z"={
-              names(inferTypeChoicesExtra$Basic)[1]<-"z"
-              names(inferTypeChoicesExtra$World)[1]<-"zp"
-              names(inferTypeChoicesExtra$Replication)[1]<-"z1"
+              names(inferTypeChoicesExtra$Basic)[1]<<-"z"
+              names(inferTypeChoicesExtra$World)[1]<<-"zp"
+              names(inferTypeChoicesExtra$World)[4]<<-"za"
+              names(inferTypeChoicesExtra$Replication)[1]<<-"z1"
             })
     updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra)
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra)
   })
   
   

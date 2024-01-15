@@ -28,6 +28,13 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
               pops<-rep(effect$world$populationPDFk,sample_increase)
               pops<-tanh(pops)
             },
+            "Double_r"={
+              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(length(pops)))
+            },
+            "Double_z"={
+              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(length(pops)))
+              pops<-tanh(pops)
+            },
             "Exp_z"={
               pops<-rexp(sample_increase,rate=1/effect$world$populationPDFk)
               pops<-pops*sign(rnorm(length(pops)))

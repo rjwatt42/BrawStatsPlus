@@ -5,7 +5,7 @@ source("uiPrior.R")
 basicType<-list("r"="r","p"="p")
 likeType<-list("log(lrs)"="log(lrs)","log(lrd)"="log(lrd)")
 powerType<-list("w"="w","nw"="nw")
-worldType<-list("rp"="rp","n"="n","wp"="wp")
+worldType<-list("rp"="rp","n"="n","wp"="wp","ra"="ra")
 replicationType<-list("r1"="r1","p1"="p1")
 
 

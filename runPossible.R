@@ -1,5 +1,5 @@
 
-npops=2*3*4*50+1 # 2*3*4*n+1
+npops=2*3*4*10+1 # 2*3*4*n+1
 npoints=501
 wDensMethod=2
 uniformGain=1
@@ -29,6 +29,19 @@ zpriorDistr<-function(zvals,Population_distr,PopulationRZ,k){
           "Single_z"={
             zdens<-zvals*0
             zdens[which.min(abs(k-zvals))]<-1
+            zdens
+          },
+          "Double_r"={
+            rvals<-tanh(zvals)
+            zdens<-rvals*0
+            zdens[which.min(abs(k-rvals))]<-1/2
+            zdens[which.min(abs(k+rvals))]<-1/2
+            zdens*(1-rvals^2)
+          },
+          "Double_z"={
+            zdens<-zvals*0
+            zdens[which.min(abs(k-zvals))]<-1/2
+            zdens[which.min(abs(k+zvals))]<-1/2
             zdens
           },
           "Uniform_r"={
@@ -380,8 +393,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   # distribution of sample sizes
   
   if (design$sNRand) {
-    if (HQ) mult<-5 else mult=1
-    if (!sigOnly) n<-round(minN+seq(0,4*design$sN,length.out=nNpoints*mult))
+    if (HQ) mult<-5 else mult=1/2
+    if (!sigOnly) n<-round(minN+seq(0,4*design$sN,length.out=nNpoints))
     else          n<-round(minN+seq(0,8*design$sN*mult,length.out=8*design$sN*mult+1))
     ng<-dgamma(n-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
   } else {

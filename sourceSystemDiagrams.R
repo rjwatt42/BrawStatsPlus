@@ -69,66 +69,27 @@ output$WorldPlot<-renderPlot({
          "z"={range<-tanh(z_range)}
   )
   if (effect$world$worldAbs) {
-    x<-seq(0,1,length.out=worldNPoints)*range
+    rx<-seq(0,1,length.out=worldNPoints)*range
   } else {
-    x<-seq(-1,1,length.out=worldNPoints)*range
-  }
-  if (effect$world$populationRZ=="z") {r<-atanh(x)} else {r<-x}
-  switch (effect$world$populationPDF,
-          "Single"={
-            dens<-r*0
-            use=which.min(abs(x-effect$world$populationPDFk))
-            dens[use]=1
-          },
-          "Double"={
-            dens<-r*0
-            use=which.min(abs(x-effect$world$populationPDFk))
-            dens[use]=0.5
-            use=which.min(abs(x+effect$world$populationPDFk))
-            dens[use]=0.5
-          },
-          "Uniform"={
-            dens<-r*0+0.5
-          },
-          "Exp"={
-            dens<-exp(-abs(r/effect$world$populationPDFk))
-          },
-          "Gauss"={
-            dens<-exp(-0.5*abs(r/effect$world$populationPDFk)^2)
-          },
-          ">"={
-            dens<-(abs(r)>effect$world$populationPDFk)*0.5
-          },
-          "<"={
-            dens<-(abs(r)<effect$world$populationPDFk)*0.5
-          },
-  )
-  if (effect$world$populationRZ=="z") {
-    dens<-dens/(1-x^2)
-    dens<-dens/max(dens)
-  }
-  dens<-dens*(1-effect$world$populationNullp)
-  
-  if (effect$world$populationPDF=="Single" && effect$world$populationNullp>0) {
-    use<-which.min(abs(x-0))
-    dens[use]<-effect$world$populationNullp
+    rx<-seq(-1,1,length.out=worldNPoints)*range
   }
   
-  x<-c(x[1],x,x[length(x)])
-  dens<-c(0,dens,0)
-  pts=data.frame(x=x,y=dens)
+  rdens<-fullRPopulationDist(rx,effect$world)
+  
+  if (RZ=="z") {
+    rdens<-rdens2zdens(rdens,rx)
+    rx<-atanh(rx)
+  }
+  rx<-c(rx[1],rx,rx[length(rx)])
+  rdens<-c(0,rdens,0)
+  pts=data.frame(x=rx,y=rdens)
   g1<-ggplot(pts,aes(x=x,y=y))
+  g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
+  g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
   switch(RZ,
-         "r"={
-           g1<-g1+geom_polygon(data=pts,aes(x=x,y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
-           g1<-g1+geom_line(data=pts,aes(x=x,y=y),color="black",lwd=0.25)
-           g1<-g1+labs(x=rpLabel,y="Density")+diagramTheme
-         },
-         "z"={
-           g1<-g1+geom_polygon(data=pts,aes(x=atanh(x),y=y),fill=plotcolours$descriptionC)+scale_y_continuous(limits = c(0,1.05),labels=NULL,breaks=NULL)
-           g1<-g1+geom_line(data=pts,aes(x=atanh(x),y=y),color="black",lwd=0.25)
-           g1<-g1+labs(x=zpLabel,y="Density")+diagramTheme
-         })
+         "r"={ g1<-g1+labs(x=rpLabel,y="Density")+diagramTheme },
+         "z"={ g1<-g1+labs(x=zpLabel,y="Density")+diagramTheme }
+         )
   
   if (debug) debugPrint("WorldPlot - exit")
 

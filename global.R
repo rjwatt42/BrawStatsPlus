@@ -168,6 +168,7 @@ if (is_local) {
   switches$doPossiblePower<-TRUE
   switches$doBatchFiles<-TRUE
   switches$doVariablesExplore<-TRUE
+  
   # switches$doWorlds<-TRUE
     # switches$loadExtrasValue<-TRUE
 }

@@ -7,6 +7,7 @@ drawInference<-function(IV,IV2,DV,effect,design,evidence,result,disp,orientation
           "p"={g<-p_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "r"={g<-r_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "r1"={g<-r1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "ra"={g<-ra_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "p1"={g<-p1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "log(lrs)"={g<-llrs_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "log(lrd)"={g<-llrd_plot(result,IV,IV2,DV,effect,orientation=orientation)},
@@ -53,7 +54,9 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             d1<-result$rIV
             if (RZ=="z") {
               d1<-atanh(d1)
-              disp1<-"z"
+              disp1<-zsLabel
+            } else {
+              disp1<-rsLabel
             }
             xlim<-rlim
           },
@@ -91,7 +94,9 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             d1<-result$rpIV
             if (RZ=="z") {
               d1<-atanh(d1)
-              disp1<-"zp"
+              disp1<-zpLabel
+            } else {
+              disp1<-rpLabel
             }
             xlim<-rlim
           },
@@ -101,6 +106,17 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             if (RZ=="z") {
               d1<-atanh(d1)
               disp1<-bquote(z[1])
+            }
+            xlim<-rlim
+          },
+          "ra"={
+            d1<-result$rIVa
+            disp1<-bquote(r[1])
+            if (RZ=="z") {
+              d1<-atanh(d1)
+              disp1<-bquote(z[a])
+            } else{
+              disp1<-bquote(r[a])
             }
             xlim<-rlim
           },
@@ -129,7 +145,20 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             d2<-result$rIV
             if (RZ=="z") {
               d2<-atanh(d2)
-              disp2<-"z"
+              disp2<-zsLabel
+            } else {
+              disp2<-rsLabel
+            }
+            ylim<-rlim
+          },
+          "ra"={
+            d2<-result$rIVa
+            disp2<-bquote(r[1])
+            if (RZ=="z") {
+              d2<-atanh(d2)
+              disp2<-bquote(z[a])
+            } else {
+              disp2<-bquote(r[a])
             }
             ylim<-rlim
           },
@@ -139,6 +168,8 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             if (RZ=="z") {
               d2<-atanh(d2)
               disp2<-bquote(z[1])
+            } else {
+              disp2<-bquote(r[1])
             }
             ylim<-rlim
           },
@@ -154,7 +185,9 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             d2<-result$rpIV
             if (RZ=="z") {
               d2<-atanh(d2)
-              disp2<-"zp"
+              disp2<-zpLabel
+            } else {
+              disp2<-rpLabel
             }
             ylim<-rlim
           },
@@ -202,12 +235,7 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
             ylim<-rlim
           }
   )
-  if (disp1=="r" && disp2=="p") {
-    show_line<-TRUE
-  } else {
-    show_line<-FALSE
-  }
-  
+
   if (xsc==1) {
     d1<-log10(d1)
     xlim<-c(log10(min_p), 0)
@@ -226,11 +254,19 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
   
   g<-ggplot(pts,aes(x=x, y=y))
   
-  if (show_line) {
+  if (disp1==rsLabel && disp2=="p") {
     rs<-seq(-r_range,r_range,length.out=51)
     ps<-r2p(rs,result$nval[1])
     if (pPlotScale=="log10")  ps<-log10(ps)
-    g<-g+geom_line(data=data.frame(x=rs,y=ps),aes(x=x,y=y),col="white")
+    g<-g+geom_line(data=data.frame(x=rs,y=ps),aes(x=x,y=y),col="black")
+  }
+  
+  if (disp1==zsLabel && disp2==bquote(z[a])) {
+    rs<-c(-z_range,z_range)
+    g<-g+geom_line(data=data.frame(x=rs,y=rs),aes(x=x,y=y),col="black")
+    gain<-mean(pts$y/pts$x)
+    g<-g+geom_line(data=data.frame(x=rs/gain,y=rs),aes(x=x,y=y),col="black",linetype=3)
+    g<-g+geom_label(data=data.frame(x=z_range/gain,y=z_range,label=format(gain)),aes(x=x,y=y,label=label))
   }
   
   dotSize=min(8,max(3.5,sqrt(400/length(d1))))

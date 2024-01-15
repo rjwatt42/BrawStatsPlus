@@ -50,7 +50,26 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
   else {
     if(expected$type=="CILimits") {outputText1<-c("   ","lower","upper")}
     else {
-      outputText1<-c("   ",paste0("\b",expected$Expected_par1),paste0("\b",expected$Expected_par2))
+      outputText1<-
+      par1<-expected$Expected_par1
+      par2<-expected$Expected_par2
+      if (RZ=="z") {
+        switch(par1,
+               "r"={par1="z"},
+               "rp"={par1="zp"},
+               "r1"={par1="z1"},
+               "ra"={par1="za"},
+               {par1=par1}
+        )
+        switch(par2,
+               "r"={par2="z"},
+               "rp"={par2="zp"},
+               "r1"={par2="z1"},
+               "ra"={par2="za"},
+               {par2=par2}
+        )
+      }
+      outputText1<-c("   ",paste0("\b",par1),paste0("\b",par2))
     }
   }
   outputText<-c(outputText,rep(outputText1,nc/3))
@@ -160,6 +179,10 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
                   a<-result$roIV
                   if (RZ=="z") a<-atanh(a)
                 },
+                "ra"={
+                  a<-result$rIVa
+                  if (RZ=="z") a<-atanh(a)
+                },
                 "p1"={a<-result$poIV},
                 "wp"={a<-rn2w(result$rpIV,result$nval)}
         )
@@ -180,6 +203,10 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
                 },
                 "r1"={
                   b<-result$roIV
+                  if (RZ=="z") b<-atanh(b)
+                },
+                "ra"={
+                  b<-result$rIVa
                   if (RZ=="z") b<-atanh(b)
                 },
                 "p1"={b<-result$poIV},
