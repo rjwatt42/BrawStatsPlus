@@ -9,6 +9,7 @@ se_arrow=0.3
 CI=0.95
 
 histGain<-NA
+histGainrange<-c(NA,NA)
 
 varLab<-function(label,orientation) {
   switch(orientation,
@@ -224,11 +225,14 @@ get_lowerEdge<-function(allvals,svals) {
 }
 
 getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
+  if (min(vals,na.rm=TRUE)==max(vals,na.rm=TRUE)) {
+    bins<-min(vals)+min(vals)/10*c(-1.5,-0.5,0.5,1.5)
+    return(bins)
+    }
+  
   nv=max(length(nsvals),length(vals))
   nb<-round(sqrt(nv)*0.75)
   
-  if (min(vals,na.rm=TRUE)==max(vals,na.rm=TRUE)) {nb<-3}
-
   high_p<-max(vals,na.rm=TRUE)+0.2
   low_p<-min(vals,na.rm=TRUE)-0.2
   if (!is.null(minVal)) {
@@ -237,7 +241,7 @@ getBins<-function(vals,nsvals,target,minVal,maxVal,fixed=FALSE) {
   if (!is.null(maxVal)) {
     high_p<-min(maxVal,high_p,na.rm=TRUE)
   }
-
+  
   if ((length(nsvals)==0) || (length(nsvals)==length(vals))){
     bins<-seq(low_p,high_p,length.out=nb)
     return(bins)
@@ -382,8 +386,9 @@ expected_hist<-function(vals,svals,valType){
     sdens<-sdens/max(dens,na.rm=TRUE)/2
     dens<-dens/max(dens,na.rm=TRUE)/2
   } else {
-    sdens<-sdens/(sum(dens)*(bins[2]-bins[1]))*histGain
-    dens<-dens/(sum(dens)*(bins[2]-bins[1]))*histGain
+    use<- (vals>=histGainrange[1]) & (vals<=histGainrange[2])
+    sdens<-sdens/(sum(use)*(bins[2]-bins[1]))*histGain
+    dens<-dens/(sum(use)*(bins[2]-bins[1]))*histGain
   }
   # browser()
   x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
@@ -663,10 +668,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       }
       if (is.element(expType,c("p","e1","e2","p1"))) {
         if (logScale) {
-          yv<-seq(log10(min_p),0,length.out=51)
+          yv<-seq(log10(min_p),0,length.out=201)
           yvUse<-10^yv
         }else{
-          yv<-seq(0,1,length.out=51)
+          yv<-seq(0,1,length.out=201)
           yvUse<-yv
         }
         xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
@@ -678,6 +683,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                  yv<-seq(-1,1,length.out=npt)*z_range
                  xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
                  xdsig<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+                 xd<-rdens2zdens(xd,tanh(yv))
+                 xdsig<-rdens2zdens(xdsig,tanh(yv))
                } else {
                  yv<-seq(-1,1,length.out=npt)*0.99
                  xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
@@ -753,6 +760,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       theoryGain<-1/max(xd)*distMax
       xd<-xd*theoryGain
       histGain<<-sum(xd)*(yv[2]-yv[1])
+      histGainrange<<-c(yv[1],yv[length(yv)])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
       g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
       if (is.element(expType,c("r","n"))) {

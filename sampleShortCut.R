@@ -29,10 +29,10 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
               pops<-tanh(pops)
             },
             "Double_r"={
-              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(length(pops)))
+              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(sample_increase))
             },
             "Double_z"={
-              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(length(pops)))
+              pops<-rep(effect$world$populationPDFk,sample_increase)*sign(rnorm(sample_increase))
               pops<-tanh(pops)
             },
             "Exp_z"={
@@ -103,7 +103,8 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
                  rpIV=rbind(matrix(r_effects[1:nsims],ncol=1),oldResult$rpIV),
                  nval=rbind(matrix(n_effects[1:nsims],ncol=1),oldResult$nval),
                  df1=rbind(matrix(rep(df1,nsims),ncol=1),oldResult$df1),
-                 pIV=rbind(matrix(p_effects[1:nsims],ncol=1),oldResult$pIV)
+                 pIV=rbind(matrix(p_effects[1:nsims],ncol=1),oldResult$pIV),
+                 dv=rbind(matrix(rep(0,nsims),ncol=1),oldResult$dv)
                  )
     
   } else {
@@ -111,7 +112,8 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
                rpIV=matrix(rp_effects[1:nsims],ncol=1),
                nval=matrix(n_effects[1:nsims],ncol=1),
                df1=matrix(rep(df1,nsims),ncol=1),
-               pIV=matrix(p_effects[1:nsims],ncol=1)
+               pIV=matrix(p_effects[1:nsims],ncol=1),
+               dv=rep(0,nsims)
                )
   }
   result$participant<-1:length(result$rIV)

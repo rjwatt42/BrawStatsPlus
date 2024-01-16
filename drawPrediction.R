@@ -506,18 +506,18 @@ drawPrediction<-function(IV,IV2,DV,effect,design,offset=1,g=NULL,theme=diagramTh
 drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   g<-ggplot()
   
+  np<-worldNPoints
+  if (effect$world$worldAbs) np<-worldNPoints*2+1
   switch(RZ,
-         "r"={range<-r_range},
-         "z"={range<-tanh(z_range)}
+         "r"={vals<-seq(-1,1,length=np)*r_range},
+         "z"={vals<-tanh(seq(-1,1,length=np)*z_range)}
   )
   
   if (effect$world$worldAbs) {
-    vals<-seq(-1,1,length=worldNPoints*2+1)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
     vals<-vals[worldNPoints+(1:worldNPoints)]
     dens<-dens[worldNPoints+(1:worldNPoints)]
   } else {
-    vals<-seq(-1,1,length=worldNPoints)*range
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
   }
   if (RZ=="z") {

@@ -1,5 +1,6 @@
 
 npops=2*3*4*10+1 # 2*3*4*n+1
+npops=2*10+1 # 2*3*4*n+1
 npoints=501
 wDensMethod=2
 uniformGain=1
@@ -120,11 +121,21 @@ rpopDistr<-function(rvals,Population_distr,PopulationRZ,k){
             rdens
           },
           "Single_z"={
-            zvals<-atanh(rvals)
-            zdens<-zvals*0
-            zdens[which.min(abs(k-zvals))]=1
-            zdens<-zdens2rdens(zdens,rvals)
-            zdens
+            rdens<-rvals*0
+            rdens[which.min(abs(tanh(k)-rvals))]<-1
+            rdens
+          },
+          "Double_r"={
+            rdens<-rvals*0
+            rdens[which.min(abs(k-rvals))]<-1/2
+            rdens[which.min(abs(k+rvals))]<-1/2
+            rdens
+          },
+          "Double_z"={
+            rdens<-rvals*0
+            rdens[which.min(abs(tanh(k)-rvals))]<-1/2
+            rdens[which.min(abs(tanh(k)+rvals))]<-1/2
+            rdens
           },
           "Uniform_r"={
             rvals*0+1*uniformGain
@@ -238,9 +249,9 @@ get_pRho<-function(world,by="r",viewRZ="r") {
   if (by=="z") {
     if (world$populationPDF=="Single") {
       if (world$populationRZ=="r") {
-        pRho<-atanh(world$populationPDFk)
-      } else {
         pRho<-world$populationPDFk
+      } else {
+        pRho<-tanh(world$populationPDFk)
       }
       pRhogain<-1
     } else {
@@ -391,7 +402,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
     else pR<-get_pRho(world,by="r",viewRZ="r")
   }
   # distribution of sample sizes
-  
+
   if (design$sNRand) {
     if (HQ) mult<-5 else mult=1/2
     if (!sigOnly) n<-round(minN+seq(0,4*design$sN,length.out=nNpoints))
