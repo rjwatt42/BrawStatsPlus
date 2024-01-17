@@ -421,6 +421,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(IV2)) {
       editVar$data<<-editVar$data+1
     }    
+    
   })
   
   observeEvent(input$Effectchoice,{

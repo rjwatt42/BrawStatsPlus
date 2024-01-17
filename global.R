@@ -120,6 +120,8 @@ show<-0
 shortHand<-FALSE      # instead of making full samples
 shortHandGain=10
 
+uniformZrange=10
+
 #####################
 # warnings to generate
 

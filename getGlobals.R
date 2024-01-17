@@ -41,6 +41,7 @@ nulleffect<<-list(rIV=0,rIV2=0,rIVIV2=0,rIVIV2DV=0,Heteroscedasticity=0,Welch=FA
 
 design<<-list(sN=42, sNRand=FALSE,sNRandK=2, 
              sMethod="Random" ,sIV1Use="Between",sIV2Use="Between", 
+             sWithinCor=0.5,
              sRangeOn=FALSE, sIVRange=c(-3,3), sDVRange=c(-3,3), 
              sDependence=0, sOutliers=0, sClustering=0,
              sCheating="None",sCheatingLimit="Budget",sCheatingAmount=5,sCheatingBudget=1000,

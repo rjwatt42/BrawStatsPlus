@@ -316,6 +316,11 @@ expected_hist<-function(vals,svals,valType){
             bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
           },
           
+          "ra"=  { # ns is small
+            target<-get_upperEdge(abs(vals),abs(svals))
+            bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
+          },
+          
           "rp"=  { # ns is small
             target<-0.3
             bins<-getBins(vals,svals,target,NULL,NULL,fixed=TRUE)
@@ -588,8 +593,8 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
           },
           "ra"={
             ylim<-rlims
-            if (RZ=="z") ylabel<-zsLabel
-            else ylabel<-rpLabel 
+            if (RZ=="z") ylabel<-zaLabel
+            else ylabel<-raLabel 
           },
           "r1"={
             ylim<-rlims
@@ -679,6 +684,19 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         npt<-101
       switch(expType,
              "r"={
+               if (RZ=="z") {
+                 yv<-seq(-1,1,length.out=npt)*z_range
+                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+                 xd<-rdens2zdens(xd,tanh(yv))
+                 xdsig<-rdens2zdens(xdsig,tanh(yv))
+               } else {
+                 yv<-seq(-1,1,length.out=npt)*0.99
+                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+               }
+             },
+             "ra"={
                if (RZ=="z") {
                  yv<-seq(-1,1,length.out=npt)*z_range
                  xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)

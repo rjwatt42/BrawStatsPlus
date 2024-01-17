@@ -65,6 +65,7 @@ updateDesign<-function(){
   design<-list(sN=input$sN, sNRand=input$sNRand,sNRandK=input$sNRandK,
                sBudgetOn=input$sBudgetOn,sNBudget=input$sNBudget,
                sMethod=input$sMethod ,sIV1Use=input$sIV1Use,sIV2Use=input$sIV2Use, 
+               sWithinCor=input$sWithinCor,
                sRangeOn=input$sRangeOn, sIVRange=input$sIVRange, sDVRange=input$sDVRange, 
                sDependence=input$sDependence, sOutliers=input$sOutliers, sClustering=input$sClustering,
                sCheating=input$sCheating,sCheatingLimit=input$sCheatingLimit,sCheatingAmount=input$sCheatingAmount,sCheatingBudget=input$sCheatingBudget,

@@ -8,7 +8,7 @@ quickHypotheses<-
                tags$td(width = "30%",
                        selectInput("Hypchoice", label = NULL,
                                    choices=
-                                     list("i~i"="ii","i~o"="oi","i~c2"="c2i","i~c3"="c3i",
+                                     list("i~i"="ii","i~o"="oi","i~c2"="c2i","i~c3"="c3i","i~w2"="w2i",
                                           "o~i"="io","o~o"="oo","o~c2"="c2o","o~c3"="c3o",
                                           "c~i"="ic","c~o"="oc","c~c2"="c2c","c~c3"="c3c"," ",
                                           "i~i+i"="iii","i~c+i"="cii","i~i+c"="ici","i~c+c"="cci","  ",

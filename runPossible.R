@@ -1,6 +1,6 @@
 
 npops=2*3*4*10+1 # 2*3*4*n+1
-npops=2*10+1 # 2*3*4*n+1
+npops=2*10*10+1 # 2*3*4*n+1
 npoints=501
 wDensMethod=2
 uniformGain=1
@@ -25,49 +25,45 @@ zpriorDistr<-function(zvals,Population_distr,PopulationRZ,k){
             rvals<-tanh(zvals)
             zdens<-rvals*0
             zdens[which.min(abs(k-rvals))]<-1
-            zdens*(1-rvals^2)
           },
           "Single_z"={
             zdens<-zvals*0
             zdens[which.min(abs(k-zvals))]<-1
-            zdens
           },
           "Double_r"={
             rvals<-tanh(zvals)
             zdens<-rvals*0
             zdens[which.min(abs(k-rvals))]<-1/2
             zdens[which.min(abs(k+rvals))]<-1/2
-            zdens*(1-rvals^2)
           },
           "Double_z"={
             zdens<-zvals*0
             zdens[which.min(abs(k-zvals))]<-1/2
             zdens[which.min(abs(k+zvals))]<-1/2
-            zdens
           },
           "Uniform_r"={
             rvals<-tanh(zvals)
-            rvals*0+1*(1-rvals^2)
+            zdens<-rdens2zdens(rvals*0+1,rvals)
           },
           "Uniform_z"={
-            zdens<-zvals*0+1
-            zdens*uniformGain
+            zdens<-zvals*0+uniformGain
           },
           "Exp_r"={
             rvals<-tanh(zvals)
-            exp(-abs(rvals)/k)*(1-rvals^2)
+            zdens<-rdens2zdens(exp(-abs(rvals)/k),rvals)
           },
           "Exp_z"={
             zdens<-exp(-abs(zvals)/k)
           },
           "Gauss_r"={
             rvals<-tanh(zvals)
-            exp(-0.5*(abs(rvals)/k)^2)*(1-rvals^2)
+            zdens<-rdens2zdens(exp(-0.5*(abs(rvals)/k)^2),rvals)
           },
           "Gauss_z"={
             zdens<-exp(-0.5*(abs(zvals)/k)^2)
           }
   )
+  zdens
 }
 
 rSamplingDistr<-function(rvals,rmu,n){
@@ -402,7 +398,6 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
     else pR<-get_pRho(world,by="r",viewRZ="r")
   }
   # distribution of sample sizes
-
   if (design$sNRand) {
     if (HQ) mult<-5 else mult=1/2
     if (!sigOnly) n<-round(minN+seq(0,4*design$sN,length.out=nNpoints))

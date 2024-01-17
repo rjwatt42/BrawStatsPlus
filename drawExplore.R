@@ -51,6 +51,22 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               ylabel<-bquote(bold(z['s']))
             }
           },
+          "EffectSizeA"={
+            ylim<-c(-1,1)
+            ylabel<-bquote(bold(r['a']))
+            if (RZ=="z") {
+              ylim<-c(-1,1)*z_range
+              ylabel<-bquote(bold(z['a']))
+            }
+          },
+          "EffectSize1"={
+            ylim<-c(-1,1)
+            ylabel<-bquote(bold(r['a']))
+            if (RZ=="z") {
+              ylim<-c(-1,1)*z_range
+              ylabel<-bquote(bold(z['a']))
+            }
+          },
           "p"={
             if (pPlotScale=="log10") {
               ylim<-c(-4,0.1)
@@ -158,9 +174,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "kurtosis(DV)"={ylabel<-"kurtosis(DV)"}
   )
 
-  if (!is.null(IV2) && is.element(explore$Explore_show,c("EffectSize","p","w","p(sig)"))) {
+  if (!is.null(IV2) && is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","p(sig)"))) {
     switch (explore$Explore_show,
             "EffectSize"={use_cols<<-c(hsv(0.1,1,1),hsv(0.1+0.075,1,1),hsv(0.1+0.15,1,1))},
+            "EffectSizeA"={use_cols<<-c(hsv(0.1,1,1),hsv(0.1+0.075,1,1),hsv(0.1+0.15,1,1))},
             "p"=         {use_cols<-c(hsv(0,1,1),hsv(0+0.075,1,1),hsv(0+0.15,1,1))},
             "w"=         {use_cols<-c(hsv(0.65,1,1),hsv(0.65+0.075,1,1),hsv(0.65+0.15,1,1))},
             "p(sig)"=    {use_cols<-c("#FFFFFF","#DDDDDD","#AAAAAA")},
@@ -234,6 +251,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       )
     }
     rpVals<-exploreResult$result$rpIVs
+    raVals<-exploreResult$result$raIVs
     nVals<-exploreResult$result$nvals
     df1Vals<-exploreResult$result$df1vals
     
@@ -241,6 +259,33 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             "EffectSize"={
               showVals<-rVals
               if (RZ=="z") {showVals<-atanh(rVals)}
+              if (is.null(IV2)){
+                col<-"yellow"
+                colFill<-col
+                lines<-c(0,effect$rIV)
+                if (RZ=="z") {lines<-c(0,atanh(effect$rIV))}
+              } else {
+                switch (explore$Explore_whichShow,
+                        "Main 1"={
+                          lines<-c(0,effect$rIV)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIV))}
+                        },
+                        "Main 2"={
+                          lines<-c(0,effect$rIV2)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIV2))}
+                        },
+                        "Interaction"={
+                          lines<-c(0,effect$rIVIV2DV)
+                          if (RZ=="z") {lines<-c(0,atanh(effect$rIVIV2DV))}
+                        }
+                )
+                col<-all_cols[[explore$Explore_typeShow]]
+                colFill<-names(all_cols[explore$Explore_typeShow])
+              }
+            },
+            "EffectSizeA"={
+              showVals<-raVals
+              if (RZ=="z") {showVals<-atanh(raVals)}
               if (is.null(IV2)){
                 col<-"yellow"
                 colFill<-col
@@ -614,7 +659,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     }
     
     # draw the basic line and point data
-    if (is.element(explore$Explore_show,c("EffectSize","p","w","likelihood","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
+    if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","likelihood","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
       quants<-explore$Explore_quants/2
       y75<-apply( showVals , 2 , quantile , probs = 0.50+quants , na.rm = TRUE ,names<-FALSE)
       y62<-apply( showVals , 2 , quantile , probs = 0.50+quants/2 , na.rm = TRUE ,names<-FALSE)
@@ -644,6 +689,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
       } else{
         switch(explore$Explore_show,
                "EffectSize"={expType<-"r"},
+               "EffectSizeA"={expType<-"ra"},
                "p"={expType<-"p"},
                "w"={expType<-"w"},
                "SampleSize"={expType<-"n"},
@@ -651,7 +697,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                "log(lrd)"={expType<-"log(lrd)"},
                expType=NULL
                )
-        if (is.element(explore$Explore_show,c("EffectSize","p","w","SampleSize"))){
+        if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","SampleSize"))){
           sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
           col<-"white"
         } else {

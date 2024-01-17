@@ -25,6 +25,15 @@ getTypecombination<-function(HypType) {
       DV$type<-"Interval"
       IV2$name<-"none"
     },
+    "w2i"={ #print(2)
+      IV$type<-"Categorical"
+      IV$ncats<-2
+      IV$cases<-"C1,C2"
+      IV$proportions<-"1,1"
+      DV$type<-"Interval"
+      IV2$name<-"none"
+      IV$deploy<-"Within"
+    },
     "c3i"={ #print(2)
       IV$type<-"Categorical"
       IV$ncats<-3

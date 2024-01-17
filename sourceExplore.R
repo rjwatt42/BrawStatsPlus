@@ -12,7 +12,7 @@ notRunningExplore<-TRUE
 
 # main variable    
 resetExplore<-function(){
-  exploreResult<<-list(result=list(count=0,rIVs=c(),pIVs=c(),rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),rpIVs=c(),nvals=c(),wIVs=c(),psig25=c(),psig=c(),psig75=c(),vals=c(),ks=c(),pnulls=c(),Ss=c()),
+  exploreResult<<-list(result=list(count=0,rIVs=c(),raIVs=c(),pIVs=c(),rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),rpIVs=c(),nvals=c(),wIVs=c(),psig25=c(),psig=c(),psig75=c(),vals=c(),ks=c(),pnulls=c(),Ss=c()),
                        nullresult=list(count=0,rIVs=c(),pIVs=c(),rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),rpIVs=c(),nvals=c(),wIVs=c(),psig25=c(),psig=c(),psig75=c(),vals=c()),
                        nsims=0,
                        Explore_show=NA,

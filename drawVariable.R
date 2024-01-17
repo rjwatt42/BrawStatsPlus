@@ -54,7 +54,7 @@ drawCategorical<-function(var){
   g<-drawVar(pts,var)
   if (var$deploy=="Within") {
     pts<-data.frame(x=b,y=pp*0.75)
-    g<-g+geom_line(data=pts,aes(x=x,y=y),colour="white",lwd=1)+
+    g<-g+geom_line(data=pts,aes(x=x,y=y),colour="gray",lwd=1)+
       geom_point(data=pts,aes(x=x,y=y),colour="black")
   }
     g+scale_x_continuous(breaks=b,labels=l)+

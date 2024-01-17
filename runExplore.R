@@ -77,7 +77,8 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             }
           },
           "Method"={vals<-c("Random","Stratified","Cluster","Convenience","Snowball")},
-          "Usage"={vals<-c("Between","Within")},
+          "Usage"={vals<-c("Between","Within0","Within")},
+          "WithinCorr"={vals<-seq(0,0.8,length.out=npoints)},
           "SampleGamma"={vals<-seq(1,10,length.out=npoints)},
           "Alpha"={
             if (explore$Explore_xlog) {
@@ -124,7 +125,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   else {nc<-exploreResult$count}
   
   for (ni in 1:n_sims){
-    main_res<-list(rval=c(),pval=c(),nval=c(),
+    main_res<-list(rval=c(),raval=c(),pval=c(),nval=c(),
                    r1=list(direct=c(),unique=c(),total=c()),
                    r2=list(direct=c(),unique=c(),total=c()),
                    r3=list(direct=c(),unique=c(),total=c())
@@ -404,7 +405,19 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             "Transform"={evidence$Transform<-vals[i]},
             "SampleSize"={design$sN<-round(vals[i])},
             "Method"={design$sMethod<-vals[i]},
-            "Usage"={design$sIV1Use<-vals[i]},
+            "Usage"={ switch(vals[i],
+                             "Between"={design$sIV1Use<-"Between"},
+                             "Within0"={
+                               design$sIV1Use<-"Within"
+                               design$sWithinCor<-0
+                             },
+                             "Within"={
+                               design$sIV1Use<-"Within"
+                               design$sWithinCor<-0.5
+                             }
+                             )
+            },
+            "WithinCorr"={design$sWithinCor<-vals[i]},
             "SampleGamma"={
               design$sNRand<-TRUE
               design$sNRandK<-vals[i]
@@ -481,6 +494,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       } else {
         res<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,1,appendData=FALSE,sigOnly=FALSE,showProgress=FALSE)
         main_res$rval<-cbind(main_res$rval,res$rIV)
+        main_res$raval<-cbind(main_res$raval,res$rIVa)
         main_res$rpval<-cbind(main_res$rpval,res$rpIV)
         main_res$pval<-cbind(main_res$pval,res$pIV)
         main_res$nval<-cbind(main_res$nval,res$nval)
@@ -529,6 +543,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       
     } else {
       exploreResult$rIVs<-rbind(exploreResult$rIVs,main_res$rval)
+      exploreResult$raIVs<-rbind(exploreResult$raIVs,main_res$raval)
       # if (!is.null(exploreResult$rpIVs))
       exploreResult$rpIVs<-rbind(exploreResult$rpIVs,main_res$rpval)
       exploreResult$pIVs<-rbind(exploreResult$pIVs,main_res$pval)

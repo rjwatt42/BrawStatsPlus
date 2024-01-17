@@ -119,15 +119,23 @@ DesignTab <-
                 # options tab
                 ,tabPanel("#",id="DesignOptions",
                           style = paste("background: ",subpanelcolours$designC,";"),
-                            conditionalPanel(condition="input.sMethod == 'Random'",
-                                             tags$table(width = "100%",class="myTable",
-                                                        tags$tr(
-                                                          tags$td(width = "25%", tags$div(style = localStyle, "Random:")),
-                                                          tags$td(width = "40%", tags$div(style = localPlainStyle, "no options")),
-                                                          tags$td(width = "25%"),
-                                                          tags$td(width = "10%")
-                                                        ))),
-                            conditionalPanel(condition="input.sMethod == 'Stratified'",
+                          conditionalPanel(condition="input.sIV1Use == 'Within'",
+                                           tags$table(width = "100%",class="myTable",
+                                                      tags$tr(
+                                                        tags$td(width = "25%", tags$div(style = localStyle, "Random:")),
+                                                        tags$td(width = "40%", tags$div(style = localPlainStyle, "no options")),
+                                                        tags$td(width = "25%"),
+                                                        tags$td(width = "10%")
+                                                      ))),
+                          conditionalPanel(condition="input.sMethod == 'Random'",
+                                           tags$table(width = "100%",class="myTable",
+                                                      tags$tr(
+                                                        tags$td(width = "25%", tags$div(style = localStyle, "Random:")),
+                                                        tags$td(width = "40%", tags$div(style = localPlainStyle, "within corr:")),
+                                                        tags$td(width = "25%",numericInput("sWithinCor",label=NULL,value=design$sWithinCor)),
+                                                        tags$td(width = "10%")
+                                                      ))),
+                          conditionalPanel(condition="input.sMethod == 'Stratified'",
                                              tags$table(width = "100%",class="myTable",
                                                         tags$tr(
                                                           tags$td(width = "25%", tags$div(style = localStyle, "Stratified:")),

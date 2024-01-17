@@ -60,7 +60,7 @@ sampleShortCut<-function(IV,IV2,DV,effect,design,evidence,nsims,appendData,oldRe
               pops<-runif(sample_increase,min=-1,max=1)
             },
             "Uniform_z"={
-              pops<-runif(sample_increase,min=-100,max=100)
+              pops<-runif(sample_increase,min=-uniformZrange,max=uniformZrange)
               pops<-tanh(pops)
             }
     )

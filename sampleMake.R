@@ -2,7 +2,6 @@
 outlierValue=4
 dependenceVal=0.1
 clusterVal=0.25
-withinCor=0.5
 hsyConstant=1
 make_debug=FALSE
 
@@ -208,7 +207,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
                 switch (effect$world$populationPDF,
                         "Single"={rho<-effect$world$populationPDFk},
                         "Double"={rho<-effect$world$populationPDFk*sign(runif(1,-1,1))},
-                        "Uniform"={rho<-runif(1,min=-10,max=10)},
+                        "Uniform"={rho<-runif(1,min=-uniformZrange,max=uniformZrange)},
                         "Exp"={rho<-rexp(1,rate=1/effect$world$populationPDFk)*sign((runif(1)*2-1))},
                         "Gauss"={rho<-rnorm(1,mean=0,sd=effect$world$populationPDFk)*sign((runif(1)*2-1))},
                         ">"={rho<-runif(1,min=effect$world$populationPDFk,max=10)*sign(runif(1,min=-1,max=1))},
@@ -514,14 +513,14 @@ makeSample<-function(IV,IV2,DV,effect,design){
         b<-drawCatPositions(IV$ncats)
         b<-b/(sd(b)*sqrt((IV$ncats-1)/IV$ncats))
         rsd<-residual
-        
+
         ivr_new<-c()
         iv2r_new<-c()
         residual<-c()
         for (i in 1:IV$ncats) {
           ivr_new<-c(ivr_new,rep(b[i],n))
           if (!is.null(IV2)){iv2r_new<-c(iv2r_new,iv2r)} else {iv2r_new<-0}
-          residual<-c(residual,rsd*withinCor+sqrt(1-withinCor^2)*rnorm(n,0,sqrt(1-rho^2)))
+          residual<-c(residual,rsd*design$sWithinCor+sqrt(1-design$sWithinCor^2)*rnorm(n,0,sqrt(1-rho^2)))
         }
         ivr<-ivr_new
         iv2r<-iv2r_new
@@ -541,7 +540,7 @@ makeSample<-function(IV,IV2,DV,effect,design){
         for (i in 1:IV2$ncats) {
           iv2r_new<-c(iv2r_new,rep(b[i],n))
           ivr_new<-c(ivr_new,ivr)
-          residual<-c(residual,rsd*withinCor+sqrt(1-withinCor^2)*rnorm(n,0,sqrt(1-rho^2)))
+          residual<-c(residual,rsd*design$sWithinCor+sqrt(1-design$sWithinCor^2)*rnorm(n,0,sqrt(1-rho^2)))
         }
         ivr<-ivr_new
         iv2r<-iv2r_new

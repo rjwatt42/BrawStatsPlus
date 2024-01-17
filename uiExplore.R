@@ -81,6 +81,7 @@ if (switches$doReplications) {
 designChoicesExtra=list("Sampling"=list("Sample Size" = "SampleSize",
                                    "Sampling Method" = "Method",
                                    "Sample Usage" = "Usage",
+                                   "Within Corr" = "WithinCorr",
                                    "Sample Gamma" = "SampleGamma",
                                    "Alpha" = "Alpha"),
                    "Anomalies"=list("Dependence" = "Dependence",
@@ -119,7 +120,7 @@ showLike<-list("log(lrs)" = "log(lrs)",
 showVariables<-list("mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"
                     )
 
-showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize"),
+showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize","Effect Size A" = "EffectSizeA"),
                  "Infer" = showInfer,
                  "Worlds" = showWorlds,
                  "Lk" = showLike,
