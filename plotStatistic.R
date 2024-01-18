@@ -135,6 +135,7 @@ collectData<-function(result) {
   ro<-cbind(result$roIV)
   po<-cbind(result$poIV)
   ra<-cbind(result$rIVa)
+  ts<-cbind(result$test_val)
 
   if (all(is.na(result$rIV2))){
     rs<-cbind(result$rIV)
@@ -173,7 +174,7 @@ collectData<-function(result) {
     ps[ps<min_p]<-min_p
     po[po<min_p]<-min_p
   }
-  out<-list(rs=rs,ps=ps,ns=ns,df1=df1,rp=rp,ro=ro,po=po,ra=ra)
+  out<-list(rs=rs,ps=ps,ns=ns,ts=ts,df1=df1,rp=rp,ro=ro,po=po,ra=ra)
 }
 
 makeFiddle<-function(y,yd,orientation){
@@ -360,6 +361,11 @@ expected_hist<-function(vals,svals,valType){
           "w"=  { # ns is small
             target<-get_upperEdge(abs(vals),abs(svals))
             bins<-getBins(vals,svals,target,log10(min_p),NULL)
+          },
+          
+          "t"=  { # ns is small
+            target<-0
+            bins<-getBins(vals,svals,target,NULL,NULL)
           },
           
           "n"= { # ns is small
@@ -586,6 +592,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             ylim<-c(1, result$design$sN*5*1.1)
             ylabel<-"n"
           },
+          "t"={
+            ylim<-c(-5,5)
+            ylabel<-"t"
+          },
           "rp"={
             ylim<-rlims
             if (RZ=="z") ylabel<-zpLabel
@@ -648,6 +658,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
             "e1d"={data$sh<-cbind(res2llr(result,"dLLR"))},
             "e2d"={data$sh<-cbind(res2llr(result,"dLLR"))},
             "n"={data$sh<-data$ns},
+            "t"={data$sh<-data$ts},
             "w"={data$sh<-rn2w(data$rs,data$ns)},
             "wp"={data$sh<-rn2w(data$rp,data$ns)},
             "nw"={data$sh<-rw2n(data$rs,0.8,result$design$sReplTails)},
@@ -767,6 +778,13 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                }
                xd<-getNDist(yv,result$effect,result$design,logScale=logScale)
                xdsig<-getNDist(yv,result$effect,result$design,logScale=logScale,sigOnly=TRUE)
+             },
+             "t"={
+               yv<-seq(-5,5,length.out=npt)
+               yvUse<-yv
+               xd<-yv*0
+               xd[yv==0]<-1
+               xdsig<-xd
              },
              "wp"={
                yv<-seq(alphaSig*1.01,1/1.01,length.out=npt)
@@ -1133,6 +1151,10 @@ ci1_plot<-function(result,IV=NULL,IV2=NULL,DV=NULL,effect,orientation="vert"){
 
 ci2_plot<-function(result,IV,IV2=NULL,DV,effect,orientation="vert"){
   r_plot(result,IV,IV2,DV,effect,"ci2",orientation=orientation)
+}
+
+t_plot<-function(result,IV,IV2=NULL,DV,effect,orientation="vert"){
+  r_plot(result,IV,IV2,DV,effect,"t",orientation=orientation)
 }
 
 

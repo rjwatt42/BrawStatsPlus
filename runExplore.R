@@ -77,7 +77,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             }
           },
           "Method"={vals<-c("Random","Stratified","Cluster","Convenience","Snowball")},
-          "Usage"={vals<-c("Between","Within0","Within")},
+          "Usage"={vals<-c("Between","Between2","Within0","Within")},
           "WithinCorr"={vals<-seq(0,0.8,length.out=npoints)},
           "SampleGamma"={vals<-seq(1,10,length.out=npoints)},
           "Alpha"={
@@ -125,7 +125,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   else {nc<-exploreResult$count}
   
   for (ni in 1:n_sims){
-    main_res<-list(rval=c(),raval=c(),pval=c(),nval=c(),
+    main_res<-list(rval=c(),raval=c(),pval=c(),nval=c(),tval=c(),df1=c(),
                    r1=list(direct=c(),unique=c(),total=c()),
                    r2=list(direct=c(),unique=c(),total=c()),
                    r3=list(direct=c(),unique=c(),total=c())
@@ -406,14 +406,24 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
             "SampleSize"={design$sN<-round(vals[i])},
             "Method"={design$sMethod<-vals[i]},
             "Usage"={ switch(vals[i],
-                             "Between"={design$sIV1Use<-"Between"},
+                             "Between"={
+                               design$sIV1Use<-"Between"
+                               originalN<-design$sN
+                               design$sN<-originalN
+                             },
+                             "Between2"={
+                               design$sIV1Use<-"Between"
+                               design$sN<-originalN*2
+                             },
                              "Within0"={
                                design$sIV1Use<-"Within"
                                design$sWithinCor<-0
+                               design$sN<-originalN
                              },
                              "Within"={
                                design$sIV1Use<-"Within"
                                design$sWithinCor<-0.5
+                               design$sN<-originalN
                              }
                              )
             },
@@ -498,6 +508,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         main_res$rpval<-cbind(main_res$rpval,res$rpIV)
         main_res$pval<-cbind(main_res$pval,res$pIV)
         main_res$nval<-cbind(main_res$nval,res$nval)
+        main_res$tval<-cbind(main_res$tval,res$test_val)
         main_res$df1<-cbind(main_res$df1,res$df1)
         
         main_res$dvMean<-cbind(main_res$dvMean,res$dvMean)
@@ -548,6 +559,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       exploreResult$rpIVs<-rbind(exploreResult$rpIVs,main_res$rpval)
       exploreResult$pIVs<-rbind(exploreResult$pIVs,main_res$pval)
       exploreResult$nvals<-rbind(exploreResult$nvals,main_res$nval)
+      exploreResult$tvals<-rbind(exploreResult$tvals,main_res$tval)
       exploreResult$df1vals<-rbind(exploreResult$df1vals,main_res$df1)
       
       exploreResult$dvMean<-rbind(exploreResult$dvMean,main_res$dvMean)

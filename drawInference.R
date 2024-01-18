@@ -16,6 +16,7 @@ drawInference<-function(IV,IV2,DV,effect,design,evidence,result,disp,orientation
           "nw"={g<-nw_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "rp"={g<-rp_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "n"={g<-n_plot(result,IV,IV2,DV,effect,orientation=orientation)},
+          "t"={g<-t_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "e1"={g<-e1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "e2"={g<-e2_plot(result,IV,IV2,DV,effect,orientation=orientation)},
           "ci1"={g<-ci1_plot(result,IV,IV2,DV,effect,orientation=orientation)},
@@ -129,6 +130,10 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
           "n"={
             d1<-result$nval
             xlim<-c(1, 200*1.1)
+          },
+          "t"={
+            d1<-result$tval
+            xlim<-c(-5,5)
           }
   )
   
@@ -233,6 +238,10 @@ draw2Inference<-function(IV,IV2,DV,effect,design,evidence,result,disp1,disp2,met
               disp2<-"Z"
             }
             ylim<-rlim
+          },
+          "t"={
+            d2<-result$tval
+            ylim<-c(-5,5)
           }
   )
 

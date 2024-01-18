@@ -120,7 +120,7 @@ showLike<-list("log(lrs)" = "log(lrs)",
 showVariables<-list("mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"
                     )
 
-showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize","Effect Size A" = "EffectSizeA"),
+showChoicesExtra=list("Describe" = list("Effect Size" = "EffectSize","Effect Size A" = "EffectSizeA","Test Statistic"="t"),
                  "Infer" = showInfer,
                  "Worlds" = showWorlds,
                  "Lk" = showLike,

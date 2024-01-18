@@ -152,6 +152,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
             ylim<-c(minN,maxRandN*design$sN)
             ylabel<-"n"
           },
+          "t"={
+            ylim<-c()
+            ylabel<-"t"
+          },
           "pNull"={
             ylim<-c(-0.01,1.01)
             ylabel<-Plabel
@@ -319,6 +323,17 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
               }
               if (is.null(IV2)){
                 col<-"red"
+                colFill<-col
+              } else {
+                col<-all_cols[[explore$Explore_typeShow]]
+                colFill<-names(all_cols[explore$Explore_typeShow])
+              }
+            },
+            "t"={
+              showVals<-exploreResult$result$tvals
+              lines<-c()
+              if (is.null(IV2)){
+                col<-"orange"
                 colFill<-col
               } else {
                 col<-all_cols[[explore$Explore_typeShow]]
@@ -659,7 +674,10 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     }
     
     # draw the basic line and point data
-    if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","likelihood","SampleSize","log(lrs)","log(lrd)","k","S","pNull","mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
+    if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","t","likelihood","SampleSize",
+                                          "log(lrs)","log(lrd)",
+                                          "k","S","pNull",
+                                          "mean(DV)","sd(DV)","skew(DV)","kurtosis(DV)"))) {
       quants<-explore$Explore_quants/2
       y75<-apply( showVals , 2 , quantile , probs = 0.50+quants , na.rm = TRUE ,names<-FALSE)
       y62<-apply( showVals , 2 , quantile , probs = 0.50+quants/2 , na.rm = TRUE ,names<-FALSE)
@@ -691,13 +709,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
                "EffectSize"={expType<-"r"},
                "EffectSizeA"={expType<-"ra"},
                "p"={expType<-"p"},
+               "t"={expType<-"t"},
                "w"={expType<-"w"},
                "SampleSize"={expType<-"n"},
                "log(lrs)"={expType<-"log(lrs)"},
                "log(lrd)"={expType<-"log(lrd)"},
                expType=NULL
                )
-        if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","SampleSize"))){
+        if (is.element(explore$Explore_show,c("EffectSize","EffectSizeA","p","w","t","SampleSize"))){
           sigVals<-isSignificant(STMethod,pVals,rVals,nVals,df1Vals,exploreResult$evidence,alphaSig)
           col<-"white"
         } else {
