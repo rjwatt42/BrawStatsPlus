@@ -230,6 +230,10 @@ makeExpectedGraph <- function() {
 
   }
     switch(expected$type,
+           "Basic"=           {
+             g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,"r")
+             g2<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,"p")
+           },
            "2D"={
              if (expectedResult$count==0) {
                g1<-ggplot()+plotBlankTheme

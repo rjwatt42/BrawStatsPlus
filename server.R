@@ -212,6 +212,8 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$RZ,{
+    oldpar1<-input$EvidenceExpected_par1
+    oldpar2<-input$EvidenceExpected_par2
     RZ<<-input$RZ
     switch (RZ,
             "r"={
@@ -219,15 +221,26 @@ shinyServer(function(input, output, session) {
               names(inferTypeChoicesExtra$World)[1]<<-"rp"
               names(inferTypeChoicesExtra$World)[4]<<-"ra"
               names(inferTypeChoicesExtra$Replication)[1]<<-"r1"
+              oldpar1<-gsub("z","r",oldpar1)
+              oldpar2<-gsub("z","r",oldpar2)
             },
             "z"={
               names(inferTypeChoicesExtra$Basic)[1]<<-"z"
               names(inferTypeChoicesExtra$World)[1]<<-"zp"
               names(inferTypeChoicesExtra$World)[4]<<-"za"
               names(inferTypeChoicesExtra$Replication)[1]<<-"z1"
+              oldpar1<-gsub("r","z",oldpar1)
+              oldpar2<-gsub("r","z",oldpar2)
             })
     updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoicesExtra)
     updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoicesExtra)
+  })
+  
+  observeEvent(input$EvidenceExpected_type,{
+    if (input$EvidenceExpected_type=="Basic") {
+      updateSelectInput(session,"EvidenceExpected_par1",selected=RZ)
+      updateSelectInput(session,"EvidenceExpected_par2",selected="p")
+    }
   })
   
   

@@ -1,4 +1,4 @@
-graphInference<-function(IV,IV2,DV,effect,design,evidence,result,graphType="EffectSize") {
+graphInference<-function(IV,IV2,DV,effect,design,evidence,result,graphType="Basic") {
   
 
   switch (graphType,
@@ -10,7 +10,7 @@ graphInference<-function(IV,IV2,DV,effect,design,evidence,result,graphType="Effe
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
             return(joinPlots(g1))
           },
-          "EffectSize"={
+          "Basic"={
             g1<-drawInference(IV,IV2,DV,effect,design,evidence,result,"r")
             g2<-drawInference(IV,IV2,DV,effect,design,evidence,result,"p")
           },

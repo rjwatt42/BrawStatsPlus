@@ -691,6 +691,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
           yvUse<-yv
         }
         xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
+        xdsig<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
       } else {
         npt<-101
       switch(expType,
@@ -799,11 +800,12 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       histGainrange<<-c(yv[1],yv[length(yv)])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
       g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
-      if (is.element(expType,c("r","n"))) {
-        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_nsigC,alpha=0.4, orientation=orientation)
-        g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
-        ptsp<-data.frame(x=c(xdsig,-rev(xdsig))*theoryGain+xoff[i],y=c(yv,rev(yv)))
-        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_sigC,alpha=0.4, orientation=orientation)
+      if (is.element(expType,c("r","n","p"))) {
+        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_nsigC,alpha=1, orientation=orientation)
+        # xdsig[xdsig==0]<-NA
+        ptsp1<-data.frame(x=c(xdsig,-rev(xdsig))*theoryGain+xoff[i],y=c(yv,rev(yv)))
+        g<-g+dataPolygon(data=ptsp1,colour=NA,fill=plotcolours$infer_sigC,alpha=1, orientation=orientation)
+        g<-g+dataPath(data=ptsp1,colour="black",linewidth=0.5, orientation=orientation)
         g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
       } else {
         g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)

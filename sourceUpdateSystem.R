@@ -116,6 +116,7 @@ updateEvidence<-function(){
                  showTheory=input$evidenceTheory,
                  HQ=input$evidenceHQ,
                  sigOnly=input$evidenceSigOnly,
+                 logDensity=input$evidenceLogDensity,
                  allScatter=input$allScatter,
                  ssqType=input$ssqType,
                  llr=list(e1=input$llr1,e2=input$llr2),

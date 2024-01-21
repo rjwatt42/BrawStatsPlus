@@ -19,11 +19,11 @@ if (switches$doLikelihoodInfer) inferTypeChoices<-c(inferTypeChoices,list("Likel
 if (switches$doWorlds) inferTypeChoices<-c(inferTypeChoices,list("World"=worldType))
 if (switches$doReplications) inferTypeChoices<-c(inferTypeChoices,list("Replication"=replicationType))
 
-singleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","2D"="2D")
+singleTypeChoices<-list("Basic" = "Basic","Power" = "Power","2D"="2D")
 singleTypeChoicesExtra<-c(singleTypeChoices,list("Likelihood"=likeType))
 if (switches$doLikelihoodInfer) singleTypeChoices<-singleTypeChoicesExtra
 
-multipleTypeChoices<-list("Basic" = "EffectSize","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D","Simple"="Simple")
+multipleTypeChoices<-list("Basic" = "Basic","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D","Simple"="Simple")
 
 
 EvidenceTab <-
@@ -246,6 +246,16 @@ EvidenceTab <-
                                                              tags$tr(
                                                                tags$td(width = "25%", tags$div(style = localPlainStyle, "n-scale:")),
                                                                tags$td(width = "25%", selectInput("nScale", label=NULL, c("linear"="linear","log10"="log10"), selected=evidence$nScale, selectize=FALSE)),
+                                                               tags$td(width = "25%", tags$div(style = localPlainStyle, "log(density)")),
+                                                               tags$td(width = "25%", checkboxInput("evidenceLogDensity",label=NULL,value=evidence$logDensity))
+                                                             ),
+                                                  )
+                                 ),
+                                 conditionalPanel(condition="input.LoadExtras",
+                                                  tags$table(width = "100%",class="myTable",
+                                                             tags$tr(
+                                                               tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
+                                                               tags$td(width = "25%", tags$div(style = localPlainStyle, " ")),
                                                                tags$td(width = "25%", tags$div(style = localPlainStyle, "Sig Only")),
                                                                tags$td(width = "25%", checkboxInput("evidenceSigOnly",label=NULL,value=evidence$sigOnly))
                                                              ),

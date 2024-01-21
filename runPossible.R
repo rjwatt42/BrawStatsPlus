@@ -5,7 +5,6 @@ npoints=501
 wDensMethod=2
 uniformGain=1
 
-
 zdens2rdens<-function(zdens,rvals){
   zdens/(1-rvals^2)
 }

@@ -22,8 +22,8 @@ loadExtras<-function(session,input=NULL,addingExtras=TRUE){
     updateSelectInput(session,"Explore_showD",choices=showChoices)
 
     updateSelectInput(session,"EvidenceInfer_type",choices=singleTypeChoices)
-    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices,selected=input$EvidenceExpected_par1)
-    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices,selected=input$EvidenceExpected_par2)
+    updateSelectInput(session,"EvidenceExpected_par1",choices=inferTypeChoices)
+    updateSelectInput(session,"EvidenceExpected_par2",choices=inferTypeChoices)
   } else {
     
     # replications
