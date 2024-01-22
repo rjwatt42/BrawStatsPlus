@@ -248,12 +248,6 @@ shinyServer(function(input, output, session) {
     updateCheckboxInput(session,"LoadExtras",value=TRUE)
   }
   
-  if (is_restore) {
-    updateCheckboxInput(session,"WhiteGraphs",value=TRUE)
-    updateCheckboxInput(session,"evidenceTheory",value=TRUE)
-    updateSelectInput(session,"RZ",selected="z")
-    updateSelectInput(session,"EvidenceExpected_type",selected="Simple")
-  }
   
 ####################################
 # other housekeeping

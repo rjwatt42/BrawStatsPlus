@@ -175,5 +175,4 @@ if (is_local) {
     # switches$loadExtrasValue<-TRUE
 }
 
-is_restore<-TRUE
 

@@ -111,6 +111,14 @@ if (switches$doKeys) {
       
     }
     
+    # control-r 
+    if (input$keypress==ascii("r") && controlKeyOn) {
+      updateCheckboxInput(session,"WhiteGraphs",value=TRUE)
+      updateCheckboxInput(session,"evidenceTheory",value=TRUE)
+      updateSelectInput(session,"RZ",selected="z")
+      updateSelectInput(session,"EvidenceExpected_type",selected="Simple")
+    }
+    
     # control-l set shortHand to TRUE
     if (input$keypress==ascii("l") && controlKeyOn){
       updateCheckboxInput(session,"shortHand",value=!input$shortHand)
