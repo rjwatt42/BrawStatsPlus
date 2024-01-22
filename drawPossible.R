@@ -35,8 +35,7 @@ highTransparency=0.25
 scale3D<-1.1
 wallHeight<-1
 logZ<-FALSE
-magRange<-0.3
-offRange<-0
+magRange<-0.5
 
 doConnecting<-TRUE
 doSampleLine<-FALSE
@@ -128,9 +127,11 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   rsw_dens_null<-possibleResult$Theory$sDens_r_null
   rsw_dens<-rsw_dens_plus+rsw_dens_null
   
-  # view_lims<-c(min(rs),max(rs))*magRange+offRange
-  xlim<-c(min(rp),max(rp))*magRange+offRange # population
-  ylim<-c(min(rs),max(rs))*magRange+offRange
+  offRange<-0
+  if (possible$type=="Samples" && possible$scale<1 && !is.na(possible$targetSample)) offRange<-possible$targetSample  
+  if (possible$type=="Populations" && possible$scale<1 && !is.na(possible$targetSample)) offRange<-possible$targetSample  
+  xlim<-c(min(rp),max(rp))*possible$scale+offRange # population
+  ylim<-c(min(rs),max(rs))*possible$scale+offRange
   zlim<-c(0,1)
   if (possible$show=="Power") {
     if (w_range[1]<0.5) {

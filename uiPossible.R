@@ -149,6 +149,14 @@ PossibleTab <-
                                               checkboxInput("possibleBoxed", label=NULL,value=possible$boxed)
                                               ),
                                     ),
+                                    tags$tr(
+                                      tags$td(width = "15%", tags$div(style = localPlainStyle, "scale:")),
+                                      tags$td(width = "20%", 
+                                              numericInput("possibleScale", label=NULL,
+                                                           min=0.1,max=1,step=0.1,
+                                                          value=possible$scale)
+                                      ),
+                                    )
                          ),
                          tags$table(width = "100%",class="myTable",
                                     tags$tr(

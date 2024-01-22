@@ -125,7 +125,8 @@ possible<<-
        possibleSimSlice=0.1,possibleCorrection=TRUE,
        possibleHQ=FALSE,
        appendSim=FALSE,possibleLength="10",
-       view="3D",show="Normal",azimuth=50,elevation=5,range=2,boxed=FALSE,
+       view="3D",show="Normal",scale=1,
+       azimuth=50,elevation=5,range=2,boxed=FALSE,
        textResult=FALSE
   )
 

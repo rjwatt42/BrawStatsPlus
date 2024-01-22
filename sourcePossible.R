@@ -77,7 +77,8 @@ updatePossible<-function(){
                    possibleSimSlice=input$possibleSimSlice,possibleCorrection=input$possibleCorrection,
                    possibleHQ=input$possibleHQ,
                    appendSim=input$possibleP_append,possibleLength=as.numeric(input$possibleP_length),
-                   view=input$possibleView,show=input$possibleShow,azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
+                   view=input$possibleView,show=input$possibleShow,scale=input$possibleScale,
+                   azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
                    textResult=FALSE
               )
           },
@@ -97,7 +98,8 @@ updatePossible<-function(){
                    possibleTheory=input$possibleTheory,possibleSimSlice=input$possibleSimSlice,possibleCorrection=input$possibleCorrection,
                    possibleHQ=input$possibleHQ,
                    appendSim=input$possible_append,possibleLength=as.numeric(input$possible_length),
-                   view=input$possibleView,show=input$possibleShow,azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
+                   view=input$possibleView,show=input$possibleShow,scale=input$possibleScale,
+                   azimuth=input$possibleAzimuth,elevation=input$possibleElevation,range=input$possibleRange,boxed=input$possibleBoxed,
                    textResult=FALSE
               )
             # if (possible$show=="Power") possible$show<-"Normal"
