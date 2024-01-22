@@ -130,8 +130,13 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   offRange<-0
   if (possible$type=="Samples" && possible$scale<1 && !is.na(possible$targetSample)) offRange<-possible$targetSample  
   if (possible$type=="Populations" && possible$scale<1 && !is.na(possible$targetSample)) offRange<-possible$targetSample  
-  xlim<-c(min(rp),max(rp))*possible$scale+offRange # population
-  ylim<-c(min(rs),max(rs))*possible$scale+offRange
+  if (RZ=="r") {
+    xlim<-c(-1,1)*possible$scale+offRange # population
+    ylim<-c(-1,1)*possible$scale+offRange
+  } else {
+    xlim<-c(min(rp),max(rp))*possible$scale+offRange # population
+    ylim<-c(min(rs),max(rs))*possible$scale+offRange
+  }
   zlim<-c(0,1)
   if (possible$show=="Power") {
     if (w_range[1]<0.5) {
@@ -357,15 +362,22 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                   dens_rp_peak<-log10(dens_rp_peak)
                 }
               }
+
+              si=1;
+              if (possible$UsePrior!="none") {
+                za<-approx(rs,sampleBackwall$rsw_dens_null,sRho[si])$y
+                zb<-approx(rs,sampleBackwall$rsw_dens_plus,sRho[si])$y
+                llrNull<-log(za/zb)
+              }
               
-              if (magRange>=1) {
+              if (possible$scale>=1) {
                 
 # population wall
               x<-populationBackwall$rpw
               y<-x*0+ylim[2]
               z<-populationBackwall$rpw_dens
               if (logZ) z<-log10(z)
-              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col=addTransparency(colP,0.95))
+              polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col=addTransparency(colP,0.25))
               
               if (showJointLk && !any(is.na(populationBackwall$pDens_r))) {
                 # show the joint likelihood function
@@ -423,12 +435,6 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                 }
               }
               
-              if (possible$type=="Populations" && !is.na(possible$targetSample) && possible$UsePrior!="none") {
-                za<-approx(y,sampleBackwall$rsw_dens_null,sRho[si])$y
-                zb<-approx(y,sampleBackwall$rsw_dens_plus,sRho[si])$y
-                llrNull<-log(za/zb)
-              }
-              
               # vertical lines
               if (possible$possibleTheory) {
                 if (possible$type=="Samples") {
@@ -445,6 +451,9 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                   # show likelihood on sample back wall
                   si=1;
                   if (possible$UsePrior!="none") {
+                    za<-approx(rs,sampleBackwall$rsw_dens_null,sRho[si])$y
+                    zb<-approx(rs,sampleBackwall$rsw_dens_plus,sRho[si])$y
+                    llrNull<-log(za/zb)
                     if (logZ) {
                       za<-log10(za)
                       zb<-log10(zb)
