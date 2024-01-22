@@ -259,20 +259,28 @@ inspectWSFile<-observeEvent(input$wsInputFile, {
   updateSelectInput(session, "wsInputSheet", choices = sheet_names, selected=sheet_names[1])
   
   if (length(sheet_names)==1){
-    readWS(session,input$wsInputFile$datapath,sheet_names[1])
+    if (!readWS(session,input$wsInputFile$datapath,sheet_names[1])) {
+      hmm("That isn't a workspace file.")
+    }
   }
 })
 
 importWSFile<-observeEvent(input$wsInputFileLoad, {
   if (is.character(input$dataInputFile$datapath)) {
-    readWS(session,input$wsInputFile$datapath,input$wsInputSheet)
-    editVar$data<<-editVar$data+1
+    if (!readWS(session,input$wsInputFile$datapath,input$wsInputSheet)) {
+      hmm("That isn't a workspace file.")
+    } else {
+      editVar$data<<-editVar$data+1
+    }
   }
 })
 
 importWSClip<-observeEvent(input$wsPaste, {
-  readWS(session,"clip")
-  editVar$data<<-editVar$data+1
+  if (!readWS(session,"clip")) {
+    hmm("That isn't a workspace file.")
+  } else {
+    editVar$data<<-editVar$data+1
+  }
 })
 
 batchfiles<-observeEvent(input$batchFileRun,{

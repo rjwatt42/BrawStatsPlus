@@ -9,7 +9,7 @@ readWS<-function(session,filename,sheetname){
       raw_data<-read_excel(filename,sheet=sheetname)
     }
   }
-  if (ncol(raw_data)<3) {return(null)}
+  if (ncol(raw_data)<4) {return(FALSE)}
   
   IV<-variables[1,]
   IV2<-variables[2,]
@@ -97,5 +97,6 @@ readWS<-function(session,filename,sheetname){
   } else {
     updateSelectInput(session,"IV2choice",choices=c("none",variables$name),selected="none")
   }
-  
+
+  return(TRUE)  
 }

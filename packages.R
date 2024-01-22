@@ -6,7 +6,7 @@ list.of.packages<-c("shiny","shinyWidgets","shinyjs","shinyBS",
                     "htmlwidgets","NlcOptim"
 )
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)>0) install.packages(new.packages)
+if(length(new.packages)>0) install.packages(new.packages,repos="http://cran.fhcrc.org")
 
 library(shiny)
 library(shinyWidgets)

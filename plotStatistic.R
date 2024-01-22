@@ -770,15 +770,10 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
                }
              },
              "n"={
-               if (logScale) {
-                 yv<-seq(log10(5),log10(5*result$design$sN),length.out=npt)
-                 yvUse<-yv^10
-               }else{
-                 yv<-5+seq(0,5*result$design$sN,length.out=npt)
-                 yvUse<-yv
-               }
-               xd<-getNDist(yv,result$effect,result$design,logScale=logScale)
-               xdsig<-getNDist(yv,result$effect,result$design,logScale=logScale,sigOnly=TRUE)
+               ndist<-getNDist(result$design,result$effect$world,logScale=logScale,sigOnly=TRUE)
+               yv<-ndist$nvals
+               xd<-ndist$ndens
+               xdsig<-ndist$ndensSig
              },
              "t"={
                yv<-seq(-5,5,length.out=npt)
