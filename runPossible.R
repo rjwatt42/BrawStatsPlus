@@ -385,7 +385,6 @@ getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asLis
         pR<-list(pRho=0,pRhogain=1) 
       } else {
         pR<-get_pRho(world,by="r",viewRZ="r")
-        browser()
       }
       for (ni in 1:length(nvals)) {
         psig<-sum(rn2w(pR$pRho,nvals[ni])*pR$pRhogain)
