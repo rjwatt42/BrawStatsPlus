@@ -675,6 +675,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
   sigOnly<-result$evidence$sigOnly
 
   # make theory
+  if (!all(is.na(result$rIV))) { theoryAlpha<-0.5} else {theoryAlpha<-1}
   for (i in 1:length(xoff)){
     if (result$evidence$showTheory) {
       if (orientation=="horz") {
@@ -697,15 +698,18 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       switch(expType,
              "r"={
                if (RZ=="z") {
-                 yv<-seq(-1,1,length.out=npt)*z_range
-                 xd<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
-                 xdsig<-fullRSamplingDist(tanh(yv),result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
-                 xd<-rdens2zdens(xd,tanh(yv))
-                 xdsig<-rdens2zdens(xdsig,tanh(yv))
+                 zvals<-seq(-1,1,length.out=npt)*z_range
+                 rvals<-tanh(zvals)
+                 xd<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+                 xd<-rdens2zdens(xd,rvals)
+                 xdsig<-rdens2zdens(xdsig,rvals)
+                 yv<-atanh(rvals)
                } else {
-                 yv<-seq(-1,1,length.out=npt)*0.99
-                 xd<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
-                 xdsig<-fullRSamplingDist(yv,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+                 rvals<-seq(-1,1,length.out=npt)*0.99
+                 xd<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
+                 xdsig<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
+                 yv<-rvals
                }
              },
              "ra"={
@@ -794,12 +798,12 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       histGain<<-sum(xd)*(yv[2]-yv[1])
       histGainrange<<-c(yv[1],yv[length(yv)])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
-      g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=1, orientation=orientation)
+      g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=theoryAlpha, orientation=orientation)
       if (is.element(expType,c("r","n","p"))) {
-        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_nsigC,alpha=1, orientation=orientation)
+        g<-g+dataPolygon(data=ptsp,colour=NA,fill=plotcolours$infer_nsigC,alpha=theoryAlpha, orientation=orientation)
         # xdsig[xdsig==0]<-NA
         ptsp1<-data.frame(x=c(xdsig,-rev(xdsig))*theoryGain+xoff[i],y=c(yv,rev(yv)))
-        g<-g+dataPolygon(data=ptsp1,colour=NA,fill=plotcolours$infer_sigC,alpha=1, orientation=orientation)
+        g<-g+dataPolygon(data=ptsp1,colour=NA,fill=plotcolours$infer_sigC,alpha=theoryAlpha, orientation=orientation)
         g<-g+dataPath(data=ptsp1,colour="black",linewidth=0.5, orientation=orientation)
         g<-g+dataPath(data=ptsp,colour="black",linewidth=0.5, orientation=orientation)
       } else {

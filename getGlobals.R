@@ -164,7 +164,7 @@ w_range<<-c(0.05,0.99)
 w_range<<-c(0.05,1)
 fullRange<<-3
 nNpoints<<-51
-worldNPoints<<-51
+worldNPoints<<-501
 varNPoints<<-101
 
 allScatter<<-"all"

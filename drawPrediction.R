@@ -508,11 +508,11 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   
   np<-worldNPoints
   if (effect$world$worldAbs) np<-worldNPoints*2+1
-  switch(RZ,
-         "r"={vals<-seq(-1,1,length=np)*r_range},
-         "z"={vals<-tanh(seq(-1,1,length=np)*z_range)}
-  )
-  
+  vals<-seq(-1,1,length=np)*r_range
+  if (RZ=="z") {
+    vals<-tanh(seq(-1,1,length=np)*z_range)
+  }
+
   if (effect$world$worldAbs) {
     dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
     vals<-vals[worldNPoints+(1:worldNPoints)]

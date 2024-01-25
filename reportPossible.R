@@ -80,8 +80,8 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
             }
             if (!is.na(possible$targetSample)) {
               xi<-possibleResult$Theory$rs
-              yi<-cumsum(possibleResult$Theory$sDens_r_plus)
-              yi<-yi/sum(possibleResult$Theory$sDens_r_plus)
+              yi<-cumsum(possibleResult$Theory$sourceSampDens_r_plus)
+              yi<-yi/sum(possibleResult$Theory$sourceSampDens_r_plus)
               theory<-1-approx(xi,yi,abs(possible$targetSample))$y+approx(xi,yi,-abs(possible$targetSample))$y
               if (length(possibleResult$Sims$sSims)>0) {
                 sims<-mean(abs(possibleResult$Sims$sSims)>abs(possible$targetSample))

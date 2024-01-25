@@ -1,6 +1,6 @@
 
+# below we use (npops-1)/24 as an integer
 npops=2*3*4*10+1 # 2*3*4*n+1
-npops=2*10*10+1 # 2*3*4*n+1
 npoints=501
 wDensMethod=2
 uniformGain=1
@@ -274,14 +274,15 @@ get_pRho<-function(world,by="r",viewRZ="r") {
     } else {
       pRho<-seq(-1,1,length=npops)*r_range
       pRhogain<-zPopulationDist(atanh(pRho),world)
-      switch (viewRZ,
-              "r" ={
-                pRhogain<-zdens2rdens(pRhogain,pRho)
-              },
-              "z" ={
-              }
-      )
     }
+    switch (viewRZ,
+            "r" ={
+            },
+            "z" ={
+              pRho<-atanh(pRho)
+              pRhogain<-rdens2zdens(pRhogain,pRho)
+            }
+    )
   }
   if (world$populationNullp>0) {
     pRho<-c(0,pRho)
@@ -354,45 +355,50 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
     }
   }
   Dens_z_null<-dnull
-  list(Dens_z=sourceSampDens_z,Dens_z_plus=Dens_z_plus,Dens_z_null=sourceSampDens_z_null)
+  list(Dens_z=Dens_z,Dens_z_plus=Dens_z_plus,Dens_z_null=Dens_z_null)
 }
 
-getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE) {
-    if (HQ) nmax<-5 else nmax=1
+getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asList=FALSE) {
+  if (asList && !design$sNRand) {
+    return(list(nvals=design$sN,ndens=1,ndensSig=1))
+  }
+    if (HQ) nmult<-5 else nmult=1
+    nmax<-5
     if (logScale) {
-      nvals<-10^seq(log10(minN),log10(nmax*design$sN),length.out=(nNpoints-1)*nmax+1)
+      nvals<-10^seq(log10(minN),log10(nmax*design$sN),length.out=(nNpoints-1)*nmult+1)
     }else{
-      nvals<-minN+seq(0,nmax*design$sN,length.out=(nNpoints-1)*nmax+1)
+      nvals<-minN+seq(0,nmax*design$sN,length.out=(nNpoints-1)*nmult+1)
     }
 
-  n<-design$sN
-  if (design$sNRand) {
-    ng<-dgamma(nvals-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
-  } else {
-    ng<-nvals*0
-    use<-which.min(abs(nvals-design$sN))
-    ng[use]<-1
-  }
-  if (sigOnly) {
-    nsig<-ng
-    world<-effect$world
-    if (is.null(world)) {
-      pR<-list(pRho=0,pRhogain=1) 
+    n<-design$sN
+    if (design$sNRand) {
+      ng<-dgamma(nvals-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
     } else {
-      pR<-get_pRho(world,by="r",viewRZ="r")
+      ng<-nvals*0
+      use<-which.min(abs(nvals-design$sN))
+      ng[use]<-1
     }
-    for (ni in 1:length(nvals)) {
-      psig<-sum(rn2w(pR$pRho,nvals[ni])*pR$pRhogain)
-      nsig[ni]<-nsig[ni]*psig
+    if (sigOnly) {
+      nsig<-ng
+      # world<-effect$world
+      if (is.null(world)) {
+        pR<-list(pRho=0,pRhogain=1) 
+      } else {
+        pR<-get_pRho(world,by="r",viewRZ="r")
+        browser()
+      }
+      for (ni in 1:length(nvals)) {
+        psig<-sum(rn2w(pR$pRho,nvals[ni])*pR$pRhogain)
+        nsig[ni]<-nsig[ni]*psig
+      }
+    } else {
+      nsig<-NA
     }
-  } else {
-    nsig<-NA
-  }
-  if (logScale) {
-    ng<-ng*nvals
-    nsig<-nsig*nvals
-  }
-  list(nvals=nvals,ndens=ng,ndensSig=nsig)
+    if (logScale) {
+      ng<-ng*nvals
+      nsig<-nsig*nvals
+    }
+    list(nvals=nvals,ndens=ng,ndensSig=nsig)
 }
 
 fullRPopulationDist<-function(rvals,world) {
@@ -407,15 +413,16 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   if (is.null(world)) {
    pR<-list(pRho=0,pRhogain=1) 
   } else {
-    if (doStat=="r")   pR<-get_pRho(world,by=RZ,viewRZ="r")
+    if (doStat=="r")   pR<-get_pRho(world,by="r",viewRZ="r")
     else pR<-get_pRho(world,by="r",viewRZ="r")
   }
+
   # distribution of sample sizes
-  ndist<-getNDist(design)
+  ndist<-getNDist(design,HQ=HQ,asList=TRUE)
   nvals<-ndist$nvals
   ndens<-ndist$ndens
   
-  sDens_r<-c()
+  sourceSampDens_r<-c()
   for (ei in 1:length(pR$pRho)){
       d<-0
       d1<-0
@@ -423,7 +430,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
         switch (doStat,
                 "r"={
                   rp<-vals
-                  addition<-rSamplingDistr(vals,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])
                 },
                 "p"={
                   rp<-tanh(qnorm(1-vals/2)/sqrt(nvals[ni]-3))
@@ -494,15 +501,15 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
         }
         d<-d+addition*ndens[ni]
       }
-    d<-d/sum(d1,na.rm=TRUE)
-    sDens_r<-rbind(sDens_r,d*pR$pRhogain[ei])
+    d<-d/sum(d1*c(0,diff(rp)),na.rm=TRUE)
+    sourceSampDens_r<-rbind(sourceSampDens_r,d*pR$pRhogain[ei])
   }
-  # dr_gain<-max(sDens_r,na.rm=TRUE)
-  # sDens_r<-sDens_r/dr_gain
+  # dr_gain<-max(sourceSampDens_r,na.rm=TRUE)
+  # sourceSampDens_r<-sourceSampDens_r/dr_gain
   if (separate) {
-    return(sDens_r)
+    return(sourceSampDens_r)
   } else {
-    return(colMeans(sDens_r))
+    return(colMeans(sourceSampDens_r))
   }
 }
 
@@ -522,6 +529,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
           }
   )
 
+  # get the sample effect size of interest and its corresponding sample size
   sRho<-possible$targetSample
   if (RZ=="z") sRho<-tanh(sRho)
   n<-possible$design$sampleN
@@ -553,7 +561,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
          "prior"={source<-possible$prior}
   )
   sourcePopDens_z<-zPopulationDist(zs,source)
-  # we add in the nulls, but only when displaying them makes sense
+  # we add in the nulls for display, but only when displaying them makes sense
   if (source$populationPDF=="Single") {
     sourcePopDens_z<-sourcePopDens_z*(1-source$populationNullp)
     sourcePopDens_z[zp==0]<-sourcePopDens_z[zp==0]+source$populationNullp
@@ -621,7 +629,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   
   # likelihood function for each sample (there's usually only 1)
   priorSampDens_z<-1
-  spriorSampDens_z<-c()
+  priorLikelihood_z<-c()
   for (ei in 1:length(sRho)){
     zDens<-0
     for (ci in 1:length(correction)) {
@@ -638,13 +646,13 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
         zDens<-zDens+zSamplingDistr(zp,sRho[ei]+correction[ci],n[ei])
       }
     }
-    spriorSampDens_z<-rbind(spriorSampDens_z,zDens/length(correction))
+    priorLikelihood_z<-rbind(priorLikelihood_z,zDens/length(correction))
     priorSampDens_z <- priorSampDens_z * zDens/length(correction)
   }
   # times the a-priori distribution
     priorSampDens_z<-priorSampDens_z*priorPopDens_z_full
     for (ei in 1:length(sRho)){
-      spriorSampDens_z[ei,]<-spriorSampDens_z[ei,]*priorPopDens_z_full
+      priorLikelihood_z[ei,]<-priorLikelihood_z[ei,]*priorPopDens_z_full
     }
   
   # simulations
@@ -818,37 +826,38 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   # convert from z to r
   rs<-zs
   rp<-zp
-  sDens_r<-sourceSampDens_z
-  sDens_r_plus<-sourceSampDens_z_plus
-  sDens_r_null<-sourceSampDens_z_null
-  pDens_r<-priorSampDens_z
-  spDens_r<-spriorSampDens_z
-  apDens_r<-priorPopDens_z_show
-  pDens_r_plus<-priorSampDens_z_plus
-  pDens_r_null<-priorSampDens_z_null
-  asDens_r<-sourcePopDens_z
+  sourcePopDens_r<-sourcePopDens_z
+  sourceSampDens_r<-sourceSampDens_z
+  sourceSampDens_r_plus<-sourceSampDens_z_plus
+  sourceSampDens_r_null<-sourceSampDens_z_null
+  
+  priorPopDens_r<-priorPopDens_z_show
+  priorSampDens_r<-priorSampDens_z
+  priorLikelihood_r<-priorLikelihood_z
+  priorSampDens_r_plus<-priorSampDens_z_plus
+  priorSampDens_r_null<-priorSampDens_z_null
   if (RZ=="r") {
     pRho<-tanh(pRho)
     sRho<-tanh(sRho)
     rp<-tanh(zp)
     rs<-tanh(zs)
     for (ei in 1:length(sRho)){
-      spDens_r[ei,]<-zdens2rdens(spriorSampDens_z[ei,],rp)
+      priorLikelihood_r[ei,]<-zdens2rdens(priorLikelihood_z[ei,],rp)
     }
     for (ei in 1:length(pRho)){
-      sDens_r[ei,]<-zdens2rdens(sourceSampDens_z[ei,],rs)
+      sourceSampDens_r[ei,]<-zdens2rdens(sourceSampDens_z[ei,],rs)
     }
-    sDens_r_plus<-zdens2rdens(sourceSampDens_z_plus,rs)
-    sDens_r_null<-zdens2rdens(sourceSampDens_z_null,rs)
-    pDens_r<-zdens2rdens(priorSampDens_z,rp)
-    apDens_r<-zdens2rdens(priorPopDens_z_show,rp)
-    pDens_r_plus<-zdens2rdens(priorSampDens_z_plus,rs)
-    pDens_r_null<-zdens2rdens(priorSampDens_z_null,rs)
-    asDens_r<-zdens2rdens(sourcePopDens_z,rs)
+    sourceSampDens_r_plus<-zdens2rdens(sourceSampDens_z_plus,rs)
+    sourceSampDens_r_null<-zdens2rdens(sourceSampDens_z_null,rs)
+    priorSampDens_r<-zdens2rdens(priorSampDens_z,rp)
+    priorPopDens_r<-zdens2rdens(priorPopDens_z_show,rp)
+    priorSampDens_r_plus<-zdens2rdens(priorSampDens_z_plus,rs)
+    priorSampDens_r_null<-zdens2rdens(priorSampDens_z_null,rs)
+    sourcePopDens_r<-zdens2rdens(sourcePopDens_z,rs)
   }
-  if (any(!is.na(spDens_r))) {
-    dr_gain<-max(spDens_r,na.rm=TRUE)
-    spDens_r<-spDens_r/dr_gain
+  if (any(!is.na(priorLikelihood_r))) {
+    dr_gain<-max(priorLikelihood_r,na.rm=TRUE)
+    priorLikelihood_r<-priorLikelihood_r/dr_gain
   }
 
   # power calculations
@@ -875,7 +884,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
             spDens_w<-sourceSampDens_z
           },
           "Populations"={
-            spDens_w<-spriorSampDens_z
+            spDens_w<-priorLikelihood_z
           }
   )
   if (any(!is.na(spDens_w))) {
@@ -913,34 +922,34 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     wp<-wp[1:npoints]+diff(wp)/2
   }
   
-  dr_gain<-max(sDens_r,na.rm=TRUE)
-  sDens_r<-sDens_r/dr_gain # *(1-possible$world$populationNullp)
+  dr_gain<-max(sourceSampDens_r,na.rm=TRUE)
+  sourceSampDens_r<-sourceSampDens_r/dr_gain # *(1-possible$world$populationNullp)
   
-  sDens_r_plus<-sDens_r_plus*(1-source$populationNullp)
-  sDens_r_null<-sDens_r_null*(source$populationNullp)
-  sDens_r_total<-sDens_r_plus+sDens_r_null
-  dr_gain<-max(sDens_r_total)
-  sDens_r_total<-sDens_r_total/dr_gain
-  sDens_r_null<-sDens_r_null/dr_gain
-  sDens_r_plus<-sDens_r_plus/dr_gain
-  rs_stats<-densityFunctionStats(sDens_r_total,zs)
+  sourceSampDens_r_plus<-sourceSampDens_r_plus*(1-source$populationNullp)
+  sourceSampDens_r_null<-sourceSampDens_r_null*(source$populationNullp)
+  sourceSampDens_r_total<-sourceSampDens_r_plus+sourceSampDens_r_null
+  dr_gain<-max(sourceSampDens_r_total)
+  sourceSampDens_r_total<-sourceSampDens_r_total/dr_gain
+  sourceSampDens_r_null<-sourceSampDens_r_null/dr_gain
+  sourceSampDens_r_plus<-sourceSampDens_r_plus/dr_gain
+  rs_stats<-densityFunctionStats(sourceSampDens_r_total,zs)
   
-  if (any(!is.na(pDens_r))) {
-    dr_gain<-max(pDens_r,na.rm=TRUE)
-    pDens_r<-pDens_r/dr_gain
+  if (any(!is.na(priorSampDens_r))) {
+    dr_gain<-max(priorSampDens_r,na.rm=TRUE)
+    priorSampDens_r<-priorSampDens_r/dr_gain
   }
   
   if (prior$worldOn && prior$populationNullp>0) {
-    spDens_r<-spDens_r*(1-prior$populationNullp)
-    apDens_r<-apDens_r*(1-prior$populationNullp)
-    asDens_r<-asDens_r*(1-source$populationNullp)
+    priorLikelihood_r<-priorLikelihood_r*(1-prior$populationNullp)
+    priorPopDens_r<-priorPopDens_r*(1-prior$populationNullp)
+    sourcePopDens_r<-sourcePopDens_r*(1-source$populationNullp)
     for (i in 1:length(sRho)) {
-      spDens_r<-spDens_r*dnorm(atanh(sRho[i]),0,1/sqrt(n[i]-3))
+      priorLikelihood_r<-priorLikelihood_r*dnorm(atanh(sRho[i]),0,1/sqrt(n[i]-3))
     }
-    pDens_r_plus<-pDens_r_plus/sum(pDens_r_plus)*(1-prior$populationNullp)
-    pDens_r_null<-pDens_r_null/sum(pDens_r_null)*(prior$populationNullp)
+    priorSampDens_r_plus<-priorSampDens_r_plus/sum(priorSampDens_r_plus)*(1-prior$populationNullp)
+    priorSampDens_r_null<-priorSampDens_r_null/sum(priorSampDens_r_null)*(prior$populationNullp)
   }
-  rp_stats<-densityFunctionStats(pDens_r,zp) 
+  rp_stats<-densityFunctionStats(priorSampDens_r,zp) 
   wp_stats<-densityFunctionStats(spDens_w,wp) 
   
   dens_at_peak=1
@@ -949,9 +958,9 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     dens_at_population<-NA
     dens_at_zero<-NA
   } else {
-    dens_at_sample<-approx(zp,pDens_r,sRho[1])$y
-    dens_at_population<-approx(zp,pDens_r,ResultHistory$rp[1])$y
-    dens_at_zero<-approx(zp,pDens_r,0)$y
+    dens_at_sample<-approx(zp,priorSampDens_r,sRho[1])$y
+    dens_at_population<-approx(zp,priorSampDens_r,ResultHistory$rp[1])$y
+    dens_at_zero<-approx(zp,priorSampDens_r,0)$y
   }
   
     switch (possible$type,
@@ -962,8 +971,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    n=n,
                                    source=source,prior=prior,
                                    Theory=list(
-                                     rs=rs,sDens_r=sDens_r,sDens_r_plus=sDens_r_plus,sDens_r_null=sDens_r_null,sDens_r_total=sDens_r_total,
-                                     rp=rp,pDens_r=sDens_r,spDens_r=sDens_r,apDens_r=apDens_r,asDens_r=asDens_r,
+                                     rs=rs,sourceSampDens_r=sourceSampDens_r,sourceSampDens_r_plus=sourceSampDens_r_plus,sourceSampDens_r_null=sourceSampDens_r_null,sourceSampDens_r_total=sourceSampDens_r_total,
+                                     rp=rp,priorSampDens_r=sourceSampDens_r,priorLikelihood_r=sourceSampDens_r,priorPopDens_r=priorPopDens_r,sourcePopDens_r=sourcePopDens_r,
                                      rs_peak=rs_stats$peak,
                                      rs_sd=rs_stats$sd,
                                      rs_ci=rs_stats$ci,
@@ -986,8 +995,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    n=n,
                                    source=source,prior=prior,
                                    Theory=list(
-                                     rs=rs,sDens_r=sDens_r,sDens_r_plus=sDens_r_plus,sDens_r_null=sDens_r_null,sDens_r_total=sDens_r_total,
-                                     rp=rp,pDens_r=pDens_r,spDens_r=spDens_r,apDens_r=apDens_r,asDens_r=asDens_r,pDens_r_null=pDens_r_null,pDens_r_plus=pDens_r_plus,
+                                     rs=rs,sourceSampDens_r=sourceSampDens_r,sourceSampDens_r_plus=sourceSampDens_r_plus,sourceSampDens_r_null=sourceSampDens_r_null,sourceSampDens_r_total=sourceSampDens_r_total,
+                                     rp=rp,priorSampDens_r=priorSampDens_r,priorLikelihood_r=priorLikelihood_r,priorPopDens_r=priorPopDens_r,sourcePopDens_r=sourcePopDens_r,priorSampDens_r_null=priorSampDens_r_null,priorSampDens_r_plus=priorSampDens_r_plus,
                                      rp_peak=rp_stats$peak,
                                      rp_sd=rp_stats$sd,
                                      rp_ci=rp_stats$ci,

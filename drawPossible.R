@@ -95,36 +95,36 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   sRho<-sort(possibleResult$sRho)
 
   rs<-possibleResult$Theory$rs
-  sDens_r<-possibleResult$Theory$sDens_r
-  sDens_r_total<-possibleResult$Theory$sDens_r_total
-  sDens_r_null<-possibleResult$Theory$sDens_r_null
-  sDens_r_plus<-possibleResult$Theory$sDens_r_plus
+  sourceSampDens_r<-possibleResult$Theory$sourceSampDens_r
+  sourceSampDens_r_total<-possibleResult$Theory$sourceSampDens_r_total
+  sourceSampDens_r_null<-possibleResult$Theory$sourceSampDens_r_null
+  sourceSampDens_r_plus<-possibleResult$Theory$sourceSampDens_r_plus
   rp<-possibleResult$Theory$rp
-  pDens_r<-possibleResult$Theory$pDens_r
-  spDens_r<-possibleResult$Theory$spDens_r
-  pDens_r_null<-possibleResult$Theory$pDens_r_null
-  pDens_r_plus<-possibleResult$Theory$pDens_r_plus
+  priorSampDens_r<-possibleResult$Theory$priorSampDens_r
+  priorLikelihood_r<-possibleResult$Theory$priorLikelihood_r
+  priorSampDens_r_null<-possibleResult$Theory$priorSampDens_r_null
+  priorSampDens_r_plus<-possibleResult$Theory$priorSampDens_r_plus
   if (possible$show=="Power") {
     rp<-possibleResult$Theory$wp
-    pDens_r<-possibleResult$Theory$spDens_w
-    spDens_r<-possibleResult$Theory$spDens_w
+    priorSampDens_r<-possibleResult$Theory$spDens_w
+    priorLikelihood_r<-possibleResult$Theory$spDens_w
     rs<-possibleResult$Theory$wp
-    sDens_r<-possibleResult$Theory$spDens_w
-    sDens_r_total<-possibleResult$Theory$spDens_w
+    sourceSampDens_r<-possibleResult$Theory$spDens_w
+    sourceSampDens_r_total<-possibleResult$Theory$spDens_w
   }
 
   # make the back wall population distributions
   rpw<-rp
   if (possible$type=="Samples") {
-    rpw_dens<-possibleResult$Theory$asDens_r
+    rpw_dens<-possibleResult$Theory$sourcePopDens_r
   } else {
-    rpw_dens<-possibleResult$Theory$apDens_r
+    rpw_dens<-possibleResult$Theory$priorPopDens_r
   }
 
   # make the back wall sample distributions
   rsw<-rs
-  rsw_dens_plus<-possibleResult$Theory$sDens_r_plus
-  rsw_dens_null<-possibleResult$Theory$sDens_r_null
+  rsw_dens_plus<-possibleResult$Theory$sourceSampDens_r_plus
+  rsw_dens_null<-possibleResult$Theory$sourceSampDens_r_null
   rsw_dens<-rsw_dens_plus+rsw_dens_null
   
   offRange<-0
@@ -163,7 +163,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   zlim[2]<-zlim[2]+diff(zlim)*0.2
                        
 
-  rp_stats<-densityFunctionStats(spDens_r,rp)
+  rp_stats<-densityFunctionStats(priorLikelihood_r,rp)
   rp_peak<-rp_stats$peak
   rp_ci<-rp_stats$ci
   dens_at_peak<-rp_stats$dens_at_peak
@@ -173,7 +173,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     rsw_dens_plus<-rsw_dens_plus/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
     rsw_dens_null<-rsw_dens_null/max(rsw_dens_plus+rsw_dens_null,na.rm=TRUE)
     }
-  populationBackwall<-list(rpw=rpw,rpw_dens=rpw_dens,pDens_r=pDens_r,rp=rp)
+  populationBackwall<-list(rpw=rpw,rpw_dens=rpw_dens,priorSampDens_r=priorSampDens_r,rp=rp)
   sampleBackwall<-list(rsw=rsw,rsw_dens_plus=rsw_dens_plus,rsw_dens_null=rsw_dens_null,rs=rs)
   
   n<-possibleResult$n[1]
@@ -379,11 +379,11 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
               if (logZ) z<-log10(z)
               polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col=addTransparency(colP,0.25))
               
-              if (showJointLk && !any(is.na(populationBackwall$pDens_r))) {
+              if (showJointLk && !any(is.na(populationBackwall$priorSampDens_r))) {
                 # show the joint likelihood function
                 x<-populationBackwall$rp
                 y<-x*0+ylim[2]
-                z<-populationBackwall$pDens_r
+                z<-populationBackwall$priorSampDens_r
                 if (logZ) z<-log10(z)
                 polygon(trans3d(x=c(x[1],x,x[length(x)]),y=c(y[1],y,y[length(y)]),z=c(zlim[1],z,zlim[1])*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.5),border=NA)
               }
@@ -503,7 +503,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           bins<-possibleResult$Sims$sSimBinsW
                           dens<-possibleResult$Sims$sSimDensW
                         }
-                        simgain<-mean(sDens_r)/mean(dens)
+                        simgain<-mean(sourceSampDens_r)/mean(dens)
                         dens<-dens*simgain*pgain
                           if (possible$cutaway) {
                             waste<-sum(bins<=min(sRho))
@@ -514,7 +514,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           } else {
                             if (!is.matrix(dens)) {
                               dens<-t(dens)
-                              sDens_r<-t(sDens_r)
+                              sourceSampDens_r<-t(sourceSampDens_r)
                             } 
                             use_s<-(1:ncol(dens))
                         }
@@ -536,7 +536,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         if (possible$possibleTheory){
                           col<-addTransparency(colS,theoryAlpha)
 
-                          z_use<-sDens_r[i,]*pgain
+                          z_use<-sourceSampDens_r[i,]*pgain
                           if (possible$cutaway) {
                             z_use[rs<min(sRho)]<-0
                           }
@@ -561,7 +561,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         # vertical lines on main distribution
                         if (!isempty(sRho)){
                           for (si in 1:length(sRho)) {
-                            z<-approx(rs,sDens_r[i,],sRho[si])$y
+                            z<-approx(rs,sourceSampDens_r[i,],sRho[si])$y
                             z<-z*pgain
                             if (logZ) {
                               z<-log10(z)
@@ -570,7 +570,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                             lines(trans3d(x=c(pRho[i],pRho[i]),y=c(sRho[si],sRho[si]),z=c(zlim[1],z),pmat=mapping),col=colVline, lwd=1)
                             # connecting lines
                             if (doConnecting && length(pRho)>5 && i<length(pRho)) {
-                              z1<-approx(rs,sDens_r[i+1,],sRho[si])$y
+                              z1<-approx(rs,sourceSampDens_r[i+1,],sRho[si])$y
                               z1<-z1*pgain
                               if (logZ) {
                                 z1<-log10(z1)
@@ -620,7 +620,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           #slice of interest
                           si=1
                           gainSim<-sum(dens)*diff(bins[1:2])
-                          gainTheory<-sum(possibleResult$Theory$spDens_r)*diff(possibleResult$Theory$rp[1:2])
+                          gainTheory<-sum(possibleResult$Theory$priorLikelihood_r)*diff(possibleResult$Theory$rp[1:2])
                           dens<-dens/(gainSim/gainTheory)
                           # dens<-dens/max(dens,na.rm=TRUE)
                           # if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
@@ -636,12 +636,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       if (possible$possibleTheory){
                         theoryAlpha=0.85
                         if (!is.na(possible$targetSample)) {
-                          rd<-spDens_r
+                          rd<-priorLikelihood_r
                           if (logZ) {
                             rd<-log10(rd)
                             rd[rd<zlim[1]]<-zlim[1]
                           }
-                          if (!is.null(spDens_r)){
+                          if (!is.null(priorLikelihood_r)){
                             use_si<-order(-sRho)
                             # main distribution
                             for (si in use_si) {
@@ -691,8 +691,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                               italic(.(param))[mle]== bold(.(format(rp_peak,digits=3)))
                             ),col=colPdark,adj=-0.02,cex=0.9)
                             text(trans3d(x=mean(xlim),y=ylim[2],z=zlim[2]*1.05,pmat=mapping),labels=bquote(
-                              # llr(italic(r)[s]/italic(r)[0])==bold(.(format(log(dens_at_sample/approx(rp,pDens_r,0)$y),digits=3)))~";"~
-                                llr(italic(.(param))[mle]/italic(.(param))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
+                              # llr(italic(r)[s]/italic(r)[0])==bold(.(format(log(dens_at_sample/approx(rp,priorSampDens_r,0)$y),digits=3)))~";"~
+                                llr(italic(.(param))[mle]/italic(.(param))[0])==bold(.(format(log(1/approx(rp,priorSampDens_r,0)$y),digits=3)))
                             ),col=colPdark,adj=c(0.5,-0.5),cex=0.9)
                           }
                           }
@@ -803,29 +803,29 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     if (possible$possibleTheory){
       switch (possible$type,
               "Samples"={
-                if (!all(is.na(sDens_r_total))){
+                if (!all(is.na(sourceSampDens_r_total))){
                   # main distributions
                   # total
-                  polygon (x = rs[c(1,1:length(rs),length(rs))], y = c(0,sDens_r_total,0), col = addTransparency(colS,theoryAlpha), lwd=1)
+                  polygon (x = rs[c(1,1:length(rs),length(rs))], y = c(0,sourceSampDens_r_total,0), col = addTransparency(colS,theoryAlpha), lwd=1)
                   # null
                   if (possible$world$worldOn) {
                     if (possible$world$populationNullp>0)
-                      lines (x = rs, y = sDens_r_null, col = colNullS, lwd=2)
+                      lines (x = rs, y = sourceSampDens_r_null, col = colNullS, lwd=2)
                       # plus
-                      lines (x = rs, y = sDens_r_plus, col = colDistS, lwd=2)
+                      lines (x = rs, y = sourceSampDens_r_plus, col = colDistS, lwd=2)
                   }
                   
                   if (!all(is.na(sRho))) {
                     for (i in 1:length(sRho)) {
                     s<-sRho[i]
-                    gain<-sum(sDens_r_total)*diff(rs[1:2])
-                    p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
-                    pn_at_sample<-(sum(sDens_r_null[rs>=s])+sum(sDens_r_null[rs< -s]))/sum(sDens_r_total)
-                    pd_at_sample<-(sum(sDens_r_plus[rs>=s])+sum(sDens_r_plus[rs< -s]))/sum(sDens_r_total)
+                    gain<-sum(sourceSampDens_r_total)*diff(rs[1:2])
+                    p_at_sample<-(sum(sourceSampDens_r_total[rs>=s])+sum(sourceSampDens_r_total[rs< -s]))/sum(sourceSampDens_r_total)
+                    pn_at_sample<-(sum(sourceSampDens_r_null[rs>=s])+sum(sourceSampDens_r_null[rs< -s]))/sum(sourceSampDens_r_total)
+                    pd_at_sample<-(sum(sourceSampDens_r_plus[rs>=s])+sum(sourceSampDens_r_plus[rs< -s]))/sum(sourceSampDens_r_total)
                     
-                    l_at_sample<-approx(rs,sDens_r_total,s)$y#/mean(sDens_r_total)
-                    ln_at_sample<-approx(rs,sDens_r_null,s)$y#/mean(sDens_r_total)
-                    ld_at_sample<-approx(rs,sDens_r_plus,s)$y#/mean(sDens_r_total)
+                    l_at_sample<-approx(rs,sourceSampDens_r_total,s)$y#/mean(sourceSampDens_r_total)
+                    ln_at_sample<-approx(rs,sourceSampDens_r_null,s)$y#/mean(sourceSampDens_r_total)
+                    ld_at_sample<-approx(rs,sourceSampDens_r_plus,s)$y#/mean(sourceSampDens_r_total)
                     
                     lines(x=c(sRho[i],sRho[i]),y=c(0,l_at_sample),col=colVline,lwd=1)
                     points(x=sRho[i],y=l_at_sample,col=colVline,pch=16,cex=1.5)
@@ -848,8 +848,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       }
                     } else {
                       s<-abs(sRho[i])
-                      p_at_sample<-(sum(sDens_r_total[rs>=s])+sum(sDens_r_total[rs< -s]))/sum(sDens_r_total)
-                      l_at_sample<-approx(rs,sDens_r_total,s)$y
+                      p_at_sample<-(sum(sourceSampDens_r_total[rs>=s])+sum(sourceSampDens_r_total[rs< -s]))/sum(sourceSampDens_r_total)
+                      l_at_sample<-approx(rs,sourceSampDens_r_total,s)$y
                       
                       lines(x=c(sRho[1],sRho[1]),y=c(0,l_at_sample-0.01),col=colSdark,lwd=2)
                       
@@ -862,7 +862,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                     }
                     }
                     if (length(sRho)>1) {
-                      l_at_sample<-sum(log(approx(rs,sDens_r_total,sRho)$y),na.rm=TRUE)#/mean(sDens_r_total)
+                      l_at_sample<-sum(log(approx(rs,sourceSampDens_r_total,sRho)$y),na.rm=TRUE)#/mean(sourceSampDens_r_total)
                       ltext<-bquote(
                         bold(log(lk(.(RZ)[s])))==.(format(l_at_sample,digits=3)) ~" "~ atop(phantom(.(format(ld_at_sample,digits=3))),phantom(.(format(ln_at_sample,digits=3))))
                       )
@@ -875,14 +875,14 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                 }
               },
               "Populations"={
-                if (!all(is.na(pDens_r))){
+                if (!all(is.na(priorSampDens_r))){
                   # main distribution
-                  polygon (x = c(rp[1],rp,rp[length(rp)]), y = c(0,pDens_r,0), col = addTransparency(colP,theoryAlpha), lwd=1)
+                  polygon (x = c(rp[1],rp,rp[length(rp)]), y = c(0,priorSampDens_r,0), col = addTransparency(colP,theoryAlpha), lwd=1)
                   # vertical lines
                   if (possible$show!="Power") {
-                  dens_at_peak<-max(pDens_r)
-                  dens_at_sample<-approx(rp,pDens_r,sRho[1])$y
-                  dens_at_ci<-approx(rp,pDens_r,rp_ci)$y
+                  dens_at_peak<-max(priorSampDens_r)
+                  dens_at_sample<-approx(rp,priorSampDens_r,sRho[1])$y
+                  dens_at_ci<-approx(rp,priorSampDens_r,rp_ci)$y
                   lines(x=c(sRho[1],sRho[1]),y=c(0,dens_at_sample-0.01),col="black",lwd=1.5)
                   if (possible$world$populationPDF!="Uniform_r" && !is.null(rp_peak)){
                     lines(x=c(rp_peak,rp_peak),y=c(0,dens_at_peak-0.01),col="black",lwd=2.5)
@@ -900,12 +900,12 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                     bolditalic(.(RZ))[mle]== bold(.(format(rp_peak,digits=3)))
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   text(x=rp_peak,1.15,labels=bquote(
-                    bold(llr)(bolditalic(.(RZ))[mle]/bolditalic(.(RZ))[0])==bold(.(format(log(1/approx(rp,pDens_r,0)$y),digits=3)))
+                    bold(llr)(bolditalic(.(RZ))[mle]/bolditalic(.(RZ))[0])==bold(.(format(log(1/approx(rp,priorSampDens_r,0)$y),digits=3)))
                   ),col=colPdark,adj=(sign(rp_peak)+1)/2,cex=0.9)
                   
                   if (effect$world$worldOn && possible$prior$populationNullp>0) {
-                    ln_at_sample<-approx(rs,pDens_r_null,sRho[1])$y
-                    ld_at_sample<-approx(rs,pDens_r_plus,sRho[1])$y
+                    ln_at_sample<-approx(rs,priorSampDens_r_null,sRho[1])$y
+                    ld_at_sample<-approx(rs,priorSampDens_r_plus,sRho[1])$y
                     llrNull<-log(ln_at_sample/ld_at_sample)
                     text(xlim[1],1.15,labels=bquote(
                       bold(llr)(bolditalic(.(RZ))["+"]/bolditalic(.(RZ))[0])==bold(.(format(-llrNull,digits=3)))),
