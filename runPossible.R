@@ -380,7 +380,6 @@ getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asLis
     }
     if (sigOnly) {
       nsig<-ng
-      # world<-effect$world
       if (is.null(world)) {
         pR<-list(pRho=0,pRhogain=1) 
       } else {
