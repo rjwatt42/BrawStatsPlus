@@ -295,66 +295,50 @@ get_pRho<-function(world,by="r",viewRZ="r") {
 zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
   # sampling distributions from specified populations (pRho)
   n<-design$sN
+  ndist<-getNDist(design,source,sigOnly=FALSE)
+  nis<-ndist$nvals
+  ndens<-ndist$ndens
+  if (length(nis)>1) ndens<-ndens*c(diff(nis),0)
+  
   Dens_z<-matrix(nrow=length(pRho),ncol=length(rs))
-  if (possible$possibleHQ) {
-    nis<-2.^seq(3,8,length.out=nNpoints*8)
-  } else {
-    nis<-2.^seq(3,8,length.out=nNpoints)
-  }
+  
   for (ei in 1:length(pRho)){
-    if (design$sNRand) {
       dplus<-0
       g<-0
       for (ni in 1:(length(nis)-1)) {
-        g1<-dgamma(nis[ni]-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
         d1<-zSamplingDistr(rs,pRho[ei],nis[ni])
         if (possible$sigOnly) {
           crit_z<-qnorm(0.975,0,1/sqrt(nis[ni]-3))
           d1[abs(rs)<crit_z]<-0
         }
-        dplus<-dplus+d1*g1*(nis[ni+1]-nis[ni])
-        g<-g+g1*(nis[ni+1]-nis[ni])
+        dplus<-dplus+d1*ndens[ni]
+        g<-g+ndens[ni]
       }
       dplus<-dplus/g
-    } else {
-      dplus<-zSamplingDistr(rs,pRho[ei],n)
-      if (possible$sigOnly) {
-        crit_z<-qnorm(0.975,0,1/sqrt(n-3))
-        dplus[abs(rs)<crit_z]<-0
-      }
-    }
     Dens_z[ei,]<-dplus*pRhogain[ei]
   }
 
   # and sum of sampling distributions
   if (source$populationPDF=="Single" && source$populationNull>0) {
+    Dens_z_null<-Dens_z[1,]
     Dens_z_plus<-Dens_z[2,]
   } else {
     Dens_z_plus<-colSums(Dens_z)/sum(pRhogain)
-  }
 
-  if (design$sNRand) {
     dnull<-0
     g<-0
     for (ni in 1:(length(nis)-1)) {
-      g0<-dgamma(nis[ni]-minN,shape=design$sNRandK,scale=(design$sN-minN)/design$sNRandK)
       d0<-zSamplingDistr(rs,0,nis[ni])
       if (possible$sigOnly) {
         crit_z<-qnorm(0.975,0,1/sqrt(nis[ni]-3))
         d0[abs(rs)<crit_z]<-0
       }
-      dnull<-dnull+d0*g0*(nis[ni+1]-nis[ni])
-      g<-g+g0*(nis[ni+1]-nis[ni])
+      dnull<-dnull+d0*ndens[ni]
+      g<-g+ndens[ni]
     }
     dnull<-dnull/g
-  } else {
-    dnull<-zSamplingDistr(rs,0,n)
-    if (possible$sigOnly) {
-      crit_z<-qnorm(0.975,0,1/sqrt(n-3))
-      dnull[abs(rs)<crit_z]<-0
-    }
+    Dens_z_null<-dnull
   }
-  Dens_z_null<-dnull
   list(Dens_z=Dens_z,Dens_z_plus=Dens_z_plus,Dens_z_null=Dens_z_null)
 }
 

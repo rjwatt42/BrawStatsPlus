@@ -154,7 +154,8 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
                                     input$possibleTheory,input$possible_sigonly,
                                     input$possibleSimSlice,input$possibleCorrection,
                                     input$possibleHQ,
-                                    input$possibleShow
+                                    input$possibleShow,
+                                  input$RV
 ),{
   if (graphicSource=="None") {return(possibleResult)}
     
