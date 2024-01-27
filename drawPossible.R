@@ -91,8 +91,8 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
           }
   )
 
-  pRho<-sort(possibleResult$pRho)
-  sRho<-sort(possibleResult$sRho)
+  pRho<-(possibleResult$pRho)
+  sRho<-(possibleResult$sRho)
 
   rs<-possibleResult$Theory$rs
   sourceSampDens_r<-possibleResult$Theory$sourceSampDens_r
@@ -521,7 +521,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       } 
 
                       # we interleave simulations and theory (because no hidden line removal)
-                      for (i in 1:length(pRho)) {
+                      for (i in order(pRho)) {
                         # draw simulations
                         if (!is.null(possibleResult$Sims$sSimDens)){
                           y1<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))

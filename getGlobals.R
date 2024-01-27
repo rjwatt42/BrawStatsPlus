@@ -163,8 +163,8 @@ r_range<<-0.99
 w_range<<-c(0.05,0.99)
 w_range<<-c(0.05,1)
 fullRange<<-3
-nNpoints<<-51
-worldNPoints<<-501
+nNpoints<<-101
+worldNPoints<<-101
 varNPoints<<-101
 
 allScatter<<-"all"

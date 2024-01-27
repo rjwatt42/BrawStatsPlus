@@ -694,7 +694,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
         xd<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=sigOnly,HQ=evidence$HQ)
         xdsig<-fullRSamplingDist(yvUse,result$effect$world,result$design,"p",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
       } else {
-        npt<-101
+        npt<-201
       switch(expType,
              "r"={
                if (RZ=="z") {

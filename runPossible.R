@@ -1,7 +1,7 @@
 
-# below we use (npops-1)/24 as an integer
-npops=2*3*4*10+1 # 2*3*4*n+1
-npoints=501
+# below we use (npops-1)/6 as an integer
+npops=12*10+1 # 2*3*4*n+1
+npoints=201
 wDensMethod=2
 uniformGain=1
 
@@ -238,43 +238,68 @@ densityFunctionStats<-function(dens_r,rp){
 }
 
 get_pRho<-function(world,by="r",viewRZ="r") {
+  if (is.null(world)) {
+    return(list(pRho=0,pRhogain=1)  )
+  }
   if (!world$worldOn) {
     world$populationPDF="Single"
     world$populationRZ="r"
   }
   if (by=="z") {
-    if (world$populationPDF=="Single") {
-      if (world$populationRZ=="r") {
-        pRho<-world$populationPDFk
-      } else {
-        pRho<-tanh(world$populationPDFk)
-      }
-      pRhogain<-1
-    } else {
-      pRho<-seq(-1,1,length=npops)*z_range
-      pRhogain<-zPopulationDist(pRho,world)
-      switch (viewRZ,
-              "r" ={
-                pRho<-tanh(pRho)
-                pRhogain<-zdens2rdens(pRhogain,pRho)
-              },
-              "z" ={
+    switch (world$populationPDF,
+            "Single"={
+              if (world$populationRZ=="r") {
+                pRho<-world$populationPDFk
+              } else {
+                pRho<-tanh(world$populationPDFk)
               }
-      )
-    }
-
+              pRhogain<-1
+            },
+            "Double"={
+              if (world$populationRZ=="r") {
+                pRho<-c(-1,1)*world$populationPDFk
+              } else {
+                pRho<-c(-1,1)*tanh(world$populationPDFk)
+              }
+              pRhogain<-c(0.5,0.5)
+            },
+            {
+              pRho<-seq(-1,1,length=npops)*z_range
+              pRhogain<-zPopulationDist(pRho,world)
+            }
+    )
+    switch (viewRZ,
+            "r" ={
+              pRho<-tanh(pRho)
+              pRhogain<-zdens2rdens(pRhogain,pRho)
+            },
+            "z" ={
+            }
+    )
+    
   } else {
-    if (world$populationPDF=="Single") {
-      if (world$populationRZ=="r") {
-        pRho<-world$populationPDFk
-      } else {
-        pRho<-tanh(world$populationPDFk)
-      }
-      pRhogain<-1
-    } else {
-      pRho<-seq(-1,1,length=npops)*r_range
-      pRhogain<-zPopulationDist(atanh(pRho),world)
-    }
+    switch (world$populationPDF,
+            "Single"={
+              if (world$populationRZ=="r") {
+                pRho<-world$populationPDFk
+              } else {
+                pRho<-tanh(world$populationPDFk)
+              }
+              pRhogain<-1
+            },
+            "Double"={
+              if (world$populationRZ=="r") {
+                pRho<-c(-1,1)*world$populationPDFk
+              } else {
+                pRho<-c(-1,1)*tanh(world$populationPDFk)
+              }
+              pRhogain<-c(0.5,0.5)
+            },
+            {
+              pRho<-seq(-1,1,length=npops)*r_range
+              pRhogain<-zPopulationDist(pRho,world)
+            }
+    )
     switch (viewRZ,
             "r" ={
             },
@@ -284,10 +309,13 @@ get_pRho<-function(world,by="r",viewRZ="r") {
             }
     )
   }
-  if (world$populationNullp>0) {
-    pRho<-c(0,pRho)
-    pRhogain<-c(world$populationNullp,pRhogain/sum(pRhogain)*(1-world$populationNullp))
-  }
+  # if (world$populationNullp>0) {
+  #   pRho<-c(pRho,0)
+  #   pRhogain<-c(pRhogain/sum(pRhogain)*(1-world$populationNullp),world$populationNullp)
+  # } else {
+  #   pRho<-c(pRho,0)
+  #   pRhogain<-c(pRhogain/sum(pRhogain),0)
+  # }
   
   list(pRho=pRho,pRhogain=pRhogain)  
 }
@@ -319,10 +347,6 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
   }
 
   # and sum of sampling distributions
-  if (source$populationPDF=="Single" && source$populationNull>0) {
-    Dens_z_null<-Dens_z[1,]
-    Dens_z_plus<-Dens_z[2,]
-  } else {
     Dens_z_plus<-colSums(Dens_z)/sum(pRhogain)
 
     dnull<-0
@@ -338,11 +362,11 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
     }
     dnull<-dnull/g
     Dens_z_null<-dnull
-  }
+    
   list(Dens_z=Dens_z,Dens_z_plus=Dens_z_plus,Dens_z_null=Dens_z_null)
 }
 
-getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asList=FALSE) {
+getNDist<-function(design,world=NULL,logScale=TRUE,sigOnly=FALSE,HQ=FALSE,asList=FALSE) {
   if (asList && !design$sNRand) {
     return(list(nvals=design$sN,ndens=1,ndensSig=1))
   }
@@ -364,11 +388,7 @@ getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asLis
     }
     if (sigOnly) {
       nsig<-ng
-      if (is.null(world)) {
-        pR<-list(pRho=0,pRhogain=1) 
-      } else {
-        pR<-get_pRho(world,by="r",viewRZ="r")
-      }
+      pR<-get_pRho(world,by="r",viewRZ="r")
       for (ni in 1:length(nvals)) {
         psig<-sum(rn2w(pR$pRho,nvals[ni])*pR$pRhogain)
         nsig[ni]<-nsig[ni]*psig
@@ -392,11 +412,14 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   if (is.null(vals)) {
     vals<-seq(-1,1,length=npoints)*r_range
   }
-  if (is.null(world)) {
-   pR<-list(pRho=0,pRhogain=1) 
-  } else {
-    if (doStat=="r")   pR<-get_pRho(world,by="r",viewRZ="r")
-    else pR<-get_pRho(world,by="r",viewRZ="r")
+  
+  # distribution of population effect sizes
+  pR<-get_pRho(world,by="r",viewRZ="r")
+  rvals<-pR$pRho
+  rdens<-pR$pRhogain
+  if (world$worldOn && world$populationNullp>0) {
+    rvals<-c(rvals,0)
+    rdens<-c(rdens/sum(rdens)*(1-world$populationNullp),world$populationNullp)
   }
 
   # distribution of sample sizes
@@ -405,19 +428,19 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   ndens<-ndist$ndens
   
   sourceSampDens_r<-c()
-  for (ei in 1:length(pR$pRho)){
+  for (ei in 1:length(rvals)){
       d<-0
       d1<-0
       for (ni in 1:length(nvals)) {
         switch (doStat,
                 "r"={
                   rp<-vals
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])
                 },
                 "p"={
                   rp<-tanh(qnorm(1-vals/2)/sqrt(nvals[ni]-3))
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])+
-                            rSamplingDistr(-rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])+
+                            rSamplingDistr(-rp,rvals[ei],nvals[ni])
                   dzp<-exp(-erfcinv(vals)^2)
                   a<-addition[1]
                   addition<-addition/dzp*(1-rp^2)
@@ -426,7 +449,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "log(lrs)"={
                   # z^2*(n-3)/2
                   rp<-tanh(sqrt(vals*2/(n[ni]-3)))
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])+rSamplingDistr(-rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])+
+                            rSamplingDistr(-rp,rvals[ei],nvals[ni])
                   dzs<-vals*(nvals[ni]-3)
                   a<-addition[1]
                   addition<-addition/dzs*(1-rp^2)
@@ -435,7 +459,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "log(lrd)"={ #XXXXXXXX
                   # z^2*(n-3)/2
                   rp<-tanh(sqrt(vals*2/(n[ni]-3)))
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])+rSamplingDistr(-rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])+
+                            rSamplingDistr(-rp,rvals[ei],nvals[ni])
                   dzs<-vals*(nvals[ni]-3)
                   a<-addition[1]
                   addition<-addition/dzs*(1-rp^2)
@@ -445,7 +470,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                   rp<-seq(0,1,length.out=101)
                   zp<-atanh(rp)
                   wp<-pnorm(qnorm(alphaSig/2)+zp*sqrt(nvals[ni]-3)) + pnorm(qnorm(alphaSig/2)-zp*sqrt(nvals[ni]-3))
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])+rSamplingDistr(-rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])+
+                            rSamplingDistr(-rp,rvals[ei],nvals[ni])
                   dwz<-dnorm(zp,qnorm(alphaSig/2)/sqrt(nvals[ni]-3),1/sqrt(nvals[ni]-3)) -
                     dnorm(zp,-qnorm(alphaSig/2)/sqrt(nvals[ni]-3),1/sqrt(nvals[ni]-3))
                   a<-addition[1]
@@ -457,7 +483,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 "nw"={ 
                   zp<-(qnorm(0.8)-qnorm(alphaSig))/sqrt(vals-3)
                   rp<-tanh(zp)
-                  addition<-rSamplingDistr(rp,pR$pRho[ei],nvals[ni])+rSamplingDistr(-rp,pR$pRho[ei],nvals[ni])
+                  addition<-rSamplingDistr(rp,rvals[ei],nvals[ni])+
+                            rSamplingDistr(-rp,rvals[ei],nvals[ni])
                   dznw<- -zp/(vals-3)/2
                   addition<-addition*dznw*(1-rp^2)
                 },
@@ -476,18 +503,22 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 }
         )
         if (logScale) addition<-addition*vals
-        d1<-d1+addition*ndens[ni]
+        if (length(nvals)>1) {
+          if (ni<length(nvals)) addition<-addition*ndens[ni]*(nvals[ni+1]-nvals[ni])
+          else                  addition<-addition*0
+        } 
+        else                    addition<-addition*ndens[ni]
+        d1<-d1+addition
         if (sigOnly) {
           critR<-tanh(qnorm(1-alphaSig/2,0,1/sqrt(nvals[ni]-3)))
           addition[abs(rp)<critR]<-0
         }
-        d<-d+addition*ndens[ni]
+        d<-d+addition
       }
-    d<-d/sum(d1*c(0,diff(rp)),na.rm=TRUE)
-    sourceSampDens_r<-rbind(sourceSampDens_r,d*pR$pRhogain[ei])
+    d<-d/sum(d1*c(diff(rp),0),na.rm=TRUE)
+    sourceSampDens_r<-rbind(sourceSampDens_r,d*rdens[ei])
   }
-  # dr_gain<-max(sourceSampDens_r,na.rm=TRUE)
-  # sourceSampDens_r<-sourceSampDens_r/dr_gain
+
   if (separate) {
     return(sourceSampDens_r)
   } else {
@@ -581,6 +612,10 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   sourceSampDens_z<-sD$Dens_z
   sourceSampDens_z_plus<-sD$Dens_z_plus
   sourceSampDens_z_null<-sD$Dens_z_null
+  if (is.element(source$populationPDF,c("Single","Double"))) {
+    pRho<-c(pRho,0)
+    sourceSampDens_z<-rbind(sourceSampDens_z,sourceSampDens_z_null)
+  }
   
   pR<-get_pRho(prior,RZ,RZ)
   pRhoP<-pR$pRho
@@ -593,7 +628,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
 
   if (length(pRho)>25) {
     l<-length(pRho)
-    use<-seq(1,l,length.out=(l-1)/24)
+    use<-seq(1,l,length.out=(l-1)/6)
     if (RZ=="z") {
       keep<-abs(pRho[use])<z_range
       use<-use[keep]
