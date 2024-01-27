@@ -118,11 +118,9 @@ makeExpectedGraph <- function() {
           input$world_distr,input$world_distr_rz,input$world_distr_k,input$world_distr_Nullp,
           input$EvidenceExpectedRun)
   
-  cycleCount<<-cycleCount+1
-  if (cycleCount<2) {
-    silentTime<<-0
-    pauseWait<<-10
-  } else {
+  silentTime<<-0
+  pauseWait<<-10
+  if (cycleCount>1) {
     cycleTime<-Sys.time()-time2
     silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
     pauseWait<<-500
@@ -167,7 +165,8 @@ makeExpectedGraph <- function() {
   }
   
   if (ns>0) {
-      expected$doingNull<-FALSE
+    cycleCount<<-cycleCount+1
+    expected$doingNull<-FALSE
       if (showProgress) {
         if (expectedResult$count==0) {
           showNotification("Expected: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")

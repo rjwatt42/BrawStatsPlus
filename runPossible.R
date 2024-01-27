@@ -366,7 +366,7 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
   list(Dens_z=Dens_z,Dens_z_plus=Dens_z_plus,Dens_z_null=Dens_z_null)
 }
 
-getNDist<-function(design,world=NULL,logScale=TRUE,sigOnly=FALSE,HQ=FALSE,asList=FALSE) {
+getNDist<-function(design,world=NULL,logScale=FALSE,sigOnly=FALSE,HQ=FALSE,asList=FALSE) {
   if (asList && !design$sNRand) {
     return(list(nvals=design$sN,ndens=1,ndensSig=1))
   }
