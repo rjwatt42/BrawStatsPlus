@@ -69,6 +69,8 @@ source("f_johnson_z2y.R")
 source("f_johnson_pdf.R")
 source("sampleShortCut.R")
 
+source("possibleAnalyse.R")
+
 source("graphSample.R")
 source("graphDescription.R")
 source("graphInference.R")

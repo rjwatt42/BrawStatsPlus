@@ -201,42 +201,6 @@ populationDensityFunction<-function(rpw,possible){
   rpw_dens    
 }
 
-
-densityFunctionStats<-function(dens_r,rp){
-  use<-!is.na(dens_r)
-  cum_dens_r<-cumsum(dens_r[use])/sum(dens_r[use])
-  cum_rp<-rp[use]
-  if (length(unique(cum_dens_r))<5) {
-    ci<-c(-1,1)
-  } else {
-    if (any(cum_dens_r==0)) {
-      use1<-max(which(cum_dens_r==0))
-    } else {use1<-1}
-    if (any(cum_dens_r==1)) {
-      use2<-min(which(cum_dens_r==1))
-    } else {use2<-length(cum_rp)}
-    keep<-use1:use2
-    use<-match(unique(cum_dens_r[keep]),cum_dens_r[keep])
-    if (length(keep[use])>=2) {
-      ci<-approx(cum_dens_r[keep[use]],cum_rp[keep[use]]+(rp[2]-rp[1])/2,c(0.025,0.975))$y
-    } else {
-      ci<-c(-1,1)
-    }
-  }
-
-  peak<-rp[which.max(dens_r)]
-  dens_at_peak<-max(dens_r)
-  list(
-    peak=peak,
-    mean=sum(rp*dens_r,na.rm=TRUE)/sum(dens_r,na.rm=TRUE),
-    sd=sqrt(sum((rp)^2*dens_r,na.rm=TRUE)/sum(dens_r,na.rm=TRUE)),
-    ci=ci,
-    dens_at_peak=dens_at_peak
-  )
-
-
-}
-
 get_pRho<-function(world,by="r",viewRZ="r") {
   if (is.null(world)) {
     return(list(pRho=0,pRhogain=1)  )
@@ -878,7 +842,6 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   sourceSampDens_r_total<-sourceSampDens_r_total/dr_gain
   sourceSampDens_r_null<-sourceSampDens_r_null/dr_gain
   sourceSampDens_r_plus<-sourceSampDens_r_plus/dr_gain
-  rs_stats<-densityFunctionStats(sourceSampDens_r_total,zs)
   
   if (any(!is.na(priorSampDens_r))) {
     dr_gain<-max(priorSampDens_r,na.rm=TRUE)
@@ -895,10 +858,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     priorSampDens_r_plus<-priorSampDens_r_plus/sum(priorSampDens_r_plus)*(1-prior$populationNullp)
     priorSampDens_r_null<-priorSampDens_r_null/sum(priorSampDens_r_null)*(prior$populationNullp)
   }
-  rp_stats<-densityFunctionStats(priorSampDens_r,zp) 
-  wp_stats<-densityFunctionStats(spDens_w,wp) 
   
-  dens_at_peak=1
   if (is.na(sRho[1])) {
     dens_at_sample<-NA
     dens_at_population<-NA
@@ -920,11 +880,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    Theory=list(
                                      rs=rs,sourceSampDens_r=sourceSampDens_r,sourceSampDens_r_plus=sourceSampDens_r_plus,sourceSampDens_r_null=sourceSampDens_r_null,sourceSampDens_r_total=sourceSampDens_r_total,
                                      rp=rp,priorSampDens_r=sourceSampDens_r,priorLikelihood_r=sourceSampDens_r,priorPopDens_r=priorPopDens_r,sourcePopDens_r=sourcePopDens_r,
-                                     rs_peak=rs_stats$peak,
-                                     rs_sd=rs_stats$sd,
-                                     rs_ci=rs_stats$ci,
-                                     wp=wp,
-                                     spDens_w=spDens_w
+                                     wp=wp,spDens_w=spDens_w
                                    ),
                                    Sims=list(
                                      sSims=sr_effects
@@ -941,14 +897,8 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    Theory=list(
                                      rs=rs,sourceSampDens_r=sourceSampDens_r,sourceSampDens_r_plus=sourceSampDens_r_plus,sourceSampDens_r_null=sourceSampDens_r_null,sourceSampDens_r_total=sourceSampDens_r_total,
                                      rp=rp,priorSampDens_r=priorSampDens_r,priorLikelihood_r=priorLikelihood_r,priorPopDens_r=priorPopDens_r,sourcePopDens_r=sourcePopDens_r,priorSampDens_r_null=priorSampDens_r_null,priorSampDens_r_plus=priorSampDens_r_plus,
-                                     rp_peak=rp_stats$peak,
-                                     rp_sd=rp_stats$sd,
-                                     rp_ci=rp_stats$ci,
-                                     wp=wp,
-                                     wp_peak=wp_stats$peak,
-                                     wp_mean=wp_stats$mean,
-                                     spDens_w=spDens_w,
-                                     dens_at_peak=dens_at_peak,dens_at_sample=dens_at_sample,
+                                     wp=wp,spDens_w=spDens_w,
+                                     dens_at_sample=dens_at_sample,
                                      dens_at_population=dens_at_population,dens_at_zero=dens_at_zero
                                    ),
                                    Sims=list(

@@ -3,7 +3,8 @@ source("uiPrior.R")
 SpossibleLengthChoices=c("100" = "100",
                           "250" = "250",
                           "500" = "500",
-                          "1000" = "1000"
+                          "1000" = "1000",
+                         "10000" = "10000"
 )
 PpossibleLengthChoices=c("10" = "10",
                           "50" = "50",

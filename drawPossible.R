@@ -93,7 +93,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
           }
   )
 
-  pRho<-(possibleResult$pRho)
+  pRho<-possibleResult$pRho
   pRhogain<-possibleResult$pRhogain
   sRho<-(possibleResult$sRho)
 
@@ -121,86 +121,19 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   # make the histograms
   switch (possible$type,
           "Samples"={
-            sr_effects<-possibleResult$Sims$sSims
-            sSimDens<-c()
-            if (!isempty(sr_effects)) {
-              if (RZ=="z") {
-                use_effects<-atanh(sr_effects)
-                hist_range<-z_range
-              } else {
-                use_effects<-sr_effects
-                hist_range<-r_range
-              }
-              binWidth<-2*IQR(use_effects)/length(use_effects)^(1/3)
-              nbins=round(2/binWidth)
-              if (possible$show!="Power") {
-                sSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              } else {
-                use_effects<-zn2w(atanh(sr_effects),42)
-                hist_range<-w_range
-                sSimBins<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              }
-              for (i in 1:nrow(use_effects)) {
-                use_data<-abs(use_effects[i,])<=hist_range
-                h<-hist(use_effects[i,use_data],sSimBins,plot=FALSE)$counts
-                sSimDens<-rbind(sSimDens,h*pRhogain[i]/(1-tanh(pRho[i])^2))
-              }
-            }
+            srAnalysis<-describePossibleSamples(possibleResult)
+            sSimBins<-srAnalysis$sSimBins
+            sSimDens<-srAnalysis$sSimDens
             },
           "Populations"={
-            pr_effectR<-possibleResult$Sims$pSims
-            pr_effectRP<-possibleResult$Sims$pSimsP
-            pr_effectN<-possibleResult$Sims$pSimsN
+            prAnalysis<-describePossiblePopulations(possibleResult)
+            pSimBins<-prAnalysis$pSimBins
+            pSimDens_slice<-prAnalysis$pSimDens_slice
+            pSimDensRP<-prAnalysis$pSimDensRP
+            pSimDensR<-prAnalysis$pSimDensR
             
-            if (!isempty(pr_effectRP)) {
-              pr_effectW<-rn2w(pr_effectRP,pr_effectN)
-              
-              # do this in z - for symmetry
-              keep<-abs(atanh(pr_effectR)-sRho[1])<possible$possibleSimSlice
-              pr_effectRP_slice<-pr_effectRP[keep]
-              pr_effectW_slice<-pr_effectW[keep]
-              
-              if (RZ=="z") {
-                use_effectRP_slice<-atanh(pr_effectRP_slice)
-                use_effectR<-atanh(pr_effectR)
-                use_effectRP<-atanh(pr_effectRP)
-                hist_range<-z_range
-              } else {
-                use_effectRP_slice<-pr_effectRP_slice
-                use_effectR<-pr_effectR
-                use_effectRP<-pr_effectRP
-                hist_range<-1
-              }
-              
-              if (possible$prior$populationPDF=="Single" || possible$prior$populationPDF=="Double") {
-                binWidth<-0.05
-              } else {
-                binWidth<-max(0.05,2*IQR(use_effectRP_slice,na.rm=TRUE)/length(use_effectRP_slice)^(1/3))
-              }
-              nbins=max(10,round(2/binWidth))
-              pSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              
-              keep<-abs(use_effectRP_slice)<hist_range
-              pSimDens_slice<-hist(use_effectRP_slice[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-abs(use_effectRP)<hist_range
-              pSimDensRP<-hist(use_effectRP[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-abs(use_effectR)<hist_range
-              pSimDensR<-hist(use_effectR[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-pr_effectW_slice>=w_range[1] & pr_effectW_slice<=w_range[2]
-              pSimDensW<-hist(pr_effectW_slice[keep],pSimBinsW,plot=FALSE)$counts
-              
-              # rpSim_ci=quantile(use_effectRP_slice,c(0.025,0.975))
-              # rpSim_peak=pSimBins[which.max(pSimDens_slice)]+pSimBins[2]-pSimBins[1]
-              # rpSim_sd<-sd(use_effectRP_slice,na.rm=TRUE)
-              # rpSimWaste<-sum(!keep)
-              # wpSim_peak<-pSimBinsW[which.max(pSimDensW)]+pSimBinsW[2]-pSimBinsW[1]
-              # wpSim_mean<-mean(pr_effectW_slice,na.rm=TRUE)
-              # wpSimWaste<-sum(!keep)
-            }
+            pSimBinsW<-prAnalysis$pSimBinsW
+            pSimDensW<-prAnalysis$pSimDensW
           }
   )
 
@@ -669,7 +602,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                     },
                     "Populations"={
                       # draw simulations
-                      if (!is.null(pr_effectR)) {
+                      if (!is.null(prAnalysis)) {
                           x<-as.vector(matrix(c(pSimBins,pSimBins),2,byrow=TRUE))
                           
                           if (possible$show!="Power") {
@@ -720,7 +653,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                               use<-rp>=xlim[1] & rp<=xlim[2]
                               rp_use<-rp[use]
                               dens_use<-rd[si,use]
-                              if (is.null(pr_effectR)) {
+                              if (is.null(prAnalysis)) {
                                 polygon (trans3d(x = c(rp_use[1],rp_use,rp_use[length(rp_use)]),
                                                  y = c(0,rp_use*0,0)+sRho[si], 
                                                  z = c(zlim[1],dens_use,zlim[1]), pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
@@ -763,7 +696,6 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                               italic(.(param))[mle]== bold(.(format(rp_peak,digits=3)))
                             ),col=colPdark,adj=-0.02,cex=0.9)
                             text(trans3d(x=mean(xlim),y=ylim[2],z=zlim[2]*1.05,pmat=mapping),labels=bquote(
-                              # llr(italic(r)[s]/italic(r)[0])==bold(.(format(log(dens_at_sample/approx(rp,priorSampDens_r,0)$y),digits=3)))~";"~
                                 llr(italic(.(param))[mle]/italic(.(param))[0])==bold(.(format(log(1/approx(rp,priorSampDens_r,0)$y),digits=3)))
                             ),col=colPdark,adj=c(0.5,-0.5),cex=0.9)
                           }

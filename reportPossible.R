@@ -1,13 +1,21 @@
-reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
+reportPossible<-function(IV,DV,effect,design,possible,possibleResult){
 
   switch (possible$type,
           "Samples"={
             possibleResult<-possibleResult$samples
-            sr_effects<-possibleResult$Sims$sSims
+            srSimAnalysis<-describePossibleSamples(possibleResult)
+            sr_effectR<-srSimAnalysis$sr_effectR
+            
+            srTheoryAnalysis<-densityFunctionStats(possibleResult$Theory$sourceSampDens_r_total,possibleResult$Theory$rs)
+            
           },
           "Populations"={
             possibleResult<-possibleResult$populations
-            }
+            prSimAnalysis<-describePossiblePopulations(possibleResult)
+            pr_effectR<-prSimAnalysis$pr_effectR
+            prTheoryAnalysis<-densityFunctionStats(possibleResult$Theory$priorSampDens_r,possibleResult$Theory$rp) 
+            pwTheoryAnalysis<-densityFunctionStats(possibleResult$Theory$spDens_w,possibleResult$Theory$wp) 
+          }
   )
   
   nc<-3
@@ -18,13 +26,16 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
   if (!is.na(possible$targetSample)) {
     switch (possible$type,
           "Samples"={
-            progress<-paste0("(no sims = ",format(length(sr_effects)),")")
+            progress<-paste0("(no sims = ",format(length(sr_effectR)),")")
           },
           "Populations"={
-            if (possible$show=="Power") {waste<-possibleResult$Sims$wpSimWaste} 
-            else {waste<-possibleResult$Sims$rpSimWaste}
-              progress<-paste("(no sims=",format(length(possibleResult$Sims$pSims)),
-                                   "; no at target=",format(sum(possibleResult$Sims$pSimDens)),
+            if (possible$show=="Power") {
+              waste<-prSimAnalysis$wpSimWaste
+            } else {
+              waste<-prSimAnalysis$rpSimWaste
+            }
+            progress<-paste("(no sims=",format(length(pr_effectR)),
+                                   "; no at target=",format(sum(prSimAnalysis$pSimDens_slice)),
                                    "; out of bounds at target=",format(waste),
                                    ")",sep="")
           }
@@ -77,14 +88,14 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
             outputText<-c(outputText,rep("",nc))
             outputText<-c(outputText," ","Theory","Simulation")
             outputText<-c(outputText,"max(samples)  ",
-                          format(possibleResult$Theory$rs_peak,digits=report_precision),
-                          format(possibleResult$Sims$rsSim_peak,digits=report_precision))
+                          format(srTheoryAnalysis$peak,digits=report_precision),
+                          format(srSimAnalysis$rsSim_peak,digits=report_precision))
             outputText<-c(outputText,"sd(samples)",
-                          format(possibleResult$Theory$rs_sd,digits=report_precision),
-                          format(possibleResult$Sims$rsSim_sd,digits=report_precision))
+                          format(srTheoryAnalysis$sd,digits=report_precision),
+                          format(srSimAnalysis$rsSim_sd,digits=report_precision))
             outputText<-c(outputText,"CI(samples)",
-                          paste("<", format(possibleResult$Theory$rs_ci[1],digits=report_precision), ",", format(possibleResult$Theory$rs_ci[2],digits=report_precision), ">"),
-                          paste("<", format(possibleResult$Sims$rsSim_ci[1],digits=report_precision), ",", format(possibleResult$Sims$rsSim_ci[2],digits=report_precision), ">")
+                          paste("<", format(srTheoryAnalysis$ci[1],digits=report_precision), ",", format(srTheoryAnalysis$ci[2],digits=report_precision), ">"),
+                          paste("<", format(srSimAnalysis$rsSim_ci[1],digits=report_precision), ",", format(srSimAnalysis$rsSim_ci[2],digits=report_precision), ">")
             )
             outputText<-c(outputText,rep(" ",nc))
             if (length(possibleResult$Sims$sSims)==0){
@@ -107,58 +118,6 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
             }
           },
           "Populations"={
-            pr_effectR<-possibleResult$Sims$pSims
-            pr_effectRP<-possibleResult$Sims$pSimsP
-            pr_effectN<-possibleResult$Sims$pSimsN
-            
-            if (!isempty(pr_effectRP)) {
-              pr_effectW<-rn2w(pr_effectRP,pr_effectN)
-              
-              # do this in z - for symmetry
-              keep<-abs(atanh(pr_effectR)-sRho[1])<possible$possibleSimSlice
-              pr_effectRP_slice<-pr_effectRP[keep]
-              pr_effectW_slice<-pr_effectW[keep]
-              
-              if (RZ=="z") {
-                use_effectRP_slice<-atanh(pr_effectRP_slice)
-                use_effectR<-atanh(pr_effectR)
-                use_effectRP<-atanh(pr_effectRP)
-              } else {
-                use_effectRP_slice<-pr_effectRP_slice
-                use_effectR<-pr_effectR
-                use_effectRP<-pr_effectRP
-              }
-              
-              if (possible$prior$populationPDF=="Single" || possible$prior$populationPDF=="Double") {
-                binWidth<-0.05
-              } else {
-                binWidth<-max(0.05,2*IQR(use_effectRP_slice,na.rm=TRUE)/length(use_effectRP_slice)^(1/3))
-              }
-              nbins=max(10,round(2/binWidth))
-              pSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              
-              keep<-abs(use_effectRP_slice)<hist_range
-              pSimDens_slice<-hist(use_effectRP_slice[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-abs(use_effectRP)<hist_range
-              pSimDensRP<-hist(use_effectRP[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-abs(use_effectR)<hist_range
-              pSimDensR<-hist(use_effectR[keep],pSimBins,plot=FALSE)$counts
-              
-              keep<-pr_effectW_slice>=w_range[1] & pr_effectW_slice<=w_range[2]
-              pSimDensW<-hist(pr_effectW_slice[keep],pSimBinsW,plot=FALSE)$counts
-              
-              rpSim_ci=quantile(use_effectRP_slice,c(0.025,0.975))
-              rpSim_peak=pSimBins[which.max(pSimDens_slice)]+pSimBins[2]-pSimBins[1]
-              rpSim_sd<-sd(use_effectRP_slice,na.rm=TRUE)
-              rpSimWaste<-sum(!keep)
-              wpSim_peak<-pSimBinsW[which.max(pSimDensW)]+pSimBinsW[2]-pSimBinsW[1]
-              wpSim_mean<-mean(pr_effectW_slice,na.rm=TRUE)
-              wpSimWaste<-sum(!keep)
-            }
-
             if (!is.na(possible$targetSample)) {
               outputText<-c(outputText,"Sample ",paste("r=", format(mean(possibleResult$sRho[1]),digits=report_precision)," (n=",format(possibleResult$n[1]),")",sep=""),"")
               if (length(possibleResult$sRho)>1) {
@@ -170,26 +129,31 @@ reportPossible<-function(Iv,DV,effect,design,possible,possibleResult){
               
               outputText<-c(outputText," ","Theory","Simulation")
               if (possible$show!="Power") {
-              outputText<-c(outputText,"max(populations)",format(possibleResult$Theory$rp_peak,digits=report_precision),
-                            format(possibleResult$Sims$rpSim_peak,digits=report_precision))
-              outputText<-c(outputText,"sd(populations)",format(possibleResult$Theory$rp_sd,digits=report_precision),format(possibleResult$Sims$rpSim_sd,digits=report_precision))
+              outputText<-c(outputText,"max(populations)",format(prTheoryAnalysis$peak,digits=report_precision),
+                            format(prSimAnalysis$rpSim_peak,digits=report_precision))
+              outputText<-c(outputText,"sd(populations)",format(prTheoryAnalysis$sd,digits=report_precision),
+                            format(prSimAnalysis$rpSim_sd,digits=report_precision))
               outputText<-c(outputText,"CI(samples)",
-                            paste("<", format(possibleResult$Theory$rp_ci[1],digits=report_precision), ",", format(possibleResult$Theory$rp_ci[2],digits=report_precision), ">"),
-                            paste("<", format(possibleResult$Sims$rpSim_ci[1],digits=report_precision), ",", format(possibleResult$Sims$rpSim_ci[2],digits=report_precision), ">")
+                            paste("<", format(prTheoryAnalysis$ci[1],digits=report_precision), ",", format(prTheoryAnalysis$ci[2],digits=report_precision), ">"),
+                            paste("<", format(prSimAnalysis$rpSim_ci[1],digits=report_precision), ",", format(prSimAnalysis$rpSim_ci[2],digits=report_precision), ">")
               )
               } else {
-                outputText<-c(outputText,"max(w)",format(possibleResult$Theory$wp_peak,digits=report_precision),
-                              format(possibleResult$Sims$wpSim_peak,digits=report_precision))
-                outputText<-c(outputText,"mean(w)",format(possibleResult$Theory$wp_mean,digits=report_precision),
-                              format(possibleResult$Sims$wpSim_mean,digits=report_precision))
+                outputText<-c(outputText,"max(w)",format(pwTheoryAnalysis$peak,digits=report_precision),
+                              format(prSimAnalysis$wpSim_peak,digits=report_precision))
+                outputText<-c(outputText,"mean(w)",format(pwTheoryAnalysis$mean,digits=report_precision),
+                              format(prSimAnalysis$wpSim_mean,digits=report_precision))
               }
               outputText<-c(outputText,rep("",nc))
             if (length(possibleResult$Sims$pSims)==0){
               outputText[seq(12,length(outputText),3)]<-" "
             }
-            S<-log(possibleResult$Theory$dens_at_sample)
-            S1<-log(possibleResult$Theory$dens_at_zero)
-            S2<-log(possibleResult$Theory$dens_at_population)
+              
+            dens_at_zero<-approx(possibleResult$Theory$rp,possibleResult$Theory$priorSampDens_r,0)$y
+            dens_at_sample<-approx(possibleResult$Theory$rp,possibleResult$Theory$priorSampDens_r,possibleResult$sRho[1])$y
+            dens_at_population<-approx(possibleResult$Theory$rp,possibleResult$Theory$priorSampDens_r,possible$ResultHistory$rp[1])$y
+            S<-log(dens_at_sample)
+            S1<-log(dens_at_zero)
+            S2<-log(dens_at_population)
             if (identical(a,numeric(0))) {S2<-NA}
             
             text1="loglikelihood(rp=rs,0";
