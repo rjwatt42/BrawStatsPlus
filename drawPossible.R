@@ -768,10 +768,10 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     # simulations
     switch (possible$type,
             "Populations"={
-              if (!is.null(simDens)) {
-                simDens<-simDens/max(simDens)
-                  x<-as.vector(matrix(c(simBins,simBins),2,byrow=TRUE))
-                  y1<-c(0,as.vector(matrix(c(simDens,simDens),2,byrow=TRUE)),0)
+              if (!is.null(pSimDens_slice)) {
+                pSimDens_slice<-pSimDens_slice/max(pSimDens_slice)
+                  x<-as.vector(matrix(c(pSimBins,pSimBins),2,byrow=TRUE))
+                  y1<-c(0,as.vector(matrix(c(pSimDens_slice,pSimDens_slice),2,byrow=TRUE)),0)
                   
                   polygon(x=x,y=y1,col=colP)
                   theoryAlpha=0.25
