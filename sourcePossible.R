@@ -171,10 +171,10 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
                                  "Prior_distr","Prior_distr_rz","Prior_distr_k","Prior_Nullp",
                                  "possibleTheory",
                                  "sN","sNRand","sNRandK")))
-  {
-    graphicSource<<-"Main"
+  { graphicSource<<-"Main"
     showPossible<-input$PossiblePanel
   }
+  
   IV<-updateIV()
   DV<-updateDV()
   

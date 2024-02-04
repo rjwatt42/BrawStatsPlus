@@ -508,21 +508,24 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
   
   np<-worldNPoints
   if (effect$world$worldAbs) np<-worldNPoints*2+1
+
   vals<-seq(-1,1,length=np)*r_range
   if (RZ=="z") {
-    vals<-tanh(seq(-1,1,length=np)*z_range)
+    vals<-tanh(seq(-1,1,length=np*2)*z_range*2)
   }
 
+  dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
   if (effect$world$worldAbs) {
-    dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
     vals<-vals[worldNPoints+(1:worldNPoints)]
     dens<-dens[worldNPoints+(1:worldNPoints)]
-  } else {
-    dens<-fullRSamplingDist(vals,effect$world,design,sigOnly=sigOnly) 
   }
+  
   if (RZ=="z") {
     dens<-rdens2zdens(dens,vals)
     vals<-atanh(vals)
+    use<-abs(vals)<=z_range
+    dens<-dens[use]
+    vals<-vals[use]
   }
   dens<-dens/max(dens)
   
@@ -535,4 +538,5 @@ drawWorldSampling<-function(effect,design,sigOnly=FALSE) {
          "r"={g<-g+labs(x=rsLabel,y="Frequency")+diagramTheme},
          "z"={g<-g+labs(x=zsLabel,y="Frequency")+diagramTheme}
          )
+  g+theme(plot.margin=margin(1.3,0.8,0,0.25,"cm"))
 }

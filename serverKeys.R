@@ -115,6 +115,7 @@ if (switches$doKeys) {
     if (input$keypress==ascii("r") && controlKeyOn) {
       updateCheckboxInput(session,"WhiteGraphs",value=TRUE)
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
+      updateCheckboxInput(session,"shortHand",value=TRUE)
       updateSelectInput(session,"RZ",selected="z")
       updateSelectInput(session,"EvidenceExpected_type",selected="Simple")
     }

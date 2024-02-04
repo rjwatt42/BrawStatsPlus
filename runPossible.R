@@ -414,6 +414,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   }
   
   # distribution of population effect sizes
+  # we are going to do this in z
   pR<-get_pRho(world,by="r",viewRZ="r")
   rvals<-pR$pRho
   rdens<-pR$pRhogain
@@ -426,6 +427,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
   ndist<-getNDist(design,HQ=HQ,asList=TRUE)
   nvals<-ndist$nvals
   ndens<-ndist$ndens
+  if (length(nvals)>1) ndens<-ndens*c(diff(nvals),0)
   
   sourceSampDens_r<-c()
   for (ei in 1:length(rvals)){
@@ -503,11 +505,7 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
                 }
         )
         if (logScale) addition<-addition*vals
-        if (length(nvals)>1) {
-          if (ni<length(nvals)) addition<-addition*ndens[ni]*(nvals[ni+1]-nvals[ni])
-          else                  addition<-addition*0
-        } 
-        else                    addition<-addition*ndens[ni]
+        addition<-addition*ndens[ni]
         d1<-d1+addition
         if (sigOnly) {
           critR<-tanh(qnorm(1-alphaSig/2,0,1/sqrt(nvals[ni]-3)))
@@ -515,8 +513,8 @@ fullRSamplingDist<-function(vals,world,design,doStat="r",logScale=FALSE,sigOnly=
         }
         d<-d+addition
       }
-    d<-d/sum(d1*c(diff(rp),0),na.rm=TRUE)
-    sourceSampDens_r<-rbind(sourceSampDens_r,d*rdens[ei])
+      d<-d/sum(d1*c(diff(rp[1:2]),diff(rp)),na.rm=TRUE)
+      sourceSampDens_r<-rbind(sourceSampDens_r,d*rdens[ei])
   }
 
   if (separate) {
@@ -575,7 +573,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   )
   sourcePopDens_z<-zPopulationDist(zs,source)
   # we add in the nulls for display, but only when displaying them makes sense
-  if (source$populationPDF=="Single") {
+  if (source$populationPDF=="Single" || source$populationPDF=="Double") {
     sourcePopDens_z<-sourcePopDens_z*(1-source$populationNullp)
     sourcePopDens_z[zp==0]<-sourcePopDens_z[zp==0]+source$populationNullp
   }
@@ -596,7 +594,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   priorPopDens_z_full<-priorPopDens_z*(1-prior$populationNullp)
   priorPopDens_z_full[zp==0]<-priorPopDens_z_full[zp==0]+prior$populationNullp
   priorPopDens_z_full<-priorPopDens_z_full/max(priorPopDens_z_full)
-  if (prior$populationPDF=="Single") {
+  if (prior$populationPDF=="Single" || prior$populationPDF=="Double") {
     priorPopDens_z_show<-priorPopDens_z_full
   } else {
     priorPopDens_z_show<-priorPopDens_z
@@ -612,9 +610,9 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   sourceSampDens_z<-sD$Dens_z
   sourceSampDens_z_plus<-sD$Dens_z_plus
   sourceSampDens_z_null<-sD$Dens_z_null
-  if (is.element(source$populationPDF,c("Single","Double"))) {
+  if (is.element(source$populationPDF,c("Single","Double")) && source$populationNullp>0) {
     pRho<-c(pRho,0)
-    sourceSampDens_z<-rbind(sourceSampDens_z,sourceSampDens_z_null)
+    sourceSampDens_z<-rbind(sourceSampDens_z*(1-source$populationNullp),sourceSampDens_z_null*source$populationNullp)
   }
   
   pR<-get_pRho(prior,RZ,RZ)
@@ -628,7 +626,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
 
   if (length(pRho)>25) {
     l<-length(pRho)
-    use<-seq(1,l,length.out=(l-1)/6)
+    use<-seq(1,l,10)
     if (RZ=="z") {
       keep<-abs(pRho[use])<z_range
       use<-use[keep]
@@ -738,32 +736,6 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               sSimDens<-possibleSResultHold$sSimDens
             }
 
-            if (!isempty(sr_effects)) {
-              if (RZ=="z") {
-                use_effects<-atanh(sr_effects)
-                hist_range<-z_range
-              } else {
-                use_effects<-sr_effects
-                hist_range<-r_range
-              }
-              binWidth<-2*IQR(use_effects)/length(use_effects)^(1/3)
-              nbins=round(2/binWidth)
-              sSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              sSimDens<-c()
-              sSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              sSimDensW<-c()
-              for (i in 1:length(pRho)) {
-                use_data<-abs(use_effects[i,])<=hist_range
-                h<-hist(use_effects[i,use_data],sSimBins,plot=FALSE)$counts
-                sSimDens<-rbind(sSimDens,h*pRhogain[i]/(1-tanh(pRho[i])^2))
-                h<-hist(zn2w(atanh(sr_effects[i,]),42),sSimBinsW,plot=FALSE)$counts
-                sSimDensW<-rbind(sSimDensW,h*pRhogain[i]/(1-tanh(pRho[i])^2))
-              }
-              possibleSResultHold<<-list(sSims=sr_effects,sSimBins=sSimBins,sSimDens=sSimDens)
-              rsSim_ci=quantile(sr_effects,c(0.025,0.975))
-              rsSim_peak=sSimBins[which.max(sSimDens)]+sSimBins[2]-sSimBins[1]
-              rsSim_sd<-sd(sr_effects,na.rm=TRUE)
-            }
           },
             
           "Populations"={
@@ -793,50 +765,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               pr_effectN<-possiblePResultHold$N
             }
             
-            if (!isempty(pr_effectRP)) {
-              pr_effectW<-rn2w(pr_effectRP,pr_effectN)
-              
-              # do this in z - for symmetry
-              keep<-abs(atanh(pr_effectR)-sRho[1])<possible$possibleSimSlice
-              pr_effectRP_use<-pr_effectRP[keep]
-              pr_effectW_use<-pr_effectW[keep]
-              
-              if (RZ=="z") {
-                use_effectR_use<-atanh(pr_effectR_use)
-                use_effectR<-atanh(pr_effectR)
-                use_effectRP<-atanh(pr_effectRP)
-                hist_range<-z_range
-              } else {
-                use_effectRP_use<-pr_effectRP_use
-                use_effectR<-pr_effectR
-                use_effectRP<-pr_effectRP
-                hist_range<-1
-              }
 
-              if (prior$populationPDF=="Single" || prior$populationPDF=="Double") {
-                binWidth<-0.05
-              } else {
-                binWidth<-max(0.05,2*IQR(use_effectRP_use,na.rm=TRUE)/length(use_effectRP_use)^(1/3))
-              }
-              keep<-abs(use_effectRP_use)<hist_range
-              nbins=max(10,round(2/binWidth))
-              pSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
-              pSimDens<-hist(use_effectRP_use[keep],pSimBins,plot=FALSE)
-              rpSim_ci=quantile(use_effectRP_use,c(0.025,0.975))
-              rpSim_peak=pSimBins[which.max(pSimDens$counts)]+pSimBins[2]-pSimBins[1]
-              rpSim_sd<-sd(use_effectRP_use,na.rm=TRUE)
-              rpSimWaste<-sum(!keep)
-              
-              pSimDensRP<-hist(use_effectRP[abs(use_effectRP)<hist_range],pSimBins,plot=FALSE)
-              pSimDensR<-hist(use_effectR[abs(use_effectR)<hist_range],pSimBins,plot=FALSE)
-              
-              pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
-              keep<-pr_effectW_use>=w_range[1] & pr_effectW_use<=w_range[2]
-              pSimDensW<-hist(pr_effectW_use[keep],pSimBinsW,plot=FALSE)
-              wpSim_peak<-pSimBinsW[which.max(pSimDensW$counts)]+pSimBinsW[2]-pSimBinsW[1]
-              wpSim_mean<-mean(pr_effectW_use,na.rm=TRUE)
-              wpSimWaste<-sum(!keep)
-            }
           }
   )
   
@@ -984,6 +913,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
           "Samples"={
             possibleResult<-list(possible=possible,
                                    pRho=pRho,
+                                   pRhogain=pRhogain,
                                    sRho=sRho,
                                    n=n,
                                    source=source,prior=prior,
@@ -997,17 +927,14 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                      spDens_w=spDens_w
                                    ),
                                    Sims=list(
-                                     sSims=sr_effects,sSimBins=sSimBins,sSimDens=sSimDens,
-                                     sSimBinsW=sSimBinsW,sSimDensW=sSimDensW,
-                                     rsSim_sd=rsSim_sd,
-                                     rsSim_ci=rsSim_ci,
-                                     rsSim_peak=rsSim_peak
+                                     sSims=sr_effects
                                    )
             )
           },
           "Populations"={
             possibleResult<-list(possible=possible,
                                    pRho=possible$targetPopulation,
+                                   pRhogain=pRhogain,
                                    sRho=sRho,
                                    n=n,
                                    source=source,prior=prior,
@@ -1025,17 +952,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                      dens_at_population=dens_at_population,dens_at_zero=dens_at_zero
                                    ),
                                    Sims=list(
-                                     pSims=pr_effectR,pSimsP=pr_effectRP,pSimsN=pr_effectN,
-                                     pSimBins=pSimBins,pSimDens=pSimDens,
-                                     pSimDensR=pSimDensR,pSimDensRP=pSimDensRP,
-                                     pSimBinsW=pSimBinsW,pSimDensW=pSimDensW,
-                                     rpSim_sd=rpSim_sd,
-                                     rpSim_ci=rpSim_ci,
-                                     rpSim_peak=rpSim_peak,
-                                     rpSimWaste=rpSimWaste,
-                                     wpSim_peak=wpSim_peak,
-                                     wpSim_mean=wpSim_mean,
-                                     wpSimWaste=wpSimWaste
+                                     pSims=pr_effectR,pSimsP=pr_effectRP,pSimsN=pr_effectN
                                    )
             )
           }

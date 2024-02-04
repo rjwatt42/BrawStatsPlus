@@ -321,6 +321,11 @@ shinyServer(function(input, output, session) {
     if (input$world_distr!="Single" && input$world_distr_k==0) {
       updateNumericInput(session,"world_distr_k",value=0.2)
     }
+    if (is.element(input$world_distr,c("Single","Double","Uniform"))) {
+      updateSelectInput(session,"world_distr_rz",choices=c("r","z"),selected=RZ)
+    } else {
+      updateSelectInput(session,"world_distr_rz",choices=c("z"),selected="z")
+    }
   }
   )
   

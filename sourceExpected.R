@@ -121,9 +121,9 @@ makeExpectedGraph <- function() {
   silentTime<<-0
   pauseWait<<-10
   if (cycleCount>1) {
+    pauseWait<<-200
     cycleTime<-Sys.time()-time2
     silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
-    pauseWait<<-500
   }
 
   llrConsts<-c(input$llr1,input$llr2)

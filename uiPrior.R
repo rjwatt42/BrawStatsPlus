@@ -13,14 +13,14 @@ priorPanel<-function(prefix="",asTable=FALSE) {
                                        "Exp" = "Exp",
                                        ">"=">",
                                        "<"="<"),
-                                     selected="Uniform",
+                                     selected=evidence$prior$populationPDF,
                                      width="100%",selectize=FALSE)
                  ),
                  tags$td(width = "15%",
                          selectInput(paste0(prefix,"Prior_distr_rz"), label=NULL,
                                      c("r" = "r",
                                        "z" = "z"),
-                                     selected="r",
+                                     selected=evidence$prior$populationRZ,
                                      width="100%",selectize=FALSE)
                  ),
                  tags$td(width = "15%",
@@ -29,14 +29,17 @@ priorPanel<-function(prefix="",asTable=FALSE) {
                                                        min = 0,
                                                        max = 1,
                                                        step = 0.05,
-                                                       value = 0.2)
+                                                       value = evidence$prior$populationPDFk)
                          )
                  ),
                  tags$td(width="10%")
                ),
                tags$tr(
                  tags$td(width = "30%", tags$div(style = localStyle, pPlusLabel)),
-                 tags$td(width = "30%", numericInput(paste0(prefix, "Prior_Nullp"), label=NULL,min=0,max=1, step=0.025,value=0.5)),
+                 tags$td(width = "30%", numericInput(paste0(prefix, "Prior_Nullp"), label=NULL,
+                                                     min=0,max=1, step=0.025,
+                                                     value=evidence$prior$populationNullp)
+                         ),
                  tags$td(width = "15%"),
                  tags$td(width = "15%"),
                  tags$td(width="10%")

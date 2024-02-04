@@ -698,13 +698,18 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       switch(expType,
              "r"={
                if (RZ=="z") {
-                 zvals<-seq(-1,1,length.out=npt)*z_range
+                 zvals<-seq(-1,1,length.out=npt*2)*z_range*2
                  rvals<-tanh(zvals)
+                 # rvals<-seq(-1,1,length.out=npt)*0.99
                  xd<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
                  xdsig<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=TRUE,HQ=evidence$HQ)
                  xd<-rdens2zdens(xd,rvals)
                  xdsig<-rdens2zdens(xdsig,rvals)
                  yv<-atanh(rvals)
+                 use<-abs(zvals)<=z_range
+                 yv<-yv[use]
+                 xd<-xd[use]
+                 xdsig<-xdsig[use]
                } else {
                  rvals<-seq(-1,1,length.out=npt)*0.99
                  xd<-fullRSamplingDist(rvals,result$effect$world,result$design,"r",logScale=logScale,sigOnly=FALSE,HQ=evidence$HQ)
@@ -795,7 +800,7 @@ r_plot<-function(result,IV,IV2=NULL,DV,effect,expType="r",logScale=FALSE,otherre
       xd[is.na(xd)]<-0
       theoryGain<-1/max(xd)*distMax
       xd<-xd*theoryGain
-      histGain<<-sum(xd)*(yv[2]-yv[1])
+      histGain<<-sum(xd*c(0,diff(yv)))
       histGainrange<<-c(yv[1],yv[length(yv)])
       ptsp<-data.frame(x=c(xd,-rev(xd))+xoff[i],y=c(yv,rev(yv)))
       g<-g+dataPolygon(data=ptsp,colour=NA,fill="white",alpha=theoryAlpha, orientation=orientation)

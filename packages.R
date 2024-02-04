@@ -1,3 +1,7 @@
+#############
+##
+# source("https://github.com/rjwatt42/BrawStats/raw/main/packages.R")
+# suppressPackageStartupMessages
 
 list.of.packages<-c("shiny","shinyWidgets","shinyjs","shinyBS",
                     "ggplot2","tidyr","tools",
@@ -10,8 +14,8 @@ if(length(new.packages)>0) install.packages(new.packages,repos="http://cran.fhcr
 
 library(shiny)
 library(shinyWidgets)
-library(shinyjs)
-library(shinyBS)
+library(shinyjs)     # hide/show/enable/disable elements
+library(shinyBS)     # bsModal()
 library(htmlwidgets)
 
 library(ggplot2)

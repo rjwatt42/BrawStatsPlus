@@ -74,7 +74,7 @@ evidence<<-list(rInteractionOn=TRUE,
                analysisType="Anova",
                pScale="log10",wScale="linear",nScale="linear",
                usePrior="world",
-               prior=list(worldOn=FALSE,populationPDF="",
+               prior=list(worldOn=FALSE,populationPDF="Uniform",
                           populationPDFk=0,populationRZ="r",
                           populationNullp=0)
 )

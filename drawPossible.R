@@ -13,10 +13,12 @@ darken <- function(col,gain=1,off=0) {
 BoxCol<-"#666666"
 
 colS="#FFCC88"
+colS<-"yellow"
 colSdark=darken(colS,off=-0.67)
 colSsim=darken(colS,off=0.0)
   
 colP="#AABBFF"
+colP=plotcolours$descriptionC
 colPdark=darken(colP,off=-0.67)
 colPsim=darken(colP,off=-0.33)
 
@@ -92,6 +94,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   )
 
   pRho<-(possibleResult$pRho)
+  pRhogain<-possibleResult$pRhogain
   sRho<-(possibleResult$sRho)
 
   rs<-possibleResult$Theory$rs
@@ -99,11 +102,13 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
   sourceSampDens_r_total<-possibleResult$Theory$sourceSampDens_r_total
   sourceSampDens_r_null<-possibleResult$Theory$sourceSampDens_r_null
   sourceSampDens_r_plus<-possibleResult$Theory$sourceSampDens_r_plus
+  
   rp<-possibleResult$Theory$rp
   priorSampDens_r<-possibleResult$Theory$priorSampDens_r
   priorLikelihood_r<-possibleResult$Theory$priorLikelihood_r
   priorSampDens_r_null<-possibleResult$Theory$priorSampDens_r_null
   priorSampDens_r_plus<-possibleResult$Theory$priorSampDens_r_plus
+  
   if (possible$show=="Power") {
     rp<-possibleResult$Theory$wp
     priorSampDens_r<-possibleResult$Theory$spDens_w
@@ -112,6 +117,92 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     sourceSampDens_r<-possibleResult$Theory$spDens_w
     sourceSampDens_r_total<-possibleResult$Theory$spDens_w
   }
+  
+  # make the histograms
+  switch (possible$type,
+          "Samples"={
+            sr_effects<-possibleResult$Sims$sSims
+            sSimDens<-c()
+            if (!isempty(sr_effects)) {
+              if (RZ=="z") {
+                use_effects<-atanh(sr_effects)
+                hist_range<-z_range
+              } else {
+                use_effects<-sr_effects
+                hist_range<-r_range
+              }
+              binWidth<-2*IQR(use_effects)/length(use_effects)^(1/3)
+              nbins=round(2/binWidth)
+              if (possible$show!="Power") {
+                sSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
+              } else {
+                use_effects<-zn2w(atanh(sr_effects),42)
+                hist_range<-w_range
+                sSimBins<-seq(w_range[1],w_range[2],length.out=nbins+1)
+              }
+              for (i in 1:nrow(use_effects)) {
+                use_data<-abs(use_effects[i,])<=hist_range
+                h<-hist(use_effects[i,use_data],sSimBins,plot=FALSE)$counts
+                sSimDens<-rbind(sSimDens,h*pRhogain[i]/(1-tanh(pRho[i])^2))
+              }
+            }
+            },
+          "Populations"={
+            pr_effectR<-possibleResult$Sims$pSims
+            pr_effectRP<-possibleResult$Sims$pSimsP
+            pr_effectN<-possibleResult$Sims$pSimsN
+            
+            if (!isempty(pr_effectRP)) {
+              pr_effectW<-rn2w(pr_effectRP,pr_effectN)
+              
+              # do this in z - for symmetry
+              keep<-abs(atanh(pr_effectR)-sRho[1])<possible$possibleSimSlice
+              pr_effectRP_slice<-pr_effectRP[keep]
+              pr_effectW_slice<-pr_effectW[keep]
+              
+              if (RZ=="z") {
+                use_effectRP_slice<-atanh(pr_effectRP_slice)
+                use_effectR<-atanh(pr_effectR)
+                use_effectRP<-atanh(pr_effectRP)
+                hist_range<-z_range
+              } else {
+                use_effectRP_slice<-pr_effectRP_slice
+                use_effectR<-pr_effectR
+                use_effectRP<-pr_effectRP
+                hist_range<-1
+              }
+              
+              if (possible$prior$populationPDF=="Single" || possible$prior$populationPDF=="Double") {
+                binWidth<-0.05
+              } else {
+                binWidth<-max(0.05,2*IQR(use_effectRP_slice,na.rm=TRUE)/length(use_effectRP_slice)^(1/3))
+              }
+              nbins=max(10,round(2/binWidth))
+              pSimBins<-seq(-1,1,length.out=nbins+1)*hist_range
+              pSimBinsW<-seq(w_range[1],w_range[2],length.out=nbins+1)
+              
+              keep<-abs(use_effectRP_slice)<hist_range
+              pSimDens_slice<-hist(use_effectRP_slice[keep],pSimBins,plot=FALSE)$counts
+              
+              keep<-abs(use_effectRP)<hist_range
+              pSimDensRP<-hist(use_effectRP[keep],pSimBins,plot=FALSE)$counts
+              
+              keep<-abs(use_effectR)<hist_range
+              pSimDensR<-hist(use_effectR[keep],pSimBins,plot=FALSE)$counts
+              
+              keep<-pr_effectW_slice>=w_range[1] & pr_effectW_slice<=w_range[2]
+              pSimDensW<-hist(pr_effectW_slice[keep],pSimBinsW,plot=FALSE)$counts
+              
+              # rpSim_ci=quantile(use_effectRP_slice,c(0.025,0.975))
+              # rpSim_peak=pSimBins[which.max(pSimDens_slice)]+pSimBins[2]-pSimBins[1]
+              # rpSim_sd<-sd(use_effectRP_slice,na.rm=TRUE)
+              # rpSimWaste<-sum(!keep)
+              # wpSim_peak<-pSimBinsW[which.max(pSimDensW)]+pSimBinsW[2]-pSimBinsW[1]
+              # wpSim_mean<-mean(pr_effectW_slice,na.rm=TRUE)
+              # wpSimWaste<-sum(!keep)
+            }
+          }
+  )
 
   # make the back wall population distributions
   rpw<-rp
@@ -493,45 +584,39 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                         pgain<-max(c(1-possible$source$populationNullp,possible$source$populationNullp))
                       } 
                       # prepare simulations first
-                      if (!is.null(possibleResult$Sims$sSimDens)) {
+                      if (!is.null(sSimDens)) {
                         theoryAlpha<-0.25
                         
-                        if (possible$show!="Power") {
-                          bins<-possibleResult$Sims$sSimBins
-                          dens<-possibleResult$Sims$sSimDens
-                        } else {
-                          bins<-possibleResult$Sims$sSimBinsW
-                          dens<-possibleResult$Sims$sSimDensW
-                        }
-                        simgain<-mean(sourceSampDens_r)/mean(dens)
-                        dens<-dens*simgain*pgain
+                        simgain<-mean(sourceSampDens_r)/mean(sSimDens)
+                        sSimDens<-sSimDens*simgain*pgain
                           if (possible$cutaway) {
-                            waste<-sum(bins<=min(sRho))
-                            use_s<-(waste):length(bins)
-                            bins<-bins[use_s]
-                            bins[1]<-min(sRho)
+                            waste<-sum(sSimBins<=min(sRho))
+                            use_s<-(waste):length(sSimBins)
+                            simBins<-simBins[use_s]
+                            simBins[1]<-min(sRho)
                             use_s<-use_s[1:(length(use_s)-1)]
                           } else {
-                            if (!is.matrix(dens)) {
-                              dens<-t(dens)
+                            if (!is.matrix(sSimDens)) {
+                              sSimDens<-t(sSimDens)
                               sourceSampDens_r<-t(sourceSampDens_r)
                             } 
-                            use_s<-(1:ncol(dens))
+                            use_s<-(1:ncol(sSimDens))
                         }
                       } 
 
                       # we interleave simulations and theory (because no hidden line removal)
                       for (i in order(pRho)) {
                         # draw simulations
-                        if (!is.null(possibleResult$Sims$sSimDens)){
-                          y1<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
-                          z1<-as.vector(matrix(c(dens[i,use_s],dens[i,use_s]),2,byrow=TRUE))
+                        if (!is.null(sSimDens)){
+                          y1<-as.vector(matrix(c(sSimBins,sSimBins),2,byrow=TRUE))
+                          z1<-as.vector(matrix(c(sSimDens[i,use_s],sSimDens[i,use_s]),2,byrow=TRUE))
                           if (logZ) z1<-log10(z1)
+                          z1<-c(zlim[1],z1,zlim[1])
                           z1[z1<zlim[1]]<-zlim[1]
-                          use<-(y1>=ylim[1] & y1<=ylim[2])
-                          polygon(trans3d(x=y1[use]*0+pRho[i],y=y1[use],z=c(zlim[1],z1[use],zlim[1]),pmat=mapping),col=addTransparency(colSsim,simAlpha))
+                          use<-which(y1>=ylim[1] & y1<=ylim[2])
+                          polygon(trans3d(x=rep(pRho[i],length(use)),y=y1[use],z=z1[use],pmat=mapping),col=addTransparency(colSsim,simAlpha))
                         }
-                        
+
                         # draw theory
                         if (possible$possibleTheory){
                           col<-addTransparency(colS,theoryAlpha)
@@ -583,34 +668,24 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                       }
                     },
                     "Populations"={
-                      if (!is.null(possibleResult$Sims$pSims)) {
-                        if (possible$show!="Power") {
-                          bins<-possibleResult$Sims$pSimBins
-                          dens<-possibleResult$Sims$pSimDens$counts
-                        } else {
-                          bins<-possibleResult$Sims$pSimBinsW
-                          dens<-possibleResult$Sims$pSimDensW$counts
-                        }
-                        
-                        if (!is.null(dens)){
-                          x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
+                      # draw simulations
+                      if (!is.null(pr_effectR)) {
+                          x<-as.vector(matrix(c(pSimBins,pSimBins),2,byrow=TRUE))
                           
                           if (possible$show!="Power") {
                           # population wall
-                          densP<-possibleResult$Sims$pSimDensP$counts
-                          gainSim<-sum(densP)*diff(bins[1:2])
+                          gainSim<-sum(pSimDensRP)*diff(pSimBins[1:2])
                           gainTheory<-sum(rpw_dens)*diff(rpw[1:2])
-                          densP<-densP/gainSim*gainTheory
+                          densP<-pSimDensRP/(gainSim/gainTheory)
                           if (max(densP)>1.2) {densP<-densP/max(densP)*1.2}
                           yP<-c(0,as.vector(matrix(c(densP,densP),2,byrow=TRUE)),0)
                           if (logZ) yP<-log10(yP)
                           polygon(trans3d(x=x,y=x*0+ylim[2],z=yP*wallHeight,pmat=mapping),col = addTransparency(colPdark,0.35),border=NA)
                           
                           # sample wall
-                          densS<-possibleResult$Sims$pSimDensS$counts
-                          gainSim<-sum(densS)*(bins[2]-bins[1])
+                          gainSim<-sum(pSimDensR)*diff(pSimBins[1:2])
                           gainTheory<-sum(rsw_dens)*(rsw[2]-rsw[1])
-                          densS<-densS/(gainSim/gainTheory)
+                          densS<-pSimDensR/(gainSim/gainTheory)
                           if (max(densS)>1.2) {densS<-densS/max(densS)*1.2}
                           yS<-c(0,as.vector(matrix(c(densS,densS),2,byrow=TRUE)),0)
                           if (logZ) yS<-log10(yS)
@@ -619,19 +694,16 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                           
                           #slice of interest
                           si=1
-                          gainSim<-sum(dens)*diff(bins[1:2])
-                          gainTheory<-sum(possibleResult$Theory$priorLikelihood_r)*diff(possibleResult$Theory$rp[1:2])
-                          dens<-dens/(gainSim/gainTheory)
+                          gainSim<-sum(pSimDens_slice)*diff(pSimBins[1:2])
+                          gainTheory<-sum(priorLikelihood_r)*diff(rpw[1:2])
+                          densRS<-pSimDens_slice/(gainSim/gainTheory)
                           # dens<-dens/max(dens,na.rm=TRUE)
                           # if (max(dens)>1.2) {dens<-dens/max(dens)*1.2}
-                          y1<-as.vector(matrix(c(dens,dens),2,byrow=TRUE))
-                          if (logZ) {
-                            y1<-log10(y1)
-                            y1[y1<zlim[1]]<-zlim[1]
-                          }
-                          polygon(trans3d(x=x,y=x*0+sRho[si],z=c(zlim[1],y1,zlim[1]),pmat=mapping),col=colPsim,border=NA)
+                          yRS<-c(0,as.vector(matrix(c(densRS,densRS),2,byrow=TRUE)),0)
+                          if (logZ) yRS<-log10(yRS)
+                          polygon(trans3d(x=x,y=x*0+sRho[si],z=yRS,pmat=mapping),col=colPsim,border=NA)
                         }
-                      }
+                      
                       # draw theory main distribution & lines
                       if (possible$possibleTheory){
                         theoryAlpha=0.85
@@ -648,7 +720,7 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
                               use<-rp>=xlim[1] & rp<=xlim[2]
                               rp_use<-rp[use]
                               dens_use<-rd[si,use]
-                              if (is.null(possibleResult$Sims$pSims)) {
+                              if (is.null(pr_effectR)) {
                                 polygon (trans3d(x = c(rp_use[1],rp_use,rp_use[length(rp_use)]),
                                                  y = c(0,rp_use*0,0)+sRho[si], 
                                                  z = c(zlim[1],dens_use,zlim[1]), pmat = mapping), col = addTransparency(colP,theoryAlpha), lwd=1)
@@ -764,35 +836,21 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
     # simulations
     switch (possible$type,
             "Populations"={
-              if (possible$show!="Power") {
-                bins<-possibleResult$Sims$pSimBins
-                dens<-possibleResult$Sims$pSimDens$counts
-              } else {
-                bins<-possibleResult$Sims$pSimBinsW
-                dens<-possibleResult$Sims$pSimDensW$counts
-              }
-              if (!is.null(dens)) {
-                  dens<-dens/max(dens)
-                  x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
-                  y1<-c(0,as.vector(matrix(c(dens,dens),2,byrow=TRUE)),0)
+              if (!is.null(simDens)) {
+                simDens<-simDens/max(simDens)
+                  x<-as.vector(matrix(c(simBins,simBins),2,byrow=TRUE))
+                  y1<-c(0,as.vector(matrix(c(simDens,simDens),2,byrow=TRUE)),0)
                   
                   polygon(x=x,y=y1,col=colP)
                   theoryAlpha=0.25
               }
             },
             "Samples"={
-              if (possible$show!="Power") {
-                bins<-possibleResult$Sims$sSimBins
-                dens<-possibleResult$Sims$sSimDens
-              } else {
-                bins<-possibleResult$Sims$sSimBinsW
-                dens<-possibleResult$Sims$sSimDensW
-              }
-              if (!is.null(dens)) {
-                  dens<-colMeans(dens)
-                  dens<-dens/max(dens)
-                  x<-as.vector(matrix(c(bins,bins),2,byrow=TRUE))
-                  y1<-as.vector(matrix(c(dens,dens),2,byrow=TRUE))
+              if (!is.null(sSimDens)) {
+                  dens<-colMeans(sSimDens)
+                  sSimDens<-sSimDens/max(sSimDens)
+                  x<-as.vector(matrix(c(sSimBins,sSimBins),2,byrow=TRUE))
+                  y1<-as.vector(matrix(c(sSimDens,sSimDens),2,byrow=TRUE))
                   y1<-c(0,y1,0)
                   polygon(x=x,y=y1,col=colS)
                   theoryAlpha=0.25
