@@ -858,17 +858,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     priorSampDens_r_plus<-priorSampDens_r_plus/sum(priorSampDens_r_plus)*(1-prior$populationNullp)
     priorSampDens_r_null<-priorSampDens_r_null/sum(priorSampDens_r_null)*(prior$populationNullp)
   }
-  
-  if (is.na(sRho[1])) {
-    dens_at_sample<-NA
-    dens_at_population<-NA
-    dens_at_zero<-NA
-  } else {
-    dens_at_sample<-approx(zp,priorSampDens_r,sRho[1])$y
-    dens_at_population<-approx(zp,priorSampDens_r,ResultHistory$rp[1])$y
-    dens_at_zero<-approx(zp,priorSampDens_r,0)$y
-  }
-  
+
     switch (possible$type,
           "Samples"={
             possibleResult<-list(possible=possible,
@@ -897,9 +887,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                    Theory=list(
                                      rs=rs,sourceSampDens_r=sourceSampDens_r,sourceSampDens_r_plus=sourceSampDens_r_plus,sourceSampDens_r_null=sourceSampDens_r_null,sourceSampDens_r_total=sourceSampDens_r_total,
                                      rp=rp,priorSampDens_r=priorSampDens_r,priorLikelihood_r=priorLikelihood_r,priorPopDens_r=priorPopDens_r,sourcePopDens_r=sourcePopDens_r,priorSampDens_r_null=priorSampDens_r_null,priorSampDens_r_plus=priorSampDens_r_plus,
-                                     wp=wp,spDens_w=spDens_w,
-                                     dens_at_sample=dens_at_sample,
-                                     dens_at_population=dens_at_population,dens_at_zero=dens_at_zero
+                                     wp=wp,spDens_w=spDens_w
                                    ),
                                    Sims=list(
                                      pSims=pr_effectR,pSimsP=pr_effectRP,pSimsN=pr_effectN
