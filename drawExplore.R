@@ -119,7 +119,7 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
           "NHSTErrors"={
             ylim<-c(0,1)
             if (ErrorsWorld=="1scale") {
-              ylabel<-"Results"
+              ylabel<-"Errors"
             } else {
               ylabel<-"Type I"
               secondY<-"Type II"
@@ -834,14 +834,14 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
     # now the NHST and FDR filled areas
     if (explore$Explore_show=="FDR;FMR" || explore$Explore_show=="NHSTErrors") {
       endI<-length(vals)
-      if (!effect$world$worldOn) {
-        nsigNonNulls<-nsigNonNulls*2
-        sigNulls<-sigNulls*2
-        nsigNulls<-1-nsigNonNulls-sigNulls
-        sigNonNulls<-0
-        isigNonNulls<-0
-        isigNulls<-0
-      }
+      # if (!effect$world$worldOn) {
+      #   nsigNonNulls<-nsigNonNulls*2
+      #   sigNulls<-sigNulls*2
+      #   nsigNulls<-1-nsigNonNulls-sigNulls
+      #   sigNonNulls<-0
+      #   isigNonNulls<-0
+      #   isigNulls<-0
+      # }
       
       if (explore$Explore_show=="NHSTErrors") {
         ytop<-1-nsigNonNulls*0
@@ -1014,12 +1014,16 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
         }
       }
 
-      if (explore$Explore_show=="NHSTErrors" && effect$world$worldOn) {
-        if (!NHSTasArea || NHSThalfArea) 
-          g<-g+geom_hline(yintercept=effect$world$populationNullp,color="white")
+      if (explore$Explore_show=="NHSTErrors") {
+        if (effect$world$worldOn) {
+          if (!NHSTasArea || NHSThalfArea) 
+            g<-g+geom_hline(yintercept=effect$world$populationNullp,color="black")
+        } else {
+          g<-g+geom_hline(yintercept=0.5,color="black")
+        }
       }
-      g<-g+geom_hline(yintercept=1,color=col0)
-      g<-g+geom_hline(yintercept=0,color=col5)
+      g<-g+geom_hline(yintercept=1,color="black")
+      g<-g+geom_hline(yintercept=0,color="black")
       
       if (doLine) xoff<-0
       else        xoff<-bwidth
@@ -1182,22 +1186,25 @@ drawExplore<-function(IV,IV2,DV,effect,design,explore,exploreResult){
   if (explore$ExploreFull_ylim){
     ylim<-ylim*1.05
   }
-
-  if (!explore$ExploreAny_ylim) {
-  if (!is.null(secondY)) {
-    g<-g+ysc(sec.axis=sec_axis(~ 1-.,name=secondY))
+  
+  if (explore$Explore_show=="NHSTErrors" && !effect$world$worldOn) {
+    g<-g+scale_y_continuous(breaks=seq(0,1,0.125),labels=format(c(seq(0,0.75,0.25),seq(1,0,-0.25))),limits=c(0,1))
   } else {
-    g<-g+ysc()
-  }
-  } else {
-    if (!is.null(secondY)) {
-      g<-g+ysc(limits=ylim,sec.axis=sec_axis(~ 1-.,name=secondY))
+    if (!explore$ExploreAny_ylim) {
+      if (!is.null(secondY)) {
+        g<-g+ysc(sec.axis=sec_axis(~ 1-.,name=secondY))
+      } else {
+        g<-g+ysc()
+      }
     } else {
-      g<-g+ysc(limits=ylim)
+      if (!is.null(secondY)) {
+        g<-g+ysc(limits=ylim,sec.axis=sec_axis(~ 1-.,name=secondY))
+      } else {
+        g<-g+ysc(limits=ylim)
+      }
     }
   }
-  
-  
+
   g<-g+ylab(ylabel)
   switch (exploreResult$Explore_type,
           "EffectSize"={g<-g+xlab(xLabel)},
