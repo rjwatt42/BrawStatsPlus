@@ -284,7 +284,7 @@ get_pRho<-function(world,by="r",viewRZ="r") {
   list(pRho=pRho,pRhogain=pRhogain)  
 }
 
-zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
+zSampleDist<-function(zs,pRho,pRhogain,source,design,possible) {
   # sampling distributions from specified populations (pRho)
   n<-design$sN
   ndist<-getNDist(design,source,sigOnly=FALSE)
@@ -292,22 +292,23 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
   ndens<-ndist$ndens
   if (length(nis)>1) ndens<-ndens*c(diff(nis),0)
   
-  Dens_z<-matrix(nrow=length(pRho),ncol=length(rs))
+  Dens_z<-matrix(nrow=length(pRho),ncol=length(zs))
   
   for (ei in 1:length(pRho)){
       dplus<-0
       g<-0
       for (ni in 1:(length(nis)-1)) {
-        d1<-zSamplingDistr(rs,pRho[ei],nis[ni])
+        d1<-zSamplingDistr(zs,pRho[ei],nis[ni])
         if (possible$sigOnly) {
           crit_z<-qnorm(0.975,0,1/sqrt(nis[ni]-3))
-          d1[abs(rs)<crit_z]<-0
+          d1[abs(zs)<crit_z]<-0
         }
         dplus<-dplus+d1*ndens[ni]
         g<-g+ndens[ni]
       }
       dplus<-dplus/g
-    Dens_z[ei,]<-dplus*pRhogain[ei]
+      Dens_z[ei,]<-dplus*pRhogain[ei]
+    # print(sum(Dens_z[ei,])/pRhogain[ei])
   }
 
   # and sum of sampling distributions
@@ -316,7 +317,7 @@ zSampleDist<-function(rs,pRho,pRhogain,source,design,possible) {
     dnull<-0
     g<-0
     for (ni in 1:(length(nis)-1)) {
-      d0<-zSamplingDistr(rs,0,nis[ni])
+      d0<-zSamplingDistr(zs,0,nis[ni])
       if (possible$sigOnly) {
         crit_z<-qnorm(0.975,0,1/sqrt(nis[ni]-3))
         d0[abs(rs)<crit_z]<-0
@@ -566,7 +567,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
   
   # enumerate the source populations
   #  as r and gain 
-  pR<-get_pRho(source,RZ,RZ)
+  pR<-get_pRho(source,RZ,"z")
   pRho<-pR$pRho
   pRhogain<-pR$pRhogain
   # if (RZ=="r")    pRhogain<-pRhogain/(1-tanh(pRho)^2)
@@ -579,7 +580,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     sourceSampDens_z<-rbind(sourceSampDens_z*(1-source$populationNullp),sourceSampDens_z_null*source$populationNullp)
   }
   
-  pR<-get_pRho(prior,RZ,RZ)
+  pR<-get_pRho(prior,RZ,"z")
   pRhoP<-pR$pRho
   pRhogainP<-pR$pRhogain
   # if (RZ=="r")    pRhogainP<-pRhogainP/(1-tanh(pRhoP)^2)
@@ -635,35 +636,16 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
     }
   
   # simulations
-  sr_effects<-NULL
-  sSimBins<-NULL
-  sSimDens<-NULL
-  sSimBinsW<-NULL
-  sSimDensW<-NULL
-  rsSim_sd<-NULL
-  rsSim_ci=NULL
-  rsSim_peak=NULL
-  
+  sr_effectR<-NULL
+
   pr_effectR<-NULL
   pr_effectRP<-NULL
   pr_effectN<-NULL
-  pSimBins<-NULL
-  pSimDens<-NULL
-  pSimDensR<-NULL
-  pSimDensRP<-NULL
-  pSimBinsW<-NULL
-  pSimDensW<-NULL
-  rpSim_sd<-NULL
-  rpSim_ci=NULL
-  rpSim_peak=NULL
-  rpSimWaste<-NULL
-  wpSim_peak=NULL
-  wpSim_mean<-NULL
-  wpSimWaste<-NULL
-  
+
   # make the samples
   nsims=possible$possibleLength
-  
+  if (shortHand)  nsims<-nsims*shortHandGain
+
   s=1/sqrt(n-3)
   switch (possible$type,
           "Samples"={
@@ -690,14 +672,12 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                 }
               }
               if (possible$appendSim){
-                sr_effects<-cbind(possibleSResultHold$sSims,r_effects)
+                sr_effectR<-cbind(possibleSResultHold$sSims,r_effects)
               } else {
-                sr_effects<-r_effects
+                sr_effectR<-r_effects
               }
             } else {
-              sr_effects<-possibleSResultHold$sSims
-              sSimBins<-possibleSResultHold$sSimBins
-              sSimDens<-possibleSResultHold$sSimDens
+              sr_effectR<-possibleSResultHold$sSims
             }
 
           },
@@ -873,7 +853,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                                      wp=wp,spDens_w=spDens_w
                                    ),
                                    Sims=list(
-                                     sSims=sr_effects
+                                     sSims=sr_effectR
                                    )
             )
           },

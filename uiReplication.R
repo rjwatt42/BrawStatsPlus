@@ -1,5 +1,5 @@
 
-replicationTab<-function(prefix="") {
+replicationTab<-function() {
   replicationTabReserve<-
                      tabPanel("Replicate",
                                   style = paste("background: ",subpanelcolours$designC), 

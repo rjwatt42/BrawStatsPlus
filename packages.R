@@ -16,7 +16,7 @@ library(shiny)
 library(shinyWidgets)
 library(shinyjs)     # hide/show/enable/disable elements
 library(shinyBS)     # bsModal()
-library(htmlwidgets)
+library(htmlwidgets) # for window size
 
 library(ggplot2)
 library(tidyr)

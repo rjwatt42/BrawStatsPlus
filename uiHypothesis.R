@@ -72,7 +72,7 @@ HypothesisTab <-
                         # prediction tab
                         tabPanel("Effects",id="Effects",
                                  style = paste("background: ",subpanelcolours$hypothesisC), 
-                                 effectPanel(""),
+                                 effectPanel(),
                         ),
                         
                         # world tab

@@ -1,10 +1,10 @@
-uiCheating<-function(prefix="") {
+uiCheating<-function() {
   conditionalPanel(condition="input.LoadExtras",
-                   tags$table(width = "100%",class="myTable",id=paste0(prefix,"Cheating"),
+                   tags$table(width = "100%",class="myTable",id="Cheating",
                               tags$tr(
                                 tags$td(width = "30%", tags$div(style = localStyle, "Cheating:")),
                                 tags$td(width = "25%", 
-                                        selectInput(paste0(prefix,"sCheating"),label=NULL,
+                                        selectInput("sCheating",label=NULL,
                                                     choices=list("None"="None",
                                                                  "Particiants"=list(
                                                                    "Grow"="Grow",
@@ -24,7 +24,7 @@ uiCheating<-function(prefix="") {
                                         conditionalPanel(condition="input.sCheating=='Retry' || input.sCheating=='Add'",
                                                          tags$table(width = "100%",class="myTable",
                                                                     tags$td(width = "100%",
-                                                                            selectInput(paste0(prefix,"sCheatingLimit"),label=NULL,
+                                                                            selectInput("sCheatingLimit",label=NULL,
                                                                                         choices=list("Fixed"="Fixed","Budget"="Budget"),
                                                                                         selected=design$sCheatingLimit,
                                                                                         selectize=FALSE
@@ -43,14 +43,14 @@ uiCheating<-function(prefix="") {
                                         conditionalPanel(condition="(input.sCheating=='Retry' || input.sCheating=='Add') && input.sCheatingLimit=='Budget'",
                                                          tags$table(width = "100%",class="myTable",
                                                                     tags$td(width = "100%",
-                                                                            numericInput(paste0(prefix,"sCheatingBudget"),label=NULL,value=design$sCheatingBudget)
+                                                                            numericInput("sCheatingBudget",label=NULL,value=design$sCheatingBudget)
                                                                     )
                                                          )
                                         ),
                                         conditionalPanel(condition="(input.sCheating=='Grow' || input.sCheating=='Prune' || input.sCheating=='Replace') || ((input.sCheating=='Retry' || input.sCheating=='Add') && input.sCheatingLimit=='Fixed')",
                                                          tags$table(width = "100%",class="myTable",
                                                                     tags$td(width = "100%",
-                                                                            numericInput(paste0(prefix,"sCheatingAmount"),label=NULL,value=design$sCheatingAmount)
+                                                                            numericInput("sCheatingAmount",label=NULL,value=design$sCheatingAmount)
                                                                     )
                                                          )
                                         ),

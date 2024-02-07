@@ -103,8 +103,15 @@ graphicSource="Main"
 
 shinyServer(function(input, output, session) {
   if (debug) debugPrint("Start")
-  
   # source("runDebug.R")
+  
+  observeEvent(input$dimension, {
+  window_height <- input$dimension[1]
+  window_width <- input$dimension[2]
+  # 
+  # print(c(window_width,window_height))
+  }
+  )
   
 ####################################
 # BASIC SET UP that cannot be done inside ui.R  
@@ -172,7 +179,7 @@ shinyServer(function(input, output, session) {
     
     if (input$LargeGraphs) {
       plotTheme<<-mainTheme+LGplotTheme
-      labelSize<<-6
+      labelSize<<-6*fontScale
       char3D<<-2
       
       output$mainColumns <- renderUI({
@@ -189,7 +196,7 @@ shinyServer(function(input, output, session) {
     } else {
       plotTheme<<-mainTheme+SMplotTheme
       diagramTheme<<-mainTheme+SMplotTheme+theme(plot.margin=margin(0.15,0.8,0,0.25,"cm"))
-      labelSize<<-4
+      labelSize<<-4*fontScale
       char3D<<-1.3
       
       output$mainColumns <- renderUI({

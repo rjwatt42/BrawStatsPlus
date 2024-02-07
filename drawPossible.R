@@ -780,9 +780,9 @@ drawPossible <- function(IV,DV,effect,design,possible,possibleResult){
             "Samples"={
               if (!is.null(sSimDens)) {
                   dens<-colMeans(sSimDens)
-                  sSimDens<-sSimDens/max(sSimDens)
+                  dens<-dens/max(dens)
                   x<-as.vector(matrix(c(sSimBins,sSimBins),2,byrow=TRUE))
-                  y1<-as.vector(matrix(c(sSimDens,sSimDens),2,byrow=TRUE))
+                  y1<-as.vector(matrix(c(dens,dens),2,byrow=TRUE))
                   y1<-c(0,y1,0)
                   polygon(x=x,y=y1,col=colS)
                   theoryAlpha=0.25

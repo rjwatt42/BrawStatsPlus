@@ -110,7 +110,7 @@ DesignTab <-
                                               )
                                             )
                            ),
-                           uiCheating("")
+                           uiCheating()
                 )
                 
                 # replication tab

@@ -2,11 +2,12 @@ getGlobals<-function() {
 
   usingShiny<<-TRUE
 
+  
 ################################
 # graph design
 
 char3D<<-1.3
-labelSize<<-4
+labelSize<<-4*fontScale
 
 graphcoloursBL<<-list(graphC="#BFECFF",graphBack="#999999")
 graphcoloursBW<<-list(graphC="#FFFFFF",graphBack="#FFFFFF")

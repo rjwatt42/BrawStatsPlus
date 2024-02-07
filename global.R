@@ -16,7 +16,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
 ################################
 # ui design
 
-fontScale<-1.0
+fontScale<-1.2
 
 mainHue=0.55
 
@@ -174,5 +174,4 @@ if (is_local) {
   # switches$doWorlds<-TRUE
     # switches$loadExtrasValue<-TRUE
 }
-
 

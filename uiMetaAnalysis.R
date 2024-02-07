@@ -1,6 +1,6 @@
 # meta-analysis panel
 
-metaAnalysisPanel<-function(prefix=""){
+metaAnalysisPanel<-function(){
   MetAnalPanel<-tabPanel("MetaAnal",value="MetaAnalysis",
                          style = paste("background: ",subpanelcolours$evidenceC),
                          tags$table(width = "100%",class="myTable",
@@ -15,14 +15,14 @@ metaAnalysisPanel<-function(prefix=""){
                                       tags$td(width = "50%", tags$div(style = localPlainStyle, "No studies:")
                                       ),
                                       tags$td(width = "30%", tags$div(style = localPlainStyle, ""),
-                                              numericInput(paste0(prefix,"meta_nStudies"), label=NULL,value=metaAnalysis$nstudies,step=100)
+                                              numericInput("meta_nStudies", label=NULL,value=metaAnalysis$nstudies,step=100)
                                       ),
                                       # tags$td(width = "15%"),
                                       # tags$td(width = "5%"),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "sigOnly ")
                                       ),
                                       tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
-                                              checkboxInput(paste0(prefix,"meta_psigStudies"), label=NULL,value=metaAnalysis$sig_only)
+                                              checkboxInput("meta_psigStudies", label=NULL,value=metaAnalysis$sig_only)
                                       ),
                                     ),
                          ),
@@ -31,7 +31,7 @@ metaAnalysisPanel<-function(prefix=""){
                                       tags$td(width = "30%",tags$div(style = localStyle, "Analysis:")
                                       ),
                                       tags$td(width = "30%",
-                                              selectInput(paste0(prefix,"meta_pdf"),label=NULL,
+                                              selectInput("meta_pdf",label=NULL,
                                                           choices=c("All","Single","Gauss","Exp"),
                                                           selected=metaAnalysis$meta_pdf,
                                                           selectize=FALSE
@@ -39,11 +39,11 @@ metaAnalysisPanel<-function(prefix=""){
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "+nulls")),
                                       tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
-                                              checkboxInput(paste0(prefix,"meta_nullAnal"), label=NULL,value=metaAnalysis$meta_nullAnal)
+                                              checkboxInput("meta_nullAnal", label=NULL,value=metaAnalysis$meta_nullAnal)
                                       ),
                                       tags$td(width = "15%", tags$div(style = localPlainStyle, "sigOnly")),
                                       tags$td(width = "5%", tags$div(style = localPlainStyle, ""),
-                                              checkboxInput(paste0(prefix,"meta_psigAnal"), label=NULL,value=metaAnalysis$meta_psigAnal)
+                                              checkboxInput("meta_psigAnal", label=NULL,value=metaAnalysis$meta_psigAnal)
                                       )
                                     ),
                          ),
@@ -53,7 +53,7 @@ metaAnalysisPanel<-function(prefix=""){
                                       ),
                                       tags$td(width = "30%",
                                               conditionalPanel(condition="input.meta_pdf == 'All'",
-                                                               selectInput(paste0(prefix,"meta_showAnal"),label=NULL,
+                                                               selectInput("meta_showAnal",label=NULL,
                                                                            choices=c("All","Single","Gauss","Exp"),
                                                                            selected=metaAnalysis$meta_showAnal,
                                                                            selectize=FALSE
@@ -61,7 +61,7 @@ metaAnalysisPanel<-function(prefix=""){
                                               )
                                       ),
                                       tags$td(width = "25%",
-                                              selectInput(paste0(prefix,"meta_showParams"),label=NULL,
+                                              selectInput("meta_showParams",label=NULL,
                                                           choices=c(paste0(Pchar,"-",Lchar),paste0("S-",Lchar),"S-S"),
                                                           selected=metaAnalysis$meta_showParams,
                                                           selectize=FALSE
@@ -74,7 +74,7 @@ metaAnalysisPanel<-function(prefix=""){
                                     tags$tr(
                                       tags$td(width = "30%", tags$div(style = localStyle, "Runs:")),
                                       tags$td(width = "25%", 
-                                              selectInput(paste0(prefix,"meta_runlength"),label=NULL,
+                                              selectInput("meta_runlength",label=NULL,
                                                           c("1" = "1",
                                                             "2" = "2",
                                                             "10" = "10",
@@ -88,8 +88,8 @@ metaAnalysisPanel<-function(prefix=""){
                                       ),
                                       tags$td(width = "10%", tags$div(style = localPlainStyle, "")),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
-                                      tags$td(width = "5%", checkboxInput(paste0(prefix,"meta_append"), label=NULL,value=metaAnalysis$append)),
-                                      tags$td(width = "10%",actionButton(paste0(prefix,"metaRun"), "Run")
+                                      tags$td(width = "5%", checkboxInput("meta_append", label=NULL,value=metaAnalysis$append)),
+                                      tags$td(width = "10%",actionButton("metaRun", "Run")
                                       )
                                     )
                          )

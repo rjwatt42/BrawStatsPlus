@@ -136,7 +136,7 @@ EvidenceTab <-
                         metaAnalysisPanel(),
                         tabPanel("Prior",
                                  style = paste("background: ",subpanelcolours$evidenceC), 
-                                 priorPanel("",asTable=TRUE),
+                                 priorPanel(),
                         ),
                         tabPanel("#",id="EvidenceOptions",
                                  style = paste("background: ",subpanelcolours$simulateC),
