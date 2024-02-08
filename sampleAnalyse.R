@@ -1,6 +1,33 @@
 debugHere<-FALSE
 
 
+check_r<-function(r,from=" ") {
+  if (!is.numeric(r)) {
+    print(paste(from,"r-exception",format(r)))
+    r[!is.numeric(r)]<-0
+  }
+  if (any(abs(r)>1)) {
+    print(paste(from,"r-exception",format(max(abs(r)),digits=3)))
+    r[r>1]<-1
+    r[r < -1]<- -1
+  }
+  return(r)
+}
+
+check_n<-function(n,from=" ") {
+  if (!is.numeric(n)) {
+    print(paste(from,"n-exception",format(n)))
+    return(0)
+  }
+  if (any(n<3)) {
+    print(paste(from,"n-exception",format(min(abs(n)),digits=3)))
+    n[n<3]<-4
+    return(n)
+  }
+  return(n)
+}
+
+
 wsd<-function(x,w=1,na.rm=TRUE) {
   if (length(w)==1) {
     sqrt(mean((x-mean(x,na.rm=na.rm))^2))
@@ -11,10 +38,7 @@ wsd<-function(x,w=1,na.rm=TRUE) {
 
 
 p2r<-function(p,n,df1=1) {
-  if (any(abs(n)<3)) {
-    print("p2r n-exception")
-    n[n<3]<-4
-  }
+  n<-check_n(n,"p2r")
   df2<-n-(df1+1)
   
   Fvals <- qf(1-p,df1,df2)
@@ -28,16 +52,8 @@ p2r<-function(p,n,df1=1) {
 
 
 r2p<-function(r,n,df1=1){
-  if (!is.numeric(r) || !is.numeric(n)) {return(1)}
-  if (any(abs(r)>1)) {
-    print(paste("r2p r-exception",format(max(abs(r)),digits=3)))
-    r[r>1]<-1
-    r[r < -1]<- -1
-  }
-  if (any(abs(n)<3)) {
-    print("r2p n-exception")
-    n[n<3]<-4
-  }
+  r<-check_r(r,"r2p")
+  n<-check_n(n,"r2p")
   df2<-n-(df1+1)
   
   Fvals<-r^2/(1-r^2)*df2/df1
@@ -55,28 +71,14 @@ r2p<-function(r,n,df1=1){
 }
 
 r2se<-function(r,n){
-  if (any(abs(r)>1)) {
-    print(paste("r2se r-exception",format(max(abs(r)),digits=3)))
-    r[r>1]<-1
-    r[r < -1]<- -1
-  }
-  if (any(abs(n)<3)) {
-    print("r2se n-exception")
-    n[n<3]<-4
-  }
+  r<-check_r(r,"r2se")
+  n<-check_n(n,"r2se")
   sqrt((1-r^2)/(as.vector(n)-2))
 }
 
 r2ci<-function(r,n,s=0){
-  if (any(abs(r)>1)) {
-    print(paste("r2ci r-exception",format(max(abs(r)),digits=3)))
-    r[r>1]<-1
-    r[r < -1]<- -1
-  }
-  if (any(abs(n)<3)) {
-    print("r2ci n-exception")
-    n[n<3]<-4
-  }
+  r<-check_r(r,"r2ci")
+  n<-check_n(n,"r2ci")
   z<-atanh(r)
   zci<-qnorm(1-0.05/2)*sqrt(1/(n-3))
   if (s==0){
@@ -91,15 +93,8 @@ res2llr<-function(result,method=STMethod) {
 }
 
 r2llr<-function(r,n,df1,method=STMethod,llr=list(e1=c(),e2=0),world=NULL) {
-  if (any(abs(r)>1)) {
-    print(paste("r2llr r-exception",format(max(abs(r)),digits=3)))
-    r[r>1]<-1
-    r[r < -1]<- -1
-  }
-  if (any(abs(n)<3)) {
-    print("r2llr n-exception")
-    n[n<3]<-4
-  }
+  r<-check_r(r,from="r2llr")
+  n<-check_n(n,from="r2llr")
   z<-atanh(r)
   if (method=="dLLR") {
     z<-abs(z)
