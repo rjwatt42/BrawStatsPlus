@@ -97,10 +97,10 @@ updateThemes<-function() {
 helpChar=HTML("<span style=\"color:#005E86;\"><b>?</b></span>")
 
 # ui styles
-labelStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: left;")
-localStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:bold;text-align: right;")
-localPlainStyle=paste0("font-size:",format(8*fontScale) ,"pt;font-weight:normal;text-align: right;")
-helpStyle=paste("font-size:",format(7*fontScale) ,"pt;line-height:75%;margin:0px;margin-top:-6px;padding:0px;", "color:", maincolours$panelC, ";",sep="")
+labelStyle=paste0("font-size:",format(0.8*fontScale) ,"vw;font-weight:bold;text-align: left;")
+localStyle=paste0("font-size:",format(0.8*fontScale) ,"vw;font-weight:bold;text-align: right;")
+localPlainStyle=paste0("font-size:",format(0.8*fontScale) ,"vw;font-weight:normal;text-align: right;")
+helpStyle=paste("font-size:",format(0.7*fontScale) ,"vw;line-height:75%;margin:0px;margin-top:-6px;padding:0px;", "color:", maincolours$panelC, ";",sep="")
 
 ################################
 # some global values for general running
