@@ -402,11 +402,11 @@ shinyServer(function(input, output, session) {
 ####################################
 # generic warning dialogue
   
-  hmm<-function (cause) {
+  hmm<-function (cause, top="Careful now!") {
     showModal(
       modalDialog(style = paste("background: ",subpanelcolours$hypothesisC,";",
                                 "modal {background-color: ",subpanelcolours$hypothesisC,";}"),
-                  title="Careful now!",
+                  title=top,
                   size="s",
                   cause,
                   

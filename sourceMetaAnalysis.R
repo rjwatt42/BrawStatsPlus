@@ -19,11 +19,11 @@ observeEvent(input$metaRun,{
         resetMeta()
       }
       metaResult$nsims<<-metaResult$count+as.numeric(input$meta_runlength)
-      updateActionButton(session,"metaRun",label=stopLabel)
+      stopButton("metaRun")
       notRunningMeta<<-FALSE
     } else {
       metaResult$nsims<<-metaResult$count
-      updateActionButton(session,"metaRun",label="Run")
+      startButton("metaRun")
       notRunningMeta<<-TRUE
     }
   }
@@ -187,7 +187,7 @@ makeMetaGraph <- function() {
       invalidateLater(10)
     }
   } else {
-    updateActionButton(session,"metaRun",label="Run")
+    startButton("metaRun")
     notRunningMeta<<-TRUE
   }
   

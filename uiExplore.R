@@ -214,7 +214,7 @@ ExploreTab <-
                                                 ),
                                                 tags$td(width = "10%", tags$div(style = localStyle, "Append:")),
                                                 tags$td(width = "10%", checkboxInput("ExploreAppendH", label=NULL)),
-                                                tags$td(width = "20%", actionButton("exploreRunH", "Run"))
+                                                tags$td(width = "20%", actionButton("exploreRunH", startLabel))
                                               )
                                    )
                         ),
@@ -276,7 +276,7 @@ ExploreTab <-
                                                 ),
                                                 tags$td(width = "10%", tags$div(style = localStyle, "Append:")),
                                                 tags$td(width = "10%", checkboxInput("ExploreAppendD", label=NULL)),
-                                                tags$td(width = "20%", actionButton("exploreRunD", "Run"))
+                                                tags$td(width = "20%", actionButton("exploreRunD", startLabel))
                                               )
                                    )
                         ),                        
@@ -356,7 +356,7 @@ ExploreTab <-
                                                           tags$br(HTML('&emsp;'),HTML('&emsp;'), '(these are split into separate groups)'),
                                                           tags$br(HTML('&emsp;'), '3. choose the outcome to examine'),
                                                           tags$br(HTML('<b>'),"Run: ",HTML('</b>')),
-                                                          tags$br(HTML('&emsp;'), '4. press the "Run" button'),
+                                                          tags$br(HTML('&emsp;'), paste0('4. press the "',startLabel,'" button')),
                                                           tags$br(HTML('&emsp;'),HTML('&emsp;'), '(can be slow - it is working hard!)'),
                                                  ),
                                                )

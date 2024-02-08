@@ -93,17 +93,17 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM),
                          }
                  )
                  if (any(runPressed)) {
-                   updateActionButton(session,"exploreRunH",label=stopLabel)
-                   updateActionButton(session,"exploreRunD",label=stopLabel)
-                   updateActionButton(session,"exploreRunM",label=stopLabel)
+                   stopButton("exploreRunH")
+                   stopButton("exploreRunD")
+                   stopButton("exploreRunM")
                    notRunningExplore<<-FALSE
                  }
                  cycleCount<<-0
                } else {
                  exploreResult$nsims<<-exploreResult$result$count
-                 updateActionButton(session,"exploreRunH",label="Run")
-                 updateActionButton(session,"exploreRunD",label="Run")
-                 updateActionButton(session,"exploreRunM",label="Run")
+                 startButton("exploreRunH")
+                 startButton("exploreRunD")
+                 startButton("exploreRunM")
                  notRunningExplore<<-TRUE
                }
              },priority=100)
@@ -281,9 +281,9 @@ makeExploreGraph <- function() {
       invalidateLater(1)
     }
   } else {
-    updateActionButton(session,"exploreRunH",label="Run")
-    updateActionButton(session,"exploreRunD",label="Run")
-    updateActionButton(session,"exploreRunM",label="Run")
+    startButton("exploreRunH")
+    startButton("exploreRunD")
+    startButton("exploreRunM")
     notRunningExplore<<-TRUE
   }
   

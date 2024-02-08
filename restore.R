@@ -1,0 +1,22 @@
+controls<-c("sCheatingBudget" ,"sCheatingAmount" ,"sCheating" ,"sCheatingLimit" ,
+            "sN" ,"sNRandK" ,"sDependence" ,"sOutliers" ,"sWithinCor" ,"sNBudget" ,
+            "sReplAlpha" ,"sNRand" ,"sRangeOn" ,"sBudgetOn" ,"sReplVarAlpha" ,
+            "sMethod" ,"sIV1Use" ,"sIV2Use" ,
+            "rIV" ,"rIV" ,"rIV2" ,"rIVIV2" ,"rIVIV2DV" ,"alpha" ,"llr2" ,"llr1" ,
+            "Welch" ,"rInteractionOn" ,"evidenceInteractionOnly" ,"evidenceLogDensity" ,
+            "evidenceSigOnly" ,"evidenceTheory" ,"evidenceHQ" ,"Transform" ,"STMethod" ,"STPrior" ,
+            "ssqType" ,"dataType" ,"analysisType" ,"evidenceCaseOrder" ,"allScatter" ,"pScale" ,
+            "wScale" ,"nScale" ,"ExploreAppendH" ,"ExploreAppendD" ,"exploreTheory" ,"ExploreAppendM" ,
+            "MaxOrdinal" ,"ImportOrdinals" ,"ExportHeader" ,"ExportShortForm" ,"wsInputSheet" ,
+            "dataInputSheet" ,"shortHandGain" ,"LoadExtras" ,"LargeGraphs" ,"shortHand" ,"WhiteGraphs" ,
+            "RZ" ,"Notation1" ,"Notation2" ,"Notation3" ,"Heteroscedasticity" ,"AllowResampling" ,"Using" ,
+            "IVchoice" ,"IV2choice" ,"DVchoice" ,"ResidDistr" ,"showMean" ,"showSD" ,"showResiduals" ,
+            "inspectOrder" ,"whichResiduals" ,"metaInputSheet" ,"possibleSampRho" ,"possiblePSampRho" ,
+            "possibleSimSlice" ,"possibleScale" ,"possibleAzimuth" ,"possibleElevation" ,"possibleRange" ,
+            "possibleCorrection" ,"possibleHQ" ,"possibleBoxed" ,"possibleTheory" ,"possibleUseSource" ,
+            "possibleUsePrior" ,"possibleView" ,"possibleShow" ,"Hypchoice" ,"Effectchoice" ,"sReplRepeats" ,
+            "sReplBudget" ,"sReplPower" ,"sReplBudget" ,"sReplicationOn" ,"sReplPowerOn" ,"sReplUseBudget" ,
+            "sReplSigOnly" ,"sReplType" ,"sReplTails" ,"sReplCorrection" ,"sReplKeep" ,"MVmu" ,"MVsd" ,"MVskew" ,
+            "MVkurt" ,"MVnlevs" ,"MVcentre" ,"MVspread" ,"MVncats" ,"MVtype" ,"MVdiscrete" ,"MVsource")
+
+

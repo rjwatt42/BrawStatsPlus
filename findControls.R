@@ -1,3 +1,5 @@
+#########################################
+##
 
 files<-list.files('.',pattern = 'ui')
 
@@ -7,23 +9,20 @@ controls2<-c()
 controls3<-c()
 
 for (fi in 1:length(files)) {
+  print(files[fi])
   lines<-readLines(files[fi])
   for (li in 1:length(lines)) {
-    a<-str_match(lines[li],'numericInput[(]*\"[a-zA-Z0-9]*\"')
+    a<-str_match(lines[li],'numericInput[(]*\"[a-zA-Z0-9_]*\"')
     if (!is.na(a)) {
       a<-substr(a,nchar('numericInput(\"'),nchar(a))
       controls1<-c(controls1,a)
     }
-  }
-  for (li in 1:length(lines)) {
-    a<-str_match(lines[li],'checkboxInput[(]*\"[a-zA-Z0-9]*\"')
+    a<-str_match(lines[li],'checkboxInput[(]*\"[a-zA-Z0-9_]*\"')
     if (!is.na(a)) {
       a<-substr(a,nchar('checkboxInput(\"'),nchar(a))
       controls2<-c(controls2,a)
     }
-  }
-  for (li in 1:length(lines)) {
-    a<-str_match(lines[li],'selectInput[(]*\"[a-zA-Z0-9]*\"')
+    a<-str_match(lines[li],'selectInput[(]*\"[a-zA-Z0-9_]*\"')
     if (!is.na(a)) {
       a<-substr(a,nchar('selectInput(\"'),nchar(a))
       controls3<-c(controls3,a)
@@ -31,6 +30,8 @@ for (fi in 1:length(files)) {
   }
 }
 
+#########################################
+##
 controlArray1<-c()
 controlArray2<-c()
 controlArray3<-c()

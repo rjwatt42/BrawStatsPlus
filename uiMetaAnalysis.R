@@ -89,7 +89,7 @@ metaAnalysisPanel<-function(){
                                       tags$td(width = "10%", tags$div(style = localPlainStyle, "")),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
                                       tags$td(width = "5%", checkboxInput("meta_append", label=NULL,value=metaAnalysis$append)),
-                                      tags$td(width = "10%",actionButton("metaRun", "Run")
+                                      tags$td(width = "10%",actionButton("metaRun", startLabel)
                                       )
                                     )
                          )

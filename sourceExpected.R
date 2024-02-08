@@ -34,12 +34,12 @@ observeEvent(c(input$EvidenceExpectedRun),{
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
     }
     if (input$EvidenceExpectedRun>0) {
-      updateActionButton(session,"EvidenceExpectedRun",label=stopLabel)
+      stopButton("EvidenceExpectedRun")
       notRunningExpected<<-FALSE
     }
   } else {
     expectedResult$nsims<<-expectedResult$count
-    updateActionButton(session,"EvidenceExpectedRun",label="Run")
+    startButton("EvidenceExpectedRun")
     notRunningExpected<<-TRUE
   }
 })
@@ -276,7 +276,7 @@ makeExpectedGraph <- function() {
       invalidateLater(10)
     }
   } else {
-    updateActionButton(session,"EvidenceExpectedRun",label="Run")
+    startLabel("EvidenceExpectedRun")
     notRunningExpected<<-TRUE
   }
   return(g)

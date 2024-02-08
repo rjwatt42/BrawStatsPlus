@@ -2,6 +2,7 @@
 #KEYBOARD: capture keyboard events
 
 source("extras.R")
+source("restoreAll.R")
 
 ascii<-function(ch) strtoi(charToRaw(toupper(ch)),16L)
 
@@ -113,11 +114,25 @@ if (switches$doKeys) {
     
     # control-r 
     if (input$keypress==ascii("r") && controlKeyOn) {
+      print(names(input))
       updateCheckboxInput(session,"WhiteGraphs",value=TRUE)
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
       updateCheckboxInput(session,"shortHand",value=TRUE)
       updateSelectInput(session,"RZ",selected="z")
       updateSelectInput(session,"EvidenceExpected_type",selected="Simple")
+    }
+    
+    # control-s 
+    if (input$keypress==ascii("s") && controlKeyOn && !shiftKeyOn) {
+      saveRDS(input,file="temp.RDS")
+      hmm("BrawStats state saved","Success:")
+    }
+    
+    # control-shift-s 
+    if (input$keypress==ascii("s") && controlKeyOn && shiftKeyOn) {
+      newInput<-readRDS(input,file="temp.RDS")
+      restoreAll(session,newInput)
+      hmm("BrawStats state retrieved","Success:")
     }
     
     # control-l set shortHand to TRUE

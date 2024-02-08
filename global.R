@@ -152,11 +152,29 @@ warn3Ord<-FALSE
 # this (nearly) guarantees a gap between cycles for the stop button to be registered
 #
 doStop<-TRUE
+if (doStop) stopLabel<-"Stop"
+if (!doStop) stopLabel<-"."
+startLabel<-"Run"
 silentTime<-0
-stopLabel<-"Stop"
 pauseWait<-300
 cycles2observe<-5
 cycleCount<-0
+
+startButton<-function(whichButton) {
+  if (doStop) {
+    updateActionButton(session,whichButton,label=startLabel)
+  } else {
+    showElement(whichButton)
+  }
+}
+stopButton<-function(whichButton) {
+  if (doStop) {
+    updateActionButton(session,whichButton,label=stopLabel)
+  } else {
+    hideElement(whichButton)
+  }
+}
+
 
 source("getGlobals.R")
 getGlobals()

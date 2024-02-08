@@ -129,7 +129,7 @@ EvidenceTab <-
                                               ),
                                               tags$td(width = "10%", tags$div(style = localStyle, "Append:")),
                                               tags$td(width = "5%", checkboxInput("EvidenceExpected_append", label=NULL)),
-                                              tags$td(width = "20%",actionButton("EvidenceExpectedRun", "Run"))
+                                              tags$td(width = "20%",actionButton("EvidenceExpectedRun", startLabel))
                                             )
                                  )
                         ),
@@ -285,7 +285,7 @@ EvidenceTab <-
                                                         tags$br(HTML('&emsp;'),HTML('&emsp;'), 'Basic: effect-size & p-value'),
                                                         tags$br(HTML('&emsp;'),HTML('&emsp;'), 'Power: post-hoc power & n80'),
                                                         tags$br(HTML('<b>'),"Multiple simulations: ",HTML('</b>')),
-                                                        tags$br(HTML('&emsp;'), '1. choose desired output then press "Run"'),
+                                                        tags$br(HTML('&emsp;'), paste0('1. choose desired output then press "',startLabel,'"')),
                                                         tags$br(HTML('&emsp;'),HTML('&emsp;'), '(use the append option to add further simulations)'),
                                                         tags$br(HTML('&emsp;'), '2. results are found in:'),
                                                         tags$br(HTML('&emsp;'),HTML('&emsp;'), 'Expected:')

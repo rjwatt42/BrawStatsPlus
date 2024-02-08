@@ -72,7 +72,7 @@ PossibleTab <-
                                       ),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
                                       tags$td(width = "10%", checkboxInput("possible_append", label=NULL,value=possible$appendSim)),
-                                      tags$td(width = "10%", actionButton("possible_run", "Run"))
+                                      tags$td(width = "10%", actionButton("possible_run", startLabel))
                                     )
                          ),
               ),
@@ -98,7 +98,7 @@ PossibleTab <-
                                       ),
                                       tags$td(width = "20%", tags$div(style = localStyle, "Append:")),
                                       tags$td(width = "10%", checkboxInput("possibleP_append", label=NULL,value=possible$appendSim)),
-                                      tags$td(width = "10%", actionButton("possibleP_run", "Run")),
+                                      tags$td(width = "10%", actionButton("possibleP_run", startLabel)),
                                     )
                          ),
               ),
@@ -216,7 +216,7 @@ PossibleTab <-
                                                 tags$br(HTML('&emsp;'),HTML('&emsp;'),HTML('&emsp;'), '(high effect sizes are rare)'),
                                                 tags$br(HTML('&emsp;'), '2. choose whether to see theoretical distributions'),
                                                 tags$br(HTML('&emsp;'),HTML('&emsp;'),HTML('&emsp;'), '(these are idealized)'),
-                                                tags$br(HTML('&emsp;'), '3. press "Run"'),
+                                                tags$br(HTML('&emsp;'), paste0('3. press "',startLabel,'"')),
                                        ),
                                      )
                           ),

@@ -62,7 +62,7 @@ exploreMeta<-function(){
                             ),
                             tags$td(width = "10%", tags$div(style = localStyle, "Append:")),
                             tags$td(width = "10%", checkboxInput("ExploreAppendM", label=NULL)),
-                            tags$td(width = "20%", actionButton("exploreRunM", "Run"))
+                            tags$td(width = "20%", actionButton("exploreRunM", startLabel))
                           )
                )
     ) 
