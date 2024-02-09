@@ -19,11 +19,11 @@ observeEvent(input$metaRun,{
         resetMeta()
       }
       metaResult$nsims<<-metaResult$count+as.numeric(input$meta_runlength)
-      stopButton("metaRun")
+      stopButton(session,"metaRun")
       notRunningMeta<<-FALSE
     } else {
       metaResult$nsims<<-metaResult$count
-      startButton("metaRun")
+      startButton(session,"metaRun")
       notRunningMeta<<-TRUE
     }
   }
@@ -103,7 +103,7 @@ makeMetaGraph <- function() {
   
   if (metaResult$count<2) {
     silentTime<<-0
-    pauseWait<<-10
+    # pauseWait<<-10
   } else {
   if (metaResult$count==2) {
     silentTime<<-Sys.time()-time2
@@ -111,9 +111,9 @@ makeMetaGraph <- function() {
   if (metaResult$count>2 && metaResult$count<=cycles2observe) {
     silentTime<<-max(silentTime,Sys.time()-time2)
   }
-  if (metaResult$count>cycles2observe) {
-    pauseWait<<-100
-  }
+  # if (metaResult$count>cycles2observe) {
+  #   pauseWait<<-100
+  # }
   }
   
   IV<-updateIV()
@@ -128,7 +128,7 @@ makeMetaGraph <- function() {
   
   if (debug) {print("MetaPlot1 - start")}
   if (showProgress) {
-    showNotification("MetaAnalysis: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")
+    showNotification("MetaAnalysis: starting",id="meta",duration=Inf,closeButton=FALSE,type="message")
   }
   
   stopRunning<-TRUE
@@ -137,14 +137,14 @@ makeMetaGraph <- function() {
     metaAnalysis$append<-TRUE
     ns<-10^(min(2,floor(log10(max(1,metaResult$count)))))
     if (showProgress) {
-      showNotification(paste0("MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="counting",duration=Inf,closeButton=FALSE,type="message")
+      showNotification(paste0("MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="meta",duration=Inf,closeButton=FALSE,type="message")
     }
     for (i in 1:ns) {
       metaResult<<-doMetaAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResult)
     }
   }
   if (metaResult$count>=metaResult$nsims) {
-    if (showProgress) {removeNotification(id = "counting")}
+    if (showProgress) {removeNotification(id = "meta")}
   }
   
   if (metaAnalysis$nsims==1) {
@@ -181,13 +181,13 @@ makeMetaGraph <- function() {
   
   time2<<-Sys.time()
   if (!stopRunning) {
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)
     } else {
-      invalidateLater(10)
+      invalidateLater(pauseWait)
     }
   } else {
-    startButton("metaRun")
+    startButton(session,"metaRun")
     notRunningMeta<<-TRUE
   }
   
@@ -213,10 +213,10 @@ makeMetaReport<-function() {
   }
   
   if (metaResult$count<metaResult$nsims) {
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)
     } else {
-      invalidateLater(10)
+      invalidateLater(pauseWait)
     }
   }
   

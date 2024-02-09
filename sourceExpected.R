@@ -34,12 +34,12 @@ observeEvent(c(input$EvidenceExpectedRun),{
       expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
     }
     if (input$EvidenceExpectedRun>0) {
-      stopButton("EvidenceExpectedRun")
+      stopButton(session,"EvidenceExpectedRun")
       notRunningExpected<<-FALSE
     }
   } else {
     expectedResult$nsims<<-expectedResult$count
-    startButton("EvidenceExpectedRun")
+    startButton(session,"EvidenceExpectedRun")
     notRunningExpected<<-TRUE
   }
 })
@@ -119,9 +119,7 @@ makeExpectedGraph <- function() {
           input$EvidenceExpectedRun)
   
   silentTime<<-0
-  pauseWait<<-10
   if (cycleCount>1) {
-    pauseWait<<-200
     cycleTime<-Sys.time()-time2
     silentTime<<-max(silentTime,cycleTime-pauseWait/1000)
   }
@@ -148,35 +146,43 @@ makeExpectedGraph <- function() {
   expectedResult$nullresult$design<<-design
   expectedResult$nullresult$evidence<<-evidence
   
-  if (debug) {print("ExpectedPlot1 - start")}
+  if (debug) {debugPrint("ExpectedPlot1 - start")}
   stopRunning<-TRUE
   
   # if (!validExpected) {return(ggplot()+plotBlankTheme)}
   if (validExpected) {
   
-  if (switches$showAnimation) {
     min_ns<-floor(log10(expectedResult$nsims/100))
-    ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
-    if (expectedResult$count+ns>expectedResult$nsims) {
-      ns<-expectedResult$nsims-expectedResult$count
+    if (switches$showAnimation) {
+      ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
+      n_cycles<-1
+    } else {
+      ns<-10^min_ns
+      n_cycles<-ceil(expectedResult$nsims/ns)
     }
-  } else {
-    ns<-expectedResult$nsims-expectedResult$count
-  }
-  
-  if (ns>0) {
-    cycleCount<<-cycleCount+1
-    expected$doingNull<-FALSE
-      if (showProgress) {
-        if (expectedResult$count==0) {
-          showNotification("Expected: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")
-        } else {
-          showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="counting",duration=Inf,closeButton=FALSE,type="message")
+    
+    if (ns>0) {
+      cycleCount<<-cycleCount+1
+      expected$doingNull<-FALSE
+      for (ci in 1:n_cycles) {
+        if (showProgress) {
+          if (expectedResult$count==0) {
+            showNotification("Expected: starting",id="multiple",duration=Inf,closeButton=FALSE,type="message")
+          } 
+        }
+        if (expectedResult$count+ns>=expectedResult$nsims) {
+          ns<-expectedResult$nsims-expectedResult$count
+        }
+        if (ns>0) {
+          expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
+          expectedResult$count<<-length(expectedResult$result$rIV)
+          if (showProgress) {
+            showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
+          }      
         }
       }
-      expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
-  }
-  
+    }
+    
   if (expectedResult$count<expectedResult$nsims) {
     stopRunning<-FALSE
   }
@@ -188,9 +194,10 @@ makeExpectedGraph <- function() {
       if (ns>0) {
         expected$doingNull<-TRUE
         if (showProgress) {
-          showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="counting",duration=Inf,closeButton=FALSE,type="message")
+          showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
         }
         expectedResult$nullresult<<-doExpectedAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,expected,expectedResult$nullresult,ns)
+        expectedResult$nullcount<<-length(expectedResult$nullresult$rIV)
       }
       if (expectedResult$nullcount<expectedResult$nsims) {
         stopRunning<-FALSE
@@ -198,8 +205,6 @@ makeExpectedGraph <- function() {
     }
     # wind up
     
-    expectedResult$count<<-length(expectedResult$result$rIV)
-    expectedResult$nullcount<<-length(expectedResult$nullresult$rIV)
     
     if (effect$world$worldOn && is.element(expected$type,c("NHSTErrors","FDR"))){
       nulls<-expectedResult$result$rpIV==0
@@ -224,7 +229,9 @@ makeExpectedGraph <- function() {
     
     # ? stop running
     if (stopRunning) {
-      if (showProgress) {removeNotification(id = "counting")}
+      if (showProgress) {
+        removeNotification(id = "multiple")
+        }
     }
 
   }
@@ -270,20 +277,20 @@ makeExpectedGraph <- function() {
     
   if (!stopRunning) {
     time2<<-Sys.time()
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)
     } else {
-      invalidateLater(10)
+      invalidateLater(pauseWait)
     }
   } else {
-    startLabel("EvidenceExpectedRun")
+    startButton(session,"EvidenceExpectedRun")
     notRunningExpected<<-TRUE
   }
   return(g)
 }
 
 output$ExpectedPlot <- renderPlot({
-  if (debug) {debugPrint("ExpectedPlot")}
+  if (debug) {debugPrint("ExpectedPlot - start")}
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
           input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$EvidenceExpectedRun)
@@ -293,7 +300,7 @@ output$ExpectedPlot <- renderPlot({
 })
 
 output$ExpectedPlot1 <- renderPlot({
-  if (debug) {debugPrint("ExpectedPlot")}
+  if (debug) {debugPrint("ExpectedPlot - start")}
   doit<-c(input$EvidenceExpected_type,input$EvidenceExpected_par1,input$EvidenceExpected_par2,
           input$EvidenceEffect_type,input$EvidenceEffect_type1,
           input$EvidenceExpectedRun)
@@ -353,10 +360,10 @@ makeExpectedReport<-function() {
   }
   if (ns>0) {
     # if (debug) {print("ExpectedPlot2 - timer set ")}
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(mean(as.numeric(silentTime))*1000+pauseWait)
     } else {
-      invalidateLater(10)
+      invalidateLater(pauseWait)
     }
     # invalidateLater(pauseWait)
   } 
@@ -366,7 +373,7 @@ makeExpectedReport<-function() {
 
 # expected report
 output$ExpectedReport <- renderPlot({
-  if (debug) debugPrint("ExpectedReport")
+  if (debug) debugPrint("ExpectedReport - start")
   doIt<-input$EvidenceExpectedRun
   g<-makeExpectedReport()
   if (debug) {debugPrint("ExpectedReport - exit")}
@@ -374,7 +381,7 @@ output$ExpectedReport <- renderPlot({
 })
 
 output$ExpectedReport1 <- renderPlot({
-  if (debug) debugPrint("ExpectedReport")
+  if (debug) debugPrint("ExpectedReport - start")
   doIt<-input$EvidenceExpectedRun
   g<-makeExpectedReport()
   if (debug) {debugPrint("ExpectedReport - exit")}

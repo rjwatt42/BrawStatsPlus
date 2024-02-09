@@ -658,7 +658,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                   effect1$world$worldOn<-FALSE
                   effect1$world$populationPDF<-"Single"
                   res<-multipleAnalysis(IV,NULL,DV,effect1,design,evidence,nsims,appendData=FALSE, earlierResult=c(),sigOnly=FALSE,
-                                        showProgress=TRUE,progressPrefix=paste0("Possible Samples ",format(i),"/",format(length(pRho)),":"))
+                                        showProgress=FALSE,progressPrefix=paste0("Possible Samples ",format(i),"/",format(length(pRho)),":"))
                   r_effects<-rbind(r_effects,t(res$rIV))
                 } else {
                   if (design$sNRand) {
@@ -687,7 +687,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
               effect$world<-prior
                 sample_increase=10
                 res<-multipleAnalysis(IV,NULL,DV,effect,design,evidence,nsims*sample_increase,appendData=FALSE, earlierResult=c(),sigOnly=FALSE,
-                                      showProgress=TRUE,progressPrefix=paste0("Possible Populations :"))
+                                      showProgress=FALSE,progressPrefix=paste0("Possible Populations :"))
                 r_effects<-res$rIV
                 n_effects<-res$nval
                 pops<-res$rpIV

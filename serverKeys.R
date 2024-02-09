@@ -20,6 +20,11 @@ if (switches$doKeys) {
       write_clip(data,allow_non_interactive = TRUE)
     }
     
+    # control-d
+    if (is_local && input$keypress==ascii("d") && controlKeyOn){
+      debug<<-!debug
+    }
+    
     # control-g toggle LARGE GRAPHS
     if (input$keypress==ascii("g") && controlKeyOn){
       was<-input$LargeGraphs
@@ -65,7 +70,6 @@ if (switches$doKeys) {
     
     # control-r 
     if (input$keypress==ascii("r") && controlKeyOn) {
-      print(names(input))
       updateCheckboxInput(session,"WhiteGraphs",value=TRUE)
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
       updateCheckboxInput(session,"shortHand",value=TRUE)

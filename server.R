@@ -9,7 +9,7 @@
 
 debug<-FALSE
 debugExitOnly<-TRUE
-debugMainOnly<-FALSE
+debugMainOnly<-TRUE
 debugNow<-Sys.time()
 debugNowLocation<<-"Start"
 debugStart<-Sys.time()

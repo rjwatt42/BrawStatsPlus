@@ -73,7 +73,7 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
     design<-updateDesign()
     evidence<-updateEvidence()
 
-    showNotification("Sample: starting",id="counting",duration=Inf,closeButton=FALSE,type="message")
+    showNotification("Sample: making",id="single",duration=Inf,closeButton=FALSE,type="message")
     oldShortHand<-shortHand
     shortHand<<-FALSE
     result<-doSampleAnalysis(IV,IV2,DV,effect,design,evidence)
@@ -85,7 +85,7 @@ sampleAnalysis<-eventReactive(c(input$EvidenceHypothesisApply,input$EvidencenewS
       updateNumericInput(session,"possiblePSampRho",value=result$rIV)
       updateNumericInput(session,"possibleSampRho",value=result$rIV)
     }
-    removeNotification(id = "counting")
+    removeNotification(id = "single")
   } else {
     result<-NULL
   }
@@ -179,7 +179,7 @@ makeInferentialGraph <- function() {
 }
 
 output$SamplePlot <- renderPlot({
-  if (debug) debugPrint("SamplePlot")
+  if (debug) debugPrint("SamplePlot - start")
   doIt<-editVar$data
   g<-makeSampleGraph()
   if (debug) debugPrint("SamplePlot - exit")
@@ -187,7 +187,7 @@ output$SamplePlot <- renderPlot({
 })
 
 output$DescriptivePlot <- renderPlot({
-  if (debug) debugPrint("DescriptivePlot")
+  if (debug) debugPrint("DescriptivePlot - start")
   doIt<-editVar$data
   g<-makeDescriptiveGraph()
   if (debug) debugPrint("DescriptivePlot - exit")
@@ -195,7 +195,7 @@ output$DescriptivePlot <- renderPlot({
 })
 
 output$InferentialPlot <- renderPlot({
-  if (debug) debugPrint("InferentialPlot")
+  if (debug) debugPrint("InferentialPlot - start")
   doIt<-editVar$data
   g<-makeInferentialGraph()
   if (debug) debugPrint("InferentialPlot - exit")
@@ -203,7 +203,7 @@ output$InferentialPlot <- renderPlot({
 })
 
 output$SamplePlot1 <- renderPlot({
-  if (debug) debugPrint("SamplePlot")
+  if (debug) debugPrint("SamplePlot - start")
   doIt<-editVar$data
   g<-makeSampleGraph()
   if (debug) debugPrint("SamplePlot - exit")
@@ -211,7 +211,7 @@ output$SamplePlot1 <- renderPlot({
 })
 
 output$DescriptivePlot1 <- renderPlot({
-  if (debug) debugPrint("DescriptivePlot")
+  if (debug) debugPrint("DescriptivePlot - start")
   doIt<-editVar$data
   g<-makeDescriptiveGraph()
   if (debug) debugPrint("DescriptivePlot - exit")
@@ -219,7 +219,7 @@ output$DescriptivePlot1 <- renderPlot({
 })
 
 output$InferentialPlot1 <- renderPlot({
-  if (debug) debugPrint("InferentialPlot")
+  if (debug) debugPrint("InferentialPlot - start")
   doIt<-editVar$data
   g<-makeInferentialGraph()
   if (debug) debugPrint("InferentialPlot - exit")
@@ -302,7 +302,7 @@ makeInferentialReport <- function()  {
 }
 
 output$SampleReport <- renderPlot({
-  if (debug) debugPrint("SampleReport")
+  if (debug) debugPrint("SampleReport - start")
   doIt<-editVar$data
   g<-makeSampleReport()
   if (debug) debugPrint("SampleReport - exit")
@@ -310,7 +310,7 @@ output$SampleReport <- renderPlot({
 })
 
 output$DescriptiveReport <- renderPlot({
-  if (debug) debugPrint("DescriptiveReport")
+  if (debug) debugPrint("DescriptiveReport - start")
   doIt<-editVar$data
   g<-makeDescriptiveReport()
   if (debug) debugPrint("DescriptiveReport - exit")
@@ -318,7 +318,7 @@ output$DescriptiveReport <- renderPlot({
 })
 
 output$InferentialReport <- renderPlot({
-  if (debug) debugPrint("InferentialReport")
+  if (debug) debugPrint("InferentialReport - start")
   doIt<-editVar$data
   g<-makeInferentialReport()
   if (debug) debugPrint("InferentialReport - exit")
@@ -326,15 +326,15 @@ output$InferentialReport <- renderPlot({
 })
 
 output$SampleReport1 <- renderPlot({
-  if (debug) debugPrint("SampleReport")
+  if (debug) debugPrint("SampleReport1 - start")
   doIt<-editVar$data
   g<-makeSampleReport()
-  if (debug) debugPrint("SampleReport - exit")
+  if (debug) debugPrint("SampleReport1 - exit")
   g
 })
 
 output$DescriptiveReport1 <- renderPlot({
-  if (debug) debugPrint("DescriptiveReport")
+  if (debug) debugPrint("DescriptiveReport - start")
   doIt<-editVar$data
   g<-makeDescriptiveReport()
   if (debug) debugPrint("DescriptiveReport - exit")
@@ -342,7 +342,7 @@ output$DescriptiveReport1 <- renderPlot({
 })
 
 output$InferentialReport1 <- renderPlot({
-  if (debug) debugPrint("InferentialReport")
+  if (debug) debugPrint("InferentialReport - start")
   doIt<-editVar$data
   g<-makeInferentialReport()
   if (debug) debugPrint("InferentialReport - exit")

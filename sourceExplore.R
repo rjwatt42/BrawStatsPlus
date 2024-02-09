@@ -93,17 +93,17 @@ observeEvent(c(input$exploreRunH,input$exploreRunD,input$exploreRunM),
                          }
                  )
                  if (any(runPressed)) {
-                   stopButton("exploreRunH")
-                   stopButton("exploreRunD")
-                   stopButton("exploreRunM")
+                   stopButton(session,"exploreRunH")
+                   stopButton(session,"exploreRunD")
+                   stopButton(session,"exploreRunM")
                    notRunningExplore<<-FALSE
                  }
                  cycleCount<<-0
                } else {
                  exploreResult$nsims<<-exploreResult$result$count
-                 startButton("exploreRunH")
-                 startButton("exploreRunD")
-                 startButton("exploreRunM")
+                 startButton(session,"exploreRunH")
+                 startButton(session,"exploreRunD")
+                 startButton(session,"exploreRunM")
                  notRunningExplore<<-TRUE
                }
              },priority=100)
@@ -170,7 +170,7 @@ updateExplore<-function(){
 
 # Main calculations    
 doExploreAnalysis <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,result,nsim=1,doingNull=FALSE) {
-  if (debug) {print("     doExploreAnalysis - start")}
+  if (debug) {debugPrint("     doExploreAnalysis - start")}
   if (is.null(result$rIVs) || nrow(result$rIVs)<exploreResult$nsims) {
     if (nsim==exploreResult$nsims) {showProgress<-FALSE} else {showProgress<-TRUE}
     result$nsims<-exploreResult$nsims
@@ -233,7 +233,7 @@ makeExploreGraph <- function() {
     ns<-exploreResult$nsims-exploreResult$result$count
   }
   if (ns>0) {
-    showNotification(paste0("Explore ",explore$Explore_family," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
+    showNotification(paste0("Explore ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
     exploreResult$result<<-doExploreAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult$result,ns,doingNull=FALSE)
     exploreResult$result$count<<-nrow(exploreResult$result$rIVs)
   }
@@ -245,7 +245,7 @@ makeExploreGraph <- function() {
     if (is.null(exploreResult$nullresult$count)) exploreResult$nullresult$count<-0
       ns<-exploreResult$result$count-exploreResult$nullresult$count
     if (ns>0) {
-      showNotification(paste0("Explore(null) ",explore$Explore_family," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
+      showNotification(paste0("Explore(null) ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
       exploreResult$nullresult<<-doExploreAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,metaAnalysis,explore,exploreResult$nullresult,ns,doingNull=TRUE)
       exploreResult$nullresult$count<<-nrow(exploreResult$nullresult$rIVs)
     }
@@ -268,22 +268,22 @@ makeExploreGraph <- function() {
   )
   
   if (stopRunning) {
-    if (showProgress) {removeNotification(id = "counting")}
+    if (showProgress) {removeNotification(id = "explore")}
   }
   
   g<-drawExplore(IV,IV2,DV,effect,design,explore,exploreResult)
 
   time2<<-Sys.time()
   if (!stopRunning) {
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(mean(as.numeric(silentTime)*1000)+pauseWait)
     } else {
-      invalidateLater(1)
+      invalidateLater(pauseWait)
     }
   } else {
-    startButton("exploreRunH")
-    startButton("exploreRunD")
-    startButton("exploreRunM")
+    startButton(session,"exploreRunH")
+    startButton(session,"exploreRunD")
+    startButton(session,"exploreRunM")
     notRunningExplore<<-TRUE
   }
   
@@ -316,10 +316,10 @@ makeExploreReport<-function() {
   }
   
   if (exploreResult$result$count<exploreResult$nsims) {
-    if (doStop) {
+    if (switches$doStop) {
       invalidateLater(as.numeric(mean(silentTime)*1000)+pauseWait)
     } else {
-      invalidateLater(1)
+      invalidateLater(pauseWait)
     }
   } 
   

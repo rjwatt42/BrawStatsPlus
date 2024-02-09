@@ -261,14 +261,14 @@ setIVanyway<-function(newMV=NULL){
     }
     
     if (newName) {
-      if (debug) print(paste("IV new name detected",newMV$name))
+      if (debug) debugPrint(paste("IV new name detected",newMV$name))
       updateSelectInput(session, "IVchoice", choices=variables$name)
       updateSelectInput(session, "IV2choice", choices = c("none",variables$name))
       if (input$IV2choice!="none") {updateSelectInput(session, "IV2choice", selected=input$IV2choice)}
       updateSelectInput(session, "DVchoice", choices = variables$name, selected=input$DVchoice)
     }
     if (newMV$name!=input$IVchoice) {
-      if (debug) print(paste("IV changed name detected",newMV$name))
+      if (debug) debugPrint(paste("IV changed name detected",newMV$name))
       updateSelectInput(session, "IVchoice", selected=newMV$name)
     }
   }
@@ -325,13 +325,13 @@ setIV2anyway<-function(newMV=NULL){
   )
   
   if (newName) {
-    if (debug) print(paste("IV2 new name detected",newMV$name))
+    if (debug) debugPrint(paste("IV2 new name detected",newMV$name))
     updateSelectInput(session, "IVchoice", choices=variables$name, selected=input$IVchoice)
     updateSelectInput(session, "IV2choice", choices = c("none",variables$name), selected=newMV$name)
     updateSelectInput(session, "DVchoice", choices = variables$name, selected=input$DVchoice)
   } else {
     if (newMV$name!=input$IV2choice) {
-      if (debug)   print(paste("IV2 changed name detected",newMV$name))
+      if (debug)   debugPrint(paste("IV2 changed name detected",newMV$name))
       updateSelectInput(session, "IV2choice", selected=newMV$name)
     }
   }
@@ -364,14 +364,14 @@ setDVanyway<-function(newMV=NULL){
   validExplore<<-FALSE
   
   if (newName) {
-    if (debug)       print(paste("DV new name detected",newMV$name))
+    if (debug)       debugPrint(paste("DV new name detected",newMV$name))
     updateSelectInput(session, "IVchoice", choices=variables$name, selected=input$IVchoice)
     updateSelectInput(session, "IV2choice", choices = c("none",variables$name))
     if (input$IV2choice!="none") {updateSelectInput(session, "IV2choice", selected=input$IV2choice)}
     updateSelectInput(session, "DVchoice", choices = variables$name)
   }
   if (newMV$name!=input$DVchoice) {
-    if (debug)       print(paste("DV changed name detected",newMV$name))
+    if (debug)       debugPrint(paste("DV changed name detected",newMV$name))
     updateSelectInput(session, "DVchoice", selected=newMV$name)
   }
   

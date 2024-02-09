@@ -98,7 +98,7 @@ HelpTab <-
                                  tags$table(width = "100%",class="myTable",
                                             tags$tr(
                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Load extras:")),
-                                              tags$td(width="15%",checkboxInput("LoadExtras", label=NULL,value=switches$loadExtrasValue)),
+                                              tags$td(width="15%",checkboxInput("LoadExtras", label=NULL,value=FALSE)),
                                               tags$td(width="30%",tags$div(style = localPlainStyle, "Large graphs:")),
                                               tags$td(width="25%",checkboxInput("LargeGraphs", label=NULL,value=FALSE))
                                             ),

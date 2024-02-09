@@ -17,7 +17,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   anomaliesRange<-explore$Explore_anomRange
   kurtRange<-10^5
   
-  # showNotification(paste(format(0),format(npoints),sep="/"),id="counting",duration=Inf,closeButton = FALSE,type = "message")
+  # showNotification(paste(format(0),format(npoints),sep="/"),id="explore",duration=Inf,closeButton = FALSE,type = "message")
   
   if (absRange) {vals<-seq(0,1,length.out=npoints)}
   else          {vals<-seq(-1,1,length.out=npoints)}
@@ -134,10 +134,10 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
     if (showProgress) {
       if (doingNull) {
         label<-paste("Explore/Null(",explore$Explore_family,")",":  n=",format(nc+ni),"/",format(exploreResult$nsims),sep="")
-        showNotification(label,id="counting",duration=Inf,closeButton = FALSE,type = "message")
+        showNotification(label,id="explore",duration=Inf,closeButton = FALSE,type = "message")
       } else {
         label<-paste("Explore(",explore$Explore_family,")",":  n=",format(nc+ni),"/",format(exploreResult$nsims),sep="")
-        showNotification(label,id="counting",duration=Inf,closeButton = FALSE,type = "message")
+        showNotification(label,id="explore",duration=Inf,closeButton = FALSE,type = "message")
       }
     }
     for (i in 1:length(vals)){
@@ -541,7 +541,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
           main_res$p3$unique<-cbind(main_res$p3$unique,res$p$unique[,3])
           main_res$p3$total<-cbind(main_res$p3$total,res$p$total[,3])
         }
-        # if (i>1) {removeNotification(id = "counting")}
+        # if (i>1) {removeNotification(id = "explore")}
       }
     }
     

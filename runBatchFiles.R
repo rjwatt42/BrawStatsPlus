@@ -133,9 +133,9 @@ for (i in 1:nfiles) {
   files<-rbind(files,filename)
   }
 # print("OK4")
-  showNotification(paste0("Batch files: ",i,"/",nfiles),id="counting",duration=Inf,closeButton=FALSE,type="message")
+  showNotification(paste0("Batch files: ",i,"/",nfiles),id="batch",duration=Inf,closeButton=FALSE,type="message")
 }
-showNotification(paste0("Batch files: Done"),id="counting",duration=Inf,closeButton=FALSE,type="message")
+showNotification(paste0("Batch files: Done"),id="batch",duration=Inf,closeButton=FALSE,type="message")
 
 filename<-paste0(subDir,"/","Results.xlsx")
 data<-data.frame(file=files,v=vvals,r=rvals,p=pvals,f=fvals,w=wvals,an=anvals)
@@ -150,7 +150,7 @@ colnames(data)<-c("files",
 write_xlsx(data, path = filename)
 
 Sys.sleep(2)
-removeNotification(id = "counting")
+removeNotification(id = "batch")
 
 }
 

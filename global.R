@@ -7,9 +7,8 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
                doWorlds=FALSE,doMetaAnalysis=FALSE,doLikelihoodInfer=FALSE,doPossiblePower=FALSE,
                doVariablesExplore=FALSE,
                doBatchFiles=FALSE,
-               loadExtrasValue=FALSE,
                startBlank=FALSE,
-               showAnimation=TRUE,
+               showAnimation=TRUE,doStop=FALSE,
                importOrdinals=TRUE,
                rigidWithin=TRUE) # only applies to imported data
 
@@ -151,24 +150,23 @@ warn3Ord<-FALSE
 # an additional time of pauseWait ms
 # this (nearly) guarantees a gap between cycles for the stop button to be registered
 #
-doStop<-TRUE
-if (doStop) stopLabel<-"Stop"
-if (!doStop) stopLabel<-"."
+if (switches$doStop) stopLabel<-"Stop"
+if (!switches$doStop) stopLabel<-"."
 startLabel<-"Run"
 silentTime<-0
-pauseWait<-300
+pauseWait<-500
 cycles2observe<-5
 cycleCount<-0
 
-startButton<-function(whichButton) {
-  if (doStop) {
+startButton<-function(session,whichButton) {
+  if (switches$doStop) {
     updateActionButton(session,whichButton,label=startLabel)
   } else {
     showElement(whichButton)
   }
 }
-stopButton<-function(whichButton) {
-  if (doStop) {
+stopButton<-function(session,whichButton) {
+  if (switches$doStop) {
     updateActionButton(session,whichButton,label=stopLabel)
   } else {
     hideElement(whichButton)
@@ -190,6 +188,5 @@ if (is_local) {
   switches$doVariablesExplore<-TRUE
   
   # switches$doWorlds<-TRUE
-    # switches$loadExtrasValue<-TRUE
 }
 

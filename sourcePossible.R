@@ -185,10 +185,10 @@ possibleAnalysis<-eventReactive(c(input$PossiblePanel,
   possible<-updatePossible()
   
   if ((input$possible_run+input$possibleP_run>validPossible)){
-    showNotification(paste0("Possible ",possible$type," : starting"),id="counting",duration=Inf,closeButton=FALSE,type="message")
+    showNotification(paste0("Possible ",possible$type," : starting"),id="possible",duration=Inf,closeButton=FALSE,type="message")
     validPossible<<-validPossible+1
     possibleRes<-possibleRun(IV,DV,effect,design,evidence,possible,metaResult,doSample = TRUE)
-    removeNotification(id="counting")
+    removeNotification(id="possible")
     keepSamples<-FALSE
   } else {
     possibleRes<-possibleRun(IV,DV,effect,design,evidence,possible,metaResult,doSample = FALSE)
