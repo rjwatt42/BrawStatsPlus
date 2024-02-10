@@ -657,8 +657,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
                   effect1$rIV<-tanh(pRho[i])
                   effect1$world$worldOn<-FALSE
                   effect1$world$populationPDF<-"Single"
-                  res<-multipleAnalysis(IV,NULL,DV,effect1,design,evidence,nsims,appendData=FALSE, earlierResult=c(),sigOnly=FALSE,
-                                        showProgress=FALSE,progressPrefix=paste0("Possible Samples ",format(i),"/",format(length(pRho)),":"))
+                  res<-multipleAnalysis(IV,NULL,DV,effect1,design,evidence,nsims,appendData=FALSE, earlierResult=c(),sigOnly=FALSE)
                   r_effects<-rbind(r_effects,t(res$rIV))
                 } else {
                   if (design$sNRand) {
@@ -686,8 +685,7 @@ possibleRun <- function(IV,DV,effect,design,evidence,possible,metaResult,doSampl
             if (doSample) {
               effect$world<-prior
                 sample_increase=10
-                res<-multipleAnalysis(IV,NULL,DV,effect,design,evidence,nsims*sample_increase,appendData=FALSE, earlierResult=c(),sigOnly=FALSE,
-                                      showProgress=FALSE,progressPrefix=paste0("Possible Populations :"))
+                res<-multipleAnalysis(IV,NULL,DV,effect,design,evidence,nsims*sample_increase,appendData=FALSE, earlierResult=c(),sigOnly=FALSE)
                 r_effects<-res$rIV
                 n_effects<-res$nval
                 pops<-res$rpIV

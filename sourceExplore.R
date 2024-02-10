@@ -6,7 +6,6 @@
 
 # local variables
 lastExplore<-explore
-showProgress<-TRUE
 
 notRunningExplore<-TRUE
 
@@ -169,13 +168,11 @@ updateExplore<-function(){
 } 
 
 # Main calculations    
-doExploreAnalysis <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,result,nsim=1,doingNull=FALSE) {
+doExploreAnalysis <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,result,nsim=1) {
   if (debug) {debugPrint("     doExploreAnalysis - start")}
   if (is.null(result$rIVs) || nrow(result$rIVs)<exploreResult$nsims) {
-    if (nsim==exploreResult$nsims) {showProgress<-FALSE} else {showProgress<-TRUE}
     result$nsims<-exploreResult$nsims
-    
-    result<-exploreSimulate(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,result,nsim,doingNull,showProgress)
+    result<-exploreSimulate(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,result,nsim)
   }
   result
 }
@@ -233,8 +230,14 @@ makeExploreGraph <- function() {
     ns<-exploreResult$nsims-exploreResult$result$count
   }
   if (ns>0) {
-    showNotification(paste0("Explore ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
-    exploreResult$result<<-doExploreAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult$result,ns,doingNull=FALSE)
+    if (exploreResult$result$count==0) {
+      showNotification(paste0("Explore ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
+    }
+    else {
+      label<-paste("Explore(",explore$Explore_family,")",":  n=",format(exploreResult$result$count),"/",format(exploreResult$nsims),sep="")
+      showNotification(label,id="explore",duration=Inf,closeButton=FALSE,type="message")
+    }
+    exploreResult$result<<-doExploreAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult$result,ns)
     exploreResult$result$count<<-nrow(exploreResult$result$rIVs)
   }
   if (exploreResult$result$count<exploreResult$nsims) {
@@ -245,8 +248,14 @@ makeExploreGraph <- function() {
     if (is.null(exploreResult$nullresult$count)) exploreResult$nullresult$count<-0
       ns<-exploreResult$result$count-exploreResult$nullresult$count
     if (ns>0) {
-      showNotification(paste0("Explore(null) ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
-      exploreResult$nullresult<<-doExploreAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,metaAnalysis,explore,exploreResult$nullresult,ns,doingNull=TRUE)
+      if (exploreResult$result$count==0) {
+        showNotification(paste0("ExploreNull ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
+      }
+      else {
+        label<-paste("ExploreNull(",explore$Explore_family,")",":  n=",format(exploreResult$result$count),"/",format(exploreResult$nsims),sep="")
+        showNotification(label,id="explore",duration=Inf,closeButton=FALSE,type="message")
+      }
+      exploreResult$nullresult<<-doExploreAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,metaAnalysis,explore,exploreResult$nullresult,ns)
       exploreResult$nullresult$count<<-nrow(exploreResult$nullresult$rIVs)
     }
     if (exploreResult$nullresult$count<exploreResult$nsims) {
@@ -268,7 +277,7 @@ makeExploreGraph <- function() {
   )
   
   if (stopRunning) {
-    if (showProgress) {removeNotification(id = "explore")}
+    removeNotification(id = "explore")
   }
   
   g<-drawExplore(IV,IV2,DV,effect,design,explore,exploreResult)

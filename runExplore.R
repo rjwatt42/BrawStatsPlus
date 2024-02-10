@@ -5,7 +5,7 @@ min_prop=0.2
 absRange<-FALSE
 quants=0.25
 
-exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult,nsim,doingNull=FALSE,showProgress=FALSE){
+exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult,nsim){
   
   oldAlpha<-alphaSig
   npoints<-explore$Explore_npoints
@@ -16,8 +16,6 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
   maxESrange<-explore$Explore_esRange
   anomaliesRange<-explore$Explore_anomRange
   kurtRange<-10^5
-  
-  # showNotification(paste(format(0),format(npoints),sep="/"),id="explore",duration=Inf,closeButton = FALSE,type = "message")
   
   if (absRange) {vals<-seq(0,1,length.out=npoints)}
   else          {vals<-seq(-1,1,length.out=npoints)}
@@ -131,15 +129,6 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
                    r3=list(direct=c(),unique=c(),total=c())
                    )
   
-    if (showProgress) {
-      if (doingNull) {
-        label<-paste("Explore/Null(",explore$Explore_family,")",":  n=",format(nc+ni),"/",format(exploreResult$nsims),sep="")
-        showNotification(label,id="explore",duration=Inf,closeButton = FALSE,type = "message")
-      } else {
-        label<-paste("Explore(",explore$Explore_family,")",":  n=",format(nc+ni),"/",format(exploreResult$nsims),sep="")
-        showNotification(label,id="explore",duration=Inf,closeButton = FALSE,type = "message")
-      }
-    }
     for (i in 1:length(vals)){
       
     switch (explore$Explore_type,
@@ -492,8 +481,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
       } 
       
       if (explore$Explore_family=="MetaAnalysis") {
-          result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only,
-                                   showProgress=FALSE,progressPrefix=paste0("MetaAnalysis: ",metaResult$count+1,":"))
+          result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only)
         metaResult$result<-result
         metaResult<-runMetaAnalysis(metaAnalysis,metaResult)
         main_res$ks<-cbind(main_res$ks,metaResult$bestK)
@@ -502,7 +490,7 @@ exploreSimulate <- function(IV,IV2,DV,effect,design,evidence,metaAnalysis,explor
         main_res$dists<-cbind(main_res$dists,metaResult$bestDist)
         main_res$rval<-cbind(main_res$rval,metaResult$bestS)
       } else {
-        res<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,1,appendData=FALSE,sigOnly=FALSE,showProgress=FALSE)
+        res<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,1,appendData=FALSE,sigOnly=FALSE)
         main_res$rval<-cbind(main_res$rval,res$rIV)
         main_res$raval<-cbind(main_res$raval,res$rIVa)
         main_res$rpval<-cbind(main_res$rpval,res$rpIV)

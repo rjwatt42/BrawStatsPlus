@@ -5,7 +5,6 @@
 # calculations
 # outputs (2 graphs and report)
 # 
-showProgress<-TRUE
 
 # function to clear 
 resetExpected<-function(){
@@ -100,10 +99,8 @@ doExpectedAnalysis<-function(IV,IV2,DV,effect,design,evidence,expected,result,ns
   if (IV$process=="data" && DV$process=="data"){
     design$sMethod="Resample"
   }
-  result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,nsim,append,result,sigOnly=evidence$sigOnly,showProgress=!showProgress)
-  # } else {
-  #   result<-sampleShortCut(IV,IV2,DV,effect,design,evidence,nsim,append,result,sigOnly=FALSE)
-  # }
+  result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,nsim,append,result,sigOnly=evidence$sigOnly)
+  
   if (debug) {debugPrint("     doExpectedAnalysis - exit")}
   result
 }
@@ -162,23 +159,19 @@ makeExpectedGraph <- function() {
     }
     
     if (ns>0) {
+      if (expectedResult$count==0) {
+        showNotification("Expected: starting",id="multiple",duration=Inf,closeButton=FALSE,type="message")
+      } 
       cycleCount<<-cycleCount+1
       expected$doingNull<-FALSE
       for (ci in 1:n_cycles) {
-        if (showProgress) {
-          if (expectedResult$count==0) {
-            showNotification("Expected: starting",id="multiple",duration=Inf,closeButton=FALSE,type="message")
-          } 
-        }
         if (expectedResult$count+ns>=expectedResult$nsims) {
           ns<-expectedResult$nsims-expectedResult$count
         }
         if (ns>0) {
           expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
           expectedResult$count<<-length(expectedResult$result$rIV)
-          if (showProgress) {
-            showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
-          }      
+          showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
         }
       }
     }
@@ -193,9 +186,7 @@ makeExpectedGraph <- function() {
         ns<-expectedResult$count-expectedResult$nullcount
       if (ns>0) {
         expected$doingNull<-TRUE
-        if (showProgress) {
-          showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
-        }
+        showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
         expectedResult$nullresult<<-doExpectedAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,expected,expectedResult$nullresult,ns)
         expectedResult$nullcount<<-length(expectedResult$nullresult$rIV)
       }
@@ -229,9 +220,7 @@ makeExpectedGraph <- function() {
     
     # ? stop running
     if (stopRunning) {
-      if (showProgress) {
         removeNotification(id = "multiple")
-        }
     }
 
   }

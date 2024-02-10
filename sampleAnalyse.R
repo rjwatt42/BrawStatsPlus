@@ -281,9 +281,8 @@ appendList <- function (x1, x2)
 }
 
 
-multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=FALSE, earlierResult=c(),sigOnly=FALSE, showProgress=TRUE,progressPrefix=""){
-  if (n_sims==1) {showProgress<-FALSE}
-  
+multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=FALSE, earlierResult=c(),sigOnly=FALSE){
+
   rho<-effect$rIV
   rho2<-effect$rIV2
   
@@ -314,11 +313,6 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
   }
   
   for (i in 1:n_sims){
-    if (showProgress && (n_sims<=50 || (n_sims>50 && i==round(i/25)*25))) {
-      off<-length(mainResult$rIV)+1
-      off<-0
-      showNotification(paste(progressPrefix,format(i+off),"/",format(n_sims+off)),id="explore",duration=Inf,closeButton=FALSE,type="message")
-    } 
     effect$rIV<-rho[i]
     if (!is.null(IV2)) {effect$rIV2<-rho2[i]}
     
@@ -394,7 +388,6 @@ multipleAnalysis<-function(IV,IV2,DV,effect,design,evidence,n_sims=1,appendData=
 
     }
   }
-  # if (showProgress) removeNotification(id="counting")
   mainResult$showType<-evidence$showType
   mainResult$effect<-effect
   mainResult$design<-design

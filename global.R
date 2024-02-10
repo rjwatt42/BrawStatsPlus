@@ -15,7 +15,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
 ################################
 # ui design
 
-fontScale<-1.2
+fontScale<-1
 
 mainHue=0.55
 
@@ -150,8 +150,7 @@ warn3Ord<-FALSE
 # an additional time of pauseWait ms
 # this (nearly) guarantees a gap between cycles for the stop button to be registered
 #
-if (switches$doStop) stopLabel<-"Stop"
-if (!switches$doStop) stopLabel<-"."
+stopLabel<-"Stop"
 startLabel<-"Run"
 silentTime<-0
 pauseWait<-500

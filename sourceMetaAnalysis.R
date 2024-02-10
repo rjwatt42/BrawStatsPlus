@@ -80,8 +80,7 @@ resetMeta()
 doMetaAnalysis<-function(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResult) {
   if (debug) {print("     doMetaAnalysis - start")}
   # if (metaAnalysis$shortHand) {
-  result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only,
-                           showProgress=FALSE)
+  result<-multipleAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only)
   # } else {
   #   nsims<-metaAnalysis$nstudies
   #   result<-sampleShortCut(IV,IV2,DV,effect,design,evidence,metaAnalysis$nstudies,FALSE,metaResult$result,sigOnly=metaAnalysis$sig_only)
@@ -127,24 +126,22 @@ makeMetaGraph <- function() {
   metaAnalysis<-updateMetaAnalysis()
   
   if (debug) {print("MetaPlot1 - start")}
-  if (showProgress) {
     showNotification("MetaAnalysis: starting",id="meta",duration=Inf,closeButton=FALSE,type="message")
-  }
-  
+
   stopRunning<-TRUE
   if (metaResult$count<metaResult$nsims) {
     stopRunning<-FALSE
     metaAnalysis$append<-TRUE
     ns<-10^(min(2,floor(log10(max(1,metaResult$count)))))
-    if (showProgress) {
-      showNotification(paste0("MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="meta",duration=Inf,closeButton=FALSE,type="message")
-    }
+
+    showNotification(paste0("MetaAnalysis: ",metaResult$count,"/",metaResult$nsims),id="meta",duration=Inf,closeButton=FALSE,type="message")
+    
     for (i in 1:ns) {
       metaResult<<-doMetaAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,metaResult)
     }
   }
   if (metaResult$count>=metaResult$nsims) {
-    if (showProgress) {removeNotification(id = "meta")}
+    removeNotification(id = "meta")
   }
   
   if (metaAnalysis$nsims==1) {

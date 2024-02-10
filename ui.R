@@ -39,7 +39,7 @@ source("uiInspectDiagram.R")
   graphW=8
   
   fontSize=paste0(format(8*fontScale),"pt")
-  fontSize=paste0(format(fontScale*0.8),"vw")
+  fontSize=paste0(format(fontScale),"vw")
   
 shinyUI(fluidPage(
     useShinyjs(),
