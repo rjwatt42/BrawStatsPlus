@@ -7,30 +7,37 @@
 #    http://shiny.rstudio.com/
 #
 
-debug<-FALSE
-debugExitOnly<-TRUE
+debug<-TRUE
+debugExitOnly<-FALSE
 debugMainOnly<-TRUE
 debugNow<-Sys.time()
 debugNowLocation<<-"Start"
 debugStart<-Sys.time()
+# memUse<-sum(gc()[,2])
+
+z<-regexpr("[ ]*[a-zA-Z0-9]*",s)
+caller<-regmatches(s,z)
 
 debugPrint<-function(s) {
   if (debugMainOnly && substr(s,1,1)==" ") return()
+  elapsedStart<-Sys.time()-debugStart
   
-    if (grepl("exit",s)==1) {
-      z<-regexpr("[ ]*[a-zA-Z0-9]*",s)
-      startStr<-regmatches(s,z)
-      use<-which(debugNowLocation==startStr)
-      use<-use[length(use)]
-    elapsed<-as.numeric(difftime(Sys.time(),debugNow[use],units="secs"))
-    print(paste0(format(Sys.time()-debugStart)," (",format(elapsed,digits=3),") ",startStr))
+  if (grepl("exit",s)==1) {
+    use<-which(debugNowLocation==caller)
+    use<-use[length(use)]
+    elapsedLocal<-as.numeric(difftime(Sys.time(),debugNow[use],units="secs"))
+    str<-paste(format(elapsedStart),s," (",format(elapsedLocal),") ")
+    # str<-paste(str,"  ",format(sum(gc()[,2])-memUse[use]))
+    print(str)
   } else {
     if (!debugExitOnly || s=="Opens")
-    print(paste(format(Sys.time()-debugStart),s))
+      print(paste(format(elapsedStart),s))
     debugNow<<-c(debugNow,Sys.time())
-    debugNowLocation<<-c(debugNowLocation,s)
+    debugNowLocation<<-c(debugNowLocation,caller)
+    # memUse<<-c(memUse,sum(gc()[,2]))
   }
-  }
+}
+
 
 #because numericInput with "0." returns NA
 checkNumber<-function(a,b=a,c=0) {
