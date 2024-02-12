@@ -23,7 +23,7 @@ singleTypeChoices<-list("Basic" = "Basic","Power" = "Power","2D"="2D")
 singleTypeChoicesExtra<-c(singleTypeChoices,list("Likelihood"=likeType))
 if (switches$doLikelihoodInfer) singleTypeChoices<-singleTypeChoicesExtra
 
-multipleTypeChoices<-list("Basic" = "Basic","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D","Simple"="Simple")
+multipleTypeChoices<-list("Basic" = "Basic","Power" = "Power","NHST errors" = "NHSTErrors","2D"="2D","Single"="Single")
 
 
 EvidenceTab <-

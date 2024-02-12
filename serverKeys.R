@@ -74,7 +74,7 @@ if (switches$doKeys) {
       updateCheckboxInput(session,"evidenceTheory",value=TRUE)
       updateCheckboxInput(session,"shortHand",value=TRUE)
       updateSelectInput(session,"RZ",selected="z")
-      updateSelectInput(session,"EvidenceExpected_type",selected="Simple")
+      updateSelectInput(session,"EvidenceExpected_type",selected="Single")
     }
     
     # control-s 

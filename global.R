@@ -8,7 +8,7 @@ switches<-list(doKeys=TRUE,doClipboard=FALSE,
                doVariablesExplore=FALSE,
                doBatchFiles=FALSE,
                startBlank=FALSE,
-               showAnimation=TRUE,doStop=FALSE,
+               showProgress=TRUE,showAnimation=TRUE,doStop=FALSE,
                importOrdinals=TRUE,
                rigidWithin=TRUE) # only applies to imported data
 

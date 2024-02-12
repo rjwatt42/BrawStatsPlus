@@ -1,7 +1,36 @@
 nscaleLog=FALSE
 maxnPlot=200
 
+trimResult<-function(result,IV,IV2,DV) {
+  
+  use<-(!is.na(result$rIV))
+  
+  result$rpIV=result$rpIV[use]
+  result$rIV=result$rIV[use]
+  result$pIV=result$pIV[use]
+  result$roIV=result$roIV[use]
+  result$poIV=result$poIV[use]
+  result$nval=result$nval[use]
+  result$df1=result$df1[use]
+  
+  if (!is.null(IV2)) {
+    result$rIV2=result$rIV2[use]
+    result$pIV2=result$pIV2[use]
+    result$rIVIV2DV=result$rIVIV2DV[use]
+    result$rIVIV2DV=result$rIVIV2DV[use]
+    result$r$direct=result$r$direct[use,]
+    result$r$unique=result$r$unique[use,]
+    result$r$total=result$r$total[use,]
+    result$p$direct=result$p$direct[use,]
+    result$p$unique=result$p$unique[use,]
+    result$p$total=result$p$total[use,]
+  }
+  
+  result
+}
+
 drawInference<-function(IV,IV2,DV,effect,design,evidence,result,disp,orientation="vert"){
+  result<-trimResult(result,IV,IV2,DV)
   
   switch (disp,
           "p"={g<-p_plot(result,IV,IV2,DV,effect,orientation=orientation)},

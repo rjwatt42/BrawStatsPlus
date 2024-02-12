@@ -6,41 +6,105 @@
 # outputs (2 graphs and report)
 # 
 
-# function to clear 
-resetExpected<-function(){
-  expectedResult<<-list(result=list(rpIV=c(),roIV=c(),rIV=c(),pIV=c(),rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),nval=c(),r=list(direct=c(),unique=c(),total=c(),coefficients=c()),showType=c()),
-                        nullresult=list(rpIV=c(),roIV=c(),rIV=c(),pIV=c(),rIV2=c(),pIV2=c(),rIVIV2DV=c(),pIVIV2DV=c(),nval=c(),r=list(direct=c(),unique=c(),total=c(),coefficients=c()),showType=c()),
-                        count=0,
-                        nullcount=0,
-                        nsims=0,
-                        running=FALSE)
-}
-# and do it at the start
-resetExpected()
 
-notRunningExpected<-TRUE
+mergeExpected<-function(r1,r2) {
+  newResult<-list(
+    rpIV=rbind(r1$rpIV,r2$rpIV),
+    rIV=rbind(r1$rIV,r2$rIV),
+    pIV=rbind(r1$pIV,r2$pIV),
+    roIV=rbind(r1$roIV,r2$roIV),
+    poIV=rbind(r1$poIV,r2$poIV),
+    nval=rbind(r1$nval,r2$nval),
+    df1=rbind(r1$df1,r2$df1)
+  )
+  if (!is.null(IV2)) {
+    newResult<-c(newResult,list(
+      rIV2=rbind(r1$rIV2,r2$rIV2),
+      pIV2=rbind(r1$pIV2,r2$pIV2),
+      rIVIV2DV=rbind(r1$rIVIV2DV,r2$rIVIV2DV),
+      pIVIV2DV=rbind(r1$pIVIV2DV,r2$rIVIV2DV),
+      r=list(direct=rbind(r1$r$direct,r2$r$direct),
+             unique=rbind(r1$r$unique,r2$r$unique),
+             total=rbind(r1$r$total,r2$r$total)
+      ),
+      p=list(direct=rbind(r1$p$direct,r2$p$direct),
+             unique=rbind(r1$p$unique,r2$p$unique),
+             total=rbind(r1$p$total,r2$p$total)
+      )
+    )
+    )
+  }
+}
+# function to clear 
+resetExpected<-function(nsims=0,append=FALSE){
+  
+  if (nsims>0) {
+    b<-matrix(NA,nsims,1)
+    bm<-matrix(NA,nsims,3)
+  } else {
+    b<-NULL
+    bm<-NULL
+  }
+  newResult<-list(
+    rpIV=b,rIV=b,pIV=b,roIV=b,poIV=b,nval=b,df1=b
+  )
+  if (!is.null(IV2)) {
+    newResult<-c(newResult,list(
+      rIV2=b,pIV2=b,rIVIV2DV=b,pIVIV2DV=b,
+      r=list(direct=bm,unique=bm,total=bm),
+      p=list(direct=bm,unique=bm,total=bm)
+    )
+    )
+  }
+  newNullResult<-newResult
+  if (append) {
+    newResult<-mergeExpected(expectedResult$result,newResult)
+    newNullResult<-mergeExpected(expectedResult$nullresult,newNullResult)
+    count<-expectedResult$count
+    nullcount<-expectedResult$nullcount
+  } else {
+    count<-0
+    nullcount<-0
+  }
+  newResult<-c(newResult,list(showType=NULL))
+  newNullResult<-c(newNullResult,list(showType=NULL))
+  
+  list(result=newResult,
+       nullresult=newNullResult,
+       count=count,
+       nullcount=nullcount,
+       nsims=nsims+count)
+}
+
+# and do it at the start
+expectedResult<<-resetExpected()
+
+runningExpected<-FALSE
 
 # here's where we start a run
 observeEvent(c(input$EvidenceExpectedRun),{
-  if (notRunningExpected) {
-    startTime<<-Sys.time()
-    cycleTime<<-0
-    cycleCount<<-0
-    if (!input$EvidenceExpected_append) {resetExpected()} 
-    if (!shortHand) {
-      expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)
-    } else {
-      expectedResult$nsims<<-expectedResult$count+as.numeric(input$EvidenceExpected_length)*shortHandGain
-    }
-    if (input$EvidenceExpectedRun>0) {
+  
+  if (input$EvidenceExpectedRun>0) {
+    if (!runningExpected) {
+      
+      runLength<-as.numeric(input$EvidenceExpected_length)
+      if (shortHand) runLength<-runLength*shortHandGain
+      
+      expectedResult<<-resetExpected(runLength,append = input$EvidenceExpected_append)
+
       stopButton(session,"EvidenceExpectedRun")
-      notRunningExpected<<-FALSE
+      runningExpected<<-TRUE
+      
+      startTime<<-Sys.time()
+      cycleTime<<-0
+      cycleCount<<-0
+      
+    } else {
+      expectedResult$nsims<<-expectedResult$count
+      startButton(session,"EvidenceExpectedRun")
+      runningExpected<<-FALSE
     }
-  } else {
-    expectedResult$nsims<<-expectedResult$count
-    startButton(session,"EvidenceExpectedRun")
-    notRunningExpected<<-TRUE
-  }
+  }  
 })
 
 
@@ -57,7 +121,7 @@ expectedUpdate<-observeEvent(input$EvidenceExpectedRun,{
 )
 
 observeEvent(input$EvidenceExpected_type,{
-  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D","Simple"))) {
+  if (!is.element(input$EvidenceExpected_type,c("NHSTErrors","FDR","CILimits","2D","Single"))) {
     switch(input$EvidenceExpected_type,
            "Basic"={
              updateSelectInput(session,"EvidenceExpected_par1",selected=RZ)
@@ -151,48 +215,53 @@ makeExpectedGraph <- function() {
   
     min_ns<-floor(log10(expectedResult$nsims/100))
     if (switches$showAnimation) {
-      ns<-10^(floor(max(min_ns,log10(expectedResult$count))))
+      ns<-ceil(10^(floor(max(min_ns,log10(expectedResult$count)))))
       n_cycles<-1
     } else {
-      ns<-10^min_ns
-      n_cycles<-ceil(expectedResult$nsims/ns)
-    }
-    
-    if (ns>0) {
-      if (expectedResult$count==0) {
-        showNotification("Expected: starting",id="multiple",duration=Inf,closeButton=FALSE,type="message")
-      } 
-      cycleCount<<-cycleCount+1
-      expected$doingNull<-FALSE
-      for (ci in 1:n_cycles) {
-        if (expectedResult$count+ns>=expectedResult$nsims) {
-          ns<-expectedResult$nsims-expectedResult$count
-        }
-        if (ns>0) {
-          expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
-          expectedResult$count<<-length(expectedResult$result$rIV)
-          showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
-        }
+      if (switches$showProgress) {
+        ns<-10^min_ns
+        n_cycles<-ceil(expectedResult$nsims/ns)
+      } else {
+        ns<-expectedResult$nsims
+        n_cycles<-1
       }
     }
     
-  if (expectedResult$count<expectedResult$nsims) {
-    stopRunning<-FALSE
-  }
+    if (expectedResult$count+ns>expectedResult$nsims) {
+      ns<-expectedResult$nsims-expectedResult$count
+    }
+    
+    if (ns>0) {
+      expected$doingNull<-FALSE
+      if (switches$showProgress) 
+        showNotification("Expected: starting",id="multiple",duration=Inf,closeButton=FALSE,type="message")
+      for (ci in 1:n_cycles) {
+        if (switches$showProgress) 
+          showNotification(paste0("Expected: ",format(expectedResult$count),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
+        newCount<-expectedResult$count+ns
+        expectedResult$result<<-doExpectedAnalysis(IV,IV2,DV,effect,design,evidence,expected,expectedResult$result,ns)
+        expectedResult$count<<-newCount
+      }
+    }
+    
+  if (expectedResult$count<expectedResult$nsims)  stopRunning<-FALSE
+  else stopRunning<-TRUE
   
   if (expected$type=="NHSTErrors" && 
         (!effect$world$worldOn || (effect$world$worldOn && effect$world$populationNullp==0)) &&
          expectedResult$nullcount<expectedResult$nsims) {
         ns<-expectedResult$count-expectedResult$nullcount
-      if (ns>0) {
-        expected$doingNull<-TRUE
-        showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
-        expectedResult$nullresult<<-doExpectedAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,expected,expectedResult$nullresult,ns)
-        expectedResult$nullcount<<-length(expectedResult$nullresult$rIV)
-      }
-      if (expectedResult$nullcount<expectedResult$nsims) {
-        stopRunning<-FALSE
-      }
+        if (ns>0) {
+          expected$doingNull<-TRUE
+          if (switches$showProgress)
+            showNotification(paste0("Expected|Null: ",format(expectedResult$nullcount),"/",format(expectedResult$nsims)),id="multiple",duration=Inf,closeButton=FALSE,type="message")
+          newCount<-expectedResult$nullcount+ns
+          expectedResult$nullresult<<-doExpectedAnalysis(IV,IV2,DV,updateEffect(NULL),design,evidence,expected,expectedResult$nullresult,ns)
+        }
+        expectedResult$nullcount<<-newCount
+        if (expectedResult$nullcount<expectedResult$nsims) {
+          stopRunning<-FALSE
+        }
     }
     # wind up
     
@@ -213,13 +282,14 @@ makeExpectedGraph <- function() {
       expectedResult$result$nval<-expectedResult$result$nval[!nulls]
       expectedResult$result$df1<-expectedResult$result$df1[!nulls]
       
-      expectedResult$count<-length(expectedResult$result$rIV)
-      expectedResult$nullcount<-length(expectedResult$nullresult$rIV)
+      expectedResult$count<-sum(!is.na(expectedResult$result$rIV))
+      expectedResult$nullcount<-sum(!is.na(expectedResult$nullresult$rIV))
     }
     
     
     # ? stop running
     if (stopRunning) {
+      if (switches$showProgress)
         removeNotification(id = "multiple")
     }
 
@@ -237,7 +307,7 @@ makeExpectedGraph <- function() {
              }
              g2<-NULL
            },
-           "Simple"={
+           "Single"={
              g1<-drawInference(IV,IV2,DV,effect,design,evidence,expectedResult$result,expected$Expected_par1,orientation="horz")
              g2<-NULL
            },
@@ -273,7 +343,7 @@ makeExpectedGraph <- function() {
     }
   } else {
     startButton(session,"EvidenceExpectedRun")
-    notRunningExpected<<-TRUE
+    runningExpected<<-FALSE
   }
   return(g)
 }
@@ -354,7 +424,6 @@ makeExpectedReport<-function() {
     } else {
       invalidateLater(pauseWait)
     }
-    # invalidateLater(pauseWait)
   } 
   
   return(g)

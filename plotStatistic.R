@@ -129,30 +129,29 @@ dataPolygon<-function(data,colour,fill,alpha=1, orientation) {
 }
 
 collectData<-function(result) {
-  ns<-cbind(result$nval)
-  df1<-cbind(result$df1)
-  rp<-cbind(result$rpIV)
-  ro<-cbind(result$roIV)
-  po<-cbind(result$poIV)
-  ra<-cbind(result$rIVa)
-  ts<-cbind(result$test_val)
-
+  use<-(!is.na(result$rIV))
+  ns<-cbind(result$nval[use])
+  df1<-cbind(result$df1[use])
+  rp<-cbind(result$rpIV[use])
+  ro<-cbind(result$roIV[use])
+  po<-cbind(result$poIV[use])
+  
   if (all(is.na(result$rIV2))){
-    rs<-cbind(result$rIV)
-    ps<-cbind(result$pIV)
+    rs<-cbind(result$rIV[use])
+    ps<-cbind(result$pIV[use])
   } else {
     switch (result$showType,
             "direct"={
-              rs<-rbind(result$r$direct)
-              ps<-rbind(result$p$direct)
+              rs<-rbind(result$r$direct[use,])
+              ps<-rbind(result$p$direct[use,])
             },
             "unique"={
-              rs<-rbind(result$r$unique)
-              ps<-rbind(result$p$unique)
+              rs<-rbind(result$r$unique[use,])
+              ps<-rbind(result$p$unique[use,])
             },
             "total"={
-              rs<-rbind(result$r$total)
-              ps<-rbind(result$p$total)
+              rs<-rbind(result$r$total[use,])
+              ps<-rbind(result$p$total[use,])
             },
             "all"={
               rs<-c()
@@ -160,13 +159,13 @@ collectData<-function(result) {
               ysc=1/3
               xoff=c(0,0,0,2,2,2,4,4,4)
               for (jk in 1:ncol(result$r$direct)) {
-                rs<-cbind(rs,result$r$direct[,jk],result$r$unique[,jk],result$r$total[,jk])
-                ps<-cbind(ps,result$p$direct[,jk],result$p$unique[,jk],result$p$total[,jk])
+                rs<-cbind(rs,result$r$direct[use,jk],result$r$unique[use,jk],result$r$total[use,jk])
+                ps<-cbind(ps,result$p$direct[use,jk],result$p$unique[use,jk],result$p$total[use,jk])
               }
             },
             "coefficients"={
-              rs<-rbind(result$r$coefficients)
-              ps<-rbind(result$p$direct)
+              rs<-rbind(result$r$coefficients[use])
+              ps<-rbind(result$p$direct[use,])
             }
     )
   }
@@ -174,7 +173,7 @@ collectData<-function(result) {
     ps[ps<min_p]<-min_p
     po[po<min_p]<-min_p
   }
-  out<-list(rs=rs,ps=ps,ns=ns,ts=ts,df1=df1,rp=rp,ro=ro,po=po,ra=ra)
+  out<-list(rs=rs,ps=ps,ns=ns,df1=df1,rp=rp,ro=ro,po=po)
 }
 
 makeFiddle<-function(y,yd,orientation){

@@ -8,10 +8,10 @@ reportExpected<-function(IV,IV2,DV,effect,evidence,expected,result,nullresult){
   if (expected$type=="NHSTErrors" || expected$type=="FDR"){nc=4}
   
   # header
-  if (length(nullresult$rIV)>0) {
-    outputText<-c("\bExpected",paste("nsims=",format(length(result$rIV)),"+",format(length(nullresult$rIV)),sep=""),rep("",nc-2))
+  if (sum(!is.na(nullresult$rIV))>0) {
+    outputText<-c("\bExpected",paste("nsims=",format(sum(!is.na(result$rIV))),"+",format(sum(!is.na(nullresult$rIV))),sep=""),rep("",nc-2))
   } else {
-    outputText<-c("\bExpected",paste("nsims=",format(length(result$rIV)),sep=""),rep("",nc-2))
+    outputText<-c("\bExpected",paste("nsims=",format(sum(!is.na(result$rIV))),sep=""),rep("",nc-2))
   }
   outputText<-c(outputText,rep("",nc))
   if (!(is.null(IV2) | is.null(result$rIVIV2DV))){

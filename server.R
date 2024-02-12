@@ -7,34 +7,36 @@
 #    http://shiny.rstudio.com/
 #
 
-debug<-TRUE
+debug<-FALSE
 debugExitOnly<-FALSE
 debugMainOnly<-TRUE
+debugMem<-FALSE 
+
 debugNow<-Sys.time()
 debugNowLocation<<-"Start"
 debugStart<-Sys.time()
-# memUse<-sum(gc()[,2])
-
-z<-regexpr("[ ]*[a-zA-Z0-9]*",s)
-caller<-regmatches(s,z)
+if(debugMem)  memUse<-sum(gc()[,2])
 
 debugPrint<-function(s) {
   if (debugMainOnly && substr(s,1,1)==" ") return()
   elapsedStart<-Sys.time()-debugStart
+  
+  z<-regexpr("[ ]*[a-zA-Z0-9]*",s)
+  caller<-regmatches(s,z)
   
   if (grepl("exit",s)==1) {
     use<-which(debugNowLocation==caller)
     use<-use[length(use)]
     elapsedLocal<-as.numeric(difftime(Sys.time(),debugNow[use],units="secs"))
     str<-paste(format(elapsedStart),s," (",format(elapsedLocal),") ")
-    # str<-paste(str,"  ",format(sum(gc()[,2])-memUse[use]))
+    if(debugMem)  str<-paste(str,"  ",format(sum(gc()[,2])-memUse[use]))
     print(str)
   } else {
     if (!debugExitOnly || s=="Opens")
       print(paste(format(elapsedStart),s))
     debugNow<<-c(debugNow,Sys.time())
     debugNowLocation<<-c(debugNowLocation,caller)
-    # memUse<<-c(memUse,sum(gc()[,2]))
+    if(debugMem)  memUse<<-c(memUse,sum(gc()[,2]))
   }
 }
 
