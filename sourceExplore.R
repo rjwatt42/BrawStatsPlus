@@ -230,15 +230,12 @@ makeExploreGraph <- function() {
     ns<-exploreResult$nsims-exploreResult$result$count
   }
   if (ns>0) {
-    if (exploreResult$result$count==0) {
+    if (exploreResult$result$count==0) 
       showNotification(paste0("Explore ",explore$Explore_family," : starting"),id="explore",duration=Inf,closeButton=FALSE,type="message")
-    }
-    else {
-      label<-paste("Explore(",explore$Explore_family,")",":  n=",format(exploreResult$result$count),"/",format(exploreResult$nsims),sep="")
-      showNotification(label,id="explore",duration=Inf,closeButton=FALSE,type="message")
-    }
     exploreResult$result<<-doExploreAnalysis(IV,IV2,DV,effect,design,evidence,metaAnalysis,explore,exploreResult$result,ns)
     exploreResult$result$count<<-nrow(exploreResult$result$rIVs)
+    label<-paste("Explore(",explore$Explore_family,")",":  n=",format(exploreResult$result$count),"/",format(exploreResult$nsims),sep="")
+    showNotification(label,id="explore",duration=Inf,closeButton=FALSE,type="message")
   }
   if (exploreResult$result$count<exploreResult$nsims) {
     stopRunning<-FALSE

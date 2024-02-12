@@ -11,6 +11,7 @@ debug<-FALSE
 debugExitOnly<-FALSE
 debugMainOnly<-TRUE
 debugMem<-FALSE 
+debugShiny<-FALSE
 
 debugNow<-Sys.time()
 debugNowLocation<<-"Start"
@@ -115,6 +116,7 @@ shinyServer(function(input, output, session) {
   # source("runDebug.R")
   
   observeEvent(input$dimension, {
+  if (debugShiny)  print("dimension")
   window_height <- input$dimension[1]
   window_width <- input$dimension[2]
   # 
@@ -144,19 +146,23 @@ shinyServer(function(input, output, session) {
   source("serverKeys.R",local=TRUE)
   
   observeEvent(input$LoadExtras, {
-                 loadExtras(session,input,input$LoadExtras)
+    if (debugShiny)  print("extras")
+    loadExtras(session,input,input$LoadExtras)
                })
   
   observeEvent(input$shortHandGain, {
+    if (debugShiny)  print("shorthandgain")
     shortHandGain<<-input$shortHandGain
   }
   )
   observeEvent(input$shortHand, {
+    if (debugShiny)  print("shorthand")
     shortHand<<-input$shortHand
   }
   )
   
   observeEvent(c(input$LargeGraphs,input$WhiteGraphs), {
+    if (debugShiny)  print("whitegraphs")
     currentGraph<-input$Graphs
     currentReport<-input$Reports
     
@@ -230,6 +236,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$RZ,{
+    if (debugShiny)  print("rz")
     oldpar1<-input$EvidenceExpected_par1
     oldpar2<-input$EvidenceExpected_par2
     RZ<<-input$RZ
@@ -255,6 +262,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$EvidenceExpected_type,{
+    if (debugShiny)  print("EvidenceExpected_type")
     if (input$EvidenceExpected_type=="Basic") {
       updateSelectInput(session,"EvidenceExpected_par1",selected=RZ)
       updateSelectInput(session,"EvidenceExpected_par2",selected="p")
@@ -271,31 +279,21 @@ shinyServer(function(input, output, session) {
 # other housekeeping
   if (debug) debugPrint("Housekeeping")
   observeEvent(input$allScatter,{
+    if (debugShiny) print("Housekeeping")
     allScatter<<-input$allScatter
   }
   )
 
   observeEvent(input$Explore_VtypeH, {
-      if (input$Explore_VtypeH=="levels") {
+    if (debugShiny) print("Explore_VtypeH")
+    if (input$Explore_VtypeH=="levels") {
         updateSelectInput(session,"Explore_typeH",selected="DV")
       }
   }
   )
   
   observeEvent(input$sN, {
-    #   worldOn<-input$world_on
-    # if (is.null(worldOn)) {
-    #   worldOn<-FALSE
-    # }
-    # if (!worldOn) {
-    #   n<-input$sN
-    #   if (!is.null(n) && !is.na(n)) {
-    #     if (n<1 && n>0) {
-    #       n<-rw2n(input$rIV,n,2)
-    #       updateNumericInput(session,"sN",value=n)
-    #     }
-    #   }
-    # }
+    if (debugShiny) print("sN")
     
     before<-paste0("<div style='",localStyle,"'>")
     after<-"</div>"
@@ -310,16 +308,8 @@ shinyServer(function(input, output, session) {
   }
   )
   
-  # observeEvent(c(input$Notation1,input$Notation2,input$Notation3), {
-  #   oldPlus<-pPlus
-  #   setNotation(list(psig=input$Notation1,
-  #                    UD=input$Notation2,
-  #                    P=input$Notation3))
-  #   if (pPlus!=oldPlus)
-  #     updateNumericInput(session,"world_distr_Nullp",value=1-input$world_distr_Nullp)
-  # })
-  
   observeEvent(input$Hypothesis,{
+    if (debugShiny) print("Hypothesis")
     if (input$Hypothesis=="World") {
       updateTabsetPanel(session,"HypothesisDiagram",selected = "World")
       updateTabsetPanel(session,"Theory",selected="Prediction")
@@ -327,6 +317,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$Evidence,{
+    if (debugShiny) print("Evidence")
     if (input$Evidence=="Expected") {
       updateTabsetPanel(session,"Graphs",selected = "Expected")
     }
@@ -336,6 +327,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$world_distr, {
+    if (debugShiny) print("world_distr")
     if (input$world_distr!="Single" && input$world_distr_k==0) {
       updateNumericInput(session,"world_distr_k",value=0.2)
     }
@@ -348,6 +340,7 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$STMethod, {
+    if (debugShiny) print("STMethod")
     STMethod<<-input$STMethod
     switch (STMethod,
             "NHST"={
@@ -378,27 +371,33 @@ shinyServer(function(input, output, session) {
     )
   })
   observeEvent(input$alpha, {
+    if (debugShiny) print("alpha")
     alphaSig<<-input$alpha
     alphaLLR<<-0.5*qnorm(1-alphaSig/2)^2
   })
   
   observeEvent(input$evidenceInteractionOnly,{
+    if (debugShiny) print("evidenceInteractionOnly")
     showInteractionOnly<<-input$evidenceInteractionOnly
   })
   
   observeEvent(input$pScale,{
+    if (debugShiny) print("pScale")
     pPlotScale<<-input$pScale
   })
   
   observeEvent(input$wScale,{
+    if (debugShiny) print("wScale")
     wPlotScale<<-input$wScale
   })
   
   observeEvent(input$nScale,{
+    if (debugShiny) print("nScale")
     nPlotScale<<-input$nScale
   })
   
   observeEvent(input$EvidenceExpected_type,{
+    if (debugShiny) print("EvidenceExpected_type")
     if (input$EvidenceExpected_type=="NHSTErrors") {
       shinyjs::hideElement("EvidenceExpected_par1")
       shinyjs::hideElement("EvidenceExpected_par2")
@@ -427,6 +426,7 @@ shinyServer(function(input, output, session) {
   }
   
   observeEvent(input$MVproceed, {
+    if (debugShiny) print("MVproceed")
     removeModal()
   })
   
@@ -436,6 +436,7 @@ shinyServer(function(input, output, session) {
   if (debug) debugPrint("QuickHypotheses")
   
   observeEvent(input$Hypchoice,{
+    if (debugShiny) print("Hypchoice")
     result<-getTypecombination(input$Hypchoice)
     validSample<<-FALSE
     
@@ -455,6 +456,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$Effectchoice,{
+    if (debugShiny) print("Effectchoice")
     switch (input$Effectchoice,
             "e0"={
               updateNumericInput(session,"rIV",value=0)    
