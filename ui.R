@@ -40,6 +40,7 @@ source("uiInspectDiagram.R")
   
   fontSize=paste0(format(8*fontScale),"pt")
   fontSize=paste0(format(fontScale),"vw")
+  fontSize=paste0(format(fontScale*1.5),"vh")
   
 shinyUI(fluidPage(
     useShinyjs(),

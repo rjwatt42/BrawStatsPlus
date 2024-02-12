@@ -79,14 +79,15 @@ if (switches$doKeys) {
     
     # control-s 
     if (input$keypress==ascii("s") && controlKeyOn && !shiftKeyOn) {
-      saveRDS(input,file="temp.RDS")
+      state<-storeAll(input)
+      write_xlsx(state,path="temp.xlsx")
       hmm("BrawStats state saved","Success:")
     }
     
     # control-shift-s 
     if (input$keypress==ascii("s") && controlKeyOn && shiftKeyOn) {
-      newInput<-readRDS(input,file="temp.RDS")
-      restoreAll(session,newInput)
+      state<-read_xlsx(path="temp.xlsx")
+      restoreAll(session,state)
       hmm("BrawStats state retrieved","Success:")
     }
     
